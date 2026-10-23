@@ -628,6 +628,10 @@ const CAMI='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="
 const FUNNEL='<svg viewBox="0 0 24 24"><path d="M4 5h16l-6 7v6l-4 2v-8z"/></svg>';
 const avaHTML=(s,cls)=>`<div class="${cls}" style="${s.photo?`background-image:url('${s.photo}')`:''}">${s.photo?'':SIL}</div>`;
 const stShort=st=>st.k==='green'?'متقدم':st.k==='gold'?'على الخطة':st.k==='red'?'متأخر':'لم يبدأ';
+/* الأرقام العربية والفارسية تتحوّل إلى إنجليزية في كل خانات الأرقام والكلمات السرية */
+const latin=s=>String(s).replace(/[٠-٩]/g,d=>d.charCodeAt(0)-1632).replace(/[۰-۹]/g,d=>d.charCodeAt(0)-1776);
+document.addEventListener('input',e=>{const x=e.target;
+  if(x&&x.tagName==='INPUT'&&(x.type==='password'||x.type==='tel'||x.inputMode==='numeric')){const v=latin(x.value);if(v!==x.value){const p=x.selectionStart;x.value=v;try{x.setSelectionRange(p,p);}catch(_){}}}},true);
 /* ---------- الاتصال بالخادم (Supabase) ---------- */
 const SB_URL='https://zxrspvxvhjyvtacemlgr.supabase.co',SB_KEY='sb_publishable_KDfAJSyXFSNKWMGe6szCGQ_W-LmT_Tb';
 let TOK=null,ROLE=null,LAST='';
@@ -665,7 +669,7 @@ function hydrate(st){
   }
   CREQ.length=0;(st.creq||[]).forEach(r=>CREQ.push({id:r.id,tid:r.tid,cid:r.cid,status:r.status,at:new Date(r.at)}));
   RESETREQ.length=0;STUDRESET.length=0;
-  (st.resets||[]).forEach(r=>{if(r.kind==='teacher')RESETREQ.push({id:r.id,tid:r.tid,at:new Date(r.at)});else STUDRESET.push({id:r.id,name:r.name,phone:r.phone,email:r.email,at:new Date(r.at)});});
+  (st.resets||[]).forEach(r=>{if(r.kind==='teacher')RESETREQ.push({id:r.id,tid:r.tid,at:new Date(r.at)});else STUDRESET.push({id:r.id,name:r.name,phone:r.phone,email:r.email,cid:r.cid||0,at:new Date(r.at)});});
   ARCH.length=0;(st.archive||[]).forEach(a=>ARCH.push({id:a.id,label:a.label,n:a.n}));
   BKP=st.backup?{label:st.backup}:null;
   if(ROLE==='teacher')ME=tById(st.me);
@@ -1847,13 +1851,14 @@ function pendCard(){const n=pendTotal();if(!n)return '';
   return `<button class="glass item" onclick="ago('pend',{pk:''})" style="margin-bottom:12px;border-color:rgba(224,162,27,.8)"><div class="mini" style="background:rgba(224,162,27,.35)">${n}</div><div class="grow"><div class="t">طلبات من المعلمين</div><div class="mut">${creqPend().length?creqPend().length+' صف':''}${creqPend().length&&pendList().length?' · ':''}${pendList().length?pendList().length+' طالب':''}${resetTotal()?((creqPend().length||pendList().length)?' · ':'')+resetTotal()+' كلمة سر':''} بانتظار قرارك</div></div>${CHEV}</button>`;}
 function pendTile(title,sub,n,key,cls){return `<button class="glass item ${cls}" onclick="ago('pend',{pk:'${key}'})"><div class="mini" style="${n?'background:rgba(255,255,255,.85);color:var(--teal-d);font-size:15px':'font-size:15px;opacity:.6'}">${n}</div><div class="grow"><div class="t">${title}</div><div class="mut">${sub}</div></div>${CHEV}</button>`;}
 const reqHead=(title,sub)=>`<div class="hdr"><button class="glass iconbtn" onclick="ago('pend',{pk:''})" aria-label="رجوع">${BACK}</button><div class="ht"><b>${title}</b><span>${sub}</span></div></div>`;
-const rqStud=r=>{const m=similar(r.name);
+const rqStud=r=>{const rc=CLASSES.find(c=>c.id===r.cid),m0=similar(r.name),m=m0.filter(x=>x.c&&x.c.id===r.cid).concat(m0.filter(x=>!(x.c&&x.c.id===r.cid)));
   return `<div class="glass card rq-s"><div class="row sp"><div class="t">${esc(r.name)}</div><span class="pill p-blue">طالب</span></div>
    <div class="mut" style="margin:2px 0 6px">نسي كلمة السر · ${fmt(r.at)}</div>
+   <div class="cinfo" style="border:0;padding:3px 0"><span class="mut">الصف المكتوب:</span> <b>${rc?esc(clsName(rc)):'غير محدد'}</b></div>
    <div class="cinfo" style="border:0;padding:3px 0"><span class="mut">موبايل ولي الأمر:</span> <bdi>${esc(r.phone)}</bdi></div>
    <div class="cinfo" style="border:0;padding:0 0 4px"><span class="mut">الإيميل الرسمي:</span> <bdi>${esc(r.email)}</bdi></div>
    <div class="divider"></div>
-   ${m.length?`<div class="mut" style="font-weight:600;margin-bottom:6px">الطلاب المطابقون للاسم، تحقق ثم اختر:</div>`+m.map(x=>`<div class="row sp" style="gap:8px;margin-bottom:8px"><div style="min-width:0"><div class="t" style="font-size:13.5px">${esc(x.name)}</div><div class="mut">${clsName(x.c)}</div></div><button class="btn-s" style="flex:none" onclick="resetStudentPw(${r.id},${x.id})">إعادة تعيين وإرسال</button></div>`).join('')
+   ${m.length?`<div class="mut" style="font-weight:600;margin-bottom:6px">الطلاب المطابقون للاسم، تحقق ثم اختر:</div>`+m.map(x=>`<div class="row sp" style="gap:8px;margin-bottom:8px"><div style="min-width:0"><div class="t" style="font-size:13.5px">${esc(x.name)}</div><div class="mut">${clsName(x.c)}${x.c&&x.c.id===r.cid?' <span class="pill p-green" style="font-size:10.5px">نفس الصف</span>':' <span class="pill p-gold" style="font-size:10.5px">صف مختلف</span>'}</div></div><button class="btn-s" style="flex:none" onclick="resetStudentPw(${r.id},${x.id})">إعادة تعيين وإرسال</button></div>`).join('')
      :'<div class="mut" style="color:#7C1A10;font-weight:600">لا يوجد طالب بهذا الاسم في الكشوف.</div>'}
    <button class="btn-s" style="width:100%;padding:10px;margin-top:4px" onclick="ignoreStudReset(${r.id})">تجاهل الطلب</button></div>`;};
 const rqTeach=r=>{const x=tById(r.tid);
@@ -1924,20 +1929,23 @@ async function openForgot(){
 }
 $('forgot').onclick=openForgot;
 const resetTotal=()=>RESETREQ.length+STUDRESET.length;
-function openForgotS(){
+async function openForgotS(){
+  let cls=[];try{cls=await rpc('public_classes',{});}catch(e){toast('تعذّر الاتصال بالخادم، تأكد من الإنترنت',true);return;}
   sheet(`<div class="t" style="font-size:17px;margin-bottom:2px">نسيت الكلمة السرية</div><div class="mut">اكتب بياناتك لتتحقق منها الإدارة، ثم تُرسل الكلمة السرية إلى إيميل الطالب الرسمي.</div>
    <label class="fl" for="fs-n">اسم الطالب</label><input class="field" id="fs-n" maxlength="60" placeholder="الاسم الرباعي">
+   <label class="fl" for="fs-c">الصف</label><select class="field" id="fs-c"><option value="">اختر صف الطالب</option>${cls.map(c=>`<option value="${c.id}">الصف ${GRADES[c.g-1]} (${esc(c.sec)})</option>`).join('')}</select>
    <label class="fl" for="fs-p">رقم موبايل ولي الأمر</label><input class="field" id="fs-p" type="tel" inputmode="numeric" dir="ltr" style="text-align:right" maxlength="8">
    <label class="fl" for="fs-m">إيميل الطالب الرسمي</label><input class="field" id="fs-m" type="email" dir="ltr" style="text-align:right" maxlength="60" placeholder="name@example.com">
    <div class="glass card" style="margin:14px 0 0;padding:10px 14px;font-size:12.5px;font-weight:600;color:var(--teal-d);line-height:1.8">ملاحظة: سيتم إرسال الكلمة السرية من خلال البيانات التي تم إدخالها.</div>
    <div class="fe" id="fs-e"></div><button class="btn" id="fs-send" style="margin-top:6px">إرسال الطلب</button>`);
-  ['fs-n','fs-p','fs-m'].forEach(i=>$(i).addEventListener('input',()=>$('fs-e').textContent=''));
+  ['fs-n','fs-p','fs-m','fs-c'].forEach(i=>$(i).addEventListener('input',()=>$('fs-e').textContent=''));$('fs-c').addEventListener('change',()=>$('fs-e').textContent='');
   $('fs-p').addEventListener('input',()=>{$('fs-p').value=$('fs-p').value.replace(/\D/g,'').slice(0,8);});
   $('fs-send').onclick=async()=>{const n=$('fs-n').value.trim().replace(/\s+/g,' '),p=$('fs-p').value.trim(),m=$('fs-m').value.trim(),e=$('fs-e');
     if(toks(n).length<2){e.textContent='اكتب اسمك الأول واسم الأب على الأقل';return;}
+    if(!$('fs-c').value){e.textContent='اختر صف الطالب';return;}
     if(!/^[39]\d{7}$/.test(p)){e.textContent='رقم الموبايل 8 أرقام ويبدأ بـ 3 أو 9';return;}
     if(!/^\S+@\S+\.\S+$/.test(m)){e.textContent='اكتب إيميل الطالب الرسمي بشكل صحيح';return;}
-    let r;try{r=await rpc('req_student_reset',{p_name:n,p_phone:p,p_email:m});}catch(ex){e.textContent='تعذّر الاتصال بالخادم، تأكد من الإنترنت';return;}
+    let r;try{r=await rpc('req_student_reset',{p_name:n,p_phone:p,p_email:m,p_class:+$('fs-c').value});}catch(ex){e.textContent='تعذّر الاتصال بالخادم، تأكد من الإنترنت';return;}
     if(r.error==='dup'){e.textContent='طلبك مرسل مسبقاً، بانتظار الإدارة';return;}
     if(r.error){e.textContent='تعذّر إرسال الطلب، تأكد من البيانات';return;}
     sheet(`<div style="text-align:center;padding:10px 4px 2px"><div style="width:64px;height:64px;border-radius:50%;background:rgba(46,170,94,.3);border:1px solid rgba(46,170,94,.6);color:#145A31;display:flex;align-items:center;justify-content:center;margin:0 auto 14px"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
@@ -1953,7 +1961,7 @@ function attempt(kind,expect,inputId,errId,formId){
   $(formId).addEventListener('submit',async e=>{
     e.preventDefault();
     const inp=$(inputId),err=$(errId),f=$(formId),btn=f.querySelector('button[type=submit]');
-    const pin=inp.value.trim().replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+    const pin=latin(inp.value.trim());
     if(!pin){err.textContent='ضع الرقم السري أولاً';shakeF(f);return;}
     btn.disabled=true;err.textContent='';
     try{
