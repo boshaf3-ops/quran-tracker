@@ -3,7 +3,7 @@
 <head>
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
 <meta name="application-name" content="كشف الحفظ">
@@ -461,6 +461,30 @@ svg.chr.run .shoeR{animation:ch_runfoot .34s steps(2,end) infinite alternate-rev
 #rpt .rtb{display:flex;gap:10px;align-items:center;padding:10px 14px;background:rgba(255,255,255,.92);border-bottom:1px solid rgba(22,94,80,.15)}
 #rpt .rtb .btn{width:auto;padding:9px 20px;font-size:14px;margin:0}
 #rpt iframe{flex:1;width:100%;border:0;background:#cfdcd8}
+/* ===== الشاشة تتكيف مع أي جوال (بدون إطار جوال وهمي) ===== */
+html,body{height:100%}
+body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100dvh}
+.phone{width:100%;max-width:520px;height:100vh;height:100dvh;margin:0 auto;border:0;border-radius:0;box-shadow:none}
+.scroll{padding:calc(14px + env(safe-area-inset-top)) 14px calc(104px + env(safe-area-inset-bottom))}
+.tabbar{bottom:calc(14px + env(safe-area-inset-bottom));left:12px;right:12px}
+.toast{top:calc(14px + env(safe-area-inset-top))}
+.screen{overflow-y:auto;overflow-x:hidden}
+.screen.lg{display:flex;flex-direction:column;align-items:stretch}
+.lbg .tb,.lbg .wv{display:none}
+.lg .center{position:relative;inset:auto;order:1;flex:none;min-height:70%;justify-content:flex-start;padding:112px 20px 26px;
+  background:radial-gradient(rgba(255,255,255,.1) 1.4px,transparent 1.6px) 0 0/18px 18px,linear-gradient(180deg,#23826F,#1d7562)}
+.wlg .center{padding-top:128px}
+.lg .center::after{content:'';position:absolute;left:0;right:0;top:100%;margin-top:-1px;height:46px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 372 46' preserveAspectRatio='none'%3E%3Cpath d='M0 0H372V16C335 40 295 38 258 22S170 -2 122 18S34 42 0 16Z' fill='%231d7562'/%3E%3Cpath d='M372 16C335 40 295 38 258 22S170 -2 122 18S34 42 0 16' fill='none' stroke='%23E0A21B' stroke-width='3.2'/%3E%3Cpath d='M372 25C335 49 295 47 258 31S170 7 122 27S34 51 0 25' fill='none' stroke='%23E0A21B' stroke-width='1.6' stroke-dasharray='7 6'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
+.lg .center{margin-bottom:46px}
+.lg .center>*{position:relative;z-index:1}
+.lg .center .logos{position:absolute}
+.lg .lockwrap{position:static;order:2;margin:0 auto}
+.lg .back{position:static;order:2;transform:none;margin:0 auto}
+.lg .forgot{position:static;display:block;transform:none;margin:12px auto 0}
+.foot2{position:static;order:9;margin-top:auto;padding:22px 12px calc(14px + env(safe-area-inset-bottom))}
+@media (max-height:700px){.lg .center{min-height:0}}
+.screen{scrollbar-width:none}.screen::-webkit-scrollbar{display:none}
+.lg .h1{font-size:clamp(21px,7.3vw,29px)}.lg .h1 em{font-size:clamp(17px,5.9vw,24px)}
 </style>
 </head>
 <body>
@@ -483,13 +507,14 @@ svg.chr.run .shoeR{animation:ch_runfoot .34s steps(2,end) infinite alternate-rev
         <button class="btn" type="submit">دخول</button>
         <button type="button" class="linkbtn" id="forgot-s">نسيت الكلمة السرية</button>
       </form>
-      <div class="lockwrap">
+      
+    </div>
+    <div class="lockwrap">
         <button class="glass lockbtn" id="to-teacher" type="button" aria-label="دخول المعلمين">
           <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
         </button>
         دخول المعلمين
       </div>
-    </div>
   </section>
 
   <section class="screen lg" id="s-staff"><div class="lbg"><i class="tb"></i><svg class="wv" viewBox="0 0 372 46" preserveAspectRatio="none"><path d="M0 0H372V16C335 40 295 38 258 22S170 -2 122 18S34 42 0 16Z" fill="#1d7562"/><path d="M372 16C335 40 295 38 258 22S170 -2 122 18S34 42 0 16" fill="none" stroke="#E0A21B" stroke-width="3.2"/><path d="M372 25C335 49 295 47 258 31S170 7 122 27S34 51 0 25" fill="none" stroke="#E0A21B" stroke-width="1.6" stroke-dasharray="7 6"/></svg></div><div class="foot2"><span>جميع الحقوق محفوظة · من إصدارات <b>نادي ثابت</b></span><span class="dsg">تصميم وإعداد: <b>أ. محمد الشافعي</b></span></div>
@@ -515,8 +540,8 @@ svg.chr.run .shoeR{animation:ch_runfoot .34s steps(2,end) infinite alternate-rev
         <div class="err" id="err-t" role="alert"></div>
         <button class="btn" type="submit">دخول</button>
       </form>
+      <button type="button" class="forgot" id="forgot">نسيت الكلمة السرية</button>
     </div>
-    <button type="button" class="forgot" id="forgot">نسيت الكلمة السرية</button>
   </section>
 
   <section class="screen" id="s-student">
@@ -626,7 +651,7 @@ const behRows=s=>s.beh.length?s.beh.map(b=>`<span class="pill ${b[0]==='+'?'p-gr
 const show=id=>document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
 const meLine=()=>`<div class="melabel"><i></i><span>${esc(ME.name)}</span></div>`;
 const TOPT=()=>TOP+meLine();
-const TOP=`<div class="island"></div><div class="glass top"><div class="logo inst"></div><div class="ttl">متابعة الحفظ<small>المعهد الديني الابتدائي</small></div><div class="logo thabit"></div></div>`;
+const TOP=`<div class="glass top"><div class="logo inst"></div><div class="ttl">متابعة الحفظ<small>المعهد الديني الابتدائي</small></div><div class="logo thabit"></div></div>`;
 function toast(msg,bad){const t=$('toast');t.textContent=msg;t.style.color=bad?'#7C1A10':'#145A31';t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),1800);}
 function sheet(html){$('sheet').innerHTML=`<div class="panel glass"><div class="grab"></div>${html}</div>`;$('sheet').classList.add('on');}
 function closeSheet(){stopCam();$('sheet').classList.remove('on');}
@@ -1703,7 +1728,7 @@ function exportSheet(){
 }
 
 /* ---------- غرفة التحكم ---------- */
-const AT=`<div class="island"></div><div class="glass top"><div class="logo inst"></div><div class="ttl">غرفة التحكم<small>المعهد الديني الابتدائي</small></div><div class="logo thabit"></div></div>`;
+const AT=`<div class="glass top"><div class="logo inst"></div><div class="ttl">غرفة التحكم<small>المعهد الديني الابتدائي</small></div><div class="logo thabit"></div></div>`;
 const teacherOf=c=>({name:tNames(c)});
 const setATab=n=>document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.classList.toggle('on',b.dataset.atab===n));
 function ago(view,p={}){$('student-body').innerHTML='';Object.assign(T,p,{view,admin:true});if(view==='stu'&&p.sid)T.sub='hifz';if(view==='tcls'&&p.fm)T.csub='hifz';$('teacher-body').innerHTML='';
