@@ -1583,6 +1583,74 @@ async function rosterApply(){const c=CLASSES.find(x=>x.id===RST.cid),rows=RST.m.
   if(fresh.length)$('rs-dl').onclick=()=>dlCSV('أكواد-جدد-'+stuClsNm(c)+'.csv',[['الاسم','الصف','الكود']].concat(fresh.map(s=>[s.name,clsName(c),s.pin])));
 }
 
+
+/* ---------- بطاقات أكواد الدخول (PDF) والتصدير ---------- */
+const CCSS="\n@page{size:A4;margin:0}\n*{box-sizing:border-box;margin:0}\n:root{--teal:#23826F;--teal-d:#165E50;--gold:#E0A21B;--gold-d:#9A6B05;--cream:#FDF9EC;--ink:#16443B}\nhtml{background:#d9e3e0}.page.tp{page-break-after:always}\nbody{font-family:Cairo,system-ui,sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}\n.page{width:210mm;height:297mm;margin:0 auto 12px;background:var(--cream);position:relative;overflow:hidden;page-break-after:always;break-after:page}\n.page{line-height:1.3}\nth,td{line-height:1.15}\n.name small,.t1 span,.t1 b,.code small,.code p,.foot,.ptitle h3,.ptitle span{line-height:1.3}\n.dots{position:absolute;inset:0;background-image:radial-gradient(rgba(35,130,111,.14) 1.1px,transparent 1.2px);background-size:5mm 5mm}\n.band{position:absolute;top:0;left:0;right:0;height:58mm;background:var(--teal)}\n.band::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.12) 1.4px,transparent 1.6px);background-size:6mm 6mm}\n.wave{position:absolute;top:44mm;left:0;width:100%;height:20mm}\n.logo{position:absolute;top:6mm;width:28mm;height:28mm;background:#fff;border-radius:7mm 7mm 12mm 7mm;display:flex;align-items:center;justify-content:center;box-shadow:0 2mm 5mm rgba(0,0,0,.18)}\n.logo img{max-width:22mm;max-height:22mm}\n.logo.r{right:9mm}.logo.l{left:9mm;border-radius:7mm 7mm 7mm 12mm}\n.hd{position:absolute;top:8mm;left:40mm;right:40mm;text-align:center;color:#fff}\n.hd h1{font-size:22pt;font-weight:900;line-height:1.25}\n.hd h2{font-size:16pt;font-weight:800;color:var(--gold);line-height:1.3}\n.hd p{font-size:9.5pt;opacity:.9;margin-top:1.5mm}\n.ribbon{position:absolute;top:50mm;left:50%;transform:translateX(-50%);background:var(--gold);color:#3b2a00;font-weight:900;font-size:13pt;padding:2mm 12mm;border-radius:99px;box-shadow:0 1.5mm 4mm rgba(154,107,5,.35);white-space:nowrap;border:.6mm solid #fff}\n.body{position:absolute;top:66mm;left:11mm;right:11mm;bottom:7mm;display:flex;flex-direction:column;gap:3.5mm}\n.name{background:#fff;border:.9mm solid var(--teal);border-radius:7mm;padding:2mm 5mm 2.6mm;position:relative;text-align:center;box-shadow:inset 0 0 0 1mm #fff,inset 0 0 0 1.5mm var(--gold)}\n.name small{display:block;font-size:9.5pt;color:var(--gold-d);font-weight:700}\n.name b{display:block;font-size:20pt;font-weight:900;color:var(--teal-d);line-height:1.3}\n.name .cls{display:inline-block;margin-top:.5mm;background:var(--teal);color:#fff;font-weight:800;font-size:11pt;padding:.6mm 6mm;border-radius:99px}\n.teach{display:grid;grid-template-columns:1fr 1fr;gap:4mm}\n.t1{background:#fff;border:.5mm solid rgba(35,130,111,.35);border-radius:5mm;padding:1.5mm 4mm;display:flex;align-items:center;gap:3mm}\n.t1 i{width:9mm;height:9mm;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--gold));flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-style:normal;font-weight:900;font-size:13pt}\n.t1 span{font-size:8.5pt;color:var(--gold-d);font-weight:700;display:block}\n.t1 b{font-size:11.5pt;font-weight:800;line-height:1.3;display:block}\n.ptitle{display:flex;align-items:center;justify-content:space-between;margin-top:1mm}\n.ptitle h3{font-size:13pt;font-weight:900;color:var(--teal-d)}\n.ptitle span{font-size:9.5pt;color:var(--gold-d);font-weight:700}\ntable{width:100%;border-collapse:separate;border-spacing:0;border-radius:4mm;overflow:hidden;border:.5mm solid var(--teal);background:#fff}\nth{background:var(--teal);color:#fff;font-size:11pt;font-weight:800;padding:1.6mm 3mm;text-align:right}\ntd{font-size:13pt;font-weight:700;padding:0 3mm;height:var(--rh,7mm);border-bottom:.25mm solid rgba(35,130,111,.18)}\ntr:nth-child(even) td{background:rgba(35,130,111,.06)}\ntr:last-child td{border-bottom:0}\ntd.n{width:11mm;text-align:center;color:var(--gold-d);font-weight:900}\ntd.d{width:55mm;color:var(--ink);font-weight:600;font-size:12pt}\n.code{margin-top:auto;border:.9mm dashed var(--gold);border-radius:7mm;background:#fff;padding:2.4mm 6mm 3mm;text-align:center}\n.code small{font-size:10.5pt;font-weight:800;color:var(--gold-d)}\n.digits{display:flex;justify-content:center;gap:2.6mm;direction:ltr;margin:1.6mm 0 1.2mm}\n.digits i{width:13mm;height:16mm;border-radius:3mm;background:var(--teal);color:#fff;font-style:normal;font-weight:900;font-size:26pt;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -1.2mm 0 rgba(0,0,0,.2)}\n.code p{font-size:8.5pt;color:var(--ink);line-height:1.55}\n.code p b{color:#7C1A10}\n.foot{text-align:center;font-size:8pt;color:var(--ink);opacity:.8}\n@media screen{.page{box-shadow:0 4px 20px rgba(0,0,0,.25);transform-origin:top center}}\n\n.logo .li{display:block;width:22mm;height:22mm;background-size:contain;background-repeat:no-repeat;background-position:center}\n.tt{width:100%}.tt td{font-size:12pt}.tt td.cdn{font-weight:900;letter-spacing:2mm;direction:ltr;text-align:center;color:var(--teal-d);font-size:15pt}\n.url{direction:ltr;font-weight:800;color:var(--teal-d);font-size:10pt}\n@media print{html{background:none}body{padding:0}.page{margin:0;box-shadow:none}.page:last-child{break-after:auto}}\n";
+const SITE_URL='https://boshaf3-ops.github.io/quran-tracker/';
+function codeFrame(){
+  const fitPg=(pg,start)=>{const b=pg.querySelector('.body');let rh=start;pg.style.setProperty('--rh',rh+'mm');
+    while(b.scrollHeight>b.clientHeight+6&&rh>4.4){rh-=.2;pg.style.setProperty('--rh',rh+'mm');}return rh;};
+  (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{
+    const last={};document.querySelectorAll('.page.cd').forEach(pg=>{const g=pg.dataset.g;last[g]=fitPg(pg,last[g]||8.6);});
+    const W=Math.max(...[...document.querySelectorAll('.page')].map(p=>p.offsetWidth));const z=Math.min(1,(innerWidth-16)/W);
+    document.body.style.zoom=z;addEventListener('beforeprint',()=>document.body.style.zoom=1);addEventListener('afterprint',()=>document.body.style.zoom=z);
+  });
+}
+const ccHead=(sub)=>`<div class="dots"></div><div class="band"></div>
+ <svg class="wave" viewBox="0 0 210 20" preserveAspectRatio="none"><path d="M0 0 C20 14 40 14 60 7 S100 0 130 8 S190 16 210 4 L210 0 Z" fill="#23826F"/><path d="M0 0 C20 14 40 14 60 7 S100 0 130 8 S190 16 210 4" fill="none" stroke="#E0A21B" stroke-width="1.2"/></svg>
+ <div class="logo r"><i class="li" style="background-image:${RLOGO('inst')}"></i></div><div class="logo l"><i class="li" style="background-image:${RLOGO('thabit')}"></i></div>
+ <div class="hd"><h1>ملف متابعة حفظ الطلبة</h1><h2>المعهد الديني الابتدائي</h2><p>قسم القرآن الكريم · الفصل الدراسي الأول 2026 – 2027</p></div>`;
+function cardPage(s){
+  const c=s.c,segs=segsOf(c.g),tl=c.tids.map(tById).filter(Boolean);
+  return `<section class="page cd" data-g="${c.g}">${ccHead()}<div class="ribbon">بطاقة متابعة التسميع</div>
+ <div class="body">
+  <div class="name"><small>اسم الطالب</small><b>${esc(s.name)}</b><span class="cls">${esc(clsName(c))}</span></div>
+  <div class="teach">${tl.map(x=>`<div class="t1"><i>${esc(x.init)}</i><div><span>معلم القرآن الكريم</span><b>${esc(abbrT(x.name))}</b></div></div>`).join('')}</div>
+  <div class="ptitle"><h3>خطة الحفظ للفصل الدراسي</h3><span>المقاطع المطلوبة ومواعيدها</span></div>
+  <table><thead><tr><th>م</th><th>السورة والآيات</th><th>أسبوع التسميع</th></tr></thead><tbody>${segs.map((g,i)=>`<tr><td class="n">${i+1}</td><td>سورة ${esc(rng(g))}</td><td class="d">${fmtR(g)}</td></tr>`).join('')}</tbody></table>
+  <div class="code"><small>الرقم الشخصي للطالب</small><div class="digits">${String(s.pin).split('').map(d=>`<i>${d}</i>`).join('')}</div>
+   <p>للدخول: افتح موقع المتابعة <span class="url">${SITE_URL}</span> واكتب هذا الرقم في خانة «دخول الطالب».<br><b>احتفظ به ولا تُعطِه لأحد.</b> وإذا نسيته اضغط «نسيت الكلمة السرية» في صفحة الدخول.</p></div>
+  <div class="foot">هذه البطاقة خاصة بمتابعة تسميع الطالب في قسم القرآن الكريم</div>
+ </div></section>`;
+}
+function teachersCodesPage(){
+  return `<section class="page tp">${ccHead()}<div class="ribbon">أكواد دخول المعلمين</div>
+ <div class="body"><div class="ptitle"><h3>كلمات سر المعلمين</h3><span>سرّية — تُسلَّم لكل معلم على حدة</span></div>
+  <table class="tt"><thead><tr><th>م</th><th>المعلم</th><th>الصفوف</th><th style="text-align:center">الكود</th></tr></thead><tbody>${TLIST.map((x,i)=>`<tr><td class="n">${i+1}</td><td>${esc(abbrT(x.name))}</td><td class="d" style="width:auto;font-size:10pt">${CLASSES.filter(c=>c.tids.includes(x.id)).map(c=>GRADES[c.g-1]+' '+c.sec).join('، ')}</td><td class="cdn">${esc(x.pin)}</td></tr>`).join('')}</tbody></table>
+  <div class="code"><p>يدخل المعلم من الصفحة الأولى: يضغط أيقونة القفل «دخول المعلمين»، ثم «دخول المعلم»، ويكتب كلمة سره.<br><b>هذه الورقة سرّية، تُحفظ عند الإدارة فقط.</b> يقدر كل معلم يغيّر كلمة سره من «بياناتي».</p></div></div></section>`;
+}
+function codeDoc(pages){
+  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>أكواد الدخول</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet"><style>${CCSS}</style></head><body>${pages}
+<script>(${codeFrame})()<\/script></body></html>`;
+}
+function codesOpen(list,title){
+  if(!list.length){toast('لا يوجد طلبة',true);return;}
+  rptOpen(codeDoc(list.map(cardPage).join('')),title);
+}
+const sortedStu=l=>l.filter(s=>!s.pending).slice().sort((a,b)=>a.c.g-b.c.g||a.c.sec.localeCompare(b.c.sec,'ar')||a.name.localeCompare(b.name,'ar'));
+function codesAll(){codesOpen(sortedStu(allStudents()),'أكواد كل الطلبة');}
+function codesClass(cid){const c=CLASSES.find(x=>x.id===cid);codesOpen(sortedStu(c.students),'أكواد '+clsName(c));}
+function codesTeachers(){rptOpen(codeDoc(teachersCodesPage()),'أكواد المعلمين');}
+const tNamesOf=c=>c.tids.map(i=>{const x=tById(i);return x?abbrT(x.name):'';}).join(' + ');
+function csvStudents(){dlCSV('قائمة-الطلبة-وأكوادهم.csv',[['الاسم','الصف','الشعبة','المعلمون','الكود']].concat(sortedStu(allStudents()).map(s=>[s.name,'الصف '+GRADES[s.c.g-1],s.c.sec,tNamesOf(s.c),s.pin])));}
+function csvGrades(){
+  const hdr=['الاسم','الصف','الشعبة','المعلمون'].concat(Array.from({length:15},(_,i)=>'درجة المقطع '+(i+1))).concat(['المقاطع المسمّعة','من','المتوسط','الحالة','المستوى','سلوك إيجابي','سلوك سلبي']);
+  const rows=sortedStu(allStudents()).map(s=>{const segs=segsOf(s.c.g),tot=s.done.map(d=>Math.round((d[0]+(d[1]||0))*10)/10),avg=tot.length?Math.round(tot.reduce((a,b)=>a+b,0)/tot.length*10)/10:'';
+    return [s.name,'الصف '+GRADES[s.c.g-1],s.c.sec,tNamesOf(s.c)].concat(Array.from({length:15},(_,i)=>i<tot.length?tot[i]:'')).concat([s.done.length,segs.length,avg,statusOf(s).t,lvName(s),s.beh.filter(b=>b[0]==='+').length,s.beh.filter(b=>b[0]!=='+').length]);});
+  dlCSV('درجات-الطلبة.csv',[hdr].concat(rows));}
+function csvTeachers(){dlCSV('أكواد-المعلمين.csv',[['المعلم','الصفوف','الكود','واتساب','البريد','ساعات التواصل']].concat(TLIST.map(x=>[abbrT(x.name),CLASSES.filter(c=>c.tids.includes(x.id)).map(c=>GRADES[c.g-1]+' '+c.sec).join(' ، '),x.pin,x.whatsapp,x.email,x.hours])));}
+function exportSheet(){
+  sheet(`<div class="t" style="font-size:17px">الأكواد والتصدير</div><div class="mut" style="margin:4px 0 10px">ملفات PDF للطباعة، وملفات Excel لتحميل البيانات.</div>
+   <div class="fl" style="margin-top:6px">ملفات PDF</div>
+   <button class="btn" onclick="closeSheet();codesAll()" style="margin-top:4px">أكواد كل الطلبة</button>
+   <button class="btn" onclick="closeSheet();codesTeachers()" style="margin-top:8px">أكواد المعلمين</button>
+   <div class="fl" style="margin-top:14px">ملفات Excel</div>
+   <button class="btn-s" style="width:100%;padding:11px;margin-top:4px" onclick="csvStudents()">قائمة الطلبة وأكوادهم</button>
+   <button class="btn-s" style="width:100%;padding:11px;margin-top:8px" onclick="csvGrades()">درجات وسلوك كل الطلبة</button>
+   <button class="btn-s" style="width:100%;padding:11px;margin-top:8px" onclick="csvTeachers()">المعلمون وأكوادهم</button>`);
+}
+
 /* ---------- غرفة التحكم ---------- */
 const AT=`<div class="island"></div><div class="glass top"><div class="logo inst"></div><div class="ttl">غرفة التحكم<small>المعهد الديني الابتدائي</small></div><div class="logo thabit"></div></div>`;
 const teacherOf=c=>({name:tNames(c)});
@@ -1611,7 +1679,9 @@ function aHome(){
   <div class="glass card" style="margin-top:2px">${bar(r,n)}${legend(r)}</div>
   <div class="sec" style="margin:14px 6px 8px"><b>نهاية السنة</b></div><button class="glass item" onclick="ago('yr')" style="margin-bottom:10px"><div class="grow"><div class="t">نقل السنة الدراسية</div><div class="mut">نقل الطلبة وأرشفة السادس ولصق الكشوف الجديدة</div></div>${CHEV}</button>
   <div class="sec" style="margin:14px 6px 8px"><b>إضافة سريعة</b></div>
-  <div class="chips" style="margin:0 4px"><button class="btn-s" onclick="openAddStudent()">+ طالب</button><button class="btn-s" onclick="openAddClass(true)">+ صف</button><button class="btn-s" onclick="openAddTeacher()">+ معلم</button></div>`;
+  <div class="chips" style="margin:0 4px"><button class="btn-s" onclick="openAddStudent()">+ طالب</button><button class="btn-s" onclick="openAddClass(true)">+ صف</button><button class="btn-s" onclick="openAddTeacher()">+ معلم</button></div>
+  <div class="sec" style="margin:16px 6px 8px"><b>الأكواد والتصدير</b></div>
+  <div class="chips" style="margin:0 4px"><button class="btn-s" onclick="codesAll()">تحميل أكواد كل الطلبة PDF</button><button class="btn-s" onclick="exportSheet()">تصدير البيانات</button></div>`;
 }
 function aList(){
   setATab('home');
@@ -1642,6 +1712,7 @@ function aClass(){
    <button class="btn" id="ac-add" style="width:100%;margin-top:10px;padding:11px">إضافة معلم للصف</button>`:''}</div>`+
   `<div class="fbar" style="margin:0 4px 10px"><span class="t" style="font-size:15px">طلاب الصف</span><span class="row" style="gap:8px"><button class="btn-s" onclick="rptChooseA(${c.id})">طباعة التقارير</button><button class="btn-s" onclick="openAddStudentA(${c.id})">+ إضافة طالب</button></span></div>`+
   `<div class="fbar" style="margin:0 4px 10px"><span class="mut">كشف أسماء جديد لهذا الصف</span><button class="btn-s" onclick="openRoster(${c.id})">لصق كشف الأسماء</button></div>`+
+  `<div class="fbar" style="margin:0 4px 10px"><span class="mut">أكواد دخول طلاب الصف</span><button class="btn-s" onclick="codesClass(${c.id})">تحميل أكواد الصف PDF</button></div>`+
   (n?`<div class="glass card">${bar(r,n)}${legend(r)}</div>`+filterUI('drawStudents')+'<div id="sl"></div>':'<div class="glass card empty">لا يوجد طلبة في هذا الصف</div>');
   if(n)drawStudents();
   const ad=$('ac-add');if(ad)ad.onclick=async()=>{const r=await sop('class_add_t',{cid:c.id,tid:+$('ac-t').value});if(r.error){toast('تعذّر التنفيذ',true);return;}await sync(true);toast('أُضيف المعلم إلى '+clsName(c));aClass();};
@@ -1667,7 +1738,7 @@ async function rmClassT(cid,tid){const c=CLASSES.find(x=>x.id===cid);
   await sync(true);toast('أُزيل المعلم من '+clsName(c),true);aClass();}
 function aTeachers(){
   setATab('teachers');
-  $('admin-body').innerHTML=AT+`<div class="sec" style="margin-top:2px"><b style="font-size:18px">المعلمون</b><button class="btn-s" onclick="openAddTeacher()">+ إضافة معلم</button></div>`+
+  $('admin-body').innerHTML=AT+`<div class="sec" style="margin-top:2px"><b style="font-size:18px">المعلمون</b><span class="row" style="gap:8px"><button class="btn-s" onclick="codesTeachers()">أكواد PDF</button><button class="btn-s" onclick="openAddTeacher()">+ إضافة معلم</button></span></div>`+
   TLIST.map(x=>{const cs=CLASSES.filter(c=>c.tids.includes(x.id)),n=cs.reduce((a,c)=>a+c.students.length,0);
     return `<button class="glass item" onclick="ago('tch',{tid:${x.id}})"><div class="mini">${esc(x.init)}</div><div class="grow"><div class="t">${esc(x.name)}</div><div class="mut">${cs.length} صفوف · ${n} طلاب</div></div>${CHEV}</button>`;}).join('');
 }
