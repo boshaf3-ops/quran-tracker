@@ -657,6 +657,7 @@ function hydrate(st){
       beh:x.beh.map(b=>[b[0]==='-'?'−':'+',b[1],dayDate(b[2])]),owner:x.owner||0,pin:x.pin||'',photo:x.photo||undefined,medals:x.medals||{},pending:!!x.pending,
       by:x.by||0,at:x.at?new Date(x.at):undefined,prev:x.prev||undefined,nextG:x.nextG||undefined,c:null};
     const c=cm[x.c];if(c){s.c=c;c.students.push(s);}else if(ROLE==='admin')POOL.push(s);});
+  CLASSES.forEach(c=>c.students.sort((p,q)=>p.name.localeCompare(q.name,'ar')));POOL.sort((p,q)=>p.name.localeCompare(q.name,'ar'));
   THREADS.length=0;SMSG.length=0;const tm={};
   if(ROLE==='teacher'){
     (st.msgs||[]).forEach(m=>{const k=m.kind+':'+m.ref;let th=tm[k];if(!th){th={id:k,tid:st.me,kind:m.kind,ref:m.ref,unread:0,msgs:[]};tm[k]=th;}
@@ -1623,9 +1624,22 @@ function teachersCodesPage(){
   <table class="tt"><thead><tr><th>م</th><th>المعلم</th><th>الصفوف</th><th style="text-align:center">الكود</th></tr></thead><tbody>${TLIST.map((x,i)=>`<tr><td class="n">${i+1}</td><td>${esc(abbrT(x.name))}</td><td class="d" style="width:auto;font-size:10pt">${CLASSES.filter(c=>c.tids.includes(x.id)).map(c=>GRADES[c.g-1]+' '+c.sec).join('، ')}</td><td class="cdn">${esc(x.pin)}</td></tr>`).join('')}</tbody></table>
   <div class="code"><p>يدخل المعلم من الصفحة الأولى: يضغط أيقونة القفل «دخول المعلمين»، ثم «دخول المعلم»، ويكتب كلمة سره.<br><b>هذه الورقة سرّية، تُحفظ عند الإدارة فقط.</b> يقدر كل معلم يغيّر كلمة سره من «بياناتي».</p></div></div></section>`;
 }
+const CCSS2=`.cl{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5mm}.cl span{background:#fff;border:.5mm solid rgba(35,130,111,.4);border-radius:5mm;padding:3mm 2mm;text-align:center;font-weight:900;font-size:14pt;color:var(--teal-d)}.cl span small{display:block;font-size:9pt;color:var(--gold-d);font-weight:700}.tcd{margin-top:4mm}.tcd .digits i{width:16mm;height:20mm;font-size:32pt}`;
+function teacherCardPage(x){
+  const cs=CLASSES.filter(c=>c.tids.includes(x.id)).sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar'));
+  return `<section class="page tp">${ccHead()}<div class="ribbon">بطاقة معلم القرآن الكريم</div>
+ <div class="body">
+  <div class="name"><small>اسم المعلم</small><b>${esc(abbrT(x.name))}</b><span class="cls">معلم القرآن الكريم</span></div>
+  <div class="ptitle"><h3>الصفوف التي تدرّسها</h3><span>${cs.length} ${cs.length===1?'صف':'صفوف'}</span></div>
+  ${cs.length?`<div class="cl">${cs.map(c=>`<span><small>الصف ${GRADES[c.g-1]}</small>الشعبة (${esc(c.sec)})</span>`).join('')}</div>`:'<div class="cl"><span>لا توجد صفوف مسندة بعد</span></div>'}
+  <div class="code tcd"><small>كود دخول المعلم</small><div class="digits">${String(x.pin).split('').map(d=>`<i>${d}</i>`).join('')}</div>
+   <p>للدخول: افتح موقع المتابعة <span class="url">${SITE_URL}</span>، اضغط أيقونة القفل «دخول المعلمين»، ثم «دخول المعلم»، واكتب هذا الرقم.<br><b>هذا الكود سرّي ولا تعطه لأحد.</b> وتقدر تغيّره من «بياناتي» بعد الدخول.</p></div>
+  <div class="foot">هذه البطاقة خاصة بمعلم القرآن الكريم في المعهد الديني الابتدائي</div>
+ </div></section>`;
+}
 function codeDoc(pages){
   return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>أكواد الدخول</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet"><style>${CCSS}</style></head><body>${pages}
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet"><style>${CCSS}${CCSS2}</style></head><body>${pages}
 <script>(${codeFrame})()<\/script></body></html>`;
 }
 function codesOpen(list,title){
@@ -1635,7 +1649,14 @@ function codesOpen(list,title){
 const sortedStu=l=>l.filter(s=>!s.pending).slice().sort((a,b)=>a.c.g-b.c.g||a.c.sec.localeCompare(b.c.sec,'ar')||a.name.localeCompare(b.name,'ar'));
 function codesAll(){codesOpen(sortedStu(allStudents()),'أكواد كل الطلبة');}
 function codesClass(cid){const c=CLASSES.find(x=>x.id===cid);codesOpen(sortedStu(c.students),'أكواد '+clsName(c));}
-function codesTeachers(){rptOpen(codeDoc(teachersCodesPage()),'أكواد المعلمين');}
+function codesTeachers(){
+  sheet(`<div class="t" style="font-size:17px">أكواد المعلمين</div><div class="mut" style="margin:4px 0 8px">كيف تريد الطباعة؟</div>
+   <button class="btn" style="margin-top:6px" onclick="codesTeachersAll()">كل المعلمين في صفحة واحدة<br><small style="font-weight:600">جدول فيه ${TLIST.length} معلمين وأكوادهم</small></button>
+   <button class="btn" style="margin-top:10px" onclick="codesTeachersEach()">صفحة مستقلة لكل معلم<br><small style="font-weight:600">${TLIST.length} بطاقات: الاسم والصفوف والكود</small></button>
+   <button class="btn-s" style="width:100%;margin-top:12px;padding:11px" onclick="closeSheet()">إلغاء</button>`);
+}
+function codesTeachersAll(){closeSheet();rptOpen(codeDoc(teachersCodesPage()),'أكواد المعلمين');}
+function codesTeachersEach(){closeSheet();rptOpen(codeDoc(TLIST.map(teacherCardPage).join('')),'بطاقات المعلمين');}
 const tNamesOf=c=>c.tids.map(i=>{const x=tById(i);return x?abbrT(x.name):'';}).join(' + ');
 function csvStudents(){dlCSV('قائمة-الطلبة-وأكوادهم.csv',[['الاسم','الصف','الشعبة','المعلمون','الكود']].concat(sortedStu(allStudents()).map(s=>[s.name,'الصف '+GRADES[s.c.g-1],s.c.sec,tNamesOf(s.c),s.pin])));}
 function csvGrades(){
