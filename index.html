@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="a672943e6044">
+<meta name="build" content="4ab91292202d">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -570,6 +570,31 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 .crk{position:absolute;z-index:1;pointer-events:none}.crk path{fill:none;stroke:rgba(255,255,255,.95);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.crk .d{stroke:rgba(120,140,134,.45);stroke-width:1}
 .crk.tl{top:0;right:0;width:96px;height:78px}.crk.bl{bottom:0;left:0;width:84px;height:70px}
 @media (prefers-reduced-motion:reduce){#s-prof.st-late,#s-prof.st-ahead,.orb,#s-prof.st-late .pill.p-red::before{animation:none!important}}
+/* ===== إعلان المعلم الأكثر تفعيلاً ===== */
+.awstrip{position:sticky;bottom:96px;z-index:5;display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:14px;margin:0 2px;overflow:hidden;
+  background:linear-gradient(135deg,rgba(255,250,228,.78),rgba(255,239,184,.58));backdrop-filter:blur(14px) saturate(150%);-webkit-backdrop-filter:blur(14px) saturate(150%);
+  border:1px solid rgba(224,162,27,.65);box-shadow:0 0 12px rgba(224,162,27,.32),inset 0 1.5px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(255,255,255,.35);color:#7a5600;animation:awglow 3.8s ease-in-out infinite}
+@keyframes awglow{0%,100%{box-shadow:0 0 10px rgba(224,162,27,.28),inset 0 1.5px 0 rgba(255,255,255,.9)}50%{box-shadow:0 0 18px rgba(224,162,27,.5),inset 0 1.5px 0 rgba(255,255,255,.9)}}
+.awsh{position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.75) 48%,rgba(255,255,255,.2) 54%,transparent 68%);transform:translateX(130%);animation:awsweep 4.4s ease-in-out infinite;pointer-events:none}
+@keyframes awsweep{0%,38%{transform:translateX(130%)}78%,100%{transform:translateX(-130%)}}
+.awstrip::before{content:'';position:absolute;left:0;right:0;top:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0));pointer-events:none;border-radius:14px 14px 0 0}
+.awcup{position:relative;z-index:2;width:22px;height:22px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;color:#7a4e00;background:radial-gradient(circle at 35% 30%,#FFE89A,#E0A21B);animation:awbob 2.8s ease-in-out infinite}
+.awcup svg{width:14px;height:14px}
+.awcup::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(224,162,27,.6);animation:awring 2.8s ease-out infinite}
+@keyframes awbob{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-2px) rotate(6deg)}}
+@keyframes awring{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.5);opacity:0}}
+.awtx{position:relative;z-index:2;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;line-height:1.5}.awtx b{color:#1f8a52;font-weight:800}
+#awpop{position:absolute;inset:0;z-index:70;background:rgba(10,29,25,.45);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:22px}
+.awbox{position:relative;width:100%;max-width:340px;border-radius:24px;padding:20px 16px 16px;text-align:center;background:linear-gradient(180deg,#FFF8DE,#FBEFC4);border:3px solid #E0A21B;overflow:hidden;animation:awglow2 3.6s ease-in-out infinite}
+@keyframes awglow2{0%,100%{box-shadow:0 0 0 3px rgba(243,189,63,.3),0 0 20px rgba(224,162,27,.45)}50%{box-shadow:0 0 0 5px rgba(243,189,63,.45),0 0 36px rgba(224,162,27,.75)}}
+.awx{position:absolute;top:8px;left:10px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(255,255,255,.75);color:#7a5600;font-size:16px;cursor:pointer;z-index:4}
+.awcupbig{width:62px;height:62px;border-radius:50%;margin:0 auto 8px;background:radial-gradient(circle at 35% 30%,#FFE89A,#E0A21B);display:flex;align-items:center;justify-content:center;color:#7a4e00;box-shadow:0 0 0 4px #fff,0 6px 14px rgba(154,107,5,.4);animation:awbob 3s ease-in-out infinite}.awcupbig svg{width:32px;height:32px}
+.aw1{font-size:12.5px;color:#7a5600;font-weight:600}.aw2{font-size:21px;font-weight:800;color:#1f8a52;margin:2px 0}.aw3{font-size:12.5px;color:#7a5600;line-height:1.7}.aw4{font-size:11.5px;color:#9A7A2A;margin-top:10px}
+.awsp{position:absolute;color:#E0A21B;font-size:16px;font-style:normal;animation:awtw 2.4s ease-in-out infinite}
+@keyframes awtw{0%,100%{opacity:.2;transform:scale(.6) rotate(0)}50%{opacity:1;transform:scale(1.1) rotate(25deg)}}
+.awcf{position:absolute;top:-8px;width:7px;height:11px;border-radius:2px;animation:awfall 4.6s linear infinite;opacity:0}
+@keyframes awfall{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.9}100%{transform:translateY(300px) rotate(300deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.awstrip,.awsh,.awcup,.awcup::after,.awbox,.awcupbig,.awsp,.awcf{animation:none!important}}
 </style>
 </head>
 <body>
@@ -688,7 +713,7 @@ const fmtR=g=>{const a=g.d,b=g.e;return a.getMonth()===b.getMonth()?`${a.getDate
 const halaqa=g=>g<=3?1:2;
 const clsName=c=>`الصف ${GRADES[c.g-1]} (${c.sec})`;
 
-const TLIST=[],CLASSES=[],POOL=[],THREADS=[],SMSG=[],CREQ=[],RESETREQ=[],STUDRESET=[],ARCH=[],SUGG=[];let BKP=null;
+const TLIST=[],CLASSES=[],POOL=[],THREADS=[],SMSG=[],CREQ=[],RESETREQ=[],STUDRESET=[],ARCH=[],SUGG=[];let AWARD=null,AWARDS=[];let BKP=null;
 const tById=id=>TLIST.find(x=>x.id===id);
 const allStudents=()=>CLASSES.flatMap(c=>c.students);
 const byId=id=>allStudents().find(s=>s.id===id)||POOL.find(s=>s.id===id);
@@ -801,6 +826,7 @@ function hydrate(st){
   CREQ.length=0;(st.creq||[]).forEach(r=>CREQ.push({id:r.id,tid:r.tid,cid:r.cid,status:r.status,at:new Date(r.at)}));
   RESETREQ.length=0;STUDRESET.length=0;
   (st.resets||[]).forEach(r=>{if(r.kind==='teacher')RESETREQ.push({id:r.id,tid:r.tid,at:new Date(r.at)});else STUDRESET.push({id:r.id,name:r.name,phone:r.phone,email:r.email,cid:r.cid||0,at:new Date(r.at)});});
+  AWARD=st.award?{id:st.award.id,tid:st.award.tid,month:st.award.month,exp:new Date(st.award.exp)}:null;AWARDS=(st.awards||[]).map(a=>({id:a.id,tid:a.tid,month:a.month,at:new Date(a.at),exp:new Date(a.exp)}));
   SUGG.length=0;(st.sugg||[]).forEach(g=>SUGG.push({id:g.id,role:g.role,name:g.name,cls:g.cls||'',txt:g.txt,at:new Date(g.at),seen:!!g.seen}));
   ARCH.length=0;(st.archive||[]).forEach(a=>ARCH.push({id:a.id,label:a.label,n:a.n}));
   BKP=st.backup?{label:st.backup}:null;
@@ -821,15 +847,19 @@ function saveTok(){let ok=false;try{localStorage.setItem('qt-tok',TOK);ok=true;}
 function loadTok(){let v=null;try{v=localStorage.getItem('qt-tok');}catch(e){}if(!v){try{v=sessionStorage.getItem('qt-tok');}catch(e){}}return v;}
 function dropTok(){try{localStorage.removeItem('qt-tok');}catch(e){}try{sessionStorage.removeItem('qt-tok');}catch(e){}}
 function sessionExpired(){if(!TOK)return;TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');toast('انتهت الجلسة، سجّل الدخول من جديد',true);}
-function clearData(){SUGG.length=0;TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
+function clearData(){AWARD=null;AWARDS=[];SUGG.length=0;TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
   ['student-body','teacher-body','admin-body'].forEach(i=>{if($(i))$(i).innerHTML='';});}
 function persist(){}
 function saveOwn(){}
+let SEEN_T=0;
+function teacherSeen(force){if(ROLE!=='teacher'||!TOK)return;const n=Date.now();if(!force&&n-SEEN_T<240000)return;SEEN_T=n;rpc('teacher_seen',{p_tok:TOK}).catch(()=>{});}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')teacherSeen(false);});
+setInterval(()=>teacherSeen(false),300000);
 function enter(st){
   try{if(document.activeElement)document.activeElement.blur();}catch(e){}
   LAST=JSON.stringify(st);hydrate(st);
   if(ROLE==='student'){renderStudent(allStudents()[0]);show('s-student');}
-  else if(ROLE==='teacher'){go('tas');show('s-teacher');}
+  else if(ROLE==='teacher'){go('tas');show('s-teacher');teacherSeen(true);setTimeout(awardPopup,700);}
   else{ago('home');show('s-admin');}
 }
 async function doLogout(){const t=TOK;TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');if(t)rpc('logout',{p_tok:t}).catch(()=>{});}
@@ -1201,6 +1231,24 @@ function tasCard(c){
     <div class="row sp"><div class="t">${clsName(c)}</div><div class="row" style="gap:6px"><span class="pill p-green">معي ${l.length} ${l.length===1?'طالب':'طلاب'}</span>${CHEV}</div></div>
     ${bar(r,l.length)}${legend(r)}</button>`;
 }
+const awMonth=m=>{const x=String(m||'').split('-');return MONTHS[(+x[1]||1)-1];};
+const awTeacher=()=>{const x=AWARD&&tById(AWARD.tid);return x?x.name.replace(/^الأستاذ\s*/,''):'';};
+function awardStrip(){if(!AWARD||ROLE!=='teacher'||!tById(AWARD.tid))return '';
+  return `<div class="awstrip" id="awstrip"><i class="awsh"></i><span class="awcup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span><span class="awtx" id="awtx">نبارك للأستاذ <b>${esc(awTeacher())}</b> حصوله على لقب الأكثر تفعيلاً لشهر ${awMonth(AWARD.month)}</span></div>`;}
+function fitStrip(){const e=$('awtx'),b=$('awstrip');if(!e||!b)return;let f=11.5;e.style.fontSize=f+'px';let n=0;while(e.scrollWidth>e.clientWidth+1&&f>9.4&&n++<20){f-=.4;e.style.fontSize=f+'px';}}
+function awardPopup(){
+  if(!AWARD||ROLE!=='teacher'||!tById(AWARD.tid))return;
+  let seen='';try{seen=localStorage.getItem('qt-aw')||'';}catch(e){}
+  if(seen===String(AWARD.id)||$('awpop'))return;
+  const o=document.createElement('div');o.id='awpop';
+  o.innerHTML=`<div class="awbox"><button class="awx" id="awx" aria-label="إغلاق">×</button>${'<i class="awsp" style="top:12px;right:16px">✦</i><i class="awsp" style="top:56px;left:20px;animation-delay:.8s">✦</i><i class="awsp" style="bottom:22px;right:26px;animation-delay:1.5s">✦</i>'}${[14,36,58,80].map((l,i)=>`<i class="awcf" style="left:${l}%;animation-delay:${i*.9}s;background:${['#E0A21B','#23826F','#F3BD3F','#D63A2B'][i]}"></i>`).join('')}
+   <div class="awcupbig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></div>
+   <div class="aw1">نبارك للأستاذ</div><div class="aw2">${esc(awTeacher())}</div><div class="aw3">حصوله على لقب «المعلم الأكثر تفعيلاً للمنصة» لشهر ${awMonth(AWARD.month)}</div>
+   <div class="aw4">يبقى الإعلان في أسفل صفحة التسميع</div></div>`;
+  document.querySelector('.phone').appendChild(o);
+  const close=()=>{try{localStorage.setItem('qt-aw',String(AWARD.id));}catch(e){}o.remove();};
+  $('awx').onclick=close;o.addEventListener('click',e=>{if(e.target===o)close();});
+}
 function vTas(){
   setTab('tas');const withMine=myCls().filter(c=>myIn(c).length);
   const grp=(h,title,sub)=>{const list=withMine.filter(c=>halaqa(c.g)===h).sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar'));
@@ -1208,7 +1256,8 @@ function vTas(){
   const total=withMine.reduce((a,c)=>a+myIn(c).length,0);
   $('teacher-body').innerHTML=TOP+profileBtn()+
   (withMine.length?`<div class="sec" style="margin-top:6px"><b style="font-size:18px">التسميع</b><span class="pill p-gray">${total} طالباً معي</span></div>`+grp(1,'الحلقة الأولى','الصف الأول والثاني والثالث')+grp(2,'الحلقة الثانية','الصف الرابع والخامس والسادس')
-   :`<div class="glass card empty" style="padding:26px 16px"><div class="t" style="font-size:15px;margin-bottom:6px">لم تختر طلاباً بعد</div><div class="mut" style="margin-bottom:14px">افتح «الكشف» واضغط المربع بجانب اسم كل طالب معك، فيظهر صفه هنا.</div><button class="btn" onclick="go('home')">الذهاب إلى الكشف</button></div>`);
+   :`<div class="glass card empty" style="padding:26px 16px"><div class="t" style="font-size:15px;margin-bottom:6px">لم تختر طلاباً بعد</div><div class="mut" style="margin-bottom:14px">افتح «الكشف» واضغط المربع بجانب اسم كل طالب معك، فيظهر صفه هنا.</div><button class="btn" onclick="go('home')">الذهاب إلى الكشف</button></div>`)+'<div style="height:90px"></div>'+awardStrip();
+  fitStrip();
 }
 function vTasClass(){
   setTab('tas');const c=CLASSES.find(x=>x.id===T.cid),l=myIn(c),r=cnts(l);
@@ -2038,7 +2087,7 @@ const AT=`<div class="glass top"><div class="logo inst"></div><div class="ttl">�
 const teacherOf=c=>({name:tNames(c)});
 const setATab=n=>document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.classList.toggle('on',b.dataset.atab===n));
 function ago(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:true});if(view==='stu'&&p.sid)T.sub='hifz';if(view==='tcls'&&p.fm)T.csub='hifz';$('teacher-body').innerHTML='';
-  ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm})[view]();
+  ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm,tact:aTAct})[view]();
   $('admin-body').scrollTop=0;updABadge();}
 function openAStu(id,from,arg){T.ret=from==='cls'?`ago('cls',{cid:${arg}})`:from==='tch'?`ago('tch',{tid:${arg}})`:`ago('list')`;ago('stu',{sid:id});}
 const stuRow=(s,from,arg)=>{const st=statusOf(s);return `<button class="glass item" onclick="openAStu(${s.id},'${from}',${arg||0})">${avaHTML(s,'mini')}
@@ -2059,6 +2108,7 @@ function aHome(){
   <div class="g3">${tile(r.green,'متقدمون',"openList('green')",'#145A31')}${tile(r.gold,'على الخطة',"openList('gold')",'#8A5A00')}${tile(r.red,'متأخرون',"openList('red')",'#7C1A10')}</div>
   ${r.none?`<button class="glass item" onclick="openList('none')" style="margin-bottom:10px"><div class="grow"><div class="t">لم يبدأ تسجيلهم بعد</div><div class="mut">طلاب لم تُسجَّل لهم أي درجة</div></div><span class="pill p-gray">${r.none}</span>${CHEV}</button>`:''}
   <div class="glass card" style="margin-top:2px">${bar(r,n)}${legend(r)}</div>
+  ${new Date().getDate()>=29?`<button class="glass item" onclick="T.am='';ago('tact')" style="margin-bottom:10px;background:rgba(224,162,27,.28)"><div class="grow"><div class="t">فائز شهر ${awMonth(TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0'))} جاهز للنشر</div><div class="mut">افتح نشاط المعلمين واضغط نشر الإعلان</div></div>${CHEV}</button>`:''}
   <div class="sec" style="margin:14px 6px 8px"><b>المنهج والفصل الدراسي</b></div>
   ${termDue()?`<button class="glass item" onclick="ago('term')" style="margin-bottom:10px;background:rgba(224,162,27,.28)"><div class="grow"><div class="t">انتهى الفصل الأول</div><div class="mut">اضغط للانتقال إلى الفصل الثاني</div></div>${CHEV}</button>`:''}
   <button class="glass item" onclick="PE.term=TERM;ago('plan')" style="margin-bottom:10px"><div class="grow"><div class="t">خطة المقاطع</div><div class="mut">تعديل أسابيع الحفظ والسور والآيات لكل صف</div></div>${CHEV}</button>
@@ -2122,9 +2172,61 @@ function openAddStudentA(cid){
 async function rmClassT(cid,tid){const c=CLASSES.find(x=>x.id===cid);
   const r=await sop('class_rm_t',{cid,tid});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);toast('أُزيل المعلم من '+clsName(c),true);aClass();}
+let TACT=null;
+const dstr=d=>{const x=new Date(d);return fmt(x);};
+function aTAct(){
+  setATab('teachers');$('admin-body').innerHTML=AT+head('نشاط المعلمين','ترتيب التفعيل الشهري',"ago('teachers')")+'<div class="glass card empty">جاري التحميل...</div>';
+  const mo=T.am||'',cur=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0');
+  srv('teacher_activity',{p_month:mo||cur}).then(r=>{if(!r||r.error||!r.rows){if(T.view==='tact')$('admin-body').innerHTML=AT+head('نشاط المعلمين','',"ago('teachers')")+'<div class="glass card empty">تعذّر تحميل البيانات.</div>';return;}TACT=r;if(T.view==='tact')drawTAct();});
+}
+function tieGroup(rows){const a=rows[0];if(!a)return[];return rows.filter(x=>x.total===a.total&&x.days===a.days);}
+function drawTAct(){
+  const r=TACT,rows=r.rows,cur=TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0');
+  const months=[];for(let i=0;i<3;i++){const d=new Date(TODAY.getFullYear(),TODAY.getMonth()-i,1);months.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'));}
+  const top=rows.filter(x=>x.total>0),tie=tieGroup(top),win=tie.length===1?tie[0]:null,ranks=['f','s','th'];
+  const act=AWARD,actN=act&&tById(act.tid);
+  let h=AT+head('نشاط المعلمين','ترتيب التفعيل الشهري',"ago('teachers')")+
+  `<div class="chips2" style="margin:0 4px 10px">${months.map(m=>`<button class="qc${(T.am||cur)===m?' on':''}" onclick="T.am='${m}';aTAct()">${awMonth(m)}</button>`).join('')}</div>
+   <div class="glass card" style="font-size:12.5px;color:var(--ink-2);line-height:1.8">يبدأ احتساب التفعيل من ${dstr(r.start)} الساعة ${new Date(r.start).toLocaleTimeString('ar',{hour:'numeric',minute:'2-digit'})}. الدرجة من 100: دخول 30 · تقييمات التسميع 40 · السلوكيات 20 · الرد على الرسائل 10. أيام الدوام المحسوبة: ${r.wd}.</div>`;
+  // فائز الشهر
+  const mn=awMonth(r.month);
+  if(!top.length)h+=`<div class="glass card empty">لا يوجد نشاط مسجّل لشهر ${mn} بعد.</div>`;
+  else{
+    h+=`<div class="glass card" style="border:2px solid #E0A21B;background:rgba(255,248,222,.8)"><div class="row sp"><div class="t">فائز شهر ${mn}</div><span class="pill ${(new Date().getDate()>=29||r.month!==cur)?'p-gold':'p-gray'}">${(new Date().getDate()>=29||r.month!==cur)?'جاهز للنشر':'مؤقت · الشهر لم ينتهِ'}</span></div>`;
+    if(win)h+=`<div class="row" style="margin:10px 0"><div class="mini" style="background:linear-gradient(135deg,#F3BD3F,#E0A21B);color:#7a4e00"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></div><div><div class="t" style="font-size:16px">${esc(win.name)}</div><div class="mut">الأكثر تفعيلاً · ${win.total} من 100</div></div></div>
+      <button class="btn" onclick="awardConfirm(${win.id},'${r.month}',${win.total})" style="width:100%">نشر الإعلان لجميع المعلمين</button><div class="mut" style="margin-top:8px">يظهر الإعلان للمعلمين أسبوعين ثم يختفي.</div>`;
+    else h+=`<div class="mut" style="margin:8px 0;line-height:1.8">تعادل ${tie.length} معلمين في الدرجة وأيام الدخول (${tie[0].total} · ${tie[0].days} يوم). اختر الفائز:</div>${tie.map(x=>`<button class="glass item" onclick="awardConfirm(${x.id},'${r.month}',${x.total})"><div class="mini">${esc(tById(x.id)?tById(x.id).init:'')}</div><div class="grow"><div class="t">${esc(x.name)}</div></div><span class="pill p-gold">اختيار ونشر</span></button>`).join('')}`;
+    if(win&&top.length>1)h+=`<button class="btn-s" style="width:100%;margin-top:10px" onclick="awardPick('${r.month}')">اختيار معلم آخر</button>`;
+    h+=`</div>`;
+  }
+  if(act&&actN)h+=`<div class="glass card"><div class="row sp"><div class="t">الإعلان المنشور حالياً</div><span class="pill p-green">ينتهي ${dstr(act.exp)}</span></div><div class="mut" style="margin-top:4px">${esc(actN.name)} · لقب شهر ${awMonth(act.month)}</div><button class="btn-s" style="margin-top:8px;color:#7C1A10" onclick="awardRemove(${act.id})">إلغاء الإعلان</button></div>`;
+  // الترتيب
+  h+=`<div class="sec"><div><b>ترتيب التفعيل</b><small>${rows.length} معلمين</small></div></div>`+
+  rows.map((x,i)=>{const lo=x.total<25&&rows.length>2&&i>=rows.length-1;
+   return `<button class="glass item" style="display:block" onclick="tactDetail(${x.id})"><div class="row sp"><div class="row" style="gap:10px"><span class="mini" style="width:30px;height:30px;font-size:13px;${i===0&&x.total>0?'background:linear-gradient(135deg,#F3BD3F,#E0A21B);color:#3b2a00':''}">${i+1}</span><div><div class="t" style="font-size:14px">${esc(x.name)}</div><div class="mut">${x.days} يوم دخول · ${x.grades} تقييم · ${x.behs} سلوك${x.last?' · آخر دخول '+dstr(x.last):' · لم يدخل بعد'}</div></div></div><span class="t" style="color:${lo?'#7C1A10':'var(--teal-d)'}">${x.total}</span></div><div class="bar" style="margin-top:8px"><i style="width:${Math.min(100,x.total)}%;background:${lo?'var(--red)':'var(--green)'}"></i></div></button>`;}).join('');
+  const hist=AWARDS;if(hist.length)h+=`<div class="sec"><div><b>الإعلانات السابقة</b></div></div>`+hist.map(a=>`<div class="glass card"><div class="row sp"><div><div class="t" style="font-size:14px">${tById(a.tid)?esc(tById(a.tid).name):'—'}</div><div class="mut">لقب شهر ${awMonth(a.month)} · نُشر ${dstr(a.at)}</div></div>${a.exp>new Date()?'<span class="pill p-green">منشور</span>':'<span class="pill p-gray">منتهٍ</span>'}</div></div>`).join('');
+  $('admin-body').innerHTML=h;
+}
+function tactDetail(id){
+  const x=TACT.rows.find(q=>q.id===id);if(!x)return;
+  const set=new Set(x.dayset||[]);const d0=new Date(TACT.from),days=[];const end=new Date(TODAY);let d=new Date(d0.getFullYear(),d0.getMonth(),d0.getDate());
+  while(d<=end&&days.length<40){if(d.getDay()<=4){const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');days.push([k,set.has(k)]);}d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);}
+  const row=(a,b)=>`<div class="row sp mut" style="padding:4px 0"><span>${a}</span><b style="color:var(--ink)">${b}</b></div>`;
+  sheet(`<div class="t" style="font-size:17px">${esc(x.name)}</div><div class="mut">درجة التفعيل ${x.total} من 100</div>
+   <div class="t" style="font-size:13px;margin:12px 0 6px">أيام الدخول (${x.days} من ${x.wd})</div><div style="display:flex;flex-wrap:wrap;gap:4px">${days.length?days.map(a=>`<i style="width:14px;height:14px;border-radius:4px;background:${a[1]?'#2EAA5E':'#dfe6e3'}" title="${a[0]}"></i>`).join(''):'<span class="mut">لا أيام دوام محسوبة بعد</span>'}</div>
+   <div style="margin-top:12px">${row('دخول (من 30)',x.sd)}${row('تقييمات التسميع (من 40) · '+x.grades+' تقييم لـ '+x.picked+' طالباً',x.sg)}${row('السلوكيات (من 20) · '+x.behs+' سلوك',x.sb)}${row('الرد على الرسائل (من 10) · '+x.sent+' رد من '+x.recv+' رسالة',x.sm)}</div>
+   <button class="btn-s" style="width:100%;margin-top:12px" onclick="closeSheet()">إغلاق</button>`);
+}
+function awardPick(month){const rows=TACT.rows.filter(x=>x.total>0);
+  sheet(`<div class="t" style="font-size:17px">اختيار الفائز</div><div class="mut" style="margin:4px 0 10px">اختر المعلم الذي يظهر إعلانه للجميع.</div>${rows.map(x=>`<button class="glass item" onclick="closeSheet();awardConfirm(${x.id},'${month}',${x.total})"><div class="grow"><div class="t" style="font-size:14px">${esc(x.name)}</div><div class="mut">${x.total} من 100</div></div>${CHEV}</button>`).join('')}<button class="btn-s" style="width:100%" onclick="closeSheet()">إلغاء</button>`);}
+function awardConfirm(tid,month,score){const x=tById(tid);if(!x)return;
+  confirmBox(`نشر لقب «المعلم الأكثر تفعيلاً» لشهر ${awMonth(month)} باسم ${esc(x.name)} لجميع المعلمين لمدة أسبوعين؟`,async()=>{
+    const r=await sop('award_publish',{tid,month,score});if(r.error){toast('تعذّر النشر',true);return false;}
+    await sync(true);toast('تم نشر الإعلان لجميع المعلمين');aTAct();});}
+function awardRemove(id){confirmBox('إلغاء الإعلان المنشور حالياً؟',async()=>{const r=await sop('award_del',{id});if(r.error){toast('تعذّر الإلغاء',true);return false;}await sync(true);toast('أُلغي الإعلان');aTAct();});}
 function aTeachers(){
   setATab('teachers');
-  $('admin-body').innerHTML=AT+`<div class="sec" style="margin-top:2px"><b style="font-size:18px">المعلمون</b><span class="row" style="gap:8px"><button class="btn-s" onclick="codesTeachers()">أكواد PDF</button><button class="btn-s" onclick="openAddTeacher()">+ إضافة معلم</button></span></div>`+
+  $('admin-body').innerHTML=AT+`<button class="glass item" onclick="T.am='';ago('tact')" style="margin-bottom:10px;border-color:rgba(224,162,27,.7)"><div class="mini" style="background:rgba(224,162,27,.35)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></div><div class="grow"><div class="t">نشاط المعلمين</div><div class="mut">ترتيب التفعيل وفائز الشهر ونشر الإعلان</div></div>${CHEV}</button><div class="sec" style="margin-top:2px"><b style="font-size:18px">المعلمون</b><span class="row" style="gap:8px"><button class="btn-s" onclick="codesTeachers()">أكواد PDF</button><button class="btn-s" onclick="openAddTeacher()">+ إضافة معلم</button></span></div>`+
   TLIST.map(x=>{const cs=CLASSES.filter(c=>c.tids.includes(x.id)),n=cs.reduce((a,c)=>a+c.students.length,0);
     return `<button class="glass item" onclick="ago('tch',{tid:${x.id}})"><div class="mini">${esc(x.init)}</div><div class="grow"><div class="t">${esc(x.name)}</div><div class="mut">${cs.length} صفوف · ${n} طلاب</div></div>${CHEV}</button>`;}).join('');
 }
@@ -2386,7 +2488,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='a672943e6044';
+const BUILD='4ab91292202d';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
