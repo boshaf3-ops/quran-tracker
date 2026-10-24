@@ -1180,7 +1180,7 @@ function vStudent(){
     <input type="range" id="g-t" min="0" max="3" step="0.5" value="2.5">
     ${tjPicker('g-tj',0)}`}</div>
     <div class="total"><div><span class="mut">المجموع </span><span dir="ltr" style="display:inline-block"><b id="g-tot">${H1?8:8.5}</b><span class="mut"> / 10</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div></div>`;}
-  (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">طباعة تقرير الطالب</button></div>`+profileCard(s,st)+subTabs()+`<div id="sub-hifz"${vis('hifz')}>`+grade+
+  (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">حفظ تقرير الطالب PDF</button></div>`+profileCard(s,st)+subTabs()+`<div id="sub-hifz"${vis('hifz')}>`+grade+
    `<div class="glass card" id="cur-card" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">منهج الطالب</div>${segRows(s,2,true)}
     <button class="btn-s" id="more-btn" style="width:100%;margin:8px 0 10px" onclick="toggleMore()">مزيد</button></div></div>
     <div id="sub-beh"${vis('beh')}><div class="glass card" id="tlvbox">${lvInner(s)}</div>${medalsCard(s)}<div class="glass card"><div class="t">تسجيل السلوك</div>
@@ -1328,10 +1328,44 @@ function rptDoc(pagesHtml,data){
 }
 function rptOpen(doc,title){
   closeSheet();let o=$('rpt');if(!o){o=document.createElement('div');o.id='rpt';document.body.appendChild(o);}
-  o.innerHTML=`<div class="rtb"><button class="btn" id="rpt-print">طباعة / حفظ PDF</button><button class="btn-s" id="rpt-x">إغلاق</button><span class="mut">${esc(title)}</span></div><iframe id="rpt-f" title="${esc(title)}"></iframe>`;
+  o.innerHTML=`<div class="rtb"><button class="btn" id="rpt-print">حفظ PDF</button><button class="btn-s" id="rpt-x">إغلاق</button><span class="mut">${esc(title)}</span></div><iframe id="rpt-f" title="${esc(title)}"></iframe>`;
   o.classList.add('on');$('rpt-f').srcdoc=doc;
   $('rpt-x').onclick=()=>{o.classList.remove('on');o.innerHTML='';};
-  $('rpt-print').onclick=()=>{const w=$('rpt-f').contentWindow;w.focus();w.print();};
+  $('rpt-print').onclick=()=>rptSavePdf(title,$('rpt-print'));
+}
+/* حفظ الصفحات كملف PDF مباشرة في الجهاز بدون طباعة */
+const loadScript=src=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>no(new Error('load'));document.head.appendChild(s);});
+async function pdfLibs(){await Promise.all([window.html2canvas?0:loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),window.jspdf?0:loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')]);}
+function svgSwap(d){const undo=[],w=d.defaultView;
+  [...d.querySelectorAll('svg')].forEach(s=>{const r=s.getBoundingClientRect();if(!r.width||!r.height)return;const cs=w.getComputedStyle(s),c=s.cloneNode(true);
+    c.setAttribute('xmlns','http://www.w3.org/2000/svg');c.setAttribute('width',r.width);c.setAttribute('height',r.height);c.style.color=cs.color;
+    if(!s.hasAttribute('fill')&&cs.fill)c.style.fill=cs.fill;if(!s.hasAttribute('stroke')&&cs.stroke!=='none')c.style.stroke=cs.stroke;
+    const img=d.createElement('img');img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(c).replace(/currentColor/g,cs.color));
+    img.className=s.getAttribute('class')||'';img.setAttribute('style',(s.getAttribute('style')||'')+';width:'+r.width+'px;height:'+r.height+'px;');
+    s.parentNode.insertBefore(img,s);const old=s.style.display;s.style.display='none';undo.push(()=>{img.remove();s.style.display=old;});});
+  return Promise.all([...d.querySelectorAll('img')].map(i=>i.decode?i.decode().catch(()=>{}):0)).then(()=>()=>undo.forEach(f=>f()));}
+function olFix(d){const undo=[];
+  d.querySelectorAll('ol').forEach(ol=>[...ol.children].forEach((li,i)=>{if(li.tagName!=='LI')return;const sp=d.createElement('span');sp.textContent=(i+1)+'. ';sp.style.cssText='font-weight:700;margin-inline-end:2px';
+    const old=li.style.listStyle;li.style.listStyle='none';li.insertBefore(sp,li.firstChild);undo.push(()=>{sp.remove();li.style.listStyle=old;});}));
+  return()=>undo.forEach(f=>f());}
+async function rptSavePdf(title,btn){
+  const lbl=btn.textContent;btn.disabled=true;btn.textContent='جاري التحضير...';let restore=null,restore2=null,d=null,z='';
+  try{
+    await pdfLibs();const f=$('rpt-f');d=f.contentDocument;await d.fonts.ready;
+    const pages=[...d.querySelectorAll('.page')];if(!pages.length)throw new Error('empty');
+    z=d.body.style.zoom;d.body.style.zoom=1;restore2=olFix(d);restore=await svgSwap(d);
+    const {jsPDF}=window.jspdf;let pdf=null;
+    for(let i=0;i<pages.length;i++){
+      btn.textContent=`جاري الحفظ ${i+1} / ${pages.length}`;await new Promise(r=>setTimeout(r,0));
+      const el=pages[i],w=el.offsetWidth*25.4/96,h=el.offsetHeight*25.4/96,o=w>h?'l':'p';
+      const cv=await html2canvas(el,{scale:1.5,backgroundColor:'#ffffff',logging:false,useCORS:true});
+      const img=cv.toDataURL('image/jpeg',.8);cv.width=cv.height=0;
+      if(!pdf)pdf=new jsPDF({unit:'mm',format:[w,h],orientation:o,compress:true});else pdf.addPage([w,h],o);
+      pdf.addImage(img,'JPEG',0,0,w,h);
+    }
+    pdf.save(String(title).replace(/[\\/:*?"<>|]+/g,' ').trim()+'.pdf');toast('تم حفظ الملف في جهازك');
+  }catch(e){toast('تعذّر حفظ الملف، تأكد من الإنترنت وحاول مرة ثانية',true);}
+  finally{try{if(restore)restore();if(restore2)restore2();if(d)d.body.style.zoom=z;}catch(_){}btn.disabled=false;btn.textContent=lbl;}
 }
 function rptChoose(cid){
   const c=CLASSES.find(x=>x.id===cid),mine=c.students.filter(s=>s.owner===ME.id).length;
@@ -1342,7 +1376,7 @@ function rptChoose(cid){
 }
 function rptChooseA(cid){
   const c=CLASSES.find(x=>x.id===cid),n=c.students.filter(s=>!s.pending).length;
-  sheet(`<div class="t" style="font-size:17px">طباعة التقارير</div><div class="mut" style="margin:4px 0 6px">${esc(clsName(c))}</div>
+  sheet(`<div class="t" style="font-size:17px">حفظ التقارير PDF</div><div class="mut" style="margin:4px 0 6px">${esc(clsName(c))}</div>
    <button class="btn" onclick="rptRun('gen',${cid})">التقرير العام<br><small style="font-weight:600">كشف واحد لجميع طلاب الصف (${n})</small></button>
    <button class="btn" onclick="rptRun('all',${cid})">التقرير الخاص<br><small style="font-weight:600">تقرير مستقل لكل طالب في الصف (${n}) في ملف واحد</small></button>
    <button class="btn-s" style="width:100%;margin-top:12px" onclick="closeSheet()">إلغاء</button>`);
@@ -1850,7 +1884,7 @@ const sortedStu=l=>l.filter(s=>!s.pending).slice().sort((a,b)=>a.c.g-b.c.g||a.c.
 function codesAll(){codesOpen(sortedStu(allStudents()),'أكواد كل الطلبة');}
 function codesClass(cid){const c=CLASSES.find(x=>x.id===cid);codesOpen(sortedStu(c.students),'أكواد '+clsName(c));}
 function codesTeachers(){
-  sheet(`<div class="t" style="font-size:17px">أكواد المعلمين</div><div class="mut" style="margin:4px 0 8px">كيف تريد الطباعة؟</div>
+  sheet(`<div class="t" style="font-size:17px">أكواد المعلمين</div><div class="mut" style="margin:4px 0 8px">كيف تريد حفظ الملف؟</div>
    <button class="btn" style="margin-top:6px" onclick="codesTeachersAll()">كل المعلمين في صفحة واحدة<br><small style="font-weight:600">جدول فيه ${TLIST.length} معلمين وأكوادهم</small></button>
    <button class="btn" style="margin-top:10px" onclick="codesTeachersEach()">صفحة مستقلة لكل معلم<br><small style="font-weight:600">${TLIST.length} بطاقات: الاسم والصفوف والكود</small></button>
    <button class="btn-s" style="width:100%;margin-top:12px;padding:11px" onclick="closeSheet()">إلغاء</button>`);
@@ -1866,7 +1900,7 @@ function csvGrades(){
   dlCSV('درجات-الطلبة.csv',[hdr].concat(rows));}
 function csvTeachers(){dlCSV('أكواد-المعلمين.csv',[['المعلم','الصفوف','الكود','واتساب','البريد','ساعات التواصل']].concat(TLIST.map(x=>[abbrT(x.name),CLASSES.filter(c=>c.tids.includes(x.id)).map(c=>GRADES[c.g-1]+' '+c.sec).join(' ، '),x.pin,x.whatsapp,x.email,x.hours])));}
 function exportSheet(){
-  sheet(`<div class="t" style="font-size:17px">الأكواد والتصدير</div><div class="mut" style="margin:4px 0 10px">ملفات PDF للطباعة، وملفات Excel لتحميل البيانات.</div>
+  sheet(`<div class="t" style="font-size:17px">الأكواد والتصدير</div><div class="mut" style="margin:4px 0 10px">ملفات PDF تُحفظ في جهازك، وملفات Excel لتحميل البيانات.</div>
    <div class="fl" style="margin-top:6px">ملفات PDF</div>
    <button class="btn" onclick="closeSheet();codesAll()" style="margin-top:4px">أكواد كل الطلبة</button>
    <button class="btn" onclick="closeSheet();codesTeachers()" style="margin-top:8px">أكواد المعلمين</button>
@@ -1939,7 +1973,7 @@ function aClass(){
    <div class="chips" style="margin-top:10px">${c.tids.length?c.tids.map(i=>`<button class="chip pos" onclick="rmClassT(${c.id},${i})">${esc(tById(i).name)} ✕</button>`).join(''):'<span class="mut">لا يوجد معلم مسند لهذا الصف</span>'}</div>
    ${TLIST.some(x=>!c.tids.includes(x.id))?`<select class="field" id="ac-t" style="margin-top:12px">${TLIST.filter(x=>!c.tids.includes(x.id)).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select>
    <button class="btn" id="ac-add" style="width:100%;margin-top:10px;padding:11px">إضافة معلم للصف</button>`:''}</div>`+
-  `<div class="fbar" style="margin:0 4px 10px"><span class="t" style="font-size:15px">طلاب الصف</span><span class="row" style="gap:8px"><button class="btn-s" onclick="rptChooseA(${c.id})">طباعة التقارير</button><button class="btn-s" onclick="openAddStudentA(${c.id})">+ إضافة طالب</button></span></div>`+
+  `<div class="fbar" style="margin:0 4px 10px"><span class="t" style="font-size:15px">طلاب الصف</span><span class="row" style="gap:8px"><button class="btn-s" onclick="rptChooseA(${c.id})">حفظ التقارير PDF</button><button class="btn-s" onclick="openAddStudentA(${c.id})">+ إضافة طالب</button></span></div>`+
   `<div class="fbar" style="margin:0 4px 10px"><span class="mut">كشف أسماء جديد لهذا الصف</span><button class="btn-s" onclick="openRoster(${c.id})">لصق كشف الأسماء</button></div>`+
   `<div class="fbar" style="margin:0 4px 10px"><span class="mut">أكواد دخول طلاب الصف</span><button class="btn-s" onclick="codesClass(${c.id})">تحميل أكواد الصف PDF</button></div>`+
   (n?`<div class="glass card">${bar(r,n)}${legend(r)}</div>`+filterUI('drawStudents')+'<div id="sl"></div>':'<div class="glass card empty">لا يوجد طلبة في هذا الصف</div>');
