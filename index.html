@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
+<meta name="build" content="7f403a5eb6e6">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -782,7 +783,10 @@ function hydrate(st){
   if(ROLE==='teacher')ME=tById(st.me);
   if(ROLE==='student')CURS=allStudents()[0]||CURS;
 }
+let REV=null,LASTFULL=0;
 async function sync(force){
+  try{REV=await rpc('get_rev',{});}catch(e){}
+  LASTFULL=Date.now();
   const st=await rpc('get_state',{p_tok:TOK});
   if(st.error){sessionExpired();return false;}
   const j=JSON.stringify(st);if(!force&&j===LAST)return false;
@@ -798,6 +802,7 @@ function clearData(){TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.lengt
 function persist(){}
 function saveOwn(){}
 function enter(st){
+  try{if(document.activeElement)document.activeElement.blur();}catch(e){}
   LAST=JSON.stringify(st);hydrate(st);
   if(ROLE==='student'){renderStudent(allStudents()[0]);show('s-student');}
   else if(ROLE==='teacher'){go('tas');show('s-teacher');}
@@ -808,18 +813,27 @@ let CURS=null;
 function refreshAll(){
   if($('sheet')&&$('sheet').classList.contains('on'))return;
   const on=document.querySelector('.screen.on');if(!on)return;
-  if(on.id==='s-student'&&CURS){const k=SS;renderStudent(CURS);setSubS(k);}
+  if(on.id==='s-student'&&CURS){const k=SS,sc=$('student-body').scrollTop;renderStudent(CURS);setSubS(k);$('student-body').scrollTop=sc;}
   else if(on.id==='s-teacher'){const sc=$('teacher-body').scrollTop;go(T.view);$('teacher-body').scrollTop=sc;}
   else if(on.id==='s-admin'){const sc=$('admin-body').scrollTop;ago(T.view);$('admin-body').scrollTop=sc;}
 }
+const uiBusy=()=>{const a=document.activeElement;
+  return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&a.closest('.screen.on'))||($('sheet')&&$('sheet').classList.contains('on'))||($('rpt')&&$('rpt').classList.contains('on'))||(ROLE!=='student'&&(T.view==='stu'||T.view==='thread'));};
+let POLLING=false;
 async function poll(){
-  if(!TOK||document.visibilityState!=='visible')return;
-  const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))return;
-  if($('sheet')&&$('sheet').classList.contains('on'))return;
-  if(ROLE!=='student'&&(T.view==='stu'||T.view==='thread'))return;
-  try{if(await sync(false))refreshAll();}catch(e){}
+  if(!TOK||document.visibilityState!=='visible'||POLLING)return;
+  if(uiBusy())return;
+  POLLING=true;
+  try{
+    let changed=false;
+    try{const rv=await rpc('get_rev',{});if(REV===null||rv!==REV){changed=true;REV=rv;}}catch(e){}
+    if(changed||Date.now()-LASTFULL>30000){if(await sync(false))refreshAll();}
+  }catch(e){}
+  POLLING=false;
 }
-setInterval(poll,15000);
+setInterval(poll,3000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){poll();checkUpdate();}});
+window.addEventListener('focus',()=>{poll();});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')poll();});
 const FM=[['abc','الترتيب الأبجدي'],['green','المتقدمون'],['gold','على الخطة'],['red','المتأخرون'],['none','لم يبدأ التسجيل']];
 const filtList=(list,mode)=>list.filter(s=>mode==='abc'||statusOf(s).k===mode).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
@@ -2309,6 +2323,22 @@ document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.onclick=()=>ago(b.
 document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
+/* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
+const BUILD='7f403a5eb6e6';
+async function checkUpdate(){
+  try{
+    if(location.protocol!=='https:')return;
+    const r=await fetch(location.pathname+'?_='+Date.now(),{cache:'no-store'});if(!r.ok)return;
+    const m=(await r.text()).match(/<meta name="build" content="([^"]+)"/);
+    if(!m||m[1]===BUILD)return;
+    if(typeof uiBusy==='function'&&uiBusy())return;
+    let done='';try{done=sessionStorage.getItem('upd')||'';}catch(e){}
+    if(done===m[1])return;
+    try{sessionStorage.setItem('upd',m[1]);}catch(e){}
+    location.replace(location.pathname+'?v='+m[1]);
+  }catch(e){}
+}
+checkUpdate();setInterval(checkUpdate,60000);
 /* استعادة الجلسة عند إعادة تحميل الصفحة */
 (async()=>{const tk=loadTok();if(!tk)return;
   const ph=document.querySelector('.phone');ph.classList.add('restoring');
