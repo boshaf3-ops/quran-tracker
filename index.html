@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="6e8c592e78a5">
+<meta name="build" content="577661c9afc5">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -928,21 +928,21 @@ function refreshAll(){
 const uiBusy=()=>{const a=document.activeElement;
   return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&a.closest('.screen.on'))||($('sheet')&&$('sheet').classList.contains('on'))||($('rpt')&&$('rpt').classList.contains('on'))||(ROLE!=='student'&&(T.view==='stu'||T.view==='thread'));};
 let POLLING=false;
-async function poll(){
+async function poll(force){
   if(!TOK||document.visibilityState!=='visible'||POLLING)return;
   if(uiBusy())return;
   POLLING=true;
   try{
     let changed=false;
-    try{const rv=await rpc('get_rev',{});if(REV===null||rv!==REV){changed=true;REV=rv;}}catch(e){}
+    try{const rv=await rpc('get_rev',{});if(REV===null||rv!==REV){if(!force&&Date.now()-LASTFULL<(ROLE==='student'?15000:6000)){POLLING=false;return;}changed=true;REV=rv;}}catch(e){}
     if(changed||Date.now()-LASTFULL>30000){if(await sync(false))refreshAll();}
   }catch(e){}
   POLLING=false;
 }
-setInterval(poll,3000);
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){poll();checkUpdate();}});
-window.addEventListener('focus',()=>{poll();});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')poll();});
+setInterval(()=>poll(),3000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){poll(true);checkUpdate();}});
+window.addEventListener('focus',()=>{poll(true);});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')poll(true);});
 const FM=[['abc','الترتيب الأبجدي'],['green','المتقدمون'],['gold','على الخطة'],['red','المتأخرون'],['none','لم يبدأ التسجيل']];
 const filtList=(list,mode)=>list.filter(s=>mode==='abc'||statusOf(s).k===mode).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
 function filterUI(draw){T.fdraw=draw;const lab=FM.find(m=>m[0]===T.fm)[1];
@@ -2721,7 +2721,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='6e8c592e78a5';
+const BUILD='577661c9afc5';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
