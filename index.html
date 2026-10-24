@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="7f403a5eb6e6">
+<meta name="build" content="dd4f33d38c81">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -665,7 +665,7 @@ const fmtR=g=>{const a=g.d,b=g.e;return a.getMonth()===b.getMonth()?`${a.getDate
 const halaqa=g=>g<=3?1:2;
 const clsName=c=>`الصف ${GRADES[c.g-1]} (${c.sec})`;
 
-const TLIST=[],CLASSES=[],POOL=[],THREADS=[],SMSG=[],CREQ=[],RESETREQ=[],STUDRESET=[],ARCH=[];let BKP=null;
+const TLIST=[],CLASSES=[],POOL=[],THREADS=[],SMSG=[],CREQ=[],RESETREQ=[],STUDRESET=[],ARCH=[],SUGG=[];let BKP=null;
 const tById=id=>TLIST.find(x=>x.id===id);
 const allStudents=()=>CLASSES.flatMap(c=>c.students);
 const byId=id=>allStudents().find(s=>s.id===id)||POOL.find(s=>s.id===id);
@@ -778,6 +778,7 @@ function hydrate(st){
   CREQ.length=0;(st.creq||[]).forEach(r=>CREQ.push({id:r.id,tid:r.tid,cid:r.cid,status:r.status,at:new Date(r.at)}));
   RESETREQ.length=0;STUDRESET.length=0;
   (st.resets||[]).forEach(r=>{if(r.kind==='teacher')RESETREQ.push({id:r.id,tid:r.tid,at:new Date(r.at)});else STUDRESET.push({id:r.id,name:r.name,phone:r.phone,email:r.email,cid:r.cid||0,at:new Date(r.at)});});
+  SUGG.length=0;(st.sugg||[]).forEach(g=>SUGG.push({id:g.id,role:g.role,name:g.name,cls:g.cls||'',txt:g.txt,at:new Date(g.at),seen:!!g.seen}));
   ARCH.length=0;(st.archive||[]).forEach(a=>ARCH.push({id:a.id,label:a.label,n:a.n}));
   BKP=st.backup?{label:st.backup}:null;
   if(ROLE==='teacher')ME=tById(st.me);
@@ -797,7 +798,7 @@ function saveTok(){let ok=false;try{localStorage.setItem('qt-tok',TOK);ok=true;}
 function loadTok(){let v=null;try{v=localStorage.getItem('qt-tok');}catch(e){}if(!v){try{v=sessionStorage.getItem('qt-tok');}catch(e){}}return v;}
 function dropTok(){try{localStorage.removeItem('qt-tok');}catch(e){}try{sessionStorage.removeItem('qt-tok');}catch(e){}}
 function sessionExpired(){if(!TOK)return;TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');toast('انتهت الجلسة، سجّل الدخول من جديد',true);}
-function clearData(){TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
+function clearData(){SUGG.length=0;TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
   ['student-body','teacher-body','admin-body'].forEach(i=>{if($(i))$(i).innerHTML='';});}
 function persist(){}
 function saveOwn(){}
@@ -845,8 +846,19 @@ function toggleFM(e){e.stopPropagation();$('fm').hidden=!$('fm').hidden;}
 function pickFM(m){T.fm=m;$('fm').hidden=true;document.querySelectorAll('#fm button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
   $('fl-label').textContent=FM.find(x=>x[0]===m)[1];window[T.fdraw]();}
 document.addEventListener('click',()=>{const f=$('fm');if(f)f.hidden=true;});
+const OWF=(c)=>{const o=T.fo||0;return s=>!o||(o===-1?!s.owner:s.owner===o);};
+function setCF(kind,v){if(kind==='m')T.fm=v;else T.fo=v;drawClassFilters();drawStudents();}
+function drawClassFilters(){
+  const c=CLASSES.find(x=>x.id===T.cid);if(!c||!$('cf'))return;
+  const cnt=m=>filtList(c.students.filter(OWF(c)),m).length;
+  const st=[['abc','الكل'],['green','متقدم'],['gold','على الخطة'],['red','متأخر'],['none','لم يبدأ']];
+  let h=`<div class="mut" style="margin:6px 6px 6px;font-weight:600">تصفية حسب الحالة</div><div class="chips2" style="margin:0 4px 10px">${st.map(x=>`<button class="qc${T.fm===x[0]?' on':''}" onclick="setCF('m','${x[0]}')">${x[1]} · ${cnt(x[0])}</button>`).join('')}</div>`;
+  if(c.tids.length>=2){const un=c.students.filter(s=>!s.owner).length;
+    h+=`<div class="mut" style="margin:6px 6px 6px;font-weight:600">تصفية حسب المعلم</div><div class="chips2" style="margin:0 4px 12px"><button class="qc${!T.fo?' on':''}" onclick="setCF('o',0)">كل الطلبة</button>${c.tids.map(i=>`<button class="qc${T.fo===i?' on':''}" onclick="setCF('o',${i})">طلاب ${esc(shortT(i))} · ${c.students.filter(s=>s.owner===i).length}</button>`).join('')}${un?`<button class="qc${T.fo===-1?' on':''}" onclick="setCF('o',-1)">غير مختارين · ${un}</button>`:''}</div>`;}
+  $('cf').innerHTML=h;
+}
 function drawStudents(){
-  const c=CLASSES.find(x=>x.id===T.cid),l=filtList(c.students,T.fm);
+  const c=CLASSES.find(x=>x.id===T.cid),l=filtList(c.students,T.fm).filter(OWF(c));
   $('sl').innerHTML=l.length?l.map(s=>{const st=statusOf(s),cur=segsOf(c.g)[s.done.length],
     oc=T.admin?`openAStu(${s.id},'cls',${c.id})`:`go('stu',{sid:${s.id}})`;
     return `<button class="glass item" onclick="${oc}">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div>
@@ -1047,6 +1059,20 @@ const smReady=()=>smCnt()>=1&&SM.ts.length>=1&&(!SM.oth||SM.text.trim().length>=
 function updSBadge(){const n=SMSG.reduce((a,x)=>a+x.unread,0),b=$('smsg-badge');if(b){b.hidden=!n;b.textContent=n;}}
 const smShort=n=>{const p=n.replace(/^الأستاذ\s+/,'').split(' ');return 'الأستاذ '+(p[0]==='د.'?p.slice(0,2):p.slice(0,2)).join(' ');};
 const smBody=m=>esc(m).replace(/\n/g,'<br>');
+const sugBlock=()=>`<div class="sec" style="margin:18px 6px 8px"><div><b>للمقترحات</b><small>التواصل مع الإدارة</small></div></div>
+  <button class="glass item" onclick="openSuggest()"><div class="mini"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg></div><div class="grow"><div class="t">اقتراح للإدارة</div><div class="mut">اكتب مقترحك وما تتمناه، ويصل لإدارة المعهد</div></div>${CHEV}</button>`;
+function openSuggest(){
+  sheet(`<div class="t" style="font-size:17px">مقترحاتك للإدارة</div><div class="mut" style="margin:4px 0 6px;line-height:1.8">اكتب اقتراحك أو ما تتمناه، ويصل مباشرة لإدارة المعهد. الحد الأقصى 400 حرف.</div>
+   <textarea class="field" id="sg-t" maxlength="400" placeholder="اكتب مقترحك هنا" style="min-height:140px;resize:none;line-height:1.7"></textarea>
+   <div class="cnt" id="sg-c">0 / 400</div><div class="fe" id="sg-e"></div>
+   <button class="btn" id="sg-go" style="width:100%;margin-top:6px">إرسال إلى الإدارة</button><button class="btn-s" style="width:100%;margin-top:10px" onclick="closeSheet()">إلغاء</button>`);
+  const ta=$('sg-t');ta.addEventListener('input',()=>{$('sg-c').textContent=ta.value.length+' / 400';$('sg-e').textContent='';});setTimeout(()=>ta.focus(),300);
+  $('sg-go').onclick=async()=>{const v=ta.value.trim();if(!v){$('sg-e').textContent='اكتب مقترحك أولاً';return;}
+    const b=$('sg-go');b.disabled=true;b.textContent='جاري الإرسال...';
+    const q=await srv('send_suggestion',{p_text:v});
+    if(q.error){b.disabled=false;b.textContent='إرسال إلى الإدارة';$('sg-e').textContent=q.error==='limit'?'وصلت للحد اليومي (5 مقترحات)، حاول غداً':q.error==='len'?'المقترح لازم يكون من 1 إلى 400 حرف':q.error==='net'?'تعذّر الاتصال بالخادم':'تعذّر الإرسال';return;}
+    closeSheet();toast('وصل مقترحك للإدارة، شكراً لك');};
+}
 function renderSMsg(){
   const box=$('ss-msg'),s=CURS;if(!box||!s||!s.c)return;
   if(SM.view==='chat')return smChat(box,s);
@@ -1055,7 +1081,7 @@ function renderSMsg(){
    s.c.tids.map(id=>{const x=tById(id),th=SMSG.find(q=>q.tid===id),l=th&&th.msgs[th.msgs.length-1];
     return `<button class="glass item" onclick="smOpen(${id})"><div class="mini">${esc(x.init)}</div><div class="grow"><div class="row sp"><div class="t">${esc(x.name)}</div><span class="mut">${l?l.w:''}</span></div>
      <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${th&&th.unread?'color:var(--ink);font-weight:600':''}">${l?(l.me?'أنت: ':'')+esc(l.t).replace(/\n/g,' · '):'ابدأ محادثة مع معلمك'}</div></div>
-     ${th&&th.unread?'<span class="badge" style="position:static;border:0">'+th.unread+'</span>':''}</button>`;}).join('')+'<div style="height:84px"></div>';
+     ${th&&th.unread?'<span class="badge" style="position:static;border:0">'+th.unread+'</span>':''}</button>`;}).join('')+sugBlock()+'<div style="height:84px"></div>';
 }
 function smOpen(tid){SM.view='chat';SM.tid=tid;const th=SMSG.find(q=>q.tid===tid);if(th&&th.unread){th.unread=0;srv('student_read',{p_tid:tid});updSBadge();}renderSMsg();$('student-body').scrollTop=1e5;}
 function smBack(){SM.view='list';renderSMsg();$('student-body').scrollTop=0;}
@@ -1529,7 +1555,7 @@ function vMsgs(){
     return `<button class="glass item" onclick="openThread('${t.id}')"><div class="mini">${t.kind==='class'?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5M16 5a3 3 0 0 1 0 6M18 14c2 .6 3 2.2 3 5"/></svg>':esc((byId(t.ref)||{init:'؟'}).init)}</div>
     <div class="grow"><div class="row sp"><div class="t">${esc(tName(t))}</div><span class="mut">${l.w}</span></div>
     <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${t.unread?'color:var(--ink);font-weight:600':''}">${l.me?'أنت: ':(t.kind==='student'?'<span class="tag s">من الطالب</span> ':'')}${esc(l.t).replace(/\n/g,' · ')}</div></div>
-    ${t.unread?'<span class="badge" style="position:static;border:0">'+t.unread+'</span>':''}</button>`;}).join(''):'<div class="glass card empty">لا توجد رسائل بعد</div>');
+    ${t.unread?'<span class="badge" style="position:static;border:0">'+t.unread+'</span>':''}</button>`;}).join(''):'<div class="glass card empty">لا توجد رسائل بعد</div>')+sugBlock()+'<div style="height:84px"></div>';
 }
 
 function confirmBox(msg,onYes){
@@ -2048,8 +2074,8 @@ function aClass(){
   `<div class="fbar" style="margin:0 4px 10px"><span class="t" style="font-size:15px">طلاب الصف</span><span class="row" style="gap:8px"><button class="btn-s" onclick="rptChooseA(${c.id})">حفظ التقارير PDF</button><button class="btn-s" onclick="openAddStudentA(${c.id})">+ إضافة طالب</button></span></div>`+
   `<div class="fbar" style="margin:0 4px 10px"><span class="mut">كشف أسماء جديد لهذا الصف</span><button class="btn-s" onclick="openRoster(${c.id})">لصق كشف الأسماء</button></div>`+
   `<div class="fbar" style="margin:0 4px 10px"><span class="mut">أكواد دخول طلاب الصف</span><button class="btn-s" onclick="codesClass(${c.id})">تحميل أكواد الصف PDF</button></div>`+
-  (n?`<div class="glass card">${bar(r,n)}${legend(r)}</div>`+filterUI('drawStudents')+'<div id="sl"></div>':'<div class="glass card empty">لا يوجد طلبة في هذا الصف</div>');
-  if(n)drawStudents();
+  (n?`<div class="glass card">${bar(r,n)}${legend(r)}</div><div id="cf"></div><div id="sl"></div>`:'<div class="glass card empty">لا يوجد طلبة في هذا الصف</div>');
+  if(n){if(T.focid!==c.id){T.fo=0;T.focid=c.id;}drawClassFilters();drawStudents();}
   const ad=$('ac-add');if(ad)ad.onclick=async()=>{const r=await sop('class_add_t',{cid:c.id,tid:+$('ac-t').value});if(r.error){toast('تعذّر التنفيذ',true);return;}await sync(true);toast('أُضيف المعلم إلى '+clsName(c));aClass();};
 }
 function openAddStudentA(cid){
@@ -2176,10 +2202,11 @@ function revealPin(id){const s=byId(id),v=$('sp-v');v.textContent=v.textContent?
 /* ---------- الإدارة: اعتماد الطلبة المضافين من المعلمين ---------- */
 const pendList=()=>allStudents().filter(s=>s.pending);
 const creqPend=()=>CREQ.filter(r=>r.status==='pending');
-const pendTotal=()=>pendList().length+creqPend().length+resetTotal();
+const suggNew=()=>SUGG.filter(g=>!g.seen);
+const pendTotal=()=>pendList().length+creqPend().length+resetTotal()+suggNew().length;
 function updABadge(){const e=$('abadge');if(!e)return;const n=pendTotal();e.hidden=!n;e.textContent=n;}
 function pendCard(){const n=pendTotal();if(!n)return '';
-  return `<button class="glass item" onclick="ago('pend',{pk:''})" style="margin-bottom:12px;border-color:rgba(224,162,27,.8)"><div class="mini" style="background:rgba(224,162,27,.35)">${n}</div><div class="grow"><div class="t">طلبات من المعلمين</div><div class="mut">${creqPend().length?creqPend().length+' صف':''}${creqPend().length&&pendList().length?' · ':''}${pendList().length?pendList().length+' طالب':''}${resetTotal()?((creqPend().length||pendList().length)?' · ':'')+resetTotal()+' كلمة سر':''} بانتظار قرارك</div></div>${CHEV}</button>`;}
+  return `<button class="glass item" onclick="ago('pend',{pk:''})" style="margin-bottom:12px;border-color:rgba(224,162,27,.8)"><div class="mini" style="background:rgba(224,162,27,.35)">${n}</div><div class="grow"><div class="t">طلبات من المعلمين</div><div class="mut">${creqPend().length?creqPend().length+' صف':''}${creqPend().length&&pendList().length?' · ':''}${pendList().length?pendList().length+' طالب':''}${resetTotal()?((creqPend().length||pendList().length)?' · ':'')+resetTotal()+' كلمة سر':''}${suggNew().length?((creqPend().length||pendList().length||resetTotal())?' · ':'')+suggNew().length+' مقترح':''} بانتظار قرارك</div></div>${CHEV}</button>`;}
 function pendTile(title,sub,n,key,cls){return `<button class="glass item ${cls}" onclick="ago('pend',{pk:'${key}'})"><div class="mini" style="${n?'background:rgba(255,255,255,.85);color:var(--teal-d);font-size:15px':'font-size:15px;opacity:.6'}">${n}</div><div class="grow"><div class="t">${title}</div><div class="mut">${sub}</div></div>${CHEV}</button>`;}
 const reqHead=(title,sub)=>`<div class="hdr"><button class="glass iconbtn" onclick="ago('pend',{pk:''})" aria-label="رجوع">${BACK}</button><div class="ht"><b>${title}</b><span>${sub}</span></div></div>`;
 const rqStud=r=>{const rc=CLASSES.find(c=>c.id===r.cid),m0=similar(r.name),m=m0.filter(x=>x.c&&x.c.id===r.cid).concat(m0.filter(x=>!(x.c&&x.c.id===r.cid)));
@@ -2212,11 +2239,18 @@ function aPend(){
     html=`<div class="sec" style="margin-top:2px"><b style="font-size:18px">الطلبات</b><small>${pendTotal()?pendTotal()+' بانتظار قرارك':'لا توجد طلبات جديدة'}</small></div>`+
       pendTile('طلبات الكلمات السرية',STUDRESET.length+' من طلاب · '+RESETREQ.length+' من معلمين',resetTotal(),'pw','rq-pw')+
       pendTile('طلبات إضافة صفوف','معلمون يطلبون تدريس صفوف',creqPend().length,'cls','rq-c')+
-      pendTile('طلبات إضافة طلاب','طلاب أضافهم المعلمون وتنتظر اعتمادك',pendList().length,'stu','rq-n');
+      pendTile('طلبات إضافة طلاب','طلاب أضافهم المعلمون وتنتظر اعتمادك',pendList().length,'stu','rq-n')+
+      pendTile('المقترحات','مقترحات الطلاب والمعلمين للإدارة · '+SUGG.length+' مقترح',suggNew().length,'sg','rq-g');
   }else if(pk==='pw'){
     const items=[...STUDRESET.map(r=>({k:'s',r})),...RESETREQ.map(r=>({k:'t',r}))].sort((a,b)=>b.r.at-a.r.at);
     html=reqHead('طلبات الكلمات السرية',resetTotal()+' طلب')+`<div class="chips" style="margin:0 4px 10px"><span class="pill p-blue">طالب</span><span class="pill p-purple">معلم</span></div>`+
       (items.length?items.map(o=>o.k==='s'?rqStud(o.r):rqTeach(o.r)).join(''):'<div class="glass card empty">لا توجد طلبات كلمات سرية.</div>');
+  }else if(pk==='sg'){
+    html=reqHead('المقترحات',SUGG.length+' مقترح · '+suggNew().length+' جديد')+(suggNew().length?`<div class="fbar" style="margin:0 4px 10px"><span class="mut">كل المقترحات الجديدة</span><button class="btn-s" onclick="suggAllSeen()">اعتبار الكل مقروءاً</button></div>`:'')+
+      (SUGG.length?SUGG.map(g=>`<div class="glass card"><div class="row sp"><div class="t" style="font-size:14.5px">${esc(g.name)}</div><span class="pill ${g.role==='teacher'?'p-purple':'p-blue'}">${g.role==='teacher'?'معلم':'طالب'}</span></div>
+        <div class="mut" style="margin:2px 0 6px">${g.cls?esc(g.cls)+' · ':''}${fmt(g.at)} ${g.at.getFullYear()}${g.seen?'':' · <b style="color:#7C1A10">جديد</b>'}</div>
+        <div style="font-size:14.5px;line-height:1.9;white-space:pre-wrap;word-break:break-word">${esc(g.txt)}</div>
+        <div class="row" style="gap:8px;margin-top:10px">${g.seen?'':`<button class="btn-s" onclick="suggSeen(${g.id})">تمت القراءة</button>`}<button class="btn-s" style="color:#7C1A10" onclick="suggDel(${g.id})">حذف</button></div></div>`).join(''):'<div class="glass card empty">لا توجد مقترحات بعد.</div>');
   }else if(pk==='cls'){
     const l=creqPend();html=reqHead('طلبات إضافة صفوف',l.length+' طلب')+(l.length?l.map(rqClass).join(''):'<div class="glass card empty">لا توجد طلبات إضافة صفوف.</div>');
   }else{
@@ -2224,6 +2258,9 @@ function aPend(){
   }
   $('admin-body').innerHTML=AT+html;
 }
+async function suggSeen(id){const g=SUGG.find(x=>x.id===id);if(g)g.seen=true;const r=await sop('sugg_seen',{id});if(r.error){toast('تعذّر التنفيذ',true);}await sync(true);aPend();updABadge();}
+async function suggAllSeen(){const r=await sop('sugg_seen_all',{});if(r.error){toast('تعذّر التنفيذ',true);return;}await sync(true);aPend();updABadge();toast('اعتُبرت كل المقترحات مقروءة');}
+function suggDel(id){confirmBox('حذف هذا المقترح نهائياً؟',async()=>{const r=await sop('sugg_del',{id});if(r.error){toast('تعذّر الحذف',true);return false;}await sync(true);aPend();updABadge();toast('حُذف المقترح');});}
 async function approveReq(id){const r0=CREQ.find(x=>x.id===id),c=CLASSES.find(x=>x.id===r0.cid);
   const r=await sop('approve_creq',{id});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);aPend();updABadge();toast('وُوفق على طلب '+shortT(r0.tid)+' لتدريس '+clsName(c));}
@@ -2324,7 +2361,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='7f403a5eb6e6';
+const BUILD='dd4f33d38c81';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
