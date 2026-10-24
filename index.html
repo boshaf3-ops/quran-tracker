@@ -490,6 +490,62 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 .tjb.on.t3{background:rgba(46,170,94,.34);color:#145A31;border-color:#2EAA5E}.tjb.on.t2{background:rgba(224,162,27,.38);color:#6B4700;border-color:#E0A21B}.tjb.on.t1{background:rgba(214,58,43,.3);color:#7C1A10;border-color:#D63A2B}
 .screen{scrollbar-width:none}.screen::-webkit-scrollbar{display:none}
 .lg .h1{font-size:clamp(21px,7.3vw,29px)}.lg .h1 em{font-size:clamp(17px,5.9vw,24px)}
+/* ===== الآيباد والكمبيوتر: التصميم يتكيّف تلقائياً (الجوال بدون تغيير) ===== */
+.honly{display:block}.wonly{display:none}.medpad{padding-bottom:84px}.wcA{display:contents}.wst{display:block}
+@media (min-width:700px) and (min-height:600px){
+  .phone{max-width:none}
+  .scroll{zoom:1.12;padding-left:max(20px,calc((100vw - 1500px)/2));padding-right:max(20px,calc((100vw - 1500px)/2))}
+  .tabbar{left:50%;right:auto;width:min(700px,calc(100% - 28px));transform:translateX(-50%)}
+  #teacher-body,#admin-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));column-gap:16px;align-content:start}
+  #teacher-body>*,#admin-body>*{grid-column:1/-1}
+  #teacher-body>.item,#admin-body>.item{grid-column:auto}
+  #sl,#a-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));column-gap:16px}
+  #sheet .panel{left:0;right:0;margin:0 auto;width:min(620px,100%)}
+  #cbox .cbx{max-width:400px}
+  .lg .center{padding-top:150px}
+  .lg .center>.login,.lg .center>.item,.lg .center>.lockwrap,.lg .center>.forgot{max-width:480px;width:100%}
+  .lg .center>.logos{max-width:none;left:40px;right:40px}
+  .lg .logos .logo{width:96px;height:96px}
+  .lg .h1{font-size:42px}.lg .h1 em{font-size:34px}
+  .lg .h2{font-size:17px;padding:9px 34px}
+  .lg .login .btn{font-size:18px;padding:15px}
+  .lg .pin{height:62px;font-size:28px}
+  .foot2{font-size:15px}.foot2 .dsg{font-size:14px}
+}
+@media (min-width:1000px) and (min-height:600px){
+  .scroll{zoom:1.06}
+  #student-body.msgmode{max-width:900px;margin:0 auto}
+  #student-body:not(.msgmode){display:grid;grid-template-columns:1fr 1fr;column-gap:22px;align-items:start;align-content:start}
+  #student-body:not(.msgmode)>.glass.top{grid-column:1/-1}
+  #student-body:not(.msgmode)>.wcA{display:block;grid-column:1}
+  #student-body:not(.msgmode)>#ss-beh,#student-body:not(.msgmode) #ss-hifz{display:block!important}
+  #student-body:not(.msgmode)>#ss-beh{grid-column:2}
+  #s-seg{display:none}
+  .honly{display:none}.wonly{display:block}
+  .medpad{padding-bottom:96px}
+  #more-s,#more-btn{display:none}
+  .seg.more{display:grid!important}
+  .seg .pl{display:none}
+  #j-segs,#cur-card{display:grid;grid-template-columns:1fr 1fr;column-gap:18px;align-content:start}
+  #j-segs>.t,#cur-card>.t{grid-column:1/-1}
+  .seg{padding:7px 0}
+  .seg>div:nth-child(2){display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px;min-width:0}
+  .seg>div:nth-child(2)>.n{flex:1 0 100%}
+  .seg>div:nth-child(2)>div{margin-top:0!important}
+  .seg .score{zoom:.8}
+  [data-jump="beh"]{display:none}
+  .wst{display:grid;grid-template-columns:1fr 1fr;column-gap:22px;align-items:start}
+  .wst>#sub-hifz,.wst>#sub-beh{display:block!important}
+  .wst>#sub-adm{display:block!important;grid-column:1/-1}
+  .wstu>.seg2{display:none}
+  .pcard{display:grid;grid-template-columns:auto 1fr;column-gap:18px;align-items:center;text-align:start!important;padding:12px 18px}
+  .pcard .phbtn{grid-row:1/span 3;margin:0;width:84px;height:84px}
+  .pcard .title-big{margin-top:0!important}
+  .pcard>.mut:last-child{display:none}
+  .glass.top{padding:5px 12px}.glass.top .logo{width:44px;height:44px}
+  .lvchar svg{width:56px;height:112px}
+}
+
 </style>
 </head>
 <body>
@@ -784,7 +840,7 @@ function drawStudents(){
     :'<div class="glass card empty">لا يوجد طلبة في هذا التصنيف</div>';
 }
 function profileCard(s,st){
-  return `<div class="glass card" style="text-align:center">
+  return `<div class="glass card pcard" style="text-align:center">
    <button class="phbtn" onclick="openPhoto(${s.id})" aria-label="التقاط صورة للطالب" style="${s.photo?`background-image:url('${s.photo}')`:''}">${s.photo?'':SIL}<span class="camb">${CAMI}</span></button>
    <div class="title-big" style="margin-top:12px">${esc(s.name)}</div><div class="mut">${clsName(s.c)}</div>
    <div style="margin-top:8px"><span class="pill ${st.p}">${st.t}</span> <span class="pill p-gold">${lvName(s)}</span></div>
@@ -931,7 +987,7 @@ function trailHTML(s,st){
    <div class="mut" style="text-align:center;margin-top:8px;font-weight:600;color:var(--ink)">${msg}</div></div>`;
 }
 let SS='hifz';
-function setSubS(k){SS=k;['hifz','beh','msg'].forEach(x=>{const e=$('ss-'+x);if(e)e.hidden=x!==k;});
+function setSubS(k){SS=k;$('student-body').classList.toggle('msgmode',k==='msg');['hifz','beh','msg'].forEach(x=>{const e=$('ss-'+x);if(e)e.hidden=x!==k;});
   ['s-prof','s-seg'].forEach(i=>{const e=$(i);if(e)e.hidden=k==='msg';});
   document.querySelectorAll('#student-body .seg2 button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
   document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.classList.toggle('on',b.dataset.jump===(k==='beh'?'beh':k==='msg'?'msg':'segs')));
@@ -939,12 +995,15 @@ function setSubS(k){SS=k;['hifz','beh','msg'].forEach(x=>{const e=$('ss-'+x);if(
   $('student-body').scrollTop=0;}
 function toggleMoreS(){const c=$('j-segs'),o=c.classList.toggle('open');$('more-s').textContent=o?'أقل':'مزيد';}
 function renderStudent(s){
-  SS='hifz';CURS=s;$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
+  SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
   const segs=segsOf(s.c.g),st=statusOf(s),cur=segs[s.done.length],nxt=segs[s.done.length+1];
   const pos=s.beh.filter(b=>b[0]==='+'),neg=s.beh.filter(b=>b[0]!=='+');
   const bl=l=>l.length?l.map(b=>`<span class="pill ${b[0]==='+'?'p-green':'p-red'}" style="display:block;margin-bottom:6px;text-align:center">${esc(b[1])}<br><span style="font-weight:400;font-size:11px">${fmt(b[2])}</span></span>`).join(''):'<div class="mut" style="text-align:center">لا يوجد</div>';
+  const tmBlock=`<div class="sec" style="margin:14px 6px 8px"><b>معلمو القرآن الكريم</b></div>
+   <div class="tgrid${s.c.tids.length>1?' two':''}">${s.c.tids.map(i=>tcard(tById(i))).join('')}</div>
+   <div class="medpad">${medalsCard(s)}</div>`;
   $('student-body').innerHTML=TOP+`
-  <div class="glass card" id="s-prof"><div class="row">${avaHTML(s,'avatar')}
+  <div class="wcA"><div class="glass card" id="s-prof"><div class="row">${avaHTML(s,'avatar')}
     <div style="flex:1"><div class="title-big">${esc(s.name)}</div><div class="mut">${clsName(s.c)} · الفصل ${TERMN[TERM-1]}</div></div></div>
     <div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap"><span class="pill ${st.p}">${st.t}</span><span class="pill p-gold">${lvName(s)}</span><span style="margin-inline-start:auto">${lvBadge(lvLevel(s.beh,TODAY),lvLevel(s.beh,TODAY),40)}</span></div></div>
   <div class="glass seg2" id="s-seg" style="grid-template-columns:1fr 1fr"><button data-k="hifz" class="on" onclick="setSubS('hifz')">التسميع</button><button data-k="beh" onclick="setSubS('beh')">السلوك</button></div>
@@ -957,12 +1016,10 @@ function renderStudent(s){
     <button class="btn-s" id="more-s" style="width:100%;margin:8px 0 10px" onclick="toggleMoreS()">مزيد</button></div>
    <div class="legend" style="flex-wrap:wrap;row-gap:4px"><span><i style="background:var(--green)"></i>ممتاز</span><span><i style="background:var(--gold)"></i>جيد</span><span><i style="background:var(--red)"></i>يحتاج تحسين</span><span><i style="background:transparent;border:2px solid var(--gold);width:9px;height:9px"></i>الإطار المتوهج: نحن هنا في الخطة</span></div>
    ${trailHTML(s,st)}
-   <div class="sec" style="margin:14px 6px 8px"><b>معلمو القرآن الكريم</b></div>
-   <div class="tgrid${s.c.tids.length>1?' two':''}">${s.c.tids.map(i=>tcard(tById(i))).join('')}</div>
-   <div style="padding-bottom:84px">${medalsCard(s)}</div>
-  </div>
+   <div class="honly">${tmBlock}</div>
+  </div></div>
   <div id="ss-msg" hidden></div>
-  <div id="ss-beh" hidden><div class="glass card" id="lvbox">${lvInner(s)}</div>${ptsGuide()}<div class="glass card"><div class="t" style="margin-bottom:12px">نسبة سلوكياتي</div>${donutHTML(s)}</div></div>`;
+  <div id="ss-beh" hidden><div class="wonly">${trailHTML(s,st)}</div><div class="glass card" id="lvbox">${lvInner(s)}</div><div class="glass card"><div class="t" style="margin-bottom:12px">نسبة سلوكياتي</div>${donutHTML(s)}</div>${ptsGuide()}<div class="wonly">${tmBlock}</div></div>`;
   renderSMsg();updSBadge();
   $('student-body').scrollTop=0;
 }
@@ -1053,7 +1110,7 @@ function openEditGrade(sid,i){
 /* ---------- المعلم ---------- */
 let T={csub:'hifz',sub:'hifz',view:'home',cid:0,sid:0,stage:2,tid:0,tab:'classes',fm:'abc'};
 function setTab(t){T.tab=t;document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));}
-function go(view,p={}){$('student-body').innerHTML='';Object.assign(T,p,{view,admin:false});if(view==='stu'&&p.sid)T.sub='hifz';if(view==='tcls'&&p.fm)T.csub='hifz';$('admin-body').innerHTML='';
+function go(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:false});if(view==='stu'&&p.sid)T.sub='hifz';if(view==='tcls'&&p.fm)T.csub='hifz';$('admin-body').innerHTML='';
   const b=$('teacher-body');
   ({tas:vTas,tcls:vTasClass,home:vHome,cls:vClass,stu:vStudent,curr:vCurr,msgs:vMsgs,thread:vThread})[view]();
   b.scrollTop=0;updBadge();}
@@ -1180,14 +1237,15 @@ function vStudent(){
     <input type="range" id="g-t" min="0" max="3" step="0.5" value="2.5">
     ${tjPicker('g-tj',0)}`}</div>
     <div class="total"><div><span class="mut">المجموع </span><span dir="ltr" style="display:inline-block"><b id="g-tot">${H1?8:8.5}</b><span class="mut"> / 10</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div></div>`;}
-  (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">حفظ تقرير الطالب PDF</button></div>`+profileCard(s,st)+subTabs()+`<div id="sub-hifz"${vis('hifz')}>`+grade+
+  (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">حفظ تقرير الطالب PDF</button></div>`+profileCard(s,st)+subTabs()+`<div class="wst"><div id="sub-hifz"${vis('hifz')}>`+grade+
    `<div class="glass card" id="cur-card" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">منهج الطالب</div>${segRows(s,2,true)}
     <button class="btn-s" id="more-btn" style="width:100%;margin:8px 0 10px" onclick="toggleMore()">مزيد</button></div></div>
     <div id="sub-beh"${vis('beh')}><div class="glass card" id="tlvbox">${lvInner(s)}</div>${medalsCard(s)}<div class="glass card"><div class="t">تسجيل السلوك</div>
     <div class="mut" style="margin:2px 0 12px">اضغط على السلوك لتسجيله اليوم، واضغط مرة ثانية لإلغائه</div>
     <div class="bcols"><div><div class="bhead pos">سلوك إيجابي</div>${BPOS.map(x=>`<button class="bopt pos${behOn(s,'+',x)?' on':''}" data-b="+|${x}">${x}<small>+${BPT[x]}</small></button>`).join('')}</div>
     <div><div class="bhead neg">سلوك سلبي</div>${BNEG.map(x=>`<button class="bopt neg${behOn(s,'−',x)?' on':''}" data-b="−|${x}">${x}<small>−${BNT[x]}</small></button>`).join('')}</div></div>
-    <div class="divider"></div><div class="t" style="font-size:13px;margin-bottom:10px">نسبة السلوكيات</div><div id="tbehdonut">${donutHTML(s)}</div></div></div>`+(T.admin?`<div id="sub-adm"${vis('adm')}>${transferCard(s)}</div>`:'');
+    <div class="divider"></div><div class="t" style="font-size:13px;margin-bottom:10px">نسبة السلوكيات</div><div id="tbehdonut">${donutHTML(s)}</div></div></div>`+(T.admin?`<div id="sub-adm"${vis('adm')}>${transferCard(s)}</div>`:'')+'</div>';
+  (T.admin?$('admin-body'):$('teacher-body')).classList.add('wstu');
   document.querySelectorAll('[data-b]').forEach(el=>el.onclick=async()=>{const [sg,tx]=el.dataset.b.split('|');
     if(behOn(s,sg,tx)){s.beh=s.beh.filter(b=>!(b[0]===sg&&b[1]===tx&&b[2].getTime()===TODAY.getTime()));el.classList.remove('on');toast('أُلغي: '+tx,true);}
     else{s.beh.unshift([sg,tx,new Date(TODAY)]);el.classList.add('on');toast('سُجّل: '+tx,sg==='−');}
@@ -1914,7 +1972,7 @@ function exportSheet(){
 const AT=`<div class="glass top"><div class="logo inst"></div><div class="ttl">غرفة التحكم<small>المعهد الديني الابتدائي</small></div><div class="logo thabit"></div></div>`;
 const teacherOf=c=>({name:tNames(c)});
 const setATab=n=>document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.classList.toggle('on',b.dataset.atab===n));
-function ago(view,p={}){$('student-body').innerHTML='';Object.assign(T,p,{view,admin:true});if(view==='stu'&&p.sid)T.sub='hifz';if(view==='tcls'&&p.fm)T.csub='hifz';$('teacher-body').innerHTML='';
+function ago(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:true});if(view==='stu'&&p.sid)T.sub='hifz';if(view==='tcls'&&p.fm)T.csub='hifz';$('teacher-body').innerHTML='';
   ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm})[view]();
   $('admin-body').scrollTop=0;updABadge();}
 function openAStu(id,from,arg){T.ret=from==='cls'?`ago('cls',{cid:${arg}})`:from==='tch'?`ago('tch',{tid:${arg}})`:`ago('list')`;ago('stu',{sid:id});}
