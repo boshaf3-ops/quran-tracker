@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="dd4f33d38c81">
+<meta name="build" content="a672943e6044">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -547,6 +547,29 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
   .lvchar svg{width:56px;height:112px}
 }
 
+/* ===== حالة الطالب في بطاقة الاسم: متأخر (توهج أحمر) · متقدم (توهج أخضر + كرات ذهبية خارجية) ===== */
+#s-prof{position:relative;overflow:visible}
+#s-prof>.row,#s-prof>div{position:relative;z-index:2}
+#s-prof.st-late{border:2px solid #D63A2B;background:radial-gradient(120% 140% at 0% 0%,rgba(214,58,43,.18),#FDF9EC 62%);animation:lateGl 2.4s ease-in-out infinite}
+@keyframes lateGl{0%,100%{box-shadow:0 0 14px 1px rgba(214,58,43,.4),inset 0 0 12px rgba(214,58,43,.10)}50%{box-shadow:0 0 34px 9px rgba(214,58,43,.6),inset 0 0 26px rgba(214,58,43,.22)}}
+#s-prof.st-late .pill.p-red{background:rgba(214,58,43,.92);color:#fff;border-color:rgba(255,255,255,.6)}
+#s-prof.st-late .pill.p-red::before{content:'!';display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:50%;background:#fff;color:#D63A2B;font-weight:800;font-size:13px;margin-inline-end:6px;animation:warnBl 2.4s ease-in-out infinite}
+@keyframes warnBl{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+.smsg{font-size:12.5px;font-weight:600;margin-top:10px}.smsg.late{color:#7C1A10}.smsg.ahead{color:#145A31}
+#s-prof.st-ahead{border:2px solid #2EAA5E;background:linear-gradient(180deg,#F1FBF3,#FDF9EC);animation:aheadGl 4.6s ease-in-out infinite}
+@keyframes aheadGl{0%,100%{box-shadow:0 0 14px 2px rgba(46,170,94,.32)}50%{box-shadow:0 0 30px 8px rgba(46,170,94,.5)}}
+#s-prof.st-ahead .pill.p-green{background:rgba(46,170,94,.92);color:#fff;border-color:rgba(255,255,255,.6)}
+.orb{position:absolute;z-index:1;border-radius:50%;opacity:0;pointer-events:none;background:radial-gradient(circle,rgba(255,226,120,.95) 0%,rgba(243,189,63,.65) 38%,rgba(243,189,63,0) 72%);animation:orbUp linear infinite}
+@keyframes orbUp{0%{transform:translate(0,0) scale(.6);opacity:0}15%{opacity:.95}70%{opacity:.7}100%{transform:translate(var(--dx),-120px) scale(1.15);opacity:0}}
+
+#s-prof.st-none{overflow:hidden;color:#5d7f77;background:linear-gradient(135deg,rgba(236,240,238,.62),rgba(222,232,229,.50))!important;backdrop-filter:blur(16px) saturate(130%);-webkit-backdrop-filter:blur(16px) saturate(130%);border:1px solid rgba(255,255,255,.75);box-shadow:0 6px 18px rgba(80,100,95,.10),inset 0 1.5px 0 rgba(255,255,255,.85),inset 0 -1px 0 rgba(255,255,255,.3)}
+#s-prof.st-none .title-big{color:#52746c}#s-prof.st-none .mut{color:#82a097}
+#s-prof.st-none .avatar{background:linear-gradient(135deg,rgba(140,176,168,.7),rgba(206,188,140,.7))}
+#s-prof.st-none .pill{background:rgba(190,204,200,.38)!important;color:#6c8c84!important;border-color:rgba(255,255,255,.75)}
+#s-prof.st-none svg.lvb{opacity:.55;filter:grayscale(.5)}
+.crk{position:absolute;z-index:1;pointer-events:none}.crk path{fill:none;stroke:rgba(255,255,255,.95);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.crk .d{stroke:rgba(120,140,134,.45);stroke-width:1}
+.crk.tl{top:0;right:0;width:96px;height:78px}.crk.bl{bottom:0;left:0;width:84px;height:70px}
+@media (prefers-reduced-motion:reduce){#s-prof.st-late,#s-prof.st-ahead,.orb,#s-prof.st-late .pill.p-red::before{animation:none!important}}
 </style>
 </head>
 <body>
@@ -1020,6 +1043,8 @@ function setSubS(k){SS=k;$('student-body').classList.toggle('msgmode',k==='msg')
   if(k==='msg')renderSMsg();
   $('student-body').scrollTop=0;}
 function toggleMoreS(){const c=$('j-segs'),o=c.classList.toggle('open');$('more-s').textContent=o?'أقل':'مزيد';}
+const CRACKS='<svg class="crk tl" viewBox="0 0 96 78"><path d="M96 0 L72 14 L66 34 L44 42"/><path d="M66 34 L74 58"/><path class="d" d="M96 5 L75 18 L70 38 L48 46"/></svg><svg class="crk bl" viewBox="0 0 84 70"><path d="M0 70 L18 52 L16 32 L38 22"/><path d="M16 32 L-2 26"/><path class="d" d="M0 64 L21 55 L19 35 L41 25"/></svg>';
+const ORBS=[[6,-6,20,'-10px','6.5s','0s'],[22,-8,12,'8px','5.6s','1.8s'],[42,-10,24,'-6px','7.2s','.9s'],[60,-8,14,'12px','6s','2.8s'],[78,-8,18,'-8px','6.8s','3.6s'],[93,-6,12,'6px','5.8s','.4s']].map(o=>`<i class="orb" style="left:${o[0]}%;top:${o[1]}px;width:${o[2]}px;height:${o[2]}px;--dx:${o[3]};animation-duration:${o[4]};animation-delay:${o[5]}"></i>`).join('')+'<i class="orb" style="right:-12px;top:30%;width:16px;height:16px;--dx:20px;animation-duration:6.4s;animation-delay:2.2s"></i><i class="orb" style="left:-12px;top:45%;width:14px;height:14px;--dx:-20px;animation-duration:7s;animation-delay:1.2s"></i>';
 function renderStudent(s){
   SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
   const segs=segsOf(s.c.g),st=statusOf(s),cur=segs[s.done.length],nxt=segs[s.done.length+1];
@@ -1029,9 +1054,9 @@ function renderStudent(s){
    <div class="tgrid${s.c.tids.length>1?' two':''}">${s.c.tids.map(i=>tcard(tById(i))).join('')}</div>
    <div class="medpad">${medalsCard(s)}</div>`;
   $('student-body').innerHTML=TOP+`
-  <div class="wcA"><div class="glass card" id="s-prof"><div class="row">${avaHTML(s,'avatar')}
+  <div class="wcA"><div class="glass card ${st.k==='red'?'st-late':st.k==='green'?'st-ahead':st.k==='none'?'st-none':''}" id="s-prof">${st.k==='green'?ORBS:''}${st.k==='none'?CRACKS:''}<div class="row">${avaHTML(s,'avatar')}
     <div style="flex:1"><div class="title-big">${esc(s.name)}</div><div class="mut">${clsName(s.c)} · الفصل ${TERMN[TERM-1]}</div></div></div>
-    <div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap"><span class="pill ${st.p}">${st.t}</span><span class="pill p-gold">${lvName(s)}</span><span style="margin-inline-start:auto">${lvBadge(lvLevel(s.beh,TODAY),lvLevel(s.beh,TODAY),40)}</span></div></div>
+    <div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap"><span class="pill ${st.p}">${st.t}</span><span class="pill p-gold">${lvName(s)}</span><span style="margin-inline-start:auto">${lvBadge(lvLevel(s.beh,TODAY),lvLevel(s.beh,TODAY),40)}</span></div>${st.k==='red'?`<div class="smsg late">انتبه، أنت بحاجة لتسميع ${st.d===-1?'المقطع المتأخر':'المقاطع المتأخرة'}</div>`:st.k==='green'?`<div class="smsg ahead">ما شاء الله، أنت متقدم على الخطة، استمر</div>`:''}</div>
   <div class="glass seg2" id="s-seg" style="grid-template-columns:1fr 1fr"><button data-k="hifz" class="on" onclick="setSubS('hifz')">التسميع</button><button data-k="beh" onclick="setSubS('beh')">السلوك</button></div>
   <div id="ss-hifz">
    <div class="grid2">
@@ -2361,7 +2386,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='dd4f33d38c81';
+const BUILD='a672943e6044';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
