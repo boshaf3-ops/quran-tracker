@@ -629,7 +629,7 @@ const GQ=(v,max,k)=>k==='t'?(v>=3?'g':v>=2?'y':'r'):(max===10?(v>=8.5?'g':v>=4?'
 const gsq=(lbl,v,max,k)=>`<div class="srow"><span class="gl">${lbl}</span><span class="gsq sm ${GQ(v,max,k)}" dir="ltr">${v}<small>/${max}</small></span></div>`;
 const TQ=v=>v>=9?'g':v>=5?'y':'r';
 const scoreBox=d=>{const two=d[1]!==null,tot=Math.round((d[0]+(two?d[1]:0))*10)/10;
-  return (two?`<div class="smalls">${gsq('حفظ',d[0],7,'h')}${gsq('تجويد',d[1],3,'t')}</div>`:'')+`<div class="gbig ${TQ(tot)}"><span class="gl2">النتيجة</span><b dir="ltr">${tot}</b><small dir="ltr">/10</small></div>`;};
+  return (two&&ROLE!=='student'?`<div class="smalls">${gsq('حفظ',d[0],7,'h')}${gsq('تجويد',d[1],3,'t')}</div>`:'')+`<div class="gbig ${TQ(tot)}"><span class="gl2">النتيجة</span><b dir="ltr">${tot}</b><small dir="ltr">/10</small></div>`;};
 const expectedIdx=segs=>{const i=segs.findIndex(x=>x.e>=TODAY);return i<0?segs.length-1:i;};
 function segRows(s,lim,edit){
   const segs=segsOf(s.c.g),st=statusOf(s),ex=expectedIdx(segs);
