@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="dd6ceba45cc3">
+<meta name="build" content="518dab0cd6e2">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -596,6 +596,9 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 @keyframes awfall{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.9}100%{transform:translateY(300px) rotate(300deg);opacity:0}}
 @media (prefers-reduced-motion:reduce){.awstrip,.awsh,.awcup,.awcup::after,.awbox,.awcupbig,.awsp,.awcf{animation:none!important}}
 .seg.sel{background:rgba(236,110,160,.12);border-radius:14px;box-shadow:inset 0 0 0 1.5px rgba(236,110,160,.55)}
+.seg.plan.sel{animation:none;box-shadow:inset 0 0 0 1.5px rgba(236,110,160,.6),0 0 0 2px rgba(224,162,27,.55)}
+.seg.dn{background:rgba(46,170,94,.09);border-radius:16px;padding:9px 9px;margin:4px -9px;border-bottom-color:transparent}
+.seg.dn.plan{background:rgba(224,162,27,.12)}
 .tcard{position:relative}
 .tcard.own{border:1.5px solid rgba(224,162,27,.85);background:linear-gradient(135deg,rgba(255,244,205,.78),rgba(255,255,255,.5));animation:ownGl 2.8s ease-in-out infinite}
 @keyframes ownGl{0%,100%{box-shadow:0 0 10px 1px rgba(224,162,27,.35)}50%{box-shadow:0 0 24px 6px rgba(224,162,27,.6)}}
@@ -810,16 +813,16 @@ function selSeg(s){const N=segsOf(s.c.g).length;let i=T.gi;
   return nxtIdx(s);}
 function pickSeg(i){T.gi=i;vStudent();(T.admin?$('admin-body'):$('teacher-body')).scrollTop=0;}
 function segRows(s,lim,edit){
-  const segs=segsOf(s.c.g),nx=nxtIdx(s),sel=edit?selSeg(s):-1,lo=lim?Math.max(0,Math.min(nx<0?0:nx,segs.length-lim)):0;
+  const segs=segsOf(s.c.g),nx=nxtIdx(s),ex=expectedIdx(segs),sel=edit?selSeg(s):-1,lo=lim?Math.max(0,Math.min(nx<0?0:nx,segs.length-lim)):0;
   return segs.map((g,i)=>{
     const d=gAt(s,i),fut=g.d>TODAY;let rail='mute',mid='',sc2='<span style="color:var(--ink-2);font-size:13px">—</span>';
     if(d){rail='green';
       mid=`<div class="pl" style="margin-top:6px"><i style="width:100%;background:var(--green)"></i></div><div style="margin-top:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="pill p-green" style="font-size:11px">✓ تم التسميع</span>${fut?'<span class="pill p-gold" style="font-size:11px">سمّعه مبكراً</span>':''}${edit?`<button type="button" class="btn-s" style="padding:3px 12px;font-size:11.5px" onclick="openEditGrade(${s.id},${i})">تعديل الدرجة</button>`:''}</div>`;
       sc2=scoreBox(d,mxOf(s.c.g));}
     else mid=`<div class="m" style="margin-top:5px">${edit?'اضغط لتسميعه الآن':'لم يُسمَّع بعد'}</div>`;
-    const more=lim&&(i<lo||i>=lo+lim);
-    return `<div class="seg${i===nx&&i!==sel?' plan':''}${i===sel?' sel':''}${more?' more':''}"${edit&&!d?` onclick="pickSeg(${i})" style="cursor:pointer"`:''}><div class="rail" style="background:${rail==='mute'?'rgba(22,94,80,.18)':`var(--${rail})`}"></div>
-      <div style="min-width:0"><div class="n">${rng(g)}</div><div class="m">${fmtR(g)}${i===nx?' <span class="pill p-gold" style="font-size:10.5px;padding:2px 8px">المطلوب الآن</span>':''}</div>${mid}</div><div class="score">${sc2}</div></div>`;}).join('');
+    const more=lim&&!(i>=lo&&i<lo+lim)&&i!==ex;
+    return `<div class="seg${i===ex?' plan':''}${d?' dn':''}${i===sel?' sel':''}${more?' more':''}"${edit&&!d?` onclick="pickSeg(${i})" style="cursor:pointer"`:''}><div class="rail" style="background:${rail==='mute'?'rgba(22,94,80,.18)':`var(--${rail})`}"></div>
+      <div style="min-width:0"><div class="n">${rng(g)}</div><div class="m">${fmtR(g)}${i===ex?' <span class="pill p-gold" style="font-size:10.5px;padding:2px 8px">نحن هنا الآن</span>':''}${i===nx?' <span class="pill" style="font-size:10.5px;padding:2px 9px;background:var(--teal-d);color:#fff;border-color:transparent">المطلوب الآن</span>':''}</div>${mid}</div><div class="score">${sc2}</div></div>`;}).join('');
 }
 const BPOS=['التزام بالهدوء','مساعدة زميل','مشاركة فعّالة','حسن الأدب'],BNEG=['تأخر عن الحلقة','كثرة الكلام','نسيان المصحف','عدم الانتباه'];
 const behOn=(s,sg,tx)=>s.beh.some(b=>b[0]===sg&&b[1]===tx&&b[2].getTime()===TODAY.getTime());
@@ -2702,7 +2705,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='dd6ceba45cc3';
+const BUILD='518dab0cd6e2';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
