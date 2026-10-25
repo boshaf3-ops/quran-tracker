@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="15c79e8c5d53">
+<meta name="build" content="cd0b36584a31">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -604,6 +604,34 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 @keyframes ownGl{0%,100%{box-shadow:0 0 10px 1px rgba(224,162,27,.35)}50%{box-shadow:0 0 24px 6px rgba(224,162,27,.6)}}
 .ownb{position:absolute;top:8px;left:8px;background:#D63A2B;color:#fff;font-size:10.5px;font-weight:800;border-radius:99px;padding:2px 10px;box-shadow:0 2px 6px rgba(214,58,43,.4);z-index:2}
 @media (prefers-reduced-motion:reduce){.tcard.own{animation:none}}
+/* ===== دوائر الأبناء ===== */
+.kwrap{display:flex;justify-content:flex-end;margin:-2px 2px 9px}
+.kbar{display:inline-flex;gap:7px;align-items:flex-start;flex-wrap:wrap;background:rgba(255,255,255,.55);border:1px solid rgba(22,94,80,.14);border-radius:18px;padding:5px 11px 4px 9px;box-shadow:0 2px 10px rgba(22,94,80,.1),inset 0 1px 0 rgba(255,255,255,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.kbar .klb{align-self:center;font-size:9.5px;font-weight:800;color:var(--gold-d);padding-inline-end:7px;margin-inline-end:1px;border-inline-end:1px solid rgba(154,107,5,.28);line-height:34px}
+.kid{display:flex;flex-direction:column;align-items:center;gap:2px;width:34px;border:0;background:none;padding:0;cursor:pointer;font-family:inherit}
+.kid em{font-style:normal;font-size:8px;font-weight:700;color:var(--ink);line-height:1.2;max-width:44px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kbar .cir{--a:46,170,94;--b:18,100,70;position:relative;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);
+  background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.9) 0,rgba(255,255,255,.3) 18%,rgba(255,255,255,0) 44%),linear-gradient(145deg,rgb(var(--a)) 0,rgb(var(--b)) 100%);
+  border:1px solid rgba(255,255,255,.88);box-shadow:inset 0 -4px 6px rgba(0,0,0,.14),inset 0 2px 3px rgba(255,255,255,.9),0 2px 6px rgba(var(--a),.4);transition:filter .25s}
+.kbar .cir::after{content:'';position:absolute;top:2px;left:5px;width:9px;height:5px;border-radius:50%;background:rgba(255,255,255,.72);transform:rotate(-24deg);filter:blur(.5px);pointer-events:none}
+.kbar .cir.on{box-shadow:0 0 0 2px var(--teal-d),inset 0 -4px 6px rgba(0,0,0,.14),inset 0 2px 3px rgba(255,255,255,.9)}
+.kbar .k1{--a:46,170,94;--b:18,100,70}
+.kbar .k2{--a:255,214,60;--b:235,160,20;color:#6b4700;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.kbar .k3{--a:255,160,60;--b:225,95,20}
+.kbar .k4{--a:240,90,80;--b:175,30,35}
+.kbar .k5{--a:90,185,240;--b:30,100,190}
+.kbar .st{position:absolute;bottom:-2px;left:-2px;width:9px;height:9px;border-radius:50%;border:1.5px solid #fff}.kbar .sg{background:#2EAA5E}.kbar .sy{background:#E0A21B}.kbar .sr{background:#D63A2B}
+.kbar .bd{position:absolute;top:-5px;right:-5px;background:#D63A2B;color:#fff;font-size:8px;font-weight:800;min-width:12px;height:12px;border-radius:99px;display:flex;align-items:center;justify-content:center;border:1px solid #fff;animation:kpop 1.8s ease-in-out infinite}
+@keyframes kpop{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.kbar .late{animation:klate 2.4s ease-in-out infinite}@keyframes klate{0%,100%{filter:drop-shadow(0 0 2px rgba(214,58,43,.45))}50%{filter:drop-shadow(0 0 6px rgba(214,58,43,.8))}}
+.kbar .late.on{animation:none;filter:drop-shadow(0 0 4px rgba(214,58,43,.65))}
+.kbar .ahead{filter:drop-shadow(0 0 4px rgba(46,170,94,.55))}
+.kbar .ahead i{position:absolute;border-radius:50%;background:rgba(46,170,94,.55);animation:kbub 3s ease-in infinite}
+.kbar .ahead i:nth-child(1){width:4px;height:4px;left:2px;top:-1px}.kbar .ahead i:nth-child(2){width:3px;height:3px;right:2px;top:0;animation-delay:1s}.kbar .ahead i:nth-child(3){width:2.5px;height:2.5px;left:11px;top:-3px;animation-delay:2s}
+@keyframes kbub{0%{transform:translateY(0);opacity:0}20%{opacity:.9}100%{transform:translateY(-10px);opacity:0}}
+.kbar .addc{--a:255,255,255;--b:255,255,255;background:rgba(255,255,255,.6);color:#165E50;border:1.2px dashed #7ab5a6;box-shadow:inset 0 2px 3px rgba(255,255,255,.95),0 1px 4px rgba(22,94,80,.15);color:#165E50;font-size:16px;font-weight:400;text-shadow:none}.kbar .addc::after{display:none}.kbar .addl{font-size:7.5px;color:#4F7A70}
+.akid{margin-top:14px;text-align:center}
+@media (prefers-reduced-motion:reduce){.kbar *{animation:none!important}}
 /* ===== الطالب المثالي ===== */
 .pill.p-pink{background:rgba(236,110,160,.26);color:#9A1F55}
 #t-tabs .tab.gate{color:#C23570;font-weight:700}
@@ -910,7 +938,7 @@ async function sync(force){
 function saveTok(){let ok=false;try{localStorage.setItem('qt-tok',TOK);ok=true;}catch(e){}if(!ok){try{sessionStorage.setItem('qt-tok',TOK);}catch(e){}}}
 function loadTok(){let v=null;try{v=localStorage.getItem('qt-tok');}catch(e){}if(!v){try{v=sessionStorage.getItem('qt-tok');}catch(e){}}return v;}
 function dropTok(){try{localStorage.removeItem('qt-tok');}catch(e){}try{sessionStorage.removeItem('qt-tok');}catch(e){}}
-function sessionExpired(){if(!TOK)return;TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');toast('انتهت الجلسة، سجّل الدخول من جديد',true);}
+function sessionExpired(){if(!TOK)return;if(ROLE==='student'&&KIDS.length>1){kidDrop(TOK);return;}TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');toast('انتهت الجلسة، سجّل الدخول من جديد',true);}
 function clearData(){AWARD=null;AWARDS=[];NOMS=[];HONOR=null;HONORS=[];HMONTH='';SUGG.length=0;TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
   ['student-body','teacher-body','admin-body'].forEach(i=>{if($(i))$(i).innerHTML='';});}
 function persist(){}
@@ -919,24 +947,82 @@ let SEEN_T=0;
 function teacherSeen(force){if(ROLE!=='teacher'||!TOK)return;const n=Date.now();if(!force&&n-SEEN_T<240000)return;SEEN_T=n;rpc('teacher_seen',{p_tok:TOK}).catch(()=>{});}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')teacherSeen(false);});
 setInterval(()=>teacherSeen(false),300000);
+/* ---------- أبناء ولي الأمر: عدة أبناء في جهاز واحد ---------- */
+let KIDS=[],KINFO={},ADDKID=false,KFETCH=0;
+const KORD=['الأول','الثاني','الثالث','الرابع','الخامس','السادس'];
+function kidsLoad(){try{KIDS=JSON.parse(localStorage.getItem('qt-kids')||'[]');}catch(e){KIDS=[];}if(!Array.isArray(KIDS))KIDS=[];}
+function kidsSave(){try{localStorage.setItem('qt-kids',JSON.stringify(KIDS));}catch(e){}}
+function kidAdd(tok,id){kidsLoad();if(KIDS.some(k=>k.t===tok))return;KIDS=KIDS.filter(k=>k.i!==id);KIDS.push({t:tok,i:id});kidsSave();}
+function kidStat(st){const x=(st.students||[])[0];if(!x)return null;const c=(st.classes||[]).find(k=>k.id===x.c);if(!c)return null;
+  const segs=segsOf(c.g),n=x.done.length,d0=dayDate(st.today);if(!n)return 'none';
+  const E=segs.filter(s=>s.d<=d0).length,due=segs.filter(s=>s.e<d0).length;return n<due?'red':n>E?'green':'gold';}
+function kidSelf(){if(ROLE!=='student'||!CURS||!TOK)return;kidsLoad();let k=KIDS.find(q=>q.t===TOK);
+  const nm=CURS.name.split(' ')[0],l=CURS.name.trim()[0]||'؟';
+  if(!k){k={t:TOK,i:CURS.id};KIDS.push(k);}
+  if(k.n!==nm||k.l!==l){k.n=nm;k.l=l;}kidsSave();
+  const stt=statusOf(CURS).k;KINFO[TOK]={st:stt==='gold'?'gold':stt==='green'?'green':stt==='red'?'red':'none',u:SMSG.reduce((a,x)=>a+x.unread,0)};}
+function kbarHTML(){kidSelf();
+  return `<div class="kwrap" id="kbar"><div class="kbar"><span class="klb">أبنائي</span>${KIDS.map((k,i)=>{const f=KINFO[k.t]||{},on=k.t===TOK,st=f.st||'none';
+    const cls=`cir k${i%5+1}${on?' on':''}${st==='green'?' ahead':''}${st==='red'?' late':''}`;
+    return `<button type="button" class="kid" onclick="switchKid('${k.t}')" aria-label="${esc(k.n||'ابن')}"><span class="${cls}">${esc(k.l||'؟')}${st==='green'?'<i></i><i></i><i></i>':''}${st!=='none'?`<span class="st ${st==='green'?'sg':st==='gold'?'sy':'sr'}"></span>`:''}${f.u?`<span class="bd">${f.u}</span>`:''}</span><em>${esc(k.n||'')}</em></button>`;}).join('')}${KIDS.length<6?`<button type="button" class="kid" onclick="openAddKid()"><span class="cir addc">+</span><em class="addl">إضافة ابن</em></button>`:''}</div></div>`;}
+function drawKids(){const b=$('kbar');if(b)b.outerHTML=kbarHTML();}
+async function kidsRefresh(){if(ROLE!=='student'||!TOK||KFETCH>Date.now()-4000)return;KFETCH=Date.now();kidsLoad();
+  for(const k of KIDS.slice()){if(k.t===TOK)continue;
+    try{const st=await rpc('get_state',{p_tok:k.t});
+      if(!st||st.error){kidDrop(k.t,true);continue;}
+      const x=(st.students||[])[0];if(x){k.n=x.name.split(' ')[0];k.l=x.name.trim()[0];}
+      KINFO[k.t]={st:kidStat(st)||'none',u:(st.msgs||[]).filter(m=>!m.fs&&!m.seen).length};}catch(e){}}
+  kidsSave();drawKids();}
+function kidDrop(tok,silent){kidsLoad();KIDS=KIDS.filter(k=>k.t!==tok);kidsSave();delete KINFO[tok];
+  if(tok===TOK){if(KIDS.length){if(!silent)toast('انتهت جلسة هذا الابن',true);switchKid(KIDS[0].t);}else{TOK=null;ROLE=null;dropTok();clearData();show('s-student-login');}}
+  else drawKids();}
+async function switchKid(tok){if(tok===TOK&&!ADDKID)return;
+  try{const st=await rpc('get_state',{p_tok:tok});
+    if(!st||st.error){kidDrop(tok);toast('انتهت جلسة هذا الابن، أضِفه من جديد',true);return;}
+    ADDKID=false;TOK=tok;saveTok();LAST='';REV=null;enter(st);kidsRefresh();}
+  catch(e){toast('تعذّر الاتصال بالخادم',true);}}
+function openAddKid(){ADDKID=true;SS='hifz';
+  $('student-body').innerHTML=TOP+kbarHTML()+`<div class="glass card akid"><div class="t" style="font-size:17px">ضع كود الابن ${KORD[KIDS.length]||''}</div>
+   <div class="mut" style="margin:6px 0 12px;line-height:1.8">اكتب الرمز السري الذي استلمته من المعهد لابنك، ويبقى ${KIDS.length>1?'أبناؤك':'ابنك'} السابق${KIDS.length>1?'ون':''} كما ${KIDS.length>1?'هم':'هو'}.</div>
+   <input class="field" id="ak-pin" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="الرمز السري" style="text-align:center;letter-spacing:4px;direction:ltr">
+   <div class="fe" id="ak-e"></div><button class="btn" id="ak-go" style="margin-top:6px">إضافة</button>
+   <button type="button" class="btn-s" id="ak-bk" style="width:100%;margin-top:10px;padding:11px">‹ رجوع</button></div>`;
+  $('ak-bk').onclick=()=>{ADDKID=false;renderStudent(CURS);};
+  const go=async()=>{const pin=latin($('ak-pin').value.trim()),e=$('ak-e'),b=$('ak-go');if(!pin){e.textContent='ضع الرمز السري أولاً';return;}
+    b.disabled=true;e.textContent='';
+    try{const r=await rpc('login',{p_pin:pin});
+      if(r.token&&r.role==='student'){
+        if(KIDS.some(k=>k.i===r.id)){rpc('logout',{p_tok:r.token}).catch(()=>{});e.textContent='هذا الابن مضاف مسبقاً';}
+        else{KIDS.push({t:r.token,i:r.id});kidsSave();await switchKid(r.token);return;}}
+      else{if(r.token)rpc('logout',{p_tok:r.token}).catch(()=>{});e.textContent=r.error==='locked'?'محاولات كثيرة. انتظر 10 دقائق ثم حاول مرة ثانية':r.token?'هذا الرمز ليس لطالب':'الرمز السري غير صحيح';}}
+    catch(ex){e.textContent='تعذّر الاتصال بالخادم. تأكد من الإنترنت';}
+    b.disabled=false;};
+  $('ak-go').onclick=go;$('ak-pin').addEventListener('keydown',ev=>{if(ev.key==='Enter')go();});setTimeout(()=>$('ak-pin').focus(),250);}
+function logoutSheet(){const me=KIDS.find(k=>k.t===TOK)||{};
+  sheet(`<div class="t" style="font-size:17px">تسجيل الخروج</div><div class="mut" style="margin:4px 0 8px">لديك ${KIDS.length} أبناء على هذا الجهاز.</div>
+   <button class="btn" onclick="kidLogoutOne()">خروج من ${esc(me.n||'هذا الابن')} فقط</button>
+   <button class="btn" style="background:linear-gradient(180deg,#E0574A,#C0392B)" onclick="closeSheet();doLogout()">خروج من الجميع</button>
+   <button class="btn-s" style="width:100%;margin-top:10px;padding:11px" onclick="closeSheet()">إلغاء</button>`);}
+function kidLogoutOne(){closeSheet();const t=TOK;rpc('logout',{p_tok:t}).catch(()=>{});kidDrop(t,true);}
 function enter(st){
   try{if(document.activeElement)document.activeElement.blur();}catch(e){}
   LAST=JSON.stringify(st);hydrate(st);
-  if(ROLE==='student'){renderStudent(allStudents()[0]);show('s-student');}
+  if(ROLE==='student'){kidsLoad();kidAdd(TOK,st.me);renderStudent(allStudents()[0]);show('s-student');setTimeout(kidsRefresh,400);}
   else if(ROLE==='teacher'){go('tas');show('s-teacher');teacherSeen(true);setTimeout(awardPopup,700);}
   else{ago('home');show('s-admin');}
 }
-async function doLogout(){const t=TOK;TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');if(t)rpc('logout',{p_tok:t}).catch(()=>{});}
+async function doLogout(){const t=TOK;kidsLoad();const all=KIDS.map(k=>k.t).filter(x=>x!==t);KIDS=[];KINFO={};ADDKID=false;try{localStorage.removeItem('qt-kids');}catch(e){}TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');if(t)rpc('logout',{p_tok:t}).catch(()=>{});all.forEach(x=>rpc('logout',{p_tok:x}).catch(()=>{}));}
 let CURS=null;
 function refreshAll(){
   if($('sheet')&&$('sheet').classList.contains('on'))return;
   const on=document.querySelector('.screen.on');if(!on)return;
-  if(on.id==='s-student'&&CURS){const k=SS,sc=$('student-body').scrollTop;renderStudent(CURS);setSubS(k);$('student-body').scrollTop=sc;}
+  if(on.id==='s-student'&&CURS){if(ADDKID)return;const k=SS,sc=$('student-body').scrollTop;renderStudent(CURS);setSubS(k);$('student-body').scrollTop=sc;}
   else if(on.id==='s-teacher'){const sc=$('teacher-body').scrollTop;go(T.view);$('teacher-body').scrollTop=sc;}
   else if(on.id==='s-admin'){const sc=$('admin-body').scrollTop;ago(T.view);$('admin-body').scrollTop=sc;}
 }
 const uiBusy=()=>{const a=document.activeElement;
   return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&a.closest('.screen.on'))||($('sheet')&&$('sheet').classList.contains('on'))||($('rpt')&&$('rpt').classList.contains('on'))||(ROLE!=='student'&&(T.view==='stu'||T.view==='thread'));};
+setInterval(()=>{if(ROLE==='student'&&KIDS.length>1&&document.visibilityState==='visible'&&!ADDKID)kidsRefresh();},30000);
 let POLLING=false;
 async function poll(force){
   if(!TOK||document.visibilityState!=='visible'||POLLING)return;
@@ -1146,7 +1232,7 @@ function renderStudent(s){
   const tmBlock=`<div class="sec" style="margin:14px 6px 8px"><b>معلمو القرآن الكريم</b></div>
    <div class="tgrid${s.c.tids.length>1?' two':''}">${s.c.tids.map(i=>tcard(tById(i),i===s.owner)).join('')}</div>
    <div class="medpad">${medalsCard(s)}</div>`;
-  $('student-body').innerHTML=TOP+`
+  $('student-body').innerHTML=TOP+kbarHTML()+`
   <div class="wcA"><div class="glass card ${st.k==='red'?'st-late':st.k==='green'?'st-ahead':st.k==='none'?'st-none':''}" id="s-prof">${st.k==='green'?ORBS:''}${st.k==='none'?CRACKS:''}<div class="row">${avaHTML(s,'avatar')}
     <div style="flex:1"><div class="title-big">${esc(s.name)}</div><div class="mut">${clsName(s.c)} · الفصل ${TERMN[TERM-1]}</div></div></div>
     <div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap"><span class="pill ${st.p}">${st.t}</span><span class="pill p-gold">${lvName(s)}</span><span style="margin-inline-start:auto">${lvBadge(lvLevel(s.beh,TODAY),lvLevel(s.beh,TODAY),40)}</span></div>${st.k==='red'?`<div class="smsg late">انتبه، أنت بحاجة لتسميع ${st.d===-1?'المقطع المتأخر':'المقاطع المتأخرة'}</div>`:st.k==='green'?`<div class="smsg ahead">ما شاء الله، أنت متقدم على الخطة، استمر</div>`:''}</div>
@@ -2701,11 +2787,11 @@ $('go-admin').onclick=()=>openLogin('admin');
 $('back').onclick=()=>show('s-staff');
 $('back0').onclick=()=>show('s-student-login');
 document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.onclick=()=>ago(b.dataset.atab,b.dataset.atab==='pend'?{pk:''}:{}));
-document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
+document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='student'&&KIDS.length>1)logoutSheet();else doLogout();});
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='15c79e8c5d53';
+const BUILD='cd0b36584a31';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
@@ -2721,6 +2807,7 @@ async function checkUpdate(){
 }
 checkUpdate();setInterval(checkUpdate,60000);
 /* استعادة الجلسة عند إعادة تحميل الصفحة */
+kidsLoad();
 (async()=>{const tk=loadTok();if(!tk)return;
   const ph=document.querySelector('.phone');ph.classList.add('restoring');
   TOK=tk;
