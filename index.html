@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="518dab0cd6e2">
+<meta name="build" content="15c79e8c5d53">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1097,7 +1097,7 @@ function lvInner(s){
 /* ---------- الطالب ---------- */
 const TI={wa:'<path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8z"/>',ml:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/>',ck:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
 const tcard=(tc,own)=>{const ln=(ic,v)=>v?`<div class="tl"><svg viewBox="0 0 24 24">${ic}</svg><span>${v}</span></div>`:'';
-  return `<div class="glass tcard${own?' own':''}">${own?'<span class="ownb">الشيخ المسمّع</span>':''}<div class="avatar">${esc(tc.init)}</div><div class="tn">${esc(tc.name)}</div><div class="tr">معلم القرآن الكريم</div>
+  return `<div class="glass tcard${own?' own':''}">${own?'<span class="ownb">معلمك المتابع</span>':''}<div class="avatar">${esc(tc.init)}</div><div class="tn">${esc(tc.name)}</div><div class="tr">معلم القرآن الكريم</div>
   ${ln(TI.wa,tc.whatsapp?'<bdi>'+esc(tc.whatsapp)+'</bdi>':'')}${ln(TI.ml,tc.email?'<bdi>'+esc(tc.email)+'</bdi>':'')}${ln(TI.ck,tc.hours?esc(tc.hours):'')}
   ${(!tc.whatsapp&&!tc.email&&!tc.hours)?'<div class="tl none">لم تُضف بيانات التواصل بعد</div>':''}</div>`;};
 const STEVE=`<svg class="px" viewBox="0 0 16 27" shape-rendering="crispEdges" aria-hidden="true">
@@ -2705,7 +2705,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='518dab0cd6e2';
+const BUILD='15c79e8c5d53';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
