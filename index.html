@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="133d10b0a208">
+<meta name="build" content="9d2576f04590">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1237,7 +1237,7 @@ function openEditGrade(sid,i){
   const s=byId(sid),g=segsOf(s.c.g)[i],d=gAt(s,i),cur=Math.round((d[0]+(d[1]||0))*10)/10;
   sheet(`<div class="t" style="font-size:17px">تعديل درجة ${esc(rng(g))}</div><div class="mut" style="margin:2px 0 8px">${esc(s.name)} · الدرجة الحالية <bdi dir="ltr">${cur} / 10</bdi></div>
    <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="eg-hv">${cur}</span> / 10</span></div>
-   <input type="range" id="eg-h" min="0" max="10" step="0.5" value="${cur}">
+   <input type="range" id="eg-h" min="0" max="10" step="1" value="${Math.round(cur)}">
    <div class="fe" id="eg-e"></div><button class="btn" id="eg-save" style="margin-top:6px">حفظ التعديل</button>
    <button type="button" class="btn-s" id="eg-del" style="width:100%;margin-top:10px;padding:11px;color:#7C1A10">حذف الدرجة وإرجاع المقطع «لم يُسمَّع»</button>`);
   $('eg-del').onclick=()=>{
@@ -1437,7 +1437,7 @@ function vStudent(){
     <div class="mut" style="margin-top:2px">${fmtR(seg)} · يمكنك اختيار أي مقطع آخر من القائمة</div>
     <select class="field" id="g-seg" style="margin:8px 0 2px">${segs.map((g,i)=>gAt(s,i)?'':`<option value="${i}"${i===gi?' selected':''}>${esc(rng(g))} · ${fmtR(g)}${i===ex?' (هذا الأسبوع)':''}</option>`).join('')}</select>
     <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="g-hv">8</span> / 10</span></div>
-    <input type="range" id="g-h" min="0" max="10" step="0.5" value="8">
+    <input type="range" id="g-h" min="0" max="10" step="1" value="8">
     <div class="total"><div><span class="mut">الدرجة </span><span dir="ltr" style="display:inline-block"><b id="g-tot">8</b><span class="mut"> / 10</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div></div>`;}
   (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">حفظ تقرير الطالب PDF</button></div>`+profileCard(s,st)+subTabs()+`<div class="wst"><div id="sub-hifz"${vis('hifz')}>`+grade+
    `<div class="glass card" id="cur-card" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">منهج الطالب</div>${segRows(s,0,true)}
@@ -2698,7 +2698,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='133d10b0a208';
+const BUILD='9d2576f04590';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
