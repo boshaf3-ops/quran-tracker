@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="9d2576f04590">
+<meta name="build" content="429f5ae753a4">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -791,8 +791,9 @@ const BACK='<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
 const GQ=(v,max,k)=>k==='t'?(v>=3?'g':v>=2?'y':'r'):(max===10?(v>=8.5?'g':v>=4?'y':'r'):(v>=6?'g':v>=3?'y':'r'));
 const gsq=(lbl,v,max,k)=>`<div class="srow"><span class="gl">${lbl}</span><span class="gsq sm ${GQ(v,max,k)}" dir="ltr">${v}<small>/${max}</small></span></div>`;
 const TQ=v=>v>=9?'g':v>=5?'y':'r';
-const scoreBox=d=>{const tot=Math.round((d[0]+(d[1]||0))*10)/10;
-  return `<div class="gbig ${TQ(tot)}"><span class="gl2">النتيجة</span><b dir="ltr">${tot}</b><small dir="ltr">/10</small></div>`;};
+const mxOf=g=>halaqa(g)===1?5:10;
+const scoreBox=(d,mx)=>{mx=mx||10;const tot=Math.round((d[0]+(d[1]||0))*10)/10;
+  return `<div class="gbig ${TQ(tot*10/mx)}"><span class="gl2">النتيجة</span><b dir="ltr">${tot}</b><small dir="ltr">/${mx}</small></div>`;};
 const expectedIdx=segs=>{const i=segs.findIndex(x=>x.e>=TODAY);return i<0?segs.length-1:i;};
 const gAt=(s,i)=>{const k=s.dix.indexOf(i);return k<0?null:s.done[k];};
 function setGrade(s,i,sc){const k=s.dix.indexOf(i);if(k>=0)s.done[k]=[sc,null,0];else{const q=s.dix.map((x,j)=>[x,s.done[j]]);q.push([i,[sc,null,0]]);q.sort((a,b)=>a[0]-b[0]);s.dix=q.map(x=>x[0]);s.done=q.map(x=>x[1]);}}
@@ -810,7 +811,7 @@ function segRows(s,lim,edit){
     const d=gAt(s,i),fut=g.d>TODAY;let rail='mute',mid='',sc2='<span style="color:var(--ink-2);font-size:13px">—</span>';
     if(d){rail='green';
       mid=`<div class="pl" style="margin-top:6px"><i style="width:100%;background:var(--green)"></i></div><div style="margin-top:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="pill p-green" style="font-size:11px">✓ تم التسميع</span>${fut?'<span class="pill p-gold" style="font-size:11px">سمّعه مبكراً</span>':''}${edit?`<button type="button" class="btn-s" style="padding:3px 12px;font-size:11.5px" onclick="openEditGrade(${s.id},${i})">تعديل الدرجة</button>`:''}</div>`;
-      sc2=scoreBox(d);}
+      sc2=scoreBox(d,mxOf(s.c.g));}
     else mid=`<div class="m" style="margin-top:5px">${edit?'اضغط لتسميعه الآن':'لم يُسمَّع بعد'}</div>`;
     const more=lim&&(i<lo||i>=lo+lim);
     return `<div class="seg${i===ex?' plan':''}${i===sel?' sel':''}${more?' more':''}"${edit&&!d?` onclick="pickSeg(${i})" style="cursor:pointer"`:''}><div class="rail" style="background:${rail==='mute'?'rgba(22,94,80,.18)':`var(--${rail})`}"></div>
@@ -1234,10 +1235,10 @@ async function smSend(){
 
 /* ---------- تعديل درجة مقطع سابق (المعلم / الإدارة) ---------- */
 function openEditGrade(sid,i){
-  const s=byId(sid),g=segsOf(s.c.g)[i],d=gAt(s,i),cur=Math.round((d[0]+(d[1]||0))*10)/10;
-  sheet(`<div class="t" style="font-size:17px">تعديل درجة ${esc(rng(g))}</div><div class="mut" style="margin:2px 0 8px">${esc(s.name)} · الدرجة الحالية <bdi dir="ltr">${cur} / 10</bdi></div>
-   <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="eg-hv">${cur}</span> / 10</span></div>
-   <input type="range" id="eg-h" min="0" max="10" step="1" value="${Math.round(cur)}">
+  const s=byId(sid),g=segsOf(s.c.g)[i],d=gAt(s,i),mx=mxOf(s.c.g),cur=Math.round((d[0]+(d[1]||0))*10)/10;
+  sheet(`<div class="t" style="font-size:17px">تعديل درجة ${esc(rng(g))}</div><div class="mut" style="margin:2px 0 8px">${esc(s.name)} · الدرجة الحالية <bdi dir="ltr">${cur} / ${mx}</bdi></div>
+   <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="eg-hv">${Math.min(mx,Math.round(cur))}</span> / ${mx}</span></div>
+   <input type="range" id="eg-h" min="0" max="${mx}" step="1" value="${Math.min(mx,Math.round(cur))}">
    <div class="fe" id="eg-e"></div><button class="btn" id="eg-save" style="margin-top:6px">حفظ التعديل</button>
    <button type="button" class="btn-s" id="eg-del" style="width:100%;margin-top:10px;padding:11px;color:#7C1A10">حذف الدرجة وإرجاع المقطع «لم يُسمَّع»</button>`);
   $('eg-del').onclick=()=>{
@@ -1290,7 +1291,7 @@ const STAR='<svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.
 const nomOpen=()=>TODAY.getDate()>=20&&TODAY.getDate()<=26;
 const curMonthKey=()=>TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0');
 const stuAvg=s=>{const n=s.done.length;return n?Math.round(s.done.reduce((a,d)=>a+d[0]+(d[1]||0),0)/n*10)/10:null;};
-const avTxt=s=>{const a=stuAvg(s);return a===null?'لا درجات بعد':'المتوسط '+a+' / 10';};
+const avTxt=s=>{const a=stuAvg(s);return a===null?'لا درجات بعد':'المتوسط '+a+' / '+mxOf(s.c.g);};
 const avKey=s=>{const a=stuAvg(s);return a===null?-1:a;};
 const byAvg=(a,b)=>avKey(b)-avKey(a)||a.name.localeCompare(b.name,'ar');
 const shortN=n=>String(n).split(' ').slice(0,2).join(' ');
@@ -1311,7 +1312,7 @@ function vNom(){
 }
 function openNomPick(cid){const c=CLASSES.find(x=>x.id===cid),cur=nomOf(c);
   const l=myIn(c).filter(s=>!s.pending).sort(byAvg);
-  sheet(`<div class="t" style="font-size:17px">الطالب المثالي · ${clsName(c)}</div><div class="mut" style="margin-bottom:10px">اضغط على اسم الطالب لترشيحه. المتوسط من 10 لدرجات التسميع.</div>
+  sheet(`<div class="t" style="font-size:17px">الطالب المثالي · ${clsName(c)}</div><div class="mut" style="margin-bottom:10px">اضغط على اسم الطالب لترشيحه. المتوسط من الدرجة الكاملة لكل صف.</div>
    <div class="nomlist">${l.map(s=>`<button class="glass item${cur&&cur.id===s.id?' nomsel':''}" onclick="doNominate(${c.id},${s.id})">${avaHTML(s,'mini')}<div class="grow"><div class="t" style="font-size:14px">${esc(s.name)}</div><div class="mut">${avTxt(s)}</div></div>${cur&&cur.id===s.id?'<span class="pill p-green">مرشَّح</span>':''}</button>`).join('')||'<div class="mut">لا يوجد طلاب</div>'}</div>
    <button class="btn-s" style="width:100%;margin-top:6px" onclick="closeSheet()">إلغاء</button>`);}
 async function doNominate(cid,sid){const r=await sop('nominate',{cid,sid});
@@ -1432,13 +1433,14 @@ function vStudent(){
   setTab(T.from==='tas'?'tas':'roster');const s=byId(T.sid),segs=segsOf(s.c.g),st=statusOf(s),ex=expectedIdx(segs),gi=selSeg(s),seg=gi>=0?segs[gi]:null;
   let grade='<div class="glass card"><div class="t">أتم الطالب جميع مقاطع المرحلة</div><div class="mut">ما شاء الله، لا توجد مقاطع متبقية.</div></div>';
   if(seg){
+    const MX=mxOf(s.c.g),DEF=MX===5?4:8;
     const tag=gi===ex?'مقطع هذا الأسبوع':seg.d>TODAY?'مقطع قادم · تسميع مبكر':'مقطع سابق',pc=gi===ex?'p-gold':seg.d>TODAY?'p-gray':'p-red';
     grade=`<div class="glass card"><div class="row sp"><div class="t">تسميع: ${rng(seg)}</div><span class="pill ${pc}">${tag}</span></div>
     <div class="mut" style="margin-top:2px">${fmtR(seg)} · يمكنك اختيار أي مقطع آخر من القائمة</div>
     <select class="field" id="g-seg" style="margin:8px 0 2px">${segs.map((g,i)=>gAt(s,i)?'':`<option value="${i}"${i===gi?' selected':''}>${esc(rng(g))} · ${fmtR(g)}${i===ex?' (هذا الأسبوع)':''}</option>`).join('')}</select>
-    <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="g-hv">8</span> / 10</span></div>
-    <input type="range" id="g-h" min="0" max="10" step="1" value="8">
-    <div class="total"><div><span class="mut">الدرجة </span><span dir="ltr" style="display:inline-block"><b id="g-tot">8</b><span class="mut"> / 10</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div></div>`;}
+    <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="g-hv">${DEF}</span> / ${MX}</span></div>
+    <input type="range" id="g-h" min="0" max="${MX}" step="1" value="${DEF}">
+    <div class="total"><div><span class="mut">الدرجة </span><span dir="ltr" style="display:inline-block"><b id="g-tot">${DEF}</b><span class="mut"> / ${MX}</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div></div>`;}
   (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">حفظ تقرير الطالب PDF</button></div>`+profileCard(s,st)+subTabs()+`<div class="wst"><div id="sub-hifz"${vis('hifz')}>`+grade+
    `<div class="glass card" id="cur-card" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">منهج الطالب</div>${segRows(s,0,true)}
     <div style="height:8px"></div></div></div>
@@ -1512,15 +1514,15 @@ const rptSig=t=>{const r=rsOf(t);return `<div class="sig"><div>معلم الما
 const rptTeacher=(c,s)=>(s&&s.owner&&tById(s.owner))||(!T.admin&&c.tids.includes(ME.id)?ME:tById(c.tids[0]))||ME;
 function rptStuPage(s){
   const c=s.c,segs=segsOf(c.g),N=segs.length,n=s.done.length,st=statusOf(s),t=rptTeacher(c,s),E=segs.filter(x=>x.d<=TODAY).length,ex=Math.max(0,Math.min(N-1,E-1));
-  const tot=d=>Math.round((d[0]+(d[1]||0))*10)/10,rs=s.done.map(tot),avg=n?Math.round(rs.reduce((a,b)=>a+b,0)/n*10)/10:null;
+  const MX=mxOf(c.g),tot=d=>Math.round((d[0]+(d[1]||0))*10)/10,rs=s.done.map(tot),avg=n?Math.round(rs.reduce((a,b)=>a+b,0)/n*10)/10:null;
   const stc=st.k==='red'?'late':st.k==='green'?'ahead':st.k==='none'?'none':'ok';
   const start=segs[0].d,span=(segs[N-1].e-start)||1,pos=d=>Math.max(0,Math.min(100,(d-start)/span*100));
   const gotP=n?pos(segs[Math.min(N,n)-1].e):0,expP=E?pos(segs[ex].e):0;
   const fill=st.k==='red'?'var(--r)':st.k==='green'?'var(--g)':'var(--y)';
   const rows=n?s.done.map((d,j)=>{const i=s.dix[j],g=segs[i];if(!g)return '';
-    return `<tr><td>${i+1}</td><td class="sn">${rng(g)}</td><td class="w">${fmtR(g)}</td><td><span class="big ${TQ(rs[j])}">${rs[j]}<small>/10</small></span></td></tr>`;}).join('')
+    return `<tr><td>${i+1}</td><td class="sn">${rng(g)}</td><td class="w">${fmtR(g)}</td><td><span class="big ${TQ(rs[j]*10/MX)}">${rs[j]}<small>/${MX}</small></span></td></tr>`;}).join('')
     :`<tr><td colspan="4" style="height:12mm">لم يُسمَّع أي مقطع بعد</td></tr>`;
-  const head=`<th style="width:9mm">م</th><th>المقطع</th><th style="width:38mm">أسبوع المقطع</th><th style="width:24mm">الدرجة / 10</th>`;
+  const head=`<th style="width:9mm">م</th><th>المقطع</th><th style="width:38mm">أسبوع المقطع</th><th style="width:24mm">الدرجة / ${MX}</th>`;
   const P=s.beh.filter(b=>b[0]==='+'),Ng=s.beh.filter(b=>b[0]!=='+'),tt=s.beh.length,pp=tt?Math.round(P.length/tt*100):0;
   const cnt=a=>{const m={};a.forEach(b=>m[b[1]]=(m[b[1]]||0)+1);return Object.entries(m).sort((x,y)=>y[1]-x[1]);};
   const top=cnt(P).slice(0,3),mx=top.length?top[0][1]:1,ng=cnt(Ng);
@@ -1534,7 +1536,7 @@ function rptStuPage(s){
    <div class="chips"><span class="chip">${esc(clsName(c))}</span><span class="chip o">معلم المادة: ${esc(abbrT(t.name))}</span></div></div>
    <div class="ph">${av}<span>${esc(lvName(s))}</span></div></div>
   <div class="card"><div class="h3"><span>كم مقطعاً سمّع؟ وكم المفروض؟</span><small>حتى تاريخ التقرير</small></div>
-   <div class="prog"><div class="st"><small>المقاطع المسمَّعة:</small><b>${n} من ${N}</b></div><div class="st"><small>متوسط النتيجة:</small><b dir="ltr">${avg===null?'—':avg+' / 10'}</b></div><div class="st ${stc}"><small>الحالة:</small><b>${esc(st.t)}</b></div></div>
+   <div class="prog"><div class="st"><small>المقاطع المسمَّعة:</small><b>${n} من ${N}</b></div><div class="st"><small>متوسط النتيجة:</small><b dir="ltr">${avg===null?'—':avg+' / '+MX}</b></div><div class="st ${stc}"><small>الحالة:</small><b>${esc(st.t)}</b></div></div>
    <div class="track"><div class="tl"><i style="width:${gotP}%;background:${fill}"></i></div>${segs.map(g=>`<i class="dot" style="right:${pos(g.e)}%"></i>`).join('')}
     <div class="mk got" style="right:${gotP}%;color:${fill}${gotP<8?';transform:translateX(0)':gotP>92?';transform:translateX(100%)':''}"><b style="background:${fill}">${n?'المسمَّع: '+n+' من '+N+' مقطعاً':'لم يبدأ التسميع'}</b></div>
     <div class="mk exp" style="right:${expP}%;top:9.4mm${expP<8?';transform:translateX(0)':expP>92?';transform:translateX(100%)':''}"><b>المفروض: ${E} من ${N} مقطعاً</b></div></div>
@@ -1550,16 +1552,16 @@ function rptStuPage(s){
  </div></section>`;
 }
 function rptClassPage(c){
-  const segs=segsOf(c.g),t=rptTeacher(c),list=c.students.filter(s=>!s.pending);
+  const MXc=mxOf(c.g),segs=segsOf(c.g),t=rptTeacher(c),list=c.students.filter(s=>!s.pending);
   const SM={green:['g','متقدم'],gold:['y','على الخطة'],red:['r','متأخر'],none:['n','لم يبدأ']};
   const thead=`<tr><th style="width:7mm">م</th><th style="width:44mm;text-align:right">اسم الطالب</th><th style="width:26mm">المسمَّع</th>`+segs.map((g,i)=>`<th>${i+1}<small>${esc(g.n)}</small><small>${g.f}–${g.t}</small></th>`).join('')+`<th style="width:22mm">الحالة</th></tr>`;
   const rows=list.map((s,i)=>{const n=s.done.length,st=SM[statusOf(s).k];
-    const cells=segs.map((g,j)=>{const d=gAt(s,j);if(!d)return '<td></td>';const v=Math.round((d[0]+(d[1]||0))*10)/10;return `<td><span class="cell ${TQ(v)}">${v}</span></td>`;}).join('');
+    const cells=segs.map((g,j)=>{const d=gAt(s,j);if(!d)return '<td></td>';const v=Math.round((d[0]+(d[1]||0))*10)/10;return `<td><span class="cell ${TQ(v*10/MXc)}">${v}</span></td>`;}).join('');
     return `<tr><td>${i+1}</td><td class="sn">${esc(s.name)}</td><td class="rc">${n} من ${segs.length}</td>${cells}<td><span class="stp ${st[0]}">${st[1]}</span></td></tr>`;});
   const html=`<section class="page land cls">${rptHead(true,'الكشف العام لمتابعة الحفظ','المعهد الديني الابتدائي · '+esc(clsName(c)))}
- <div class="ribbon">درجة كل مقطع من 10</div>
+ <div class="ribbon">درجة كل مقطع من ${MXc}</div>
  <div class="body"><table class="rt"><thead></thead><tbody></tbody></table>
-  <div style="display:flex;justify-content:space-between;align-items:center"><div class="legend"><span><i style="background:var(--g)"></i>درجة 9 – 10 / ممتاز</span><span><i style="background:var(--y)"></i>درجة 5 – 8 / جيد</span><span><i style="background:var(--r)"></i>درجة أقل من 5 / يحتاج تحسين</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:center"><div class="legend">${MXc===5?'<span><i style="background:var(--g)"></i>درجة 5 / ممتاز</span><span><i style="background:var(--y)"></i>درجة 3 – 4 / جيد</span><span><i style="background:var(--r)"></i>درجة أقل من 3 / يحتاج تحسين</span>':'<span><i style="background:var(--g)"></i>درجة 9 – 10 / ممتاز</span><span><i style="background:var(--y)"></i>درجة 5 – 8 / جيد</span><span><i style="background:var(--r)"></i>درجة أقل من 5 / يحتاج تحسين</span>'}</div>
    <div class="note">الخلية الفارغة = لم يُسمَّع المقطع بعد · <b class="pn"></b></div></div>
   ${rptSig(t)}</div></section>`;
   return {html,rows,thead};
@@ -1593,7 +1595,7 @@ const cardH=(title,sub,body,cls)=>`<div class="card${cls?' '+cls:''}"><div class
 const stCard=(r,title)=>cardH(title,'',`<div class="dc">${dnut([[r.green,STC.green],[r.gold,STC.gold],[r.red,STC.red],[r.none,STC.none]],pct(r.green+r.gold,r.n)+'%','على الخطة فأفضل')}<div class="lg">${[['متقدمون','green'],['على الخطة','gold'],['متأخرون','red'],['لم يبدأ','none']].map(x=>`<div><i style="background:${STC[x[1]]}"></i><span>${x[0]}</span><b>${r[x[1]]}</b></div>`).join('')}</div></div>`);
 const behCard=r=>{const t=r.bp+r.bn,p=pct(r.bp,t);return cardH('السلوك',t+' سلوكاً مسجّلاً',`<div class="dc">${dnut(t?[[r.bp,'#2EAA5E'],[r.bn,'#D63A2B']]:[],t?p+'%':'—',t?'إيجابي':'لا سلوكيات')}<div class="lg"><div><i style="background:#2EAA5E"></i><span>إيجابية</span><b>${r.bp}</b></div><div><i style="background:#D63A2B"></i><span>سلبية</span><b>${r.bn}</b></div><div><i style="background:#E0A21B"></i><span>أعلى مستوى</span><b>${r.lv[5]} طالب</b></div></div></div>`);};
 const lvCard=r=>{const mx=Math.max(1,...r.lv);return cardH('مستويات السلوك','عدد الطلبة في كل مستوى',`<div class="hist">${r.lv.map((v,i)=>`<div><b>${v}</b><i style="height:${Math.max(.6,v/mx*22)}mm;background:#E0A21B"></i><span>${i+1}</span></div>`).join('')}</div>`);};
-const avgCard=(r,h)=>cardH('متوسط الدرجات',r.scN+' درجة مسجّلة',`<div style="margin-top:2mm">${hrow('النتيجة / 10',(r.avg||0)*10,r.avg===null?'—':r.avg,'var(--g)')}</div>`);
+const avgCard=(r,h)=>{const mx=h===1?5:10;return cardH('متوسط الدرجات',r.scN+' درجة مسجّلة',`<div style="margin-top:2mm">${hrow('النتيجة / '+mx,(r.avg||0)/mx*100,r.avg===null?'—':r.avg,'var(--g)')}</div>`);};
 function aggPage(kind,id){
   let list,r,title,sub,rib,body='',c=null;
   const all=allStudents().filter(s=>!s.pending&&s.c);
@@ -1608,7 +1610,7 @@ function aggPage(kind,id){
     :[[r.n,'عدد الطلبة','var(--ink)'],[r.green,'متقدمون','#1f8a52'],[r.gold,'على الخطة','var(--gold-d)'],[r.red,'متأخرون','var(--r)'],[r.none,'لم يبدأ','#6c7a76']]);
   if(kind==='inst'){
     const l1=repStats(list.filter(s=>halaqa(s.c.g)===1)),l2=repStats(list.filter(s=>halaqa(s.c.g)===2));
-    body=kp+`<div class="g2">${stCard(r,'حالة جميع الطلبة')}${cardH('الحلقة الأولى والثانية','',`<div style="margin-top:2mm">${hrowS('الحلقة الأولى',l1)}${hrowS('الحلقة الثانية',l2)}</div><div class="avb"><div><b>${l1.avg===null?'—':l1.avg}</b><span>متوسط درجات الحلقة 1</span></div><div><b>${l2.avg===null?'—':l2.avg}</b><span>متوسط درجات الحلقة 2</span></div></div>`)}</div>`+
+    body=kp+`<div class="g2">${stCard(r,'حالة جميع الطلبة')}${cardH('الحلقة الأولى والثانية','',`<div style="margin-top:2mm">${hrowS('الحلقة الأولى',l1)}${hrowS('الحلقة الثانية',l2)}</div><div class="avb"><div><b>${l1.avg===null?'—':l1.avg}</b><span>متوسط درجات الحلقة 1 (من 5)</span></div><div><b>${l2.avg===null?'—':l2.avg}</b><span>متوسط درجات الحلقة 2 (من 10)</span></div></div>`)}</div>`+
       cardH('مقارنة الصفوف','حالة الطلبة في كل صف · أخضر متقدم · ذهبي على الخطة · أحمر متأخر · رمادي لم يبدأ',`<div class="rows">${cl.map(x=>hrowS(clsShort(x),repStats(x.students.filter(s=>!s.pending)))).join('')}</div>`,'wide')+
       `<div class="g2">${behCard(r)}${lvCard(r)}</div>`;
   }else if(kind==='hal'){
@@ -1618,7 +1620,7 @@ function aggPage(kind,id){
   }else{
     const N=segsOf(c.g).length,lvAvg=r.n?r1(r.lv.reduce((a,v,i)=>a+v*(i+1),0)/r.n):0;
     const hist=Array.from({length:N+1},(_,k)=>list.filter(s=>s.done.length===k).length),mx=Math.max(1,...hist);
-    const ind=cardH('المؤشرات الرئيسية','',`<div class="rows" style="margin-top:1mm">${hrow('متوسط الدرجات',(r.avg||0)*10,r.avg===null?'—':r.avg+' / 10','var(--g)')}${hrow('إنجاز الخطة',r.prog,r.prog+'%','var(--teal-d)')}${hrow('السلوك الإيجابي',pct(r.bp,r.bp+r.bn),pct(r.bp,r.bp+r.bn)+'%','var(--g)')}${hrow('مستوى السلوك',lvAvg/6*100,lvAvg+' / 6','var(--y)')}</div>`);
+    const ind=cardH('المؤشرات الرئيسية','',`<div class="rows" style="margin-top:1mm">${hrow('متوسط الدرجات',(r.avg||0)/mxOf(c.g)*100,r.avg===null?'—':r.avg+' / '+mxOf(c.g),'var(--g)')}${hrow('إنجاز الخطة',r.prog,r.prog+'%','var(--teal-d)')}${hrow('السلوك الإيجابي',pct(r.bp,r.bp+r.bn),pct(r.bp,r.bp+r.bn)+'%','var(--g)')}${hrow('مستوى السلوك',lvAvg/6*100,lvAvg+' / 6','var(--y)')}</div>`);
     const byT=c.tids.map(t=>({n:shortT(t),r:repStats(list.filter(s=>s.owner===t))})).concat([{n:'غير مختار',r:repStats(list.filter(s=>!s.owner||!c.tids.includes(s.owner)))}]).filter(x=>x.r.n);
     const tchCard=cardH('حسب المعلم','حالة طلاب كل معلم',`<div class="rows" style="margin-top:2mm;flex:none">${byT.map(x=>hrowS(esc(abbrT(x.n)),x.r)).join('')||'<div class="emp">لا يوجد</div>'}</div>`);
     const withAvg=s=>{const n=s.done.length;return n?s.done.reduce((a,d)=>a+d[0]+(d[1]||0),0)/n:0;};
@@ -2354,7 +2356,7 @@ const nomSids=c=>[...new Set(NOMS.filter(n=>n.c===c.id).map(n=>n.sid))].filter(i
 function honCard(c){
   const ns=NOMS.filter(n=>n.c===c.id),pub=honOf(c.id),ids=nomSids(c);
   const rows=c.tids.map(tid=>{const n=ns.find(x=>x.tid===tid),s=n&&c.students.find(x=>x.id===n.sid);
-    return `<div class="honrow"><span class="mut">${esc(shortT(tid))}</span><span>${s?`<b>${esc(shortN(s.name))}</b> <small class="mut">${stuAvg(s)===null?'':stuAvg(s)+' / 10'}</small>`:'<small class="mut">لم يرشّح بعد</small>'}</span></div>`;}).join('');
+    return `<div class="honrow"><span class="mut">${esc(shortT(tid))}</span><span>${s?`<b>${esc(shortN(s.name))}</b> <small class="mut">${stuAvg(s)===null?'':stuAvg(s)+' / '+mxOf(c.g)}</small>`:'<small class="mut">لم يرشّح بعد</small>'}</span></div>`;}).join('');
   const pn=pub?pub.sids.map(id=>byId(id)).filter(Boolean).map(s=>esc(shortN(s.name))).join(' · '):'';
   return `<div class="glass card"><div class="row sp"><div class="t">${clsName(c)}</div>${pub?`<span class="pill p-gold">منشور حتى ${fmt(pub.exp)}</span>`:''}</div>
    <div style="margin-top:6px">${rows||'<div class="mut">لا يوجد معلم مسند لهذا الصف</div>'}</div>
@@ -2377,7 +2379,7 @@ function honDel(id,cid){const c=CLASSES.find(x=>x.id===cid);
     await sync(true);toast('أُلغي النشر',true);aHonor();});}
 function honPick(cid){const c=CLASSES.find(x=>x.id===cid),pub=honOf(cid),pre=pub?pub.sids:nomSids(c);
   const l=c.students.filter(s=>!s.pending).sort(byAvg);
-  sheet(`<div class="t" style="font-size:17px">طلاب التكريم · ${clsName(c)}</div><div class="mut" style="margin-bottom:10px">اختر من طالب إلى أربعة طلاب، ثم اضغط نشر. المتوسط من 10 لدرجات التسميع.</div>
+  sheet(`<div class="t" style="font-size:17px">طلاب التكريم · ${clsName(c)}</div><div class="mut" style="margin-bottom:10px">اختر من طالب إلى أربعة طلاب، ثم اضغط نشر. المتوسط من الدرجة الكاملة لكل صف.</div>
    <div class="nomlist" id="hp-l">${l.map(s=>`<button class="glass item hpi${pre.includes(s.id)?' nomsel':''}" data-id="${s.id}" onclick="this.classList.toggle('nomsel')">${avaHTML(s,'mini')}<div class="grow"><div class="t" style="font-size:14px">${esc(s.name)}</div><div class="mut">${avTxt(s)}</div></div><span class="pill p-green chk">مختار</span></button>`).join('')||'<div class="mut">لا يوجد طلاب</div>'}</div>
    <div class="fe" id="hp-e"></div><button class="btn" id="hp-go">نشر التكريم</button>`);
   $('hp-go').onclick=()=>{const ids=[...document.querySelectorAll('#hp-l .nomsel')].map(b=>+b.dataset.id);
@@ -2698,7 +2700,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='9d2576f04590';
+const BUILD='429f5ae753a4';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
