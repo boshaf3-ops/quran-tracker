@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="577661c9afc5">
+<meta name="build" content="133d10b0a208">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -595,6 +595,7 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 .awcf{position:absolute;top:-8px;width:7px;height:11px;border-radius:2px;animation:awfall 4.6s linear infinite;opacity:0}
 @keyframes awfall{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.9}100%{transform:translateY(300px) rotate(300deg);opacity:0}}
 @media (prefers-reduced-motion:reduce){.awstrip,.awsh,.awcup,.awcup::after,.awbox,.awcupbig,.awsp,.awcf{animation:none!important}}
+.seg.sel{background:rgba(224,162,27,.14);border-radius:14px;box-shadow:inset 0 0 0 1.5px rgba(224,162,27,.65)}
 /* ===== الطالب المثالي ===== */
 .pill.p-pink{background:rgba(236,110,160,.26);color:#9A1F55}
 #t-tabs .tab.gate{color:#C23570;font-weight:700}
@@ -775,10 +776,10 @@ const tNames=c=>c.tids.map(i=>tById(i).name).join(' و ')||'بلا معلم';
 
 const statusOf=s=>{
   const segs=segsOf(s.c.g),n=s.done.length;
-  if(!n&&!s.partial)return{k:'none',p:'p-gray',d:0,t:'لم يبدأ التسجيل'};
-  const due=segs.filter(x=>x.e<TODAY).length,cur=segs.filter(x=>x.d<=TODAY).length;
+  if(!n)return{k:'none',p:'p-gray',d:0,t:'لم يبدأ التسجيل'};
+  const E=segs.filter(x=>x.d<=TODAY).length,due=segs.filter(x=>x.e<TODAY).length;
   if(n<due){const d=n-due;return{k:'red',p:'p-red',d,t:'متأخر عن الخطة'+(d===-1?' · مقطع واحد':d===-2?' · مقطعان':' · '+(-d)+' مقاطع')};}
-  if(n>cur){const d=n-cur;return{k:'green',p:'p-green',d,t:'متقدم على الخطة'+(d===1?' · مقطع واحد':d===2?' · مقطعان':' · '+d+' مقاطع')};}
+  if(n>E){const d=n-E;return{k:'green',p:'p-green',d,t:'متقدم على الخطة'+(d===1?' · مقطع واحد':d===2?' · مقطعان':' · '+d+' مقاطع')};}
   return{k:'gold',p:'p-gold',d:0,t:'على الخطة'};
 };
 const counts=c=>{const r={green:0,gold:0,red:0,none:0};c.students.forEach(s=>r[statusOf(s).k]++);return r;};
@@ -790,29 +791,30 @@ const BACK='<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
 const GQ=(v,max,k)=>k==='t'?(v>=3?'g':v>=2?'y':'r'):(max===10?(v>=8.5?'g':v>=4?'y':'r'):(v>=6?'g':v>=3?'y':'r'));
 const gsq=(lbl,v,max,k)=>`<div class="srow"><span class="gl">${lbl}</span><span class="gsq sm ${GQ(v,max,k)}" dir="ltr">${v}<small>/${max}</small></span></div>`;
 const TQ=v=>v>=9?'g':v>=5?'y':'r';
-const TJL=['','يحتاج تحسين','متوسط','ممتاز'];
-const tjPill=v=>v?`<span class="tjp t${v}">تجويد ${TJL[v]}</span>`:'';
-const tjPicker=(id,cur)=>`<div class="lab"><span>مستوى التجويد</span><span class="mut" id="${id}-v">${cur?TJL[cur]:'اختر واحداً'}</span></div><div class="tjsel" id="${id}" data-v="${cur||0}">${[3,2,1].map(v=>`<button type="button" class="tjb t${v}${cur===v?' on':''}" data-v="${v}">${TJL[v]}</button>`).join('')}</div>`;
-function tjBind(id){const box=$(id);if(!box)return;box.querySelectorAll('.tjb').forEach(b=>b.onclick=()=>{box.querySelectorAll('.tjb').forEach(x=>x.classList.toggle('on',x===b));box.dataset.v=b.dataset.v;$(id+'-v').textContent=TJL[+b.dataset.v];box.classList.remove('shake');});}
-const tjVal=id=>$(id)?+($(id).dataset.v||0):0;
-const scoreBox=d=>{const two=d[1]!==null,tot=Math.round((d[0]+(two?d[1]:0))*10)/10;
-  return (two&&ROLE!=='student'?`<div class="smalls">${gsq('تلاوة',d[0],7,'h')}${gsq('حفظ',d[1],3,'t')}</div>`:'')+`<div class="gbig ${TQ(tot)}"><span class="gl2">النتيجة</span><b dir="ltr">${tot}</b><small dir="ltr">/10</small></div>`;};
+const scoreBox=d=>{const tot=Math.round((d[0]+(d[1]||0))*10)/10;
+  return `<div class="gbig ${TQ(tot)}"><span class="gl2">النتيجة</span><b dir="ltr">${tot}</b><small dir="ltr">/10</small></div>`;};
 const expectedIdx=segs=>{const i=segs.findIndex(x=>x.e>=TODAY);return i<0?segs.length-1:i;};
+const gAt=(s,i)=>{const k=s.dix.indexOf(i);return k<0?null:s.done[k];};
+function setGrade(s,i,sc){const k=s.dix.indexOf(i);if(k>=0)s.done[k]=[sc,null,0];else{const q=s.dix.map((x,j)=>[x,s.done[j]]);q.push([i,[sc,null,0]]);q.sort((a,b)=>a[0]-b[0]);s.dix=q.map(x=>x[0]);s.done=q.map(x=>x[1]);}}
+function unsetGrade(s,i){const k=s.dix.indexOf(i);if(k>=0){s.dix.splice(k,1);s.done.splice(k,1);}}
+const wkTxt=g=>{const sg=segsOf(g),w=sg[expectedIdx(sg)];return w?'مقطع الأسبوع: '+rng(w):'';};
+function selSeg(s){const segs=segsOf(s.c.g),N=segs.length;let i=T.gi;
+  if(i!=null&&i>=0&&i<N&&!gAt(s,i))return i;
+  const ex=expectedIdx(segs);if(!gAt(s,ex))return ex;
+  for(let k=ex+1;k<N;k++)if(!gAt(s,k))return k;
+  for(let k=0;k<N;k++)if(!gAt(s,k))return k;return -1;}
+function pickSeg(i){T.gi=i;vStudent();(T.admin?$('admin-body'):$('teacher-body')).scrollTop=0;}
 function segRows(s,lim,edit){
-  const segs=segsOf(s.c.g),st=statusOf(s),ex=expectedIdx(segs);
+  const segs=segsOf(s.c.g),ex=expectedIdx(segs),sel=edit?selSeg(s):-1,lo=lim?Math.max(0,Math.min(ex,segs.length-lim)):0;
   return segs.map((g,i)=>{
-    let rail='mute',mid='',sc2='<span style="color:var(--ink-2);font-size:13px">—</span>';
-    if(i<s.done.length){rail='green';const d=s.done[i];
-      mid=(d[1]!==null&&d[2]?`<div style="margin-top:6px;line-height:1">${tjPill(d[2])}</div>`:'')+`<div class="pl" style="margin-top:6px"><i style="width:100%;background:var(--green)"></i></div><div style="margin-top:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="pill p-green" style="font-size:11px">✓ تم التسميع</span>${edit?`<button type="button" class="btn-s" style="padding:3px 12px;font-size:11.5px" onclick="openEditGrade(${s.id},${i})">تعديل الدرجة</button>`:''}</div>`;
+    const d=gAt(s,i),fut=g.d>TODAY;let rail='mute',mid='',sc2='<span style="color:var(--ink-2);font-size:13px">—</span>';
+    if(d){rail='green';
+      mid=`<div class="pl" style="margin-top:6px"><i style="width:100%;background:var(--green)"></i></div><div style="margin-top:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="pill p-green" style="font-size:11px">✓ تم التسميع</span>${fut?'<span class="pill p-gold" style="font-size:11px">سمّعه مبكراً</span>':''}${edit?`<button type="button" class="btn-s" style="padding:3px 12px;font-size:11.5px" onclick="openEditGrade(${s.id},${i})">تعديل الدرجة</button>`:''}</div>`;
       sc2=scoreBox(d);}
-    else if(i===s.done.length){
-      rail=st.k==='none'?'mute':st.k;
-      if(s.partial>0){const fr=Math.min(1,Math.max(0,(s.partial-g.f+1)/(g.t-g.f+1))),c=fr<.5?'red':'gold';
-        mid=`<div class="pl"><i style="width:${(fr*100).toFixed(1)}%;background:var(--${c})"></i></div><div class="m" style="margin-top:5px;font-weight:600;color:${c==='red'?'#7C1A10':'#6B4700'}">سمع إلى آية ${s.partial} من ${g.t} · لم يكتمل</div>`;
-        sc2='<span style="color:var(--ink-2);font-size:12px">بلا درجة</span>';}
-      else mid=`<div class="m" style="margin-top:5px">لم يُسمَّع بعد</div>`;}
-    return `<div class="seg${i===ex?' plan':''}${lim&&i>=lim?' more':''}"><div class="rail" style="background:${rail==='mute'?'rgba(22,94,80,.18)':`var(--${rail})`}"></div>
-      <div style="min-width:0"><div class="n">${rng(g)}</div><div class="m">${fmtR(g)}${i===ex?' <span class="pill p-gold" style="font-size:10.5px;padding:2px 8px">نحن هنا</span>':''}</div>${mid}</div><div class="score">${sc2}</div></div>`;}).join('');
+    else mid=`<div class="m" style="margin-top:5px">${edit?'اضغط لتسميعه الآن':'لم يُسمَّع بعد'}</div>`;
+    const more=lim&&(i<lo||i>=lo+lim);
+    return `<div class="seg${i===ex?' plan':''}${i===sel?' sel':''}${more?' more':''}"${edit&&!d?` onclick="pickSeg(${i})" style="cursor:pointer"`:''}><div class="rail" style="background:${rail==='mute'?'rgba(22,94,80,.18)':`var(--${rail})`}"></div>
+      <div style="min-width:0"><div class="n">${rng(g)}</div><div class="m">${fmtR(g)}${i===ex?' <span class="pill p-gold" style="font-size:10.5px;padding:2px 8px">مقطع الأسبوع</span>':''}</div>${mid}</div><div class="score">${sc2}</div></div>`;}).join('');
 }
 const BPOS=['التزام بالهدوء','مساعدة زميل','مشاركة فعّالة','حسن الأدب'],BNEG=['تأخر عن الحلقة','كثرة الكلام','نسيان المصحف','عدم الانتباه'];
 const behOn=(s,sg,tx)=>s.beh.some(b=>b[0]===sg&&b[1]===tx&&b[2].getTime()===TODAY.getTime());
@@ -860,7 +862,7 @@ function hydrate(st){
   CLASSES.length=0;POOL.length=0;const cm={};
   st.classes.forEach(c=>{const o={id:c.id,g:c.g,sec:c.sec,tids:c.tids.slice(),students:[]};cm[c.id]=o;CLASSES.push(o);});
   st.students.forEach(x=>{
-    const s={id:x.id,name:x.name,init:x.name.split(' ').slice(0,2).map(w=>w[0]).join(' '),done:x.done.map(d=>[+d[0],d[1]===null?null:+d[1],+d[2]||0]),partial:x.partial||0,
+    const s={id:x.id,name:x.name,init:x.name.split(' ').slice(0,2).map(w=>w[0]).join(' '),done:x.done.map(d=>[+d[0],d[1]===null?null:+d[1],+d[2]||0]),dix:(x.dix&&x.dix.length===x.done.length)?x.dix.map(Number):x.done.map((_,i)=>i),partial:x.partial||0,
       beh:x.beh.map(b=>[b[0]==='-'?'−':'+',b[1],dayDate(b[2])]),owner:x.owner||0,pin:x.pin||'',photo:x.photo||undefined,medals:x.medals||{},pending:!!x.pending,
       by:x.by||0,at:x.at?new Date(x.at):undefined,prev:x.prev||undefined,nextG:x.nextG||undefined,c:null};
     const c=cm[x.c];if(c){s.c=c;c.students.push(s);}else if(ROLE==='admin')POOL.push(s);});
@@ -966,10 +968,10 @@ function drawClassFilters(){
 }
 function drawStudents(){
   const c=CLASSES.find(x=>x.id===T.cid),l=filtList(c.students,T.fm).filter(OWF(c));
-  $('sl').innerHTML=l.length?l.map(s=>{const st=statusOf(s),cur=segsOf(c.g)[s.done.length],
+  $('sl').innerHTML=l.length?l.map(s=>{const st=statusOf(s),
     oc=T.admin?`openAStu(${s.id},'cls',${c.id})`:`go('stu',{sid:${s.id}})`;
     return `<button class="glass item" onclick="${oc}">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div>
-      <div class="mut">${cur?'الحالي: '+rng(cur):'أتم كل المقاطع'} · ${s.done.length} من ${segsOf(c.g).length}</div><div class="mut">${s.owner?'مع الأستاذ '+esc(shortT(s.owner)):'غير مختار من أي معلم'}</div></div><span class="pill ${st.p}">${stShort(st)}</span>${CHEV}</button>`;}).join('')
+      <div class="mut">${wkTxt(c.g)} · ${s.done.length} من ${segsOf(c.g).length}</div><div class="mut">${s.owner?'مع الأستاذ '+esc(shortT(s.owner)):'غير مختار من أي معلم'}</div></div><span class="pill ${st.p}">${stShort(st)}</span>${CHEV}</button>`;}).join('')
     :'<div class="glass card empty">لا يوجد طلبة في هذا التصنيف</div>';
 }
 function profileCard(s,st){
@@ -1106,7 +1108,6 @@ function trailHTML(s,st){
   const segs=segsOf(s.c.g),rows=PLAN[s.c.g],start=rows[0].d,end=segs[segs.length-1].e,span=end-start;
   const fr=d=>Math.max(0,Math.min(1,(d-start)/span)),today=fr(TODAY),n=s.done.length;
   let own=n?fr(segs[n-1].e):0;
-  if(n<segs.length&&s.partial>0){const cur=segs[n],pv=n?fr(segs[n-1].e):0;own=pv+(fr(cur.e)-pv)*Math.min(1,(s.partial-cur.f+1)/(cur.t-cur.f+1));}
   if(n>=segs.length)own=1;
   let pos=0,col='rgba(120,134,130,.55)',msg='لم يبدأ تسجيلك بعد. ابدأ بأول مقطع.';
   if(st.k==='gold'){pos=today;col='#E0A21B';msg='أنت ماشٍ على الخطة. استمر.';}
@@ -1131,7 +1132,7 @@ const CRACKS='<svg class="crk tl" viewBox="0 0 96 78"><path d="M96 0 L72 14 L66 
 const ORBS=[[6,-6,20,'-10px','6.5s','0s'],[22,-8,12,'8px','5.6s','1.8s'],[42,-10,24,'-6px','7.2s','.9s'],[60,-8,14,'12px','6s','2.8s'],[78,-8,18,'-8px','6.8s','3.6s'],[93,-6,12,'6px','5.8s','.4s']].map(o=>`<i class="orb" style="left:${o[0]}%;top:${o[1]}px;width:${o[2]}px;height:${o[2]}px;--dx:${o[3]};animation-duration:${o[4]};animation-delay:${o[5]}"></i>`).join('')+'<i class="orb" style="right:-12px;top:30%;width:16px;height:16px;--dx:20px;animation-duration:6.4s;animation-delay:2.2s"></i><i class="orb" style="left:-12px;top:45%;width:14px;height:14px;--dx:-20px;animation-duration:7s;animation-delay:1.2s"></i>';
 function renderStudent(s){
   SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
-  const segs=segsOf(s.c.g),st=statusOf(s),cur=segs[s.done.length],nxt=segs[s.done.length+1];
+  const segs=segsOf(s.c.g),st=statusOf(s),ex=expectedIdx(segs),cur=segs[ex],nxt=segs[ex+1];
   const pos=s.beh.filter(b=>b[0]==='+'),neg=s.beh.filter(b=>b[0]!=='+');
   const bl=l=>l.length?l.map(b=>`<span class="pill ${b[0]==='+'?'p-green':'p-red'}" style="display:block;margin-bottom:6px;text-align:center">${esc(b[1])}<br><span style="font-weight:400;font-size:11px">${fmt(b[2])}</span></span>`).join(''):'<div class="mut" style="text-align:center">لا يوجد</div>';
   const tmBlock=`<div class="sec" style="margin:14px 6px 8px"><b>معلمو القرآن الكريم</b></div>
@@ -1144,7 +1145,7 @@ function renderStudent(s){
   <div class="glass seg2" id="s-seg" style="grid-template-columns:1fr 1fr"><button data-k="hifz" class="on" onclick="setSubS('hifz')">التسميع</button><button data-k="beh" onclick="setSubS('beh')">السلوك</button></div>
   <div id="ss-hifz">
    <div class="grid2">
-    <div class="glass card${cur?' curseg':''}"><div class="mut">المقطع الحالي</div><div class="t" style="margin:2px 0">${cur?rng(cur):'أتممت كل المقاطع'}</div>${cur?`<span class="pill p-gold">${fmtR(cur)}</span>`:''}</div>
+    <div class="glass card${cur?' curseg':''}"><div class="mut">مقطع هذا الأسبوع</div><div class="t" style="margin:2px 0">${cur?rng(cur):'أتممت كل المقاطع'}</div>${cur?`<span class="pill p-gold">${fmtR(cur)}</span>${gAt(s,ex)?' <span class="pill p-green">✓ تم التسميع</span>':''}`:''}</div>
     <div class="glass card"><div class="mut">المقطع التالي</div><div class="t" style="margin:2px 0">${nxt?rng(nxt):'—'}</div>${nxt?`<span class="pill p-gray">${fmtR(nxt)}</span>`:''}</div>
    </div>
    <div class="glass card" id="j-segs" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">كل المقاطع · الفصل ${TERMN[TERM-1]}</div>${segRows(s,2)}
@@ -1233,27 +1234,23 @@ async function smSend(){
 
 /* ---------- تعديل درجة مقطع سابق (المعلم / الإدارة) ---------- */
 function openEditGrade(sid,i){
-  const s=byId(sid),g=segsOf(s.c.g)[i],d=s.done[i],H1=halaqa(s.c.g)===1;
-  sheet(`<div class="t" style="font-size:17px">تعديل درجة ${esc(rng(g))}</div><div class="mut" style="margin:2px 0 8px">${esc(s.name)} · الدرجة الحالية <bdi dir="ltr">${Math.round((d[0]+(d[1]||0))*10)/10} / 10</bdi></div>
-   <div class="lab"><span>${H1?'تقييم الحفظ':'تقييم التلاوة'}</span><span dir="ltr"><span id="eg-hv">${d[0]}</span> / ${H1?10:7}</span></div>
-   <input type="range" id="eg-h" min="0" max="${H1?10:7}" step="0.5" value="${d[0]}">
-   ${H1?'':`<div class="lab"><span>تقييم الحفظ</span><span dir="ltr"><span id="eg-tv">${d[1]}</span> / 3</span></div><input type="range" id="eg-t" min="0" max="3" step="0.5" value="${d[1]}">
-   ${tjPicker('eg-tj',d[2]||0)}`}
-   <div class="total"><div><span class="mut">المجموع </span><span dir="ltr" style="display:inline-block"><b id="eg-tot"></b><span class="mut"> / 10</span></span></div></div>
+  const s=byId(sid),g=segsOf(s.c.g)[i],d=gAt(s,i),cur=Math.round((d[0]+(d[1]||0))*10)/10;
+  sheet(`<div class="t" style="font-size:17px">تعديل درجة ${esc(rng(g))}</div><div class="mut" style="margin:2px 0 8px">${esc(s.name)} · الدرجة الحالية <bdi dir="ltr">${cur} / 10</bdi></div>
+   <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="eg-hv">${cur}</span> / 10</span></div>
+   <input type="range" id="eg-h" min="0" max="10" step="0.5" value="${cur}">
    <div class="fe" id="eg-e"></div><button class="btn" id="eg-save" style="margin-top:6px">حفظ التعديل</button>
-   ${i===s.done.length-1?'<button type="button" class="btn-s" id="eg-del" style="width:100%;margin-top:10px;padding:11px;color:#7C1A10">حذف الدرجة وإرجاع المقطع «لم يُسمَّع»</button>':''}`);
-  const dl=$('eg-del');if(dl)dl.onclick=()=>{
+   <button type="button" class="btn-s" id="eg-del" style="width:100%;margin-top:10px;padding:11px;color:#7C1A10">حذف الدرجة وإرجاع المقطع «لم يُسمَّع»</button>`);
+  $('eg-del').onclick=()=>{
     sheet(`<div class="t" style="font-size:17px;color:#7C1A10">حذف الدرجة؟</div><div class="mut" style="margin:6px 0 12px;line-height:1.8">ستُحذف درجة ${esc(rng(g))} للطالب ${esc(s.name)} ويرجع المقطع «لم يُسمَّع». لا يمكن التراجع.</div>
      <button class="btn" id="eg-yes" style="background:linear-gradient(180deg,#E0574A,#C0392B);box-shadow:0 6px 16px rgba(192,57,43,.4)">نعم، احذف الدرجة</button><button class="btn-s" style="width:100%;margin-top:10px;padding:11px" onclick="openEditGrade(${sid},${i})">إلغاء</button>`);
-    $('eg-yes').onclick=async()=>{const r=await srv('delete_last_grade',{p_student:sid});
+    $('eg-yes').onclick=async()=>{const r=await srv('delete_grade',{p_student:sid,p_idx:i});
       if(r.error){toast(r.error==='forbidden'?'هذا الطالب ليس في قائمتك':'تعذّر الحذف',true);closeSheet();return;}
       closeSheet();toast('حُذفت الدرجة وعاد المقطع لم يُسمَّع',true);await sync(true);vStudent();};};
-  tjBind('eg-tj');const h=$('eg-h'),tj=$('eg-t'),upd=()=>{[h,tj].filter(Boolean).forEach(fill);$('eg-hv').textContent=h.value;if(tj)$('eg-tv').textContent=tj.value;$('eg-tot').textContent=Math.round((+h.value+(tj?+tj.value:0))*10)/10;};
-  [h,tj].filter(Boolean).forEach(x=>x.addEventListener('input',upd));upd();
-  $('eg-save').onclick=async()=>{const tjv=tjVal('eg-tj')||(d[2]||0),nd=[+h.value,tj?+tj.value:null,tjv];
-    const r=await srv('edit_grade',{p_student:sid,p_idx:i,p_hifz:nd[0],p_tajweed:nd[1],p_tj:tjv||null});
+  const h=$('eg-h'),upd=()=>{fill(h);$('eg-hv').textContent=h.value;};h.addEventListener('input',upd);upd();
+  $('eg-save').onclick=async()=>{const sc=+h.value;
+    const r=await srv('save_grade',{p_student:sid,p_idx:i,p_hifz:sc});
     if(r.error){$('eg-e').textContent=r.error==='net'?'تعذّر الاتصال بالخادم':r.error==='forbidden'?'هذا الطالب ليس في قائمتك. اخترته من الكشف أولاً':'تعذّر حفظ التعديل';return;}
-    s.done[i]=nd;closeSheet();toast('تم تعديل الدرجة');await sync(true);vStudent();};
+    setGrade(s,i,sc);closeSheet();toast('تم تعديل الدرجة');await sync(true);vStudent();};
 }
 
 /* ---------- المعلم ---------- */
@@ -1261,7 +1258,7 @@ let T={csub:'hifz',sub:'hifz',view:'home',cid:0,sid:0,stage:2,tid:0,tab:'classes
 document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('.tabbar .tab');if(!t||t.hasAttribute('data-logout'))return;const el=t.querySelector('.cbtn,.gbtn')||t.querySelector('svg');if(!el||!el.animate)return;
   el.animate([{transform:'scale(1)'},{transform:'scale(1.38)'},{transform:'scale(.9)'},{transform:'scale(1)'}],{duration:480,easing:'cubic-bezier(.3,1.6,.5,1)'});},true);
 function setTab(t){T.tab=t;document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));}
-function go(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:false});if(view==='stu'&&p.sid)T.sub='hifz';if(view==='tcls'&&p.fm)T.csub='hifz';$('admin-body').innerHTML='';
+function go(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:false});if(view==='stu'&&p.sid){T.sub='hifz';T.gi=null;}if(view==='tcls'&&p.fm)T.csub='hifz';$('admin-body').innerHTML='';
   const b=$('teacher-body');
   ({tas:vTas,tcls:vTasClass,home:vHome,cls:vClass,stu:vStudent,curr:vCurr,msgs:vMsgs,thread:vThread,nom:vNom})[view]();
   b.scrollTop=0;updBadge();updGate();}
@@ -1385,9 +1382,9 @@ async function tbeh(id,sg,tx,el){const s=byId(id);
 }
 function drawMine(){
   const c=CLASSES.find(x=>x.id===T.cid),l=filtList(myIn(c),T.fm);
-  $('sl').innerHTML=l.length?l.map(s=>{const st=statusOf(s),cur=segsOf(c.g)[s.done.length];
+  $('sl').innerHTML=l.length?l.map(s=>{const st=statusOf(s);
     return `<button class="glass item" onclick="openTS(${s.id},'tas',${c.id})">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)} ${s.pending?'<span class="pill p-gold" style="font-size:11px;margin-inline-start:6px">بانتظار الإدارة</span>':''}</div>
-     <div class="mut">${cur?'الحالي: '+rng(cur):'أتم كل المقاطع'} · ${s.done.length} من ${segsOf(c.g).length}</div></div><span class="pill ${st.p}">${stShort(st)}</span>${CHEV}</button>`;}).join('')
+     <div class="mut">${wkTxt(c.g)} · ${s.done.length} من ${segsOf(c.g).length}</div></div><span class="pill ${st.p}">${stShort(st)}</span>${CHEV}</button>`;}).join('')
     :'<div class="glass card empty">لا يوجد طلبة في هذا التصنيف</div>';
 }
 function vHome(){
@@ -1411,11 +1408,11 @@ function drawRoster(){
   $('rs-sum').innerHTML=`<div class="g3"><div class="glass stat" style="cursor:default"><b style="color:#145A31">${mine}</b><span>معي</span></div><div class="glass stat" style="cursor:default"><b style="color:#6b7573">${tk}</b><span>مع زميلي</span></div><div class="glass stat" style="cursor:default"><b style="color:#8A5A00">${fr}</b><span>غير مختار</span></div></div>`;
   const l=filtList(c.students,T.fm);
   $('sl').innerHTML=l.length?l.map(s=>{
-    const m=s.owner===ME.id,tkn=s.owner&&!m,st=statusOf(s),cur=segsOf(c.g)[s.done.length];
+    const m=s.owner===ME.id,tkn=s.owner&&!m,st=statusOf(s);
     return `<div class="glass rrow${tkn?' taken':''}">
       <button class="chk${m?' on':''}" ${tkn?'disabled':''} onclick="toggleOwn(${s.id})" aria-label="${tkn?'مأخوذ':m?'إلغاء الاختيار':'اختيار الطالب'}">${m?CHECK:tkn?LOCK:''}</button>
       <button class="rbody" onclick="openTS(${s.id},'cls',${c.id})">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)} ${s.pending?'<span class="pill p-gold" style="font-size:11px;margin-inline-start:6px">بانتظار الإدارة</span>':''}</div>
-        <div class="mut">${cur?'الحالي: '+rng(cur):'أتم كل المقاطع'} · ${stShort(st)}</div></div></button>
+        <div class="mut">${wkTxt(c.g)} · ${s.done.length} من ${segsOf(c.g).length} · ${stShort(st)}</div></div></button>
       ${tkn?`<div class="rextra"><span class="pill p-gray">مع الأستاذ ${esc(shortT(s.owner))}</span><button class="btn-s" onclick="openTS(${s.id},'cls',${c.id})">حفظ الطالب</button></div>`:''}</div>`;}).join('')
     :'<div class="glass card empty">لا يوجد طلبة في هذا التصنيف</div>';
 }
@@ -1432,24 +1429,19 @@ function subTabs(){const tabs=[['hifz','التسميع'],['beh','السلوك']]
 function setSub(k){T.sub=k;['hifz','beh','adm'].forEach(x=>{const e=$('sub-'+x);if(e)e.hidden=x!==k;});
   document.querySelectorAll('.seg2 button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));}
 function vStudent(){
-  setTab(T.from==='tas'?'tas':'roster');const s=byId(T.sid),segs=segsOf(s.c.g),seg=segs[s.done.length],st=statusOf(s);
+  setTab(T.from==='tas'?'tas':'roster');const s=byId(T.sid),segs=segsOf(s.c.g),st=statusOf(s),ex=expectedIdx(segs),gi=selSeg(s),seg=gi>=0?segs[gi]:null;
   let grade='<div class="glass card"><div class="t">أتم الطالب جميع مقاطع المرحلة</div><div class="mut">ما شاء الله، لا توجد مقاطع متبقية.</div></div>';
   if(seg){
-    const late=seg.e<TODAY,lo=seg.f-1,H1=halaqa(s.c.g)===1;
-    grade=`<div class="glass card"><div class="row sp"><div class="t">تسميع: ${rng(seg)}</div><span class="pill ${late?'p-red':'p-gold'}">${fmtR(seg)}</span></div>
-    <div class="mut" style="margin-top:2px">اسحب الشريط إلى آخر آية سمّعها الطالب</div>
-    <div class="lab"><span>وصل إلى الآية</span><span id="g-a" dir="ltr"></span></div>
-    <input type="range" id="g-ayah" min="${lo}" max="${seg.t}" step="1" value="${Math.max(s.partial,lo)}" style="--c:var(--gold)">
-    <div class="status" id="g-st"></div>
-    <div id="g-grades"><div class="lab"><span>${H1?'تقييم الحفظ':'تقييم التلاوة'}</span><span dir="ltr"><span id="g-hv">${H1?8:6}</span> / ${H1?10:7}</span></div>
-    <input type="range" id="g-h" min="0" max="${H1?10:7}" step="0.5" value="${H1?8:6}">
-    ${H1?'':`<div class="lab"><span>تقييم الحفظ</span><span dir="ltr"><span id="g-tv">2.5</span> / 3</span></div>
-    <input type="range" id="g-t" min="0" max="3" step="0.5" value="2.5">
-    ${tjPicker('g-tj',0)}`}</div>
-    <div class="total"><div><span class="mut">المجموع </span><span dir="ltr" style="display:inline-block"><b id="g-tot">${H1?8:8.5}</b><span class="mut"> / 10</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div></div>`;}
+    const tag=gi===ex?'مقطع هذا الأسبوع':seg.d>TODAY?'مقطع قادم · تسميع مبكر':'مقطع سابق',pc=gi===ex?'p-gold':seg.d>TODAY?'p-gray':'p-red';
+    grade=`<div class="glass card"><div class="row sp"><div class="t">تسميع: ${rng(seg)}</div><span class="pill ${pc}">${tag}</span></div>
+    <div class="mut" style="margin-top:2px">${fmtR(seg)} · يمكنك اختيار أي مقطع آخر من القائمة</div>
+    <select class="field" id="g-seg" style="margin:8px 0 2px">${segs.map((g,i)=>gAt(s,i)?'':`<option value="${i}"${i===gi?' selected':''}>${esc(rng(g))} · ${fmtR(g)}${i===ex?' (هذا الأسبوع)':''}</option>`).join('')}</select>
+    <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="g-hv">8</span> / 10</span></div>
+    <input type="range" id="g-h" min="0" max="10" step="0.5" value="8">
+    <div class="total"><div><span class="mut">الدرجة </span><span dir="ltr" style="display:inline-block"><b id="g-tot">8</b><span class="mut"> / 10</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div></div>`;}
   (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">حفظ تقرير الطالب PDF</button></div>`+profileCard(s,st)+subTabs()+`<div class="wst"><div id="sub-hifz"${vis('hifz')}>`+grade+
-   `<div class="glass card" id="cur-card" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">منهج الطالب</div>${segRows(s,2,true)}
-    <button class="btn-s" id="more-btn" style="width:100%;margin:8px 0 10px" onclick="toggleMore()">مزيد</button></div></div>
+   `<div class="glass card" id="cur-card" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">منهج الطالب</div>${segRows(s,0,true)}
+    <div style="height:8px"></div></div></div>
     <div id="sub-beh"${vis('beh')}><div class="glass card" id="tlvbox">${lvInner(s)}</div>${medalsCard(s)}<div class="glass card"><div class="t">تسجيل السلوك</div>
     <div class="mut" style="margin:2px 0 12px">اضغط على السلوك لتسجيله اليوم، واضغط مرة ثانية لإلغائه</div>
     <div class="bcols"><div><div class="bhead pos">سلوك إيجابي</div>${BPOS.map(x=>`<button class="bopt pos${behOn(s,'+',x)?' on':''}" data-b="+|${x}">${x}<small>+${BPT[x]}</small></button>`).join('')}</div>
@@ -1463,18 +1455,10 @@ function vStudent(){
     const r=await srv('toggle_behavior',{p_student:s.id,p_sign:sg==='+'?'+':'-',p_txt:tx});
     if(r.error){toast('تعذّر حفظ السلوك، حدّث الصفحة',true);await sync(true);vStudent();}});
   if(!seg)return;
-  tjBind('g-tj');const a=$('g-ayah'),h=$('g-h'),t=$('g-t'),ctl=[a,h,t].filter(Boolean);
-  const upd=()=>{ctl.forEach(fill);const v=+a.value,full=v===seg.t;
-    $('g-a').textContent=v<seg.f?'لم يبدأ':v+' من '+seg.t;$('g-hv').textContent=h.value;if(t)$('g-tv').textContent=t.value;
-    const e=$('g-st');e.style.background=full?'rgba(46,170,94,.28)':'rgba(214,58,43,.24)';e.style.color=full?'#145A31':'#7C1A10';
-    e.textContent=full?'تم تسميع المقطع كاملاً':v<seg.f?'لم يبدأ التسميع بعد':'لم يتم تسميع المقطع كاملاً (وصل آية '+v+') — لا تُرصد درجة';
-    $('g-grades').style.opacity=full?1:.35;$('g-grades').style.pointerEvents=full?'auto':'none';
-    $('g-tot').textContent=full?Math.round((+h.value+(t?+t.value:0))*10)/10:'—';};
-  ctl.forEach(x=>x.addEventListener('input',upd));upd();
-  $('g-save').onclick=async()=>{const v=+a.value;let p;
-    if(v===seg.t){const tjv=tjVal('g-tj');if($('g-tj')&&!tjv){const b=$('g-tj');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');toast('اختر مستوى التجويد أولاً',true);return;}
-      const d=[+h.value,t?+t.value:null,tjv];s.done.push(d);s.partial=0;toast('تم رصد الدرجة');p=srv('save_grade',{p_student:s.id,p_hifz:d[0],p_tajweed:d[1],p_tj:tjv||null});}
-    else{s.partial=v<seg.f?0:v;toast(v<seg.f?'لم يُسجّل تسميع':'حُفظ التسميع الجزئي — بلا درجة',true);p=srv('save_partial',{p_student:s.id,p_ayah:s.partial});}
+  const h=$('g-h'),upd=()=>{fill(h);$('g-hv').textContent=h.value;$('g-tot').textContent=h.value;};h.addEventListener('input',upd);upd();
+  $('g-seg').onchange=e=>{T.gi=+e.target.value;vStudent();};
+  $('g-save').onclick=async()=>{const sc=+h.value,idx=gi;
+    setGrade(s,idx,sc);T.gi=null;toast('تم رصد الدرجة');const p=srv('save_grade',{p_student:s.id,p_idx:idx,p_hifz:sc});
     vStudent();(T.admin?$('admin-body'):$('teacher-body')).scrollTop=0;
     const r=await p;if(r.error){toast('تعذّر الحفظ في الخادم، حدّث الصفحة',true);await sync(true);vStudent();}};
 }
@@ -1527,19 +1511,16 @@ const abbrT=n=>String(n).replace(/^\s*الأستاذة\s+/,'أ. ').replace(/^\s*
 const rptSig=t=>{const r=rsOf(t);return `<div class="sig"><div>معلم المادة<b>${esc(abbrT(t.name))}</b></div><div>إشراف المعلم الأول<b>${esc(abbrT(r.sup))}</b></div><div>المدير المساعد<b>${esc(abbrT(r.asst))}</b></div><div>مدير المعهد<b>${esc(abbrT(r.dir))}</b></div></div>`;};
 const rptTeacher=(c,s)=>(s&&s.owner&&tById(s.owner))||(!T.admin&&c.tids.includes(ME.id)?ME:tById(c.tids[0]))||ME;
 function rptStuPage(s){
-  const c=s.c,segs=segsOf(c.g),N=segs.length,n=s.done.length,H1=halaqa(c.g)===1,st=statusOf(s),t=rptTeacher(c,s),ex=expectedIdx(segs);
+  const c=s.c,segs=segsOf(c.g),N=segs.length,n=s.done.length,st=statusOf(s),t=rptTeacher(c,s),E=segs.filter(x=>x.d<=TODAY).length,ex=Math.max(0,Math.min(N-1,E-1));
   const tot=d=>Math.round((d[0]+(d[1]||0))*10)/10,rs=s.done.map(tot),avg=n?Math.round(rs.reduce((a,b)=>a+b,0)/n*10)/10:null;
   const stc=st.k==='red'?'late':st.k==='green'?'ahead':st.k==='none'?'none':'ok';
   const start=segs[0].d,span=(segs[N-1].e-start)||1,pos=d=>Math.max(0,Math.min(100,(d-start)/span*100));
-  const gotP=n?pos(segs[n-1].e):0,expP=pos(segs[ex].e);
+  const gotP=n?pos(segs[Math.min(N,n)-1].e):0,expP=E?pos(segs[ex].e):0;
   const fill=st.k==='red'?'var(--r)':st.k==='green'?'var(--g)':'var(--y)';
-  const rows=n?s.done.map((d,i)=>{const g=segs[i];
-    const cells=H1?`<td><span class="big ${TQ(rs[i])}">${d[0]}<small>/10</small></span></td>`
-      :`<td><span class="sq ${GQ(d[0],7,'h')}">${d[0]}<small>/7</small></span></td><td><span class="sq ${GQ(d[1],3,'t')}">${d[1]}<small>/3</small></span></td><td><span class="big ${TQ(rs[i])}">${rs[i]}<small>/10</small></span></td><td style="font-size:9pt;font-weight:700;color:${['','#7C1A10','#6B4700','#145A31'][d[2]||0]}">${d[2]?TJL[d[2]]:'—'}</td>`;
-    return `<tr><td>${i+1}</td><td class="sn">${rng(g)}</td><td class="w">${fmtR(g)}</td>${cells}</tr>`;}).join('')
-    :`<tr><td colspan="${H1?4:7}" style="height:12mm">لم يُسمَّع أي مقطع بعد</td></tr>`;
-  const head=H1?`<th style="width:9mm">م</th><th>المقطع</th><th style="width:38mm">أسبوع التسميع</th><th style="width:24mm">الحفظ / 10</th>`
-    :`<th style="width:9mm">م</th><th>المقطع</th><th style="width:30mm">أسبوع التسميع</th><th style="width:16mm">التلاوة / 7</th><th style="width:16mm">الحفظ / 3</th><th style="width:19mm">النتيجة / 10</th><th style="width:21mm">التجويد</th>`;
+  const rows=n?s.done.map((d,j)=>{const i=s.dix[j],g=segs[i];if(!g)return '';
+    return `<tr><td>${i+1}</td><td class="sn">${rng(g)}</td><td class="w">${fmtR(g)}</td><td><span class="big ${TQ(rs[j])}">${rs[j]}<small>/10</small></span></td></tr>`;}).join('')
+    :`<tr><td colspan="4" style="height:12mm">لم يُسمَّع أي مقطع بعد</td></tr>`;
+  const head=`<th style="width:9mm">م</th><th>المقطع</th><th style="width:38mm">أسبوع المقطع</th><th style="width:24mm">الدرجة / 10</th>`;
   const P=s.beh.filter(b=>b[0]==='+'),Ng=s.beh.filter(b=>b[0]!=='+'),tt=s.beh.length,pp=tt?Math.round(P.length/tt*100):0;
   const cnt=a=>{const m={};a.forEach(b=>m[b[1]]=(m[b[1]]||0)+1);return Object.entries(m).sort((x,y)=>y[1]-x[1]);};
   const top=cnt(P).slice(0,3),mx=top.length?top[0][1]:1,ng=cnt(Ng);
@@ -1552,11 +1533,11 @@ function rptStuPage(s){
   <div class="card stu"><div class="nm"><small>اسم الطالب</small><b>${esc(s.name)}</b>
    <div class="chips"><span class="chip">${esc(clsName(c))}</span><span class="chip o">معلم المادة: ${esc(abbrT(t.name))}</span></div></div>
    <div class="ph">${av}<span>${esc(lvName(s))}</span></div></div>
-  <div class="card"><div class="h3"><span>أين وصل؟ وأين المفروض يكون؟</span><small>حتى تاريخ التقرير</small></div>
+  <div class="card"><div class="h3"><span>كم مقطعاً سمّع؟ وكم المفروض؟</span><small>حتى تاريخ التقرير</small></div>
    <div class="prog"><div class="st"><small>المقاطع المسمَّعة:</small><b>${n} من ${N}</b></div><div class="st"><small>متوسط النتيجة:</small><b dir="ltr">${avg===null?'—':avg+' / 10'}</b></div><div class="st ${stc}"><small>الحالة:</small><b>${esc(st.t)}</b></div></div>
    <div class="track"><div class="tl"><i style="width:${gotP}%;background:${fill}"></i></div>${segs.map(g=>`<i class="dot" style="right:${pos(g.e)}%"></i>`).join('')}
-    <div class="mk got" style="right:${gotP}%;color:${fill}${gotP<8?';transform:translateX(0)':gotP>92?';transform:translateX(100%)':''}"><b style="background:${fill}">${n?'وصل إلى: '+rng(segs[n-1]):'لم يبدأ التسميع'}</b></div>
-    <div class="mk exp" style="right:${expP}%;top:9.4mm${expP<8?';transform:translateX(0)':expP>92?';transform:translateX(100%)':''}"><b>المفروض: ${rng(segs[ex])}</b></div></div>
+    <div class="mk got" style="right:${gotP}%;color:${fill}${gotP<8?';transform:translateX(0)':gotP>92?';transform:translateX(100%)':''}"><b style="background:${fill}">${n?'المسمَّع: '+n+' من '+N+' مقطعاً':'لم يبدأ التسميع'}</b></div>
+    <div class="mk exp" style="right:${expP}%;top:9.4mm${expP<8?';transform:translateX(0)':expP>92?';transform:translateX(100%)':''}"><b>المفروض: ${E} من ${N} مقطعاً</b></div></div>
    <div class="ends"><span>${fmt(segs[0].d)}</span><span>${fmt(segs[N-1].e)}</span></div></div>
   <div class="card"><div class="h3"><span>درجات المقاطع المسمَّعة</span><small>تظهر المقاطع التي سمّعها الطالب فقط</small></div>
    <table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>
@@ -1571,10 +1552,10 @@ function rptStuPage(s){
 function rptClassPage(c){
   const segs=segsOf(c.g),t=rptTeacher(c),list=c.students.filter(s=>!s.pending);
   const SM={green:['g','متقدم'],gold:['y','على الخطة'],red:['r','متأخر'],none:['n','لم يبدأ']};
-  const thead=`<tr><th style="width:7mm">م</th><th style="width:44mm;text-align:right">اسم الطالب</th><th style="width:38mm">وصل إلى</th>`+segs.map((g,i)=>`<th>${i+1}<small>${esc(g.n)}</small><small>${g.f}–${g.t}</small></th>`).join('')+`<th style="width:22mm">الحالة</th></tr>`;
+  const thead=`<tr><th style="width:7mm">م</th><th style="width:44mm;text-align:right">اسم الطالب</th><th style="width:26mm">المسمَّع</th>`+segs.map((g,i)=>`<th>${i+1}<small>${esc(g.n)}</small><small>${g.f}–${g.t}</small></th>`).join('')+`<th style="width:22mm">الحالة</th></tr>`;
   const rows=list.map((s,i)=>{const n=s.done.length,st=SM[statusOf(s).k];
-    const cells=segs.map((g,j)=>{if(j>=n)return '<td></td>';const d=s.done[j],v=Math.round((d[0]+(d[1]||0))*10)/10;return `<td><span class="cell ${TQ(v)}">${v}</span></td>`;}).join('');
-    return `<tr><td>${i+1}</td><td class="sn">${esc(s.name)}</td><td class="rc">${n?rng(segs[n-1]):'—'}</td>${cells}<td><span class="stp ${st[0]}">${st[1]}</span></td></tr>`;});
+    const cells=segs.map((g,j)=>{const d=gAt(s,j);if(!d)return '<td></td>';const v=Math.round((d[0]+(d[1]||0))*10)/10;return `<td><span class="cell ${TQ(v)}">${v}</span></td>`;}).join('');
+    return `<tr><td>${i+1}</td><td class="sn">${esc(s.name)}</td><td class="rc">${n} من ${segs.length}</td>${cells}<td><span class="stp ${st[0]}">${st[1]}</span></td></tr>`;});
   const html=`<section class="page land cls">${rptHead(true,'الكشف العام لمتابعة الحفظ','المعهد الديني الابتدائي · '+esc(clsName(c)))}
  <div class="ribbon">درجة كل مقطع من 10</div>
  <div class="body"><table class="rt"><thead></thead><tbody></tbody></table>
@@ -1594,7 +1575,6 @@ function repStats(list){
   const r={n:list.length,green:0,gold:0,red:0,none:0,done:0,seg:0,segT:0,sc:0,scN:0,rec:0,hif:0,rN:0,tj:[0,0,0],bp:0,bn:0,lv:[0,0,0,0,0,0]};
   list.forEach(s=>{const N=segsOf(s.c.g).length,n=s.done.length,h2=halaqa(s.c.g)===2;r[statusOf(s).k]++;if(N&&n>=N)r.done++;r.seg+=n;r.segT+=N;
     s.done.forEach(d=>{r.sc+=d[0]+(d[1]||0);r.scN++;if(h2){r.rec+=d[0];r.hif+=d[1]||0;r.rN++;}});
-    if(h2&&n){const t=s.done[n-1][2];if(t>=1&&t<=3)r.tj[t-1]++;}
     s.beh.forEach(b=>b[0]==='+'?r.bp++:r.bn++);r.lv[lvLevel(s.beh,TODAY)-1]++;});
   r.avg=r.scN?r1(r.sc/r.scN):null;r.prog=pct(r.seg,r.segT);r.ok=pct(r.green+r.gold,r.n);
   return r;
@@ -1613,10 +1593,7 @@ const cardH=(title,sub,body,cls)=>`<div class="card${cls?' '+cls:''}"><div class
 const stCard=(r,title)=>cardH(title,'',`<div class="dc">${dnut([[r.green,STC.green],[r.gold,STC.gold],[r.red,STC.red],[r.none,STC.none]],pct(r.green+r.gold,r.n)+'%','على الخطة فأفضل')}<div class="lg">${[['متقدمون','green'],['على الخطة','gold'],['متأخرون','red'],['لم يبدأ','none']].map(x=>`<div><i style="background:${STC[x[1]]}"></i><span>${x[0]}</span><b>${r[x[1]]}</b></div>`).join('')}</div></div>`);
 const behCard=r=>{const t=r.bp+r.bn,p=pct(r.bp,t);return cardH('السلوك',t+' سلوكاً مسجّلاً',`<div class="dc">${dnut(t?[[r.bp,'#2EAA5E'],[r.bn,'#D63A2B']]:[],t?p+'%':'—',t?'إيجابي':'لا سلوكيات')}<div class="lg"><div><i style="background:#2EAA5E"></i><span>إيجابية</span><b>${r.bp}</b></div><div><i style="background:#D63A2B"></i><span>سلبية</span><b>${r.bn}</b></div><div><i style="background:#E0A21B"></i><span>أعلى مستوى</span><b>${r.lv[5]} طالب</b></div></div></div>`);};
 const lvCard=r=>{const mx=Math.max(1,...r.lv);return cardH('مستويات السلوك','عدد الطلبة في كل مستوى',`<div class="hist">${r.lv.map((v,i)=>`<div><b>${v}</b><i style="height:${Math.max(.6,v/mx*22)}mm;background:#E0A21B"></i><span>${i+1}</span></div>`).join('')}</div>`);};
-const avgCard=(r,h)=>{const sc=(v,m)=>v===null?'—':r1(v);
-  const rows=h===2?hrow('التلاوة / 7',pct(r.rN?r.rec/r.rN:0,7),r.rN?r1(r.rec/r.rN):'—','var(--teal)')+hrow('الحفظ / 3',pct(r.rN?r.hif/r.rN:0,3),r.rN?r1(r.hif/r.rN):'—','var(--teal)')+hrow('النتيجة / 10',(r.avg||0)*10,r.avg===null?'—':r.avg,'var(--g)'):hrow('النتيجة / 10',(r.avg||0)*10,r.avg===null?'—':r.avg,'var(--g)');
-  return cardH('متوسط الدرجات',r.scN+' درجة مسجّلة',`<div style="margin-top:2mm">${rows}</div>`);};
-const tjCard=r=>{const t=r.tj[0]+r.tj[1]+r.tj[2];return cardH('تقييم التجويد','مستواه في آخر مقطع لكل طالب',`<div class="dc">${dnut([[r.tj[2],'#2EAA5E'],[r.tj[1],'#E0A21B'],[r.tj[0],'#D63A2B']],t?pct(r.tj[2],t)+'%':'—','ممتاز')}<div class="lg"><div><i style="background:#2EAA5E"></i><span>ممتاز</span><b>${r.tj[2]}</b></div><div><i style="background:#E0A21B"></i><span>متوسط</span><b>${r.tj[1]}</b></div><div><i style="background:#D63A2B"></i><span>يحتاج تحسين</span><b>${r.tj[0]}</b></div></div></div>`);};
+const avgCard=(r,h)=>cardH('متوسط الدرجات',r.scN+' درجة مسجّلة',`<div style="margin-top:2mm">${hrow('النتيجة / 10',(r.avg||0)*10,r.avg===null?'—':r.avg,'var(--g)')}</div>`);
 function aggPage(kind,id){
   let list,r,title,sub,rib,body='',c=null;
   const all=allStudents().filter(s=>!s.pending&&s.c);
@@ -1635,13 +1612,13 @@ function aggPage(kind,id){
       cardH('مقارنة الصفوف','حالة الطلبة في كل صف · أخضر متقدم · ذهبي على الخطة · أحمر متأخر · رمادي لم يبدأ',`<div class="rows">${cl.map(x=>hrowS(clsShort(x),repStats(x.students.filter(s=>!s.pending)))).join('')}</div>`,'wide')+
       `<div class="g2">${behCard(r)}${lvCard(r)}</div>`;
   }else if(kind==='hal'){
-    body=kp+`<div class="g2">${H===2?tjCard(r):stCard(r,'حالة الطلبة')}${avgCard(r,H)}</div>`+
+    body=kp+`<div class="g2">${stCard(r,'حالة الطلبة')}${avgCard(r,H)}</div>`+
       cardH('إنجاز الصفوف في الخطة','نسبة المقاطع المسمَّعة من مقاطع الفصل',`<div class="rows">${cl.map(x=>{const q=repStats(x.students.filter(s=>!s.pending));return hrow(clsShort(x),q.prog,q.prog+'%','var(--teal)');}).join('')}</div>`,'wide')+
-      `<div class="g2">${H===2?stCard(r,'حالة الطلبة'):behCard(r)}${lvCard(r)}</div>`;
+      `<div class="g2">${behCard(r)}${lvCard(r)}</div>`;
   }else{
-    const N=segsOf(c.g).length,h2=halaqa(c.g)===2,tjT=r.tj[0]+r.tj[1]+r.tj[2],lvAvg=r.n?r1(r.lv.reduce((a,v,i)=>a+v*(i+1),0)/r.n):0;
+    const N=segsOf(c.g).length,lvAvg=r.n?r1(r.lv.reduce((a,v,i)=>a+v*(i+1),0)/r.n):0;
     const hist=Array.from({length:N+1},(_,k)=>list.filter(s=>s.done.length===k).length),mx=Math.max(1,...hist);
-    const ind=cardH('المؤشرات الرئيسية','',`<div class="rows" style="margin-top:1mm">${hrow('متوسط الدرجات',(r.avg||0)*10,r.avg===null?'—':r.avg+' / 10','var(--g)')}${hrow('إنجاز الخطة',r.prog,r.prog+'%','var(--teal-d)')}${h2?hrow('تجويد ممتاز',pct(r.tj[2],tjT),pct(r.tj[2],tjT)+'%','var(--g)'):''}${hrow('السلوك الإيجابي',pct(r.bp,r.bp+r.bn),pct(r.bp,r.bp+r.bn)+'%','var(--g)')}${hrow('مستوى السلوك',lvAvg/6*100,lvAvg+' / 6','var(--y)')}</div>`);
+    const ind=cardH('المؤشرات الرئيسية','',`<div class="rows" style="margin-top:1mm">${hrow('متوسط الدرجات',(r.avg||0)*10,r.avg===null?'—':r.avg+' / 10','var(--g)')}${hrow('إنجاز الخطة',r.prog,r.prog+'%','var(--teal-d)')}${hrow('السلوك الإيجابي',pct(r.bp,r.bp+r.bn),pct(r.bp,r.bp+r.bn)+'%','var(--g)')}${hrow('مستوى السلوك',lvAvg/6*100,lvAvg+' / 6','var(--y)')}</div>`);
     const byT=c.tids.map(t=>({n:shortT(t),r:repStats(list.filter(s=>s.owner===t))})).concat([{n:'غير مختار',r:repStats(list.filter(s=>!s.owner||!c.tids.includes(s.owner)))}]).filter(x=>x.r.n);
     const tchCard=cardH('حسب المعلم','حالة طلاب كل معلم',`<div class="rows" style="margin-top:2mm;flex:none">${byT.map(x=>hrowS(esc(abbrT(x.n)),x.r)).join('')||'<div class="emp">لا يوجد</div>'}</div>`);
     const withAvg=s=>{const n=s.done.length;return n?s.done.reduce((a,d)=>a+d[0]+(d[1]||0),0)/n:0;};
@@ -1948,9 +1925,9 @@ function medalsCard(s){const m=s.medals||{};
 function dlCSV(name,rows){const csv='﻿'+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\r\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();a.remove();}
 async function dlArch(id){const r=await srv('get_archive',{p_id:id});if(!r||r.error||!r.rows){toast('تعذّر تنزيل الأرشيف',true);return;}
-  if(r.rows[0]&&r.rows[0].done){const N=Math.max(...r.rows.map(x=>x.done.length),1),tot=d=>Math.round((+d[0]+(d[1]===null?0:+d[1]))*10)/10;
+  if(r.rows[0]&&r.rows[0].done){const N=Math.max(...r.rows.map(x=>x.dix&&x.dix.length?Math.max(...x.dix)+1:x.done.length),1),tot=d=>Math.round((+d[0]+(d[1]===null?0:+d[1]))*10)/10;
     dlCSV('أرشيف-'+r.label+'.csv',[['الاسم','الصف','الشعبة','المقاطع المنجزة','المعدل'].concat(Array.from({length:N},(_,i)=>'المقطع '+(i+1)))].concat(r.rows.map(x=>{const ts=x.done.map(tot);
-      return [x.n,GRADES[x.g-1],x.sec,ts.length,ts.length?Math.round(ts.reduce((a,b)=>a+b,0)/ts.length*10)/10:''].concat(Array.from({length:N},(_,i)=>ts[i]===undefined?'':ts[i]));})));return;}
+      const at=i=>{const k=x.dix?x.dix.indexOf(i):i;return k<0||ts[k]===undefined?'':ts[k];};return [x.n,GRADES[x.g-1],x.sec,ts.length,ts.length?Math.round(ts.reduce((a,b)=>a+b,0)/ts.length*10)/10:''].concat(Array.from({length:N},(_,i)=>at(i)));})));return;}
   dlCSV('أرشيف-'+r.label+'.csv',[['الاسم','الصف الأخير','الشعبة','الكود'].concat([1,2,3,4,5,6].map(g=>'وسام الصف '+ORD[g-1]))].concat(r.rows.map(x=>[x.n,'السادس',x.sec,x.pin].concat([1,2,3,4,5,6].map(g=>x.m&&x.m[g]?LV_NAMES[x.m[g]-1]:'')))));}
 const yearLabel=()=>{const d=new Date(),y=d.getMonth()>=7?d.getFullYear():d.getFullYear()-1;return y+' – '+(y+1);};
 const gradeCount=g=>CLASSES.filter(c=>c.g===g).reduce((a,c)=>a+c.students.length,0);
@@ -2251,8 +2228,8 @@ const tNamesOf=c=>c.tids.map(i=>{const x=tById(i);return x?abbrT(x.name):'';}).j
 function csvStudents(){dlCSV('قائمة-الطلبة-وأكوادهم.csv',[['الاسم','الصف','الشعبة','المعلمون','الكود']].concat(sortedStu(allStudents()).map(s=>[s.name,'الصف '+GRADES[s.c.g-1],s.c.sec,tNamesOf(s.c),s.pin])));}
 function csvGrades(){
   const hdr=['الاسم','الصف','الشعبة','المعلمون'].concat(Array.from({length:15},(_,i)=>'درجة المقطع '+(i+1))).concat(['المقاطع المسمّعة','من','المتوسط','الحالة','المستوى','سلوك إيجابي','سلوك سلبي']);
-  const rows=sortedStu(allStudents()).map(s=>{const segs=segsOf(s.c.g),tot=s.done.map(d=>Math.round((d[0]+(d[1]||0))*10)/10),avg=tot.length?Math.round(tot.reduce((a,b)=>a+b,0)/tot.length*10)/10:'';
-    return [s.name,'الصف '+GRADES[s.c.g-1],s.c.sec,tNamesOf(s.c)].concat(Array.from({length:15},(_,i)=>i<tot.length?tot[i]:'')).concat([s.done.length,segs.length,avg,statusOf(s).t,lvName(s),s.beh.filter(b=>b[0]==='+').length,s.beh.filter(b=>b[0]!=='+').length]);});
+  const rows=sortedStu(allStudents()).map(s=>{const segs=segsOf(s.c.g),tot=s.done.map(d=>Math.round((d[0]+(d[1]||0))*10)/10),avg=tot.length?Math.round(tot.reduce((a,b)=>a+b,0)/tot.length*10)/10:'',at=i=>{const k=s.dix.indexOf(i);return k<0?'':tot[k];};
+    return [s.name,'الصف '+GRADES[s.c.g-1],s.c.sec,tNamesOf(s.c)].concat(Array.from({length:15},(_,i)=>at(i))).concat([s.done.length,segs.length,avg,statusOf(s).t,lvName(s),s.beh.filter(b=>b[0]==='+').length,s.beh.filter(b=>b[0]!=='+').length]);});
   dlCSV('درجات-الطلبة.csv',[hdr].concat(rows));}
 function csvTeachers(){dlCSV('أكواد-المعلمين.csv',[['المعلم','الصفوف','الكود','واتساب','البريد','ساعات التواصل']].concat(TLIST.map(x=>[abbrT(x.name),CLASSES.filter(c=>c.tids.includes(x.id)).map(c=>GRADES[c.g-1]+' '+c.sec).join(' ، '),x.pin,x.whatsapp,x.email,x.hours])));}
 function exportSheet(){
@@ -2270,7 +2247,7 @@ function exportSheet(){
 const AT=`<div class="glass top"><div class="logo inst"></div><div class="ttl">غرفة التحكم<small>المعهد الديني الابتدائي</small></div><div class="logo thabit"></div></div>`;
 const teacherOf=c=>({name:tNames(c)});
 const setATab=n=>document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.classList.toggle('on',b.dataset.atab===n));
-function ago(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:true});if(view==='stu'&&p.sid)T.sub='hifz';if(view==='tcls'&&p.fm)T.csub='hifz';$('teacher-body').innerHTML='';
+function ago(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:true});if(view==='stu'&&p.sid){T.sub='hifz';T.gi=null;}if(view==='tcls'&&p.fm)T.csub='hifz';$('teacher-body').innerHTML='';
   ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm,tact:aTAct,honor:aHonor,reports:aReports})[view]();
   $('admin-body').scrollTop=0;updABadge();}
 function openAStu(id,from,arg){T.ret=from==='cls'?`ago('cls',{cid:${arg}})`:from==='tch'?`ago('tch',{tid:${arg}})`:`ago('list')`;ago('stu',{sid:id});}
@@ -2721,7 +2698,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=doLogout);
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='577661c9afc5';
+const BUILD='133d10b0a208';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
