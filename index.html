@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="6c8bafea79bf">
+<meta name="build" content="9fe6df6a3ded">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -180,6 +180,20 @@ button{font-family:inherit}
 .nmenu button.on{color:var(--teal-d);font-weight:800;background:rgba(22,94,80,.08)}
 .gnote{margin-top:6px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:10px;background:rgba(224,160,20,.16);color:#8A5A00;display:inline-block}
 .gnote.n4{background:rgba(46,170,94,.15);color:#145A31}
+.qc.ntc-r.on{background:#E0463A;border-color:#E0463A;color:#fff}.qc.ntc-y.on{background:#E8B923;border-color:#E8B923;color:#3b2d00}
+#ntpop{position:absolute;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(10,29,25,.5);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);cursor:pointer;animation:ntin .25s ease}
+@keyframes ntin{from{opacity:0}to{opacity:1}}
+.ntbox{position:relative;width:100%;max-width:340px;border-radius:26px;padding:22px 20px 16px;text-align:center;border:2px solid #E8B923;background:linear-gradient(180deg,#FFF6D2,#fff 70%);box-shadow:0 18px 50px rgba(0,0,0,.3)}
+.ntbox.remind{border-color:#E0463A;background:linear-gradient(180deg,#FFE3DF,#fff 70%);animation:ntglow 1.5s ease-in-out infinite}
+@keyframes ntglow{0%,100%{box-shadow:0 0 0 0 rgba(224,70,58,.5),0 18px 50px rgba(0,0,0,.3)}50%{box-shadow:0 0 30px 9px rgba(224,70,58,.6),0 18px 50px rgba(0,0,0,.3)}}
+.ntlab{display:inline-block;font-size:12px;font-weight:800;padding:4px 14px;border-radius:999px;background:rgba(232,185,35,.3);color:#7a5800}
+.ntbox.remind .ntlab{background:rgba(224,70,58,.18);color:#a8281f}
+.ntt{font-size:20px;font-weight:800;margin-top:12px;color:var(--ink);line-height:1.5;word-break:break-word}
+.ntb{font-size:14.5px;line-height:1.95;margin-top:8px;color:var(--ink-2,#3b4a47);white-space:pre-wrap;word-break:break-word}
+.ntn{margin-top:12px;font-size:12px;font-weight:700;color:#8A5A00}
+.nth{margin-top:14px;font-size:11.5px;color:#9aa3a1}
+.ntbox.sm{padding:14px 14px 12px;animation:none;box-shadow:none;max-width:none}.ntbox.sm .ntt{font-size:16px;margin-top:8px}.ntbox.sm .ntb{font-size:13px;line-height:1.8}
+.ntbox.remind.sm{animation:none}
 .sno{flex:none;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:rgba(22,94,80,.1);color:var(--teal-d);font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
 .snav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(22,94,80,.12)}
 .snav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;padding:10px 8px;line-height:1.35;border-radius:18px;margin:0}
@@ -789,7 +803,7 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
       <button class="tab" data-atab="teachers"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>المعلمون</button>
       <button class="tab" data-atab="reports"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>التقارير</button>
       <button class="tab" data-atab="honor"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>التكريم</button>
-      <button class="tab" data-atab="pend"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/></svg>الطلبات<span class="badge" id="abadge" hidden></span></button>
+      <button class="tab" data-atab="pend"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>الرسائل<span class="badge" id="abadge" hidden></span></button>
       <button class="tab" data-logout><svg viewBox="0 0 24 24"><path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg>خروج</button>
     </div>
   </section>
@@ -821,7 +835,7 @@ const fmtR=g=>{const a=g.d,b=g.e;return a.getMonth()===b.getMonth()?`${a.getDate
 const halaqa=g=>g<=3?1:2;
 const clsName=c=>`الصف ${GRADES[c.g-1]} (${c.sec})`;
 
-const TLIST=[],CLASSES=[],POOL=[],THREADS=[],SMSG=[],CREQ=[],RESETREQ=[],STUDRESET=[],ARCH=[],SUGG=[];let AWARD=null,AWARDS=[];let NOMS=[],HONOR=null,HONORS=[],HMONTH='';let BKP=null;
+const TLIST=[],CLASSES=[],POOL=[],THREADS=[],SMSG=[],CREQ=[],RESETREQ=[],STUDRESET=[],ARCH=[],SUGG=[];let INBOX=[],SENT=[],NSEEN=new Set(),NQ_OPEN=false;let AWARD=null,AWARDS=[];let NOMS=[],HONOR=null,HONORS=[],HMONTH='';let BKP=null;
 const tById=id=>TLIST.find(x=>x.id===id);
 const allStudents=()=>CLASSES.flatMap(c=>c.students);
 const byId=id=>allStudents().find(s=>s.id===id)||POOL.find(s=>s.id===id);
@@ -937,6 +951,9 @@ function hydrate(st){
   RESETREQ.length=0;STUDRESET.length=0;
   (st.resets||[]).forEach(r=>{if(r.kind==='teacher')RESETREQ.push({id:r.id,tid:r.tid,at:new Date(r.at)});else STUDRESET.push({id:r.id,name:r.name,phone:r.phone,email:r.email,cid:r.cid||0,at:new Date(r.at)});});
   AWARD=st.award?{id:st.award.id,tid:st.award.tid,month:st.award.month,exp:new Date(st.award.exp)}:null;AWARDS=(st.awards||[]).map(a=>({id:a.id,tid:a.tid,month:a.month,at:new Date(a.at),exp:new Date(a.exp)}));
+  INBOX=(st.inbox||[]).map(m=>({id:+m.id,kind:m.kind,level:m.level||'',title:m.title||'',body:m.body||'',at:new Date(m.at),seen:!!m.seen}));
+  SENT=(st.sent||[]).map(m=>({id:+m.id,kind:m.kind,level:m.level||'',aud:m.aud,title:m.title||'',body:m.body||'',label:m.label||'',n:+m.n||0,seen:+m.seen||0,at:new Date(m.at)}));
+  setTimeout(noteQueue,350);
   NOMS=(st.noms||[]).map(n=>({c:n.c,tid:n.tid||0,sid:n.sid}));HMONTH=st.hmonth||'';HONOR=st.honor?{id:st.honor.id,month:st.honor.month,exp:new Date(st.honor.exp),names:st.honor.names||[]}:null;
   HONORS=(st.honors||[]).map(h=>({id:h.id,month:h.month,cid:h.cid,sids:h.sids||[],at:new Date(h.at),exp:new Date(h.exp)}));
   SUGG.length=0;(st.sugg||[]).forEach(g=>SUGG.push({id:g.id,role:g.role,name:g.name,cls:g.cls||'',txt:g.txt,at:new Date(g.at),seen:!!g.seen}));
@@ -959,7 +976,7 @@ function saveTok(){let ok=false;try{localStorage.setItem('qt-tok',TOK);ok=true;}
 function loadTok(){let v=null;try{v=localStorage.getItem('qt-tok');}catch(e){}if(!v){try{v=sessionStorage.getItem('qt-tok');}catch(e){}}return v;}
 function dropTok(){try{localStorage.removeItem('qt-tok');}catch(e){}try{sessionStorage.removeItem('qt-tok');}catch(e){}}
 function sessionExpired(){if(!TOK)return;if(ROLE==='student'&&KIDS.length>1){kidDrop(TOK);return;}TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');toast('انتهت الجلسة، سجّل الدخول من جديد',true);}
-function clearData(){AWARD=null;AWARDS=[];NOMS=[];HONOR=null;HONORS=[];HMONTH='';SUGG.length=0;TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
+function clearData(){INBOX=[];SENT=[];NSEEN.clear();NQ_OPEN=false;{const np=document.getElementById('ntpop');if(np)np.remove();}AWARD=null;AWARDS=[];NOMS=[];HONOR=null;HONORS=[];HMONTH='';SUGG.length=0;TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
   ['student-body','teacher-body','admin-body'].forEach(i=>{if($(i))$(i).innerHTML='';});}
 function persist(){}
 function saveOwn(){}
@@ -1027,8 +1044,8 @@ function kidLogoutOne(){closeSheet();const t=TOK;rpc('logout',{p_tok:t}).catch((
 function enter(st){
   try{if(document.activeElement)document.activeElement.blur();}catch(e){}
   LAST=JSON.stringify(st);hydrate(st);
-  if(ROLE==='student'){kidsLoad();kidAdd(TOK,st.me);renderStudent(allStudents()[0]);show('s-student');setTimeout(kidsRefresh,400);}
-  else if(ROLE==='teacher'){go('tas');show('s-teacher');teacherSeen(true);setTimeout(awardPopup,700);}
+  if(ROLE==='student'){kidsLoad();kidAdd(TOK,st.me);renderStudent(allStudents()[0]);show('s-student');setTimeout(kidsRefresh,400);setTimeout(noteQueue,900);}
+  else if(ROLE==='teacher'){go('tas');show('s-teacher');teacherSeen(true);setTimeout(awardPopup,700);setTimeout(noteQueue,1300);}
   else{ago('home');show('s-admin');}
 }
 async function doLogout(){const t=TOK;kidsLoad();const all=KIDS.map(k=>k.t).filter(x=>x!==t);KIDS=[];KINFO={};ADDKID=false;try{localStorage.removeItem('qt-kids');}catch(e){}TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');if(t)rpc('logout',{p_tok:t}).catch(()=>{});all.forEach(x=>rpc('logout',{p_tok:x}).catch(()=>{}));}
@@ -1280,7 +1297,7 @@ const SM_TOP=['تقدّمي في الحفظ','درجتي','التجويد','مو
 let SM={view:'list',tid:0,sel:[],oth:false,text:'',ts:[]};
 const smCnt=()=>SM.sel.length+(SM.oth?1:0);
 const smReady=()=>smCnt()>=1&&SM.ts.length>=1&&(!SM.oth||SM.text.trim().length>=2);
-function updSBadge(){const n=SMSG.reduce((a,x)=>a+x.unread,0),b=$('smsg-badge');if(b){b.hidden=!n;b.textContent=n;}}
+function updSBadge(){const n=SMSG.reduce((a,x)=>a+x.unread,0)+admUnread(),b=$('smsg-badge');if(b){b.hidden=!n;b.textContent=n;}}
 const smShort=n=>{const p=n.replace(/^الأستاذ\s+/,'').split(' ');return 'الأستاذ '+(p[0]==='د.'?p.slice(0,2):p.slice(0,2)).join(' ');};
 const smBody=m=>esc(m).replace(/\n/g,'<br>');
 const sugBlock=()=>`<div class="sec" style="margin:18px 6px 8px"><div><b>للمقترحات</b><small>التواصل مع الإدارة</small></div></div>
@@ -1301,13 +1318,16 @@ function renderSMsg(){
   const box=$('ss-msg'),s=CURS;if(!box||!s||!s.c)return;
   if(SM.view==='chat')return smChat(box,s);
   if(SM.view==='new')return smNew(box,s);
-  box.innerHTML=`<div class="sec" style="margin-top:2px"><b style="font-size:18px">رسائلي</b><button class="btn-s" onclick="smNewTo(0)">+ رسالة جديدة</button></div>`+
+  if(SM.view==='adm')return smAdmView(box);
+  box.innerHTML=`<div class="sec" style="margin-top:2px"><b style="font-size:18px">رسائلي</b><button class="btn-s" onclick="smNewTo(0)">+ رسالة جديدة</button></div>`+admCard()+
    s.c.tids.map(id=>{const x=tById(id),th=SMSG.find(q=>q.tid===id),l=th&&th.msgs[th.msgs.length-1];
     return `<button class="glass item" onclick="smOpen(${id})"><div class="mini">${esc(x.init)}</div><div class="grow"><div class="row sp"><div class="t">${esc(x.name)}</div><span class="mut">${l?l.w:''}</span></div>
      <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${th&&th.unread?'color:var(--ink);font-weight:600':''}">${l?(l.me?'أنت: ':'')+esc(l.t).replace(/\n/g,' · '):'ابدأ محادثة مع معلمك'}</div></div>
      ${th&&th.unread?'<span class="badge" style="position:static;border:0">'+th.unread+'</span>':''}</button>`;}).join('')+sugBlock()+'<div style="height:84px"></div>';
 }
 function smOpen(tid){SM.view='chat';SM.tid=tid;const th=SMSG.find(q=>q.tid===tid);if(th&&th.unread){th.unread=0;srv('student_read',{p_tid:tid});updSBadge();}renderSMsg();$('student-body').scrollTop=1e5;}
+function smAdm(){SM.view='adm';renderSMsg();$('student-body').scrollTop=0;admMarkRead();updSBadge();}
+function smAdmView(box){box.innerHTML=`<div class="hdr"><button class="glass iconbtn" onclick="smBack()" aria-label="رجوع">${BACK}</button><div class="ht"><b>رسائل الإدارة</b><span>المعهد الديني الابتدائي</span></div></div>`+admBubbles()+'<div style="height:84px"></div>';}
 function smBack(){SM.view='list';renderSMsg();$('student-body').scrollTop=0;}
 function smNewTo(tid){SM.view='new';SM.ts=tid?[tid]:(CURS.c.tids.length===1?[CURS.c.tids[0]]:[]);renderSMsg();$('student-body').scrollTop=0;}
 function smChat(box,s){
@@ -1375,9 +1395,9 @@ document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest
 function setTab(t){T.tab=t;document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));}
 function go(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:false});if(view==='stu'&&p.sid){T.sub='hifz';T.gi=null;}if(view==='tcls'&&p.fm)T.csub='hifz';$('admin-body').innerHTML='';
   const b=$('teacher-body');
-  ({tas:vTas,tcls:vTasClass,home:vHome,cls:vClass,stu:vStudent,curr:vCurr,msgs:vMsgs,thread:vThread,nom:vNom})[view]();
+  ({tas:vTas,tcls:vTasClass,home:vHome,cls:vClass,stu:vStudent,curr:vCurr,msgs:vMsgs,thread:vThread,nom:vNom,amsgs:vAdmMsgs})[view]();
   b.scrollTop=0;updBadge();updGate();}
-function updBadge(){const n=myTh().reduce((a,t)=>a+t.unread,0);$('badge').hidden=!n;$('badge').textContent=n;}
+function updBadge(){const n=myTh().reduce((a,t)=>a+t.unread,0)+admUnread();$('badge').hidden=!n;$('badge').textContent=n;}
 const head=(title,sub,backTo)=>`<div class="hdr"><button class="glass iconbtn" onclick="${backTo}" aria-label="رجوع">${BACK}</button><div class="ht"><b>${title}</b>${sub?`<span>${sub}</span>`:''}</div></div>`;
 
 function classCard(c){
@@ -1456,6 +1476,30 @@ function awardPopup(){
   document.querySelector('.phone').appendChild(o);
   const close=()=>{try{localStorage.setItem('qt-aw',String(AWARD.id));}catch(e){}o.remove();};
   $('awx').onclick=close;o.addEventListener('click',e=>{if(e.target===o)close();});
+}
+const admUnread=()=>INBOX.filter(m=>m.kind==='msg'&&!m.seen).length;
+const admMsgs=()=>INBOX.filter(m=>m.kind==='msg').sort((a,b)=>b.id-a.id);
+function admMarkRead(){const ids=INBOX.filter(m=>m.kind==='msg'&&!m.seen).map(m=>m.id);if(!ids.length)return;INBOX.forEach(m=>{if(ids.includes(m.id))m.seen=true;});srv('msg_seen',{p_ids:ids});}
+const admBubbles=()=>{const l=admMsgs();return l.length?`<div class="chat">${l.map(m=>`<div class="bub them"><span class="tag s">من الإدارة</span><br>${esc(m.body).replace(/\n/g,'<br>')}<small>${msgWhen(m.at)}</small></div>`).join('')}</div>`:'<div class="glass card empty">لا توجد رسائل من الإدارة</div>';};
+const admCard=()=>{const l=admMsgs();if(!l.length)return '';const un=admUnread();
+  return `<button class="glass item" onclick="${ROLE==='student'?'smAdm()':"go('amsgs')"}"><div class="mini" style="background:rgba(224,162,27,.3)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
+   <div class="grow"><div class="row sp"><div class="t">رسائل الإدارة</div><span class="mut">${msgWhen(l[0].at)}</span></div><div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${un?'color:var(--ink);font-weight:600':''}">${esc(l[0].body).replace(/\n/g,' · ')}</div></div>${un?'<span class="badge" style="position:static;border:0">'+un+'</span>':''}</button>`;};
+function vAdmMsgs(){
+  setTab('msgs');
+  $('teacher-body').innerHTML=TOPT()+head('رسائل الإدارة','','go(\'msgs\')')+admBubbles()+'<div style="height:84px"></div>';
+  admMarkRead();updBadge();
+}
+function noteQueue(){
+  if(NQ_OPEN||!TOK||!ROLE||ROLE==='admin'||ADDKID)return;
+  const sh=$('sheet');if(sh&&sh.classList.contains('on'))return;
+  const q=INBOX.filter(m=>m.kind==='note'&&!m.seen&&!NSEEN.has(m.id)).sort((a,b)=>a.id-b.id);if(!q.length)return;
+  const m=q[0],rem=m.level==='remind';NQ_OPEN=true;
+  const o=document.createElement('div');o.id='ntpop';
+  o.innerHTML=`<div class="ntbox ${rem?'remind':'info'}" role="dialog" aria-modal="true"><div class="ntlab">${rem?'تذكير':'إشعار'}</div><div class="ntt">${esc(m.title)}</div><div class="ntb">${esc(m.body)}</div>
+   ${q.length>1?`<div class="ntn">يوجد ${q.length-1} ${q.length-1===1?'إشعار آخر':'إشعارات أخرى'} بعد هذا</div>`:''}<div class="nth">اضغط في أي مكان للمتابعة</div></div>`;
+  document.querySelector('.phone').appendChild(o);
+  const close=()=>{NSEEN.add(m.id);m.seen=true;o.remove();NQ_OPEN=false;srv('msg_seen',{p_ids:[m.id]});setTimeout(noteQueue,250);};
+  o.addEventListener('click',close);
 }
 function vTas(){
   setTab('tas');const withMine=myCls().filter(c=>myIn(c).length);
@@ -1929,7 +1973,7 @@ function vMsgs(){
   setTab('msgs');
   const unr=myTh().reduce((x,q)=>x+q.unread,0);
   $('teacher-body').innerHTML=TOPT()+`<div class="sec" style="margin-top:2px"><b style="font-size:18px">الرسائل</b><span class="row" style="gap:8px">${unr?'<button type="button" class="btn-s" onclick="confirmReadAll()" style="background:rgba(214,58,43,.16);color:#7C1A10;border-color:rgba(214,58,43,.5)">اعتبار الكل مقروءاً</button>':''}<button class="btn-s" onclick="openCompose()">+ رسالة جديدة</button></span></div>`+
-  (myTh().length?myTh().map(t=>{const l=t.msgs[t.msgs.length-1];
+  admCard()+(myTh().length?myTh().map(t=>{const l=t.msgs[t.msgs.length-1];
     return `<button class="glass item" onclick="openThread('${t.id}')"><div class="mini">${t.kind==='class'?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5M16 5a3 3 0 0 1 0 6M18 14c2 .6 3 2.2 3 5"/></svg>':esc((byId(t.ref)||{init:'؟'}).init)}</div>
     <div class="grow"><div class="row sp"><div class="t">${esc(tName(t))}</div><span class="mut">${l.w}</span></div>
     <div class="mut" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${t.unread?'color:var(--ink);font-weight:600':''}">${l.me?'أنت: ':(t.kind==='student'?'<span class="tag s">من الطالب</span> ':'')}${esc(l.t).replace(/\n/g,' · ')}</div></div>
@@ -2713,14 +2757,100 @@ const rqNew=s=>{const cand=similar(s.name,s),by=s.by?tById(s.by):null;
    ${cand.length?`<div class="divider"></div><div class="mut" style="color:#7C1A10;font-weight:600">قد يكون مكرراً مع طالب موجود:</div>`+cand.map(x=>`<div class="row sp" style="margin-top:8px;gap:8px"><div style="min-width:0"><div class="t" style="font-size:13.5px">${esc(x.name)}</div><div class="mut">${clsName(x.c)}</div></div><button class="btn-s" style="flex:none" onclick="mergeP(${s.id},${x.id})">هو نفسه، ثبّت الموجود</button></div>`).join(''):''}
    <div class="divider"></div>
    <div class="row" style="gap:8px"><button class="btn" style="flex:1;padding:11px" onclick="approveP(${s.id})">اعتماد كطالب جديد</button><button class="btn-s" style="padding:11px 16px;color:#7C1A10" onclick="rejectP(${s.id})">حذف</button></div></div>`;};
+const sendTile=(title,sub,key,svg)=>`<button class="glass item" onclick="ago('pend',{pk:'${key}'})"><div class="mini"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${svg}</svg></div><div class="grow"><div class="t">${title}</div><div class="mut">${sub}</div></div>${CHEV}</button>`;
+const AMS={sc:'all',cid:0,sid:0,text:''},AMT={sc:'all',tid:0,text:''},AMN={aud:'students',lv:'remind',title:'',text:''};
+const amCls=()=>CLASSES.slice().sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar'));
+const amStu=c=>c.students.filter(s=>!s.pending).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+const amAllN=()=>CLASSES.reduce((a,c)=>a+amStu(c).length,0);
+function amSend(o){
+  const unit=o.aud==='students'?'طالب':'معلم',what=o.kind==='note'?'الإشعار':'الرسالة';
+  confirmBox(`سيتم إرسال ${what} إلى <b>${esc(o.label)}</b> (${o.n} ${unit}).`,async()=>{
+    const r=await srv('admin_send',{p_kind:o.kind,p_aud:o.aud,p_level:o.level||null,p_title:o.title||null,p_body:o.body,p_scope:o.scope,p_ref:o.ref==null?null:o.ref,p_label:o.label});
+    if(r.error){toast(r.error==='none'?'لا يوجد مستلمون لهذا الاختيار':r.error==='net'?'تعذّر الاتصال بالخادم':'تعذّر الإرسال',true);return false;}
+    await sync(true);toast('تم الإرسال إلى '+r.n+' '+unit);
+    if(o.kind==='note'){AMN.title='';AMN.text='';}else if(o.aud==='students')AMS.text='';else AMT.text='';
+    ago('pend',{pk:'sent'});});
+}
+const amCounter=(id,max)=>`<div class="cnt" id="${id}">0 / ${max}</div>`;
+function aSend(pk){
+  setATab('pend');let html='';
+  const chip=(on,fn,txt,cls)=>`<button type="button" class="qc${on?' on':''}${cls?' '+cls:''}" onclick="${fn}">${txt}</button>`;
+  if(pk==='ms'){
+    const cls=amCls(),c=CLASSES.find(x=>x.id===AMS.cid)||cls[0];if(c&&!AMS.cid)AMS.cid=c.id;
+    const sl=c?amStu(c):[];if(AMS.sid&&!sl.some(s=>s.id===AMS.sid))AMS.sid=0;
+    const sc=AMS.sc;let n=0,label='';
+    if(sc==='all'){n=amAllN();label='جميع طلبة المعهد';}
+    else if(sc==='h1'||sc==='h2'){const h=sc==='h1'?1:2;n=CLASSES.filter(x=>halaqa(x.g)===h).reduce((a,x)=>a+amStu(x).length,0);label='طلبة الحلقة '+(h===1?'الأولى':'الثانية');}
+    else if(AMS.sid){n=1;label=sl.find(s=>s.id===AMS.sid).name+' · '+clsName(c);}
+    else{n=c?sl.length:0;label='طلبة '+(c?clsName(c):'');}
+    html=reqHead('رسائل للطلبة','اختر المستلمين ثم اكتب الرسالة')+`<div class="glass card"><div class="t" style="font-size:14.5px;margin-bottom:8px">إلى من؟</div>
+     <div class="chips2">${chip(sc==='all',"amSet('ms','sc','all')",'جميع الطلبة')}${chip(sc==='h1',"amSet('ms','sc','h1')",'الحلقة الأولى')}${chip(sc==='h2',"amSet('ms','sc','h2')",'الحلقة الثانية')}${chip(sc==='class',"amSet('ms','sc','class')",'صف محدد')}</div>
+     ${sc==='class'?`<label class="fl" for="am-c">الصف</label><select class="field" id="am-c">${cls.map(x=>`<option value="${x.id}"${x.id===AMS.cid?' selected':''}>${clsName(x)}</option>`).join('')}</select>
+     <label class="fl" for="am-s">الطالب</label><select class="field" id="am-s"><option value="0">جميع طلاب الصف (${sl.length})</option>${sl.map(s=>`<option value="${s.id}"${s.id===AMS.sid?' selected':''}>${esc(s.name)}</option>`).join('')}</select>`:''}
+     <div class="glass card" style="margin:12px 0 0;padding:10px 14px"><span class="mut">سيصل إلى: </span><b>${esc(label)}</b> <span class="mut">· ${n} طالب</span></div></div>
+     <div class="glass card"><label class="fl" for="am-t" style="margin-top:0">نص الرسالة</label><textarea class="field" id="am-t" maxlength="600" placeholder="اكتب رسالتك هنا" style="min-height:130px;resize:none;line-height:1.7">${esc(AMS.text)}</textarea>${amCounter('am-n',600)}<div class="fe" id="am-e"></div>
+     <button class="btn" id="am-go" style="width:100%;margin-top:6px">إرسال</button></div>`;
+    $('admin-body').innerHTML=AT+html;
+    const ta=$('am-t'),cn=$('am-n'),u=()=>{cn.textContent=ta.value.length+' / 600';$('am-e').textContent='';AMS.text=ta.value;};ta.addEventListener('input',u);u();
+    if($('am-c')){$('am-c').onchange=()=>{AMS.cid=+$('am-c').value;AMS.sid=0;aSend('ms');};$('am-s').onchange=()=>{AMS.sid=+$('am-s').value;aSend('ms');};}
+    $('am-go').onclick=()=>{const v=ta.value.trim();if(!v){$('am-e').textContent='اكتب نص الرسالة أولاً';return;}if(!n){$('am-e').textContent='لا يوجد طلبة في هذا الاختيار';return;}
+      const o={kind:'msg',aud:'students',body:v,n,label};
+      if(sc==='all'){o.scope='all';o.ref=null;}else if(sc==='h1'||sc==='h2'){o.scope='halaqa';o.ref=sc==='h1'?1:2;}else if(AMS.sid){o.scope='student';o.ref=AMS.sid;}else{o.scope='class';o.ref=c.id;}
+      amSend(o);};
+  }else if(pk==='mt'){
+    const tl=TLIST.slice().sort((a,b)=>a.name.localeCompare(b.name,'ar'));if(!AMT.tid&&tl.length)AMT.tid=tl[0].id;
+    const one=AMT.sc==='one',n=one?1:tl.length,tt=tl.find(x=>x.id===AMT.tid),label=one&&tt?tt.name:'جميع المعلمين';
+    html=reqHead('رسائل للمعلمين','معلم معين أو جميع المعلمين')+`<div class="glass card"><div class="t" style="font-size:14.5px;margin-bottom:8px">إلى من؟</div>
+     <div class="chips2">${chip(!one,"amSet('mt','sc','all')",'جميع المعلمين')}${chip(one,"amSet('mt','sc','one')",'معلم محدد')}</div>
+     ${one?`<label class="fl" for="mt-s">المعلم</label><select class="field" id="mt-s">${tl.map(x=>`<option value="${x.id}"${x.id===AMT.tid?' selected':''}>${esc(x.name)}</option>`).join('')}</select>`:''}
+     <div class="glass card" style="margin:12px 0 0;padding:10px 14px"><span class="mut">سيصل إلى: </span><b>${esc(label)}</b> <span class="mut">· ${n} معلم</span></div></div>
+     <div class="glass card"><label class="fl" for="mt-t" style="margin-top:0">نص الرسالة</label><textarea class="field" id="mt-t" maxlength="600" placeholder="اكتب رسالتك هنا" style="min-height:130px;resize:none;line-height:1.7">${esc(AMT.text)}</textarea>${amCounter('mt-n',600)}<div class="fe" id="mt-e"></div>
+     <button class="btn" id="mt-go" style="width:100%;margin-top:6px">إرسال</button></div>`;
+    $('admin-body').innerHTML=AT+html;
+    const ta=$('mt-t'),u=()=>{$('mt-n').textContent=ta.value.length+' / 600';$('mt-e').textContent='';AMT.text=ta.value;};ta.addEventListener('input',u);u();
+    if($('mt-s'))$('mt-s').onchange=()=>{AMT.tid=+$('mt-s').value;aSend('mt');};
+    $('mt-go').onclick=()=>{const v=ta.value.trim();if(!v){$('mt-e').textContent='اكتب نص الرسالة أولاً';return;}
+      amSend({kind:'msg',aud:'teachers',body:v,n,label,scope:one?'teacher':'all',ref:one?AMT.tid:null});};
+  }else if(pk==='mn'){
+    const st=AMN.aud==='students',n=st?amAllN():TLIST.length,label=st?'جميع الطلبة':'جميع المعلمين';
+    html=reqHead('إشعارات عامة','يظهر مرة واحدة عند دخول المستلم')+`<div class="glass card"><div class="t" style="font-size:14.5px;margin-bottom:8px">لمن؟</div>
+     <div class="chips2">${chip(st,"amSet('mn','aud','students')",'لجميع الطلبة')}${chip(!st,"amSet('mn','aud','teachers')",'لجميع المعلمين')}</div>
+     <div class="t" style="font-size:14.5px;margin:14px 0 8px">نوع الإشعار</div>
+     <div class="chips2">${chip(AMN.lv==='remind',"amSet('mn','lv','remind')",'تذكير (أحمر متوهج)','ntc-r')}${chip(AMN.lv==='info',"amSet('mn','lv','info')",'إشعار عام (أصفر)','ntc-y')}</div></div>
+     <div class="glass card"><label class="fl" for="mn-h" style="margin-top:0">العنوان</label><input class="field" id="mn-h" maxlength="40" placeholder="مثلاً: تذكير، انتباه، نرجو السرعة" value="${esc(AMN.title)}">
+     <label class="fl" for="mn-t">التفاصيل</label><textarea class="field" id="mn-t" maxlength="600" placeholder="اكتب التفاصيل هنا" style="min-height:120px;resize:none;line-height:1.7">${esc(AMN.text)}</textarea>${amCounter('mn-n',600)}<div class="fe" id="mn-e"></div>
+     <div class="ntprev"><div class="mut" style="margin-bottom:6px">معاينة</div><div class="ntbox ${AMN.lv==='remind'?'remind':'info'} sm"><div class="ntlab">${AMN.lv==='remind'?'تذكير':'إشعار'}</div><div class="ntt" id="mn-ph">${esc(AMN.title)||'العنوان'}</div><div class="ntb" id="mn-pt">${esc(AMN.text)||'التفاصيل'}</div></div></div>
+     <button class="btn" id="mn-go" style="width:100%;margin-top:12px">إرسال الإشعار</button></div>`;
+    $('admin-body').innerHTML=AT+html;
+    const h=$('mn-h'),ta=$('mn-t'),u=()=>{$('mn-n').textContent=ta.value.length+' / 600';$('mn-e').textContent='';AMN.title=h.value;AMN.text=ta.value;$('mn-ph').textContent=h.value.trim()||'العنوان';$('mn-pt').textContent=ta.value.trim()||'التفاصيل';};
+    h.addEventListener('input',u);ta.addEventListener('input',u);u();
+    $('mn-go').onclick=()=>{const ti=h.value.trim(),v=ta.value.trim();if(!ti){$('mn-e').textContent='اكتب عنواناً للإشعار';return;}if(!v){$('mn-e').textContent='اكتب تفاصيل الإشعار';return;}if(!n){$('mn-e').textContent='لا يوجد مستلمون';return;}
+      amSend({kind:'note',aud:AMN.aud,level:AMN.lv,title:ti,body:v,n,label,scope:'all',ref:null});};
+  }else{
+    html=reqHead('الرسائل المرسلة',SENT.length+' · الأحدث أولاً')+(SENT.length?SENT.map(m=>{const note=m.kind==='note',rem=m.level==='remind';
+      return `<div class="glass card"><div class="row sp"><div class="chips2" style="gap:6px"><span class="pill ${note?(rem?'p-red':'p-gold'):'p-blue'}">${note?(rem?'إشعار تذكير':'إشعار عام'):'رسالة'}</span><span class="pill p-gray">${m.aud==='students'?'للطلبة':'للمعلمين'}</span></div><span class="mut" style="font-size:12px">${fmt(m.at)} ${m.at.getFullYear()}</span></div>
+       ${note?`<div class="t" style="margin-top:8px">${esc(m.title)}</div>`:''}<div style="font-size:14px;line-height:1.9;margin-top:6px;white-space:pre-wrap;word-break:break-word">${esc(m.body)}</div>
+       <div class="mut" style="margin-top:8px">إلى: ${esc(m.label)} · ${m.n} · ${note?'شاهده':'قرأها'} ${m.seen} من ${m.n}</div>
+       <div class="row" style="gap:8px;margin-top:10px"><button class="btn-s" style="color:#7C1A10" onclick="amDel(${m.id})">حذف</button></div></div>`;}).join(''):'<div class="glass card empty">لم ترسل شيئاً بعد.</div>');
+    $('admin-body').innerHTML=AT+html;
+  }
+}
+function amSet(pg,k,v){({ms:AMS,mt:AMT,mn:AMN})[pg][k]=v;if(pg==='ms'&&k==='sc'&&v!=='class')AMS.sid=0;aSend(pg);}
+function amDel(id){confirmBox('سيُحذف هذا الإرسال ويُسحب من عند من لم يقرأه.',async()=>{const r=await srv('admin_msg_del',{p_id:id});if(r.error){toast('تعذّر الحذف',true);return false;}await sync(true);toast('تم الحذف');aSend('sent');});}
 function aPend(){
   setATab('pend');const pk=T.pk||'';let html;
+  if(['ms','mt','mn','sent'].includes(pk))return aSend(pk);
   if(!pk){
-    html=`<div class="sec" style="margin-top:2px"><b style="font-size:18px">الطلبات</b><small>${pendTotal()?pendTotal()+' بانتظار قرارك':'لا توجد طلبات جديدة'}</small></div>`+
+    html=`<div class="sec" style="margin-top:2px"><b style="font-size:18px">الرسائل</b></div><div class="sec" style="margin-top:6px"><div><b>الطلبات</b><small>${pendTotal()?pendTotal()+' بانتظار قرارك':'لا توجد طلبات جديدة'}</small></div></div>`+
       pendTile('طلبات الكلمات السرية',STUDRESET.length+' من طلاب · '+RESETREQ.length+' من معلمين',resetTotal(),'pw','rq-pw')+
       pendTile('طلبات إضافة صفوف','معلمون يطلبون تدريس صفوف',creqPend().length,'cls','rq-c')+
       pendTile('طلبات إضافة طلاب','طلاب أضافهم المعلمون وتنتظر اعتمادك',pendList().length,'stu','rq-n')+
-      pendTile('المقترحات','مقترحات الطلاب والمعلمين للإدارة · '+SUGG.length+' مقترح',suggNew().length,'sg','rq-g');
+      pendTile('المقترحات','مقترحات الطلاب والمعلمين للإدارة · '+SUGG.length+' مقترح',suggNew().length,'sg','rq-g')+
+      `<div class="sec"><div><b>إرسال رسائل</b><small>إلى الطلبة والمعلمين</small></div></div>`+
+      sendTile('رسائل للطلبة','كل الطلبة، حلقة، صف، أو طالب معين','ms','<path d="M3 11l9-7 9 7v9H3z"/>')+
+      sendTile('رسائل للمعلمين','معلم معين أو جميع المعلمين','mt','<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/>')+
+      sendTile('إشعارات عامة','تظهر مرة واحدة عند دخول الطلبة أو المعلمين','mn','<path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/>')+
+      sendTile('الرسائل المرسلة','سجل ما أرسلته مع إمكانية الحذف · '+SENT.length,'sent','<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>');
   }else if(pk==='pw'){
     const items=[...STUDRESET.map(r=>({k:'s',r})),...RESETREQ.map(r=>({k:'t',r}))].sort((a,b)=>b.r.at-a.r.at);
     html=reqHead('طلبات الكلمات السرية',resetTotal()+' طلب')+`<div class="chips" style="margin:0 4px 10px"><span class="pill p-blue">طالب</span><span class="pill p-purple">معلم</span></div>`+
@@ -2841,7 +2971,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='6c8bafea79bf';
+const BUILD='9fe6df6a3ded';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
