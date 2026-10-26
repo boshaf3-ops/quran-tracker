@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="cd0b36584a31">
+<meta name="build" content="90ccf22daceb">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -167,6 +167,12 @@ button{font-family:inherit}
 .chev{width:18px;height:18px;stroke:var(--ink-2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .bar{display:flex;height:9px;border-radius:99px;overflow:hidden;margin-top:10px;background:rgba(255,255,255,.55)}
 .bar i{display:block}
+.sno{flex:none;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:rgba(22,94,80,.1);color:var(--teal-d);font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.snav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(22,94,80,.12)}
+.snav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;padding:10px 8px;line-height:1.35;border-radius:18px;margin:0}
+.snav .sl{display:inline-flex;align-items:center;gap:4px}.snav .sl svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.snav button small{font-size:11px;font-weight:600;opacity:.85}
+.snav button:disabled{opacity:.4;cursor:default}
 .mini{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.7);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:var(--teal-d);flex:none}
 .stages{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}
 .stg{border:1px solid var(--glass-border);background:rgba(255,255,255,.5);color:var(--ink-2);font-size:13px;font-weight:600;padding:8px 15px;border-radius:999px;cursor:pointer}
@@ -1061,10 +1067,10 @@ function drawClassFilters(){
   $('cf').innerHTML=h;
 }
 function drawStudents(){
-  const c=CLASSES.find(x=>x.id===T.cid),l=filtList(c.students,T.fm).filter(OWF(c));
+  const c=CLASSES.find(x=>x.id===T.cid),l=filtList(c.students,T.fm).filter(OWF(c)),NM=nums(c.students);
   $('sl').innerHTML=l.length?l.map(s=>{const st=statusOf(s),
     oc=T.admin?`openAStu(${s.id},'cls',${c.id})`:`go('stu',{sid:${s.id}})`;
-    return `<button class="glass item" onclick="${oc}">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div>
+    return `<button class="glass item" onclick="${oc}">${sno(NM[s.id])}${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div>
       <div class="mut">${nxtTxt(s)} · ${s.done.length} من ${segsOf(c.g).length}</div><div class="mut">${s.owner?'مع الأستاذ '+esc(shortT(s.owner)):'غير مختار من أي معلم'}</div></div><span class="pill ${st.p}">${stShort(st)}</span>${CHEV}</button>`;}).join('')
     :'<div class="glass card empty">لا يوجد طلبة في هذا التصنيف</div>';
 }
@@ -1458,9 +1464,9 @@ function setCSub(k){T.csub=k;$('cl-hifz').hidden=k!=='hifz';$('cl-beh').hidden=k
 const todayCnt=(s,sg)=>s.beh.filter(b=>b[0]===sg&&b[2].getTime()===TODAY.getTime()).length;
 const bBadge=s=>{const p=todayCnt(s,'+'),n=todayCnt(s,'−');return (p?`<span class="pill p-green">+${p}</span>`:'')+(n?`<span class="pill p-red">−${n}</span>`:'');};
 function drawBeh(){
-  const c=CLASSES.find(x=>x.id===T.cid),l=filtList(myIn(c),'abc');
+  const c=CLASSES.find(x=>x.id===T.cid),l=filtList(myIn(c),'abc'),NM=nums(l);
   $('bl').innerHTML=l.map(s=>`<div class="glass item bstu" id="bs-${s.id}" style="display:block;cursor:default">
-    <button class="rbody" style="width:100%;justify-content:space-between" onclick="toggleB(${s.id})"><span class="row" style="gap:10px">${avaHTML(s,'mini')}<span class="t" style="text-align:start">${esc(s.name)}</span></span><span class="row" style="gap:6px;flex:none" id="bb-${s.id}">${bBadge(s)}</span></button>
+    <button class="rbody" style="width:100%;justify-content:space-between" onclick="toggleB(${s.id})"><span class="row" style="gap:10px">${sno(NM[s.id])}${avaHTML(s,'mini')}<span class="t" style="text-align:start">${esc(s.name)}</span></span><span class="row" style="gap:6px;flex:none" id="bb-${s.id}">${bBadge(s)}</span></button>
     <div class="bbody" id="bd-${s.id}" hidden style="margin-top:12px"><div class="bcols"><div><div class="bhead pos">سلوك إيجابي</div>${BPOS.map(x=>`<button class="bopt pos${behOn(s,'+',x)?' on':''}" onclick="tbeh(${s.id},'+','${x}',this)">${x}<small>+${BPT[x]}</small></button>`).join('')}</div>
     <div><div class="bhead neg">سلوك سلبي</div>${BNEG.map(x=>`<button class="bopt neg${behOn(s,'−',x)?' on':''}" onclick="tbeh(${s.id},'−','${x}',this)">${x}<small>−${BNT[x]}</small></button>`).join('')}</div></div>
     <div class="divider"></div><div id="lvm-${s.id}">${lvInner(s)}</div>
@@ -1475,9 +1481,9 @@ async function tbeh(id,sg,tx,el){const s=byId(id);
   if(r.error){toast('تعذّر حفظ السلوك، حدّث الصفحة',true);await sync(true);}
 }
 function drawMine(){
-  const c=CLASSES.find(x=>x.id===T.cid),l=filtList(myIn(c),T.fm);
+  const c=CLASSES.find(x=>x.id===T.cid),l=filtList(myIn(c),T.fm),NM=nums(myIn(c));
   $('sl').innerHTML=l.length?l.map(s=>{const st=statusOf(s);
-    return `<button class="glass item" onclick="openTS(${s.id},'tas',${c.id})">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)} ${s.pending?'<span class="pill p-gold" style="font-size:11px;margin-inline-start:6px">بانتظار الإدارة</span>':''}</div>
+    return `<button class="glass item" onclick="openTS(${s.id},'tas',${c.id})">${sno(NM[s.id])}${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)} ${s.pending?'<span class="pill p-gold" style="font-size:11px;margin-inline-start:6px">بانتظار الإدارة</span>':''}</div>
      <div class="mut">${nxtTxt(s)} · ${s.done.length} من ${segsOf(c.g).length}</div></div><span class="pill ${st.p}">${stShort(st)}</span>${CHEV}</button>`;}).join('')
     :'<div class="glass card empty">لا يوجد طلبة في هذا التصنيف</div>';
 }
@@ -1500,12 +1506,12 @@ function drawRoster(){
   if(!$('rs-sum')||!$('sl'))return;
   const c=CLASSES.find(x=>x.id===T.cid),mine=c.students.filter(s=>s.owner===ME.id).length,tk=c.students.filter(s=>s.owner&&s.owner!==ME.id).length,fr=c.students.length-mine-tk;
   $('rs-sum').innerHTML=`<div class="g3"><div class="glass stat" style="cursor:default"><b style="color:#145A31">${mine}</b><span>معي</span></div><div class="glass stat" style="cursor:default"><b style="color:#6b7573">${tk}</b><span>مع زميلي</span></div><div class="glass stat" style="cursor:default"><b style="color:#8A5A00">${fr}</b><span>غير مختار</span></div></div>`;
-  const l=filtList(c.students,T.fm);
+  const l=filtList(c.students,T.fm),NM=nums(c.students);
   $('sl').innerHTML=l.length?l.map(s=>{
     const m=s.owner===ME.id,tkn=s.owner&&!m,st=statusOf(s);
     return `<div class="glass rrow${tkn?' taken':''}">
       <button class="chk${m?' on':''}" ${tkn?'disabled':''} onclick="toggleOwn(${s.id})" aria-label="${tkn?'مأخوذ':m?'إلغاء الاختيار':'اختيار الطالب'}">${m?CHECK:tkn?LOCK:''}</button>
-      <button class="rbody" onclick="openTS(${s.id},'cls',${c.id})">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)} ${s.pending?'<span class="pill p-gold" style="font-size:11px;margin-inline-start:6px">بانتظار الإدارة</span>':''}</div>
+      <button class="rbody" onclick="openTS(${s.id},'cls',${c.id})">${sno(NM[s.id])}${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)} ${s.pending?'<span class="pill p-gold" style="font-size:11px;margin-inline-start:6px">بانتظار الإدارة</span>':''}</div>
         <div class="mut">${nxtTxt(s)} · ${s.done.length} من ${segsOf(c.g).length} · ${stShort(st)}</div></div></button>
       ${tkn?`<div class="rextra"><span class="pill p-gray">مع الأستاذ ${esc(shortT(s.owner))}</span><button class="btn-s" onclick="openTS(${s.id},'cls',${c.id})">حفظ الطالب</button></div>`:''}</div>`;}).join('')
     :'<div class="glass card empty">لا يوجد طلبة في هذا التصنيف</div>';
@@ -1522,17 +1528,27 @@ function subTabs(){const tabs=[['hifz','التسميع'],['beh','السلوك']]
   return `<div class="glass seg2" style="grid-template-columns:repeat(${tabs.length},1fr)">${tabs.map(x=>`<button data-k="${x[0]}" class="${T.sub===x[0]?'on':''}" onclick="setSub('${x[0]}')">${x[1]}</button>`).join('')}</div>`;}
 function setSub(k){T.sub=k;['hifz','beh','adm'].forEach(x=>{const e=$('sub-'+x);if(e)e.hidden=x!==k;});
   document.querySelectorAll('.seg2 button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));}
+const nums=list=>{const m={};list.slice().sort((a,b)=>a.name.localeCompare(b.name,'ar')).forEach((s,i)=>m[s.id]=i+1);return m;};
+const sno=n=>`<span class="sno">${n}</span>`;
+function navList(s){let l=null;
+  if(T.admin){if(/ago\('cls'/.test(T.ret||''))l=s.c.students;}
+  else if(T.from==='tas')l=myIn(s.c);else if(T.from==='cls')l=s.c.students;
+  return l&&l.length>1?l.slice().sort((a,b)=>a.name.localeCompare(b.name,'ar')):null;}
+function navStrip(s){const l=navList(s);if(!l)return '';const i=l.findIndex(x=>x.id===s.id);if(i<0)return '';
+  const pv=l[i-1],nx=l[i+1],fn=x=>esc(x.name.trim().split(/\s+/)[0]);
+  return `<div class="snav"><button class="btn-s" ${pv?`onclick="navStu(${pv.id})"`:'disabled'}><span class="sl">${BACK}الطالب السابق</span><small>${pv?(i)+' · '+fn(pv):'أول الكشف'}</small></button><button class="btn" ${nx?`onclick="navStu(${nx.id})"`:'disabled'}><span class="sl">الطالب التالي${CHEV}</span><small>${nx?(i+2)+' · '+fn(nx):'آخر الكشف'}</small></button></div>`;}
+function navStu(id){if(T.admin){T.sid=id;T.sub='hifz';T.gi=null;vStudent();$('admin-body').scrollTop=0;}else go('stu',{sid:id});}
 function vStudent(){
   setTab(T.from==='tas'?'tas':'roster');const s=byId(T.sid),segs=segsOf(s.c.g),st=statusOf(s),nI=nxtIdx(s),gi=selSeg(s),seg=gi>=0?segs[gi]:null;
-  let grade='<div class="glass card"><div class="t">أتم الطالب جميع مقاطع المرحلة</div><div class="mut">ما شاء الله، لا توجد مقاطع متبقية.</div></div>';
+  let grade='<div class="glass card"><div class="t">أتم الطالب جميع مقاطع المرحلة</div><div class="mut">ما شاء الله، لا توجد مقاطع متبقية.</div>'+navStrip(s)+'</div>';
   if(seg){
-    const MX=mxOf(s.c.g),DEF=MX===5?4:8;
+    const MX=mxOf(s.c.g),DEF=MX;
     const tag=gi===nI?'المقطع التالي بالترتيب':'مقطع مختار من الخطة',pc=gi===nI?'p-gold':'p-pink';
     grade=`<div class="glass card"><div class="row sp"><div class="t">تسميع: ${rng(seg)}</div><span class="pill ${pc}">${tag}</span></div>
     <div class="mut" style="margin-top:2px;margin-bottom:4px">${fmtR(seg)} · لتسميع مقطع آخر اضغط عليه في «منهج الطالب» أسفل الصفحة</div>
     <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="g-hv">${DEF}</span> / ${MX}</span></div>
     <input type="range" id="g-h" min="0" max="${MX}" step="1" value="${DEF}">
-    <div class="total"><div><span class="mut">الدرجة </span><span dir="ltr" style="display:inline-block"><b id="g-tot">${DEF}</b><span class="mut"> / ${MX}</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div></div>`;}
+    <div class="total"><div><span class="mut">الدرجة </span><span dir="ltr" style="display:inline-block"><b id="g-tot">${DEF}</b><span class="mut"> / ${MX}</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div>${navStrip(s)}</div>`;}
   (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">حفظ تقرير الطالب PDF</button></div>`+profileCard(s,st)+subTabs()+`<div class="wst"><div id="sub-hifz"${vis('hifz')}>`+grade+
    `<div class="glass card" id="cur-card" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">منهج الطالب</div>${segRows(s,0,true)}
     <div style="height:8px"></div></div></div>
@@ -2791,7 +2807,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='cd0b36584a31';
+const BUILD='90ccf22daceb';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
