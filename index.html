@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="9fe6df6a3ded">
+<meta name="build" content="eeaa91303f96">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1061,8 +1061,10 @@ const uiBusy=()=>{const a=document.activeElement;
   return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&a.closest('.screen.on'))||($('sheet')&&$('sheet').classList.contains('on'))||($('rpt')&&$('rpt').classList.contains('on'))||(ROLE!=='student'&&(T.view==='stu'||T.view==='thread'));};
 setInterval(()=>{if(ROLE==='student'&&KIDS.length>1&&document.visibilityState==='visible'&&!ADDKID)kidsRefresh();},30000);
 let POLLING=false;
+let LASTPING=0;
 async function poll(force){
   if(!TOK||document.visibilityState!=='visible'||POLLING)return;
+  if(ROLE==='student'&&Date.now()-LASTPING>30*60*1000){LASTPING=Date.now();rpc('session_ping',{p_tok:TOK}).catch(()=>{});}
   if(uiBusy())return;
   POLLING=true;
   try{
@@ -2435,7 +2437,7 @@ const AT=`<div class="glass top"><div class="logo inst"></div><div class="ttl">�
 const teacherOf=c=>({name:tNames(c)});
 const setATab=n=>document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.classList.toggle('on',b.dataset.atab===n));
 function ago(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:true});if(view==='stu'&&p.sid){T.sub='hifz';T.gi=null;}if(view==='tcls'&&p.fm)T.csub='hifz';$('teacher-body').innerHTML='';
-  ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm,tact:aTAct,honor:aHonor,reports:aReports})[view]();
+  ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm,tact:aTAct,honor:aHonor,reports:aReports,act:aAct})[view]();
   $('admin-body').scrollTop=0;updABadge();}
 function openAStu(id,from,arg){T.ret=from==='cls'?`ago('cls',{cid:${arg}})`:from==='tch'?`ago('tch',{tid:${arg}})`:`ago('list')`;ago('stu',{sid:id});}
 const stuRow=(s,from,arg)=>{const st=statusOf(s);return `<button class="glass item" onclick="openAStu(${s.id},'${from}',${arg||0})">${avaHTML(s,'mini')}
@@ -2447,11 +2449,41 @@ const pinSheet=(title,sub,pin)=>sheet(`<div class="t" style="font-size:17px">${t
 
 const LTITLE={abc:'كل الطلبة',green:'الطلبة المتقدمون',gold:'الطلبة على الخطة',red:'الطلبة المتأخرون',none:'الطلبة بدون تسجيل'};
 function openList(m){ago('list',{fm:m});}
+let ACT=null;const AF={d:0,cid:0};
+const ACTF=[[0,'الكل'],[1,'خلال يوم'],[2,'خلال يومين'],[3,'خلال 3 أيام'],[5,'خلال 5 أيام'],[-1,'أقدم من 5 أيام']];
+function aAct(){
+  setATab('home');
+  if(!ACT){$('admin-body').innerHTML=AT+head('التفاعل','حسابات الطلبة',"ago('home')")+'<div class="glass card empty">جاري التحميل...</div>';
+    srv('student_activity',{}).then(r=>{if(!r||r.error||!r.rows){if(T.view==='act')$('admin-body').innerHTML=AT+head('التفاعل','',"ago('home')")+'<div class="glass card empty">تعذّر تحميل البيانات.</div>';return;}
+      ACT=new Map(r.rows.map(x=>[+x.id,{first:new Date(x.first),last:new Date(x.last)}]));if(T.view==='act')aAct();});return;}
+  const all=CLASSES.reduce((a,c)=>a.concat(c.students.filter(s=>!s.pending)),[]);
+  const now=Date.now(),H=36e5,ago_=s=>(now-ACT.get(s.id).last.getTime())/H;
+  const inF=(s,f)=>{if(!f)return true;const h=ago_(s);return f<0?h>120:h<=f*24;};
+  const ent=all.filter(s=>ACT.has(s.id)),nev=all.filter(s=>!ACT.has(s.id));
+  const cidOk=s=>!AF.cid||s.c.id===AF.cid;
+  const list=ent.filter(s=>cidOk(s)&&inF(s,AF.d)).sort((a,b)=>ACT.get(b.id).last-ACT.get(a.id).last);
+  const nevL=nev.filter(cidOk).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+  const when=d=>{const t0=new Date();t0.setHours(0,0,0,0);const df=Math.floor((t0-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/864e5),tm=d.toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});
+    return df<=0?'اليوم '+tm:df===1?'أمس '+tm:fmt(d)+' · '+tm;};
+  const rel=d=>{const t0=new Date();t0.setHours(0,0,0,0);const df=Math.floor((t0-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);return df<=0?'اليوم':df===1?'أمس':df===2?'قبل يومين':'قبل '+df+' أيام';};
+  const pct=all.length?Math.round(ent.length/all.length*100):0;
+  const cls=CLASSES.slice().sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar'));
+  const cnt=f=>ent.filter(s=>cidOk(s)&&inF(s,f)).length;
+  $('admin-body').innerHTML=AT+head('التفاعل','حسابات الطلبة',"ago('home')")+
+   `<div class="glass card"><div class="row sp"><div class="t" style="font-size:15px">فتحوا حساباتهم</div><b style="font-size:22px;color:var(--teal-d)" dir="ltr">${ent.length} / ${all.length}</b></div>
+    <div class="pl" style="margin-top:10px"><i style="width:${pct}%;background:var(--green)"></i></div><div class="mut" style="margin-top:6px">${pct}% من طلبة المعهد${nev.length?` · لم يدخل ${nev.length}`:' · دخل الجميع، ما شاء الله'}</div></div>
+    <div class="chips2" style="margin:0 4px 10px">${ACTF.map(f=>`<button class="qc${AF.d===f[0]?' on':''}" onclick="AF.d=${f[0]};aAct()">${f[1]} · ${cnt(f[0])}</button>`).join('')}</div>
+    <select class="field" id="af-c" style="margin-bottom:10px"><option value="0">كل الصفوف</option>${cls.map(c=>`<option value="${c.id}"${c.id===AF.cid?' selected':''}>${clsName(c)}</option>`).join('')}</select>`+
+   (list.length?list.map(s=>{const a=ACT.get(s.id);return `<div class="glass item" style="cursor:default">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div><div class="mut">${clsName(s.c)} · آخر دخول: ${when(a.last)}</div></div><span class="pill ${ago_(s)<=24?'p-green':ago_(s)<=72?'p-gold':'p-gray'}">${rel(a.last)}</span></div>`;}).join(''):'<div class="glass card empty">لا توجد حسابات في هذا التصنيف</div>')+
+   (nevL.length?`<div class="sec" style="margin:16px 6px 8px"><div><b>لم يدخلوا أبداً</b><small>حسابات لم تُفتح ولا مرة</small></div><span class="pill p-red">${nevL.length}</span></div>`+nevL.map(s=>`<div class="glass item" style="cursor:default">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div><div class="mut">${clsName(s.c)}</div></div></div>`).join(''):'');
+  $('af-c').onchange=()=>{AF.cid=+$('af-c').value;aAct();};
+}
 function aHome(){
   setATab('home');const all=allStudents().filter(s=>!s.pending),n=all.length,r={green:0,gold:0,red:0,none:0};all.forEach(s=>r[statusOf(s).k]++);
   const tile=(num,label,oc,col)=>`<button class="glass stat" onclick="${oc}"><b${col?` style="color:${col}"`:''}>${num}</b><span>${label}</span></button>`;
   $('admin-body').innerHTML=AT+`<div class="sec" style="margin-top:2px"><b style="font-size:18px">غرفة التحكم</b></div>${pendCard()}
   <div class="g3">${tile(n,'كل الطلبة',"openList('abc')")}${tile(CLASSES.length,'الصفوف',"ago('classes')")}${tile(TLIST.length,'المعلمون',"ago('teachers')")}</div>
+  <button class="glass item" onclick="AF.d=0;AF.cid=0;ACT=null;ago('act')" style="margin:10px 0"><div class="mini"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div><div class="grow"><div class="t">التفاعل</div><div class="mut">من فتح حسابه ومتى آخر دخول، ومن لم يدخل بعد</div></div>${CHEV}</button>
   <div class="sec" style="margin:10px 6px 8px"><div><b>حالة الطلبة</b><small>اضغط على أي خانة لعرض طلبتها</small></div></div>
   <div class="g3">${tile(r.green,'متقدمون',"openList('green')",'#145A31')}${tile(r.gold,'على الخطة',"openList('gold')",'#8A5A00')}${tile(r.red,'متأخرون',"openList('red')",'#7C1A10')}</div>
   ${r.none?`<button class="glass item" onclick="openList('none')" style="margin-bottom:10px"><div class="grow"><div class="t">لم يبدأ تسجيلهم بعد</div><div class="mut">طلاب لم تُسجَّل لهم أي درجة</div></div><span class="pill p-gray">${r.none}</span>${CHEV}</button>`:''}
@@ -2971,7 +3003,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='9fe6df6a3ded';
+const BUILD='eeaa91303f96';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
