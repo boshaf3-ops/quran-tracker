@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="90ccf22daceb">
+<meta name="build" content="6c8bafea79bf">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -167,6 +167,19 @@ button{font-family:inherit}
 .chev{width:18px;height:18px;stroke:var(--ink-2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .bar{display:flex;height:9px;border-radius:99px;overflow:hidden;margin-top:10px;background:rgba(255,255,255,.55)}
 .bar i{display:block}
+.nwrap{position:relative;display:flex;align-items:center;gap:4px;margin-top:6px}
+.nbtn{border:0;background:none;padding:4px 2px;font-size:12px;font-weight:700;color:#8f9997;cursor:pointer;font-family:inherit}
+.nbtn.has{color:var(--teal-d)}
+.nx{border:0;background:none;font-size:11px;color:#a3abaa;cursor:pointer;padding:3px 5px;line-height:1}
+.nmenu{position:absolute;z-index:30;inset-inline-start:0;top:calc(100% + 2px);min-width:176px;padding:4px;border-radius:14px;background:#fff;border:1px solid rgba(0,0,0,.08);box-shadow:0 10px 26px rgba(0,0,0,.15)}
+.nmenu.up{top:auto;bottom:calc(100% + 2px)}
+.nmenu[hidden]{display:none}
+.nopen{position:relative;z-index:25}
+.nmenu button{display:block;width:100%;text-align:start;padding:8px 12px;border:0;background:none;border-radius:10px;font-size:12.5px;font-weight:600;color:#9aa3a1;cursor:pointer;font-family:inherit}
+.nmenu button:hover{background:rgba(0,0,0,.04)}
+.nmenu button.on{color:var(--teal-d);font-weight:800;background:rgba(22,94,80,.08)}
+.gnote{margin-top:6px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:10px;background:rgba(224,160,20,.16);color:#8A5A00;display:inline-block}
+.gnote.n4{background:rgba(46,170,94,.15);color:#145A31}
 .sno{flex:none;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:rgba(22,94,80,.1);color:var(--teal-d);font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
 .snav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(22,94,80,.12)}
 .snav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;padding:10px 8px;line-height:1.35;border-radius:18px;margin:0}
@@ -838,7 +851,8 @@ const scoreBox=(d,mx)=>{mx=mx||10;const tot=Math.round((d[0]+(d[1]||0))*10)/10;
   return `<div class="gbig ${TQ(tot*10/mx)}"><span class="gl2">النتيجة</span><b dir="ltr">${tot}</b><small dir="ltr">/${mx}</small></div>`;};
 const expectedIdx=segs=>{const i=segs.findIndex(x=>x.e>=TODAY);return i<0?segs.length-1:i;};
 const gAt=(s,i)=>{const k=s.dix.indexOf(i);return k<0?null:s.done[k];};
-function setGrade(s,i,sc){const k=s.dix.indexOf(i);if(k>=0)s.done[k]=[sc,null,0];else{const q=s.dix.map((x,j)=>[x,s.done[j]]);q.push([i,[sc,null,0]]);q.sort((a,b)=>a[0]-b[0]);s.dix=q.map(x=>x[0]);s.done=q.map(x=>x[1]);}}
+const GNOTES=['','لم يكمل المقطع','مخارج الحروف ضعيفة','حفظه ضعيف','متميز ورائع'];
+function setGrade(s,i,sc,nt){nt=nt||0;const k=s.dix.indexOf(i);if(k>=0)s.done[k]=[sc,null,0,nt];else{const q=s.dix.map((x,j)=>[x,s.done[j]]);q.push([i,[sc,null,0,nt]]);q.sort((a,b)=>a[0]-b[0]);s.dix=q.map(x=>x[0]);s.done=q.map(x=>x[1]);}}
 function unsetGrade(s,i){const k=s.dix.indexOf(i);if(k>=0){s.dix.splice(k,1);s.done.splice(k,1);}}
 const nxtIdx=(s,from)=>{const N=segsOf(s.c.g).length;for(let i=from||0;i<N;i++)if(!gAt(s,i))return i;return -1;};
 const nxtTxt=s=>{const i=nxtIdx(s);return i<0?'أتم كل المقاطع':'التالي: '+rng(segsOf(s.c.g)[i]);};
@@ -851,7 +865,7 @@ function segRows(s,lim,edit){
   return segs.map((g,i)=>{
     const d=gAt(s,i),fut=g.d>TODAY;let rail='mute',mid='',sc2='<span style="color:var(--ink-2);font-size:13px">—</span>';
     if(d){rail='green';
-      mid=`<div class="pl" style="margin-top:6px"><i style="width:100%;background:var(--green)"></i></div><div style="margin-top:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="pill p-green" style="font-size:11px">✓ تم التسميع</span>${fut?'<span class="pill p-gold" style="font-size:11px">سمّعه مبكراً</span>':''}${edit?`<button type="button" class="btn-s" style="padding:3px 12px;font-size:11.5px" onclick="openEditGrade(${s.id},${i})">تعديل الدرجة</button>`:''}</div>`;
+      mid=`<div class="pl" style="margin-top:6px"><i style="width:100%;background:var(--green)"></i></div><div style="margin-top:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="pill p-green" style="font-size:11px">✓ تم التسميع</span>${fut?'<span class="pill p-gold" style="font-size:11px">سمّعه مبكراً</span>':''}${edit?`<button type="button" class="btn-s" style="padding:3px 12px;font-size:11.5px" onclick="openEditGrade(${s.id},${i})">تعديل الدرجة</button>`:''}</div>${d[3]?`<div class="gnote n${d[3]}">ملاحظة المعلم: ${GNOTES[d[3]]}</div>`:''}<div style="display:none"></div>`;
       sc2=scoreBox(d,mxOf(s.c.g));}
     else mid=`<div class="m" style="margin-top:5px">${edit?'اضغط لتسميعه الآن':'لم يُسمَّع بعد'}</div>`;
     const more=lim&&!(i>=lo&&i<lo+lim)&&i!==ex;
@@ -904,7 +918,7 @@ function hydrate(st){
   CLASSES.length=0;POOL.length=0;const cm={};
   st.classes.forEach(c=>{const o={id:c.id,g:c.g,sec:c.sec,tids:c.tids.slice(),students:[]};cm[c.id]=o;CLASSES.push(o);});
   st.students.forEach(x=>{
-    const s={id:x.id,name:x.name,init:x.name.split(' ').slice(0,2).map(w=>w[0]).join(' '),done:x.done.map(d=>[+d[0],d[1]===null?null:+d[1],+d[2]||0]),dix:(x.dix&&x.dix.length===x.done.length)?x.dix.map(Number):x.done.map((_,i)=>i),partial:x.partial||0,
+    const s={id:x.id,name:x.name,init:x.name.split(' ').slice(0,2).map(w=>w[0]).join(' '),done:x.done.map(d=>[+d[0],d[1]===null?null:+d[1],+d[2]||0,+d[3]||0]),dix:(x.dix&&x.dix.length===x.done.length)?x.dix.map(Number):x.done.map((_,i)=>i),partial:x.partial||0,
       beh:x.beh.map(b=>[b[0]==='-'?'−':'+',b[1],dayDate(b[2])]),owner:x.owner||0,pin:x.pin||'',photo:x.photo||undefined,medals:x.medals||{},pending:!!x.pending,
       by:x.by||0,at:x.at?new Date(x.at):undefined,prev:x.prev||undefined,nextG:x.nextG||undefined,c:null};
     const c=cm[x.c];if(c){s.c=c;c.students.push(s);}else if(ROLE==='admin')POOL.push(s);});
@@ -1334,11 +1348,11 @@ async function smSend(){
 
 /* ---------- تعديل درجة مقطع سابق (المعلم / الإدارة) ---------- */
 function openEditGrade(sid,i){
-  const s=byId(sid),g=segsOf(s.c.g)[i],d=gAt(s,i),mx=mxOf(s.c.g),cur=Math.round((d[0]+(d[1]||0))*10)/10;
+  const s=byId(sid),g=segsOf(s.c.g)[i],d=gAt(s,i),mx=mxOf(s.c.g),cur=Math.round((d[0]+(d[1]||0))*10)/10;let en=d[3]||0;
   sheet(`<div class="t" style="font-size:17px">تعديل درجة ${esc(rng(g))}</div><div class="mut" style="margin:2px 0 8px">${esc(s.name)} · الدرجة الحالية <bdi dir="ltr">${cur} / ${mx}</bdi></div>
    <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="eg-hv">${Math.min(mx,Math.round(cur))}</span> / ${mx}</span></div>
    <input type="range" id="eg-h" min="0" max="${mx}" step="1" value="${Math.min(mx,Math.round(cur))}">
-   <div class="fe" id="eg-e"></div><button class="btn" id="eg-save" style="margin-top:6px">حفظ التعديل</button>
+   ${noteHTML(en)}<div class="fe" id="eg-e"></div><button class="btn" id="eg-save" style="margin-top:6px">حفظ التعديل</button>
    <button type="button" class="btn-s" id="eg-del" style="width:100%;margin-top:10px;padding:11px;color:#7C1A10">حذف الدرجة وإرجاع المقطع «لم يُسمَّع»</button>`);
   $('eg-del').onclick=()=>{
     sheet(`<div class="t" style="font-size:17px;color:#7C1A10">حذف الدرجة؟</div><div class="mut" style="margin:6px 0 12px;line-height:1.8">ستُحذف درجة ${esc(rng(g))} للطالب ${esc(s.name)} ويرجع المقطع «لم يُسمَّع». لا يمكن التراجع.</div>
@@ -1347,10 +1361,11 @@ function openEditGrade(sid,i){
       if(r.error){toast(r.error==='forbidden'?'هذا الطالب ليس في قائمتك':'تعذّر الحذف',true);closeSheet();return;}
       closeSheet();toast('حُذفت الدرجة وعاد المقطع لم يُسمَّع',true);await sync(true);vStudent();};};
   const h=$('eg-h'),upd=()=>{fill(h);$('eg-hv').textContent=h.value;};h.addEventListener('input',upd);upd();
+  bindNote($('sheet'),()=>en,v=>{en=v;});
   $('eg-save').onclick=async()=>{const sc=+h.value;
-    const r=await srv('save_grade',{p_student:sid,p_idx:i,p_hifz:sc});
+    const r=await srv('save_grade',{p_student:sid,p_idx:i,p_hifz:sc,p_note:en||null});
     if(r.error){$('eg-e').textContent=r.error==='net'?'تعذّر الاتصال بالخادم':r.error==='forbidden'?'هذا الطالب ليس في قائمتك. اخترته من الكشف أولاً':'تعذّر حفظ التعديل';return;}
-    setGrade(s,i,sc);closeSheet();toast('تم تعديل الدرجة');await sync(true);vStudent();};
+    setGrade(s,i,sc,en);closeSheet();toast('تم تعديل الدرجة');await sync(true);vStudent();};
 }
 
 /* ---------- المعلم ---------- */
@@ -1538,17 +1553,35 @@ function navStrip(s){const l=navList(s);if(!l)return '';const i=l.findIndex(x=>x
   const pv=l[i-1],nx=l[i+1],fn=x=>esc(x.name.trim().split(/\s+/)[0]);
   return `<div class="snav"><button class="btn-s" ${pv?`onclick="navStu(${pv.id})"`:'disabled'}><span class="sl">${BACK}الطالب السابق</span><small>${pv?(i)+' · '+fn(pv):'أول الكشف'}</small></button><button class="btn" ${nx?`onclick="navStu(${nx.id})"`:'disabled'}><span class="sl">الطالب التالي${CHEV}</span><small>${nx?(i+2)+' · '+fn(nx):'آخر الكشف'}</small></button></div>`;}
 function navStu(id){if(T.admin){T.sid=id;T.sub='hifz';T.gi=null;vStudent();$('admin-body').scrollTop=0;}else go('stu',{sid:id});}
+const noteHTML=nt=>`<div class="nwrap"><button type="button" class="nbtn${nt?' has':''}" data-nb>${nt?'ملاحظة: '+GNOTES[nt]:'+ ملاحظات'}</button>${nt?'<button type="button" class="nx" data-nx aria-label="إزالة الملاحظة">✕</button>':''}<div class="nmenu" data-nm hidden>${[1,2,3,4].map(i=>`<button type="button" data-n="${i}" class="${nt===i?'on':''}">${GNOTES[i]}</button>`).join('')}</div></div>`;
+function bindNote(root,get,set){
+  const w=root.querySelector('.nwrap');if(!w)return;
+  const nb=w.querySelector('[data-nb]'),nm=w.querySelector('[data-nm]'),nx=w.querySelector('[data-nx]');
+  const redraw=()=>{const d=document.createElement('div');d.innerHTML=noteHTML(get());w.replaceWith(d.firstElementChild);bindNote(root,get,set);};
+  nb.onclick=e=>{e.stopPropagation();const cd=nb.closest('.card,.panel');
+    if(!nm.hidden){nm.hidden=true;if(cd)cd.classList.remove('nopen');return;}
+    document.querySelectorAll('.nmenu').forEach(x=>{x.hidden=true;});document.querySelectorAll('.nopen').forEach(x=>x.classList.remove('nopen'));if(cd)cd.classList.add('nopen');
+    nm.classList.remove('up');nm.style.transform='';nm.hidden=false;
+    const b=nb.getBoundingClientRect(),m=nm.getBoundingClientRect(),room=window.innerHeight-b.bottom-96;
+    if(room<m.height&&b.top>m.height+16)nm.classList.add('up');
+    const ph=(document.querySelector('.phone')||document.body).getBoundingClientRect(),r=nm.getBoundingClientRect();
+    let dx=0;if(r.left<ph.left+8)dx=ph.left+8-r.left;else if(r.right>ph.right-8)dx=ph.right-8-r.right;
+    if(dx)nm.style.transform=`translateX(${dx}px)`;};
+  nm.querySelectorAll('[data-n]').forEach(b=>b.onclick=e=>{e.stopPropagation();set(get()===+b.dataset.n?0:+b.dataset.n);const cd=nb.closest('.card,.panel');if(cd)cd.classList.remove('nopen');redraw();});
+  if(nx)nx.onclick=e=>{e.stopPropagation();set(0);const cd=nb.closest('.card,.panel');if(cd)cd.classList.remove('nopen');redraw();};
+}
+document.addEventListener('click',e=>{if(!e.target.closest||e.target.closest('.nwrap'))return;document.querySelectorAll('.nmenu').forEach(x=>x.hidden=true);document.querySelectorAll('.nopen').forEach(x=>x.classList.remove('nopen'));});
 function vStudent(){
   setTab(T.from==='tas'?'tas':'roster');const s=byId(T.sid),segs=segsOf(s.c.g),st=statusOf(s),nI=nxtIdx(s),gi=selSeg(s),seg=gi>=0?segs[gi]:null;
   let grade='<div class="glass card"><div class="t">أتم الطالب جميع مقاطع المرحلة</div><div class="mut">ما شاء الله، لا توجد مقاطع متبقية.</div>'+navStrip(s)+'</div>';
   if(seg){
-    const MX=mxOf(s.c.g),DEF=MX;
+    const MX=mxOf(s.c.g),DEF=MX;const nk=s.id+':'+gi;if(T.nk!==nk){T.nk=nk;T.note=0;}
     const tag=gi===nI?'المقطع التالي بالترتيب':'مقطع مختار من الخطة',pc=gi===nI?'p-gold':'p-pink';
     grade=`<div class="glass card"><div class="row sp"><div class="t">تسميع: ${rng(seg)}</div><span class="pill ${pc}">${tag}</span></div>
     <div class="mut" style="margin-top:2px;margin-bottom:4px">${fmtR(seg)} · لتسميع مقطع آخر اضغط عليه في «منهج الطالب» أسفل الصفحة</div>
     <div class="lab"><span>الدرجة</span><span dir="ltr"><span id="g-hv">${DEF}</span> / ${MX}</span></div>
     <input type="range" id="g-h" min="0" max="${MX}" step="1" value="${DEF}">
-    <div class="total"><div><span class="mut">الدرجة </span><span dir="ltr" style="display:inline-block"><b id="g-tot">${DEF}</b><span class="mut"> / ${MX}</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div>${navStrip(s)}</div>`;}
+    <div class="total"><div><span class="mut">الدرجة </span><span dir="ltr" style="display:inline-block"><b id="g-tot">${DEF}</b><span class="mut"> / ${MX}</span></span></div><button class="btn" id="g-save">حفظ التقييم</button></div>${noteHTML(T.note||0)}${navStrip(s)}</div>`;}
   (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">حفظ تقرير الطالب PDF</button></div>`+profileCard(s,st)+subTabs()+`<div class="wst"><div id="sub-hifz"${vis('hifz')}>`+grade+
    `<div class="glass card" id="cur-card" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">منهج الطالب</div>${segRows(s,0,true)}
     <div style="height:8px"></div></div></div>
@@ -1566,8 +1599,9 @@ function vStudent(){
     if(r.error){toast('تعذّر حفظ السلوك، حدّث الصفحة',true);await sync(true);vStudent();}});
   if(!seg)return;
   const h=$('g-h'),upd=()=>{fill(h);$('g-hv').textContent=h.value;$('g-tot').textContent=h.value;};h.addEventListener('input',upd);upd();
+  bindNote($('g-save').closest('.card'),()=>T.note||0,v=>{T.note=v;});
   $('g-save').onclick=async()=>{const sc=+h.value,idx=gi;
-    setGrade(s,idx,sc);T.gi=null;toast('تم رصد الدرجة');const p=srv('save_grade',{p_student:s.id,p_idx:idx,p_hifz:sc});
+    const nt=T.note||0;setGrade(s,idx,sc,nt);T.gi=null;T.nk=null;toast('تم رصد الدرجة');const p=srv('save_grade',{p_student:s.id,p_idx:idx,p_hifz:sc,p_note:nt||null});
     vStudent();(T.admin?$('admin-body'):$('teacher-body')).scrollTop=0;
     const r=await p;if(r.error){toast('تعذّر الحفظ في الخادم، حدّث الصفحة',true);await sync(true);vStudent();}};
 }
@@ -2807,7 +2841,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='90ccf22daceb';
+const BUILD='6c8bafea79bf';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
