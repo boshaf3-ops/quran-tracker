@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="eeaa91303f96">
+<meta name="build" content="4cb2399554d3">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -937,6 +937,8 @@ function hydrate(st){
       by:x.by||0,at:x.at?new Date(x.at):undefined,prev:x.prev||undefined,nextG:x.nextG||undefined,c:null};
     const c=cm[x.c];if(c){s.c=c;c.students.push(s);}else if(ROLE==='admin')POOL.push(s);});
   CLASSES.forEach(c=>c.students.sort((p,q)=>p.name.localeCompare(q.name,'ar')));POOL.sort((p,q)=>p.name.localeCompare(q.name,'ar'));
+  /* حماية اختيارات المعلم الأخيرة من تحديث قديم يصل قبل ما تنحفظ على الخادم */
+  OWNPEND.forEach((v,id)=>{if(!v.busy&&Date.now()-v.t>10000){OWNPEND.delete(id);return;}const s0=CLASSES.reduce((a,c)=>a||c.students.find(q=>q.id===id),null);if(s0)s0.owner=v.want;});
   THREADS.length=0;SMSG.length=0;const tm={};
   if(ROLE==='teacher'){
     (st.msgs||[]).forEach(m=>{const k=m.kind+':'+m.ref;let th=tm[k];if(!th){th={id:k,tid:st.me,kind:m.kind,ref:m.ref,unread:0,msgs:[]};tm[k]=th;}
@@ -1577,12 +1579,20 @@ function drawRoster(){
       ${tkn?`<div class="rextra"><span class="pill p-gray">مع الأستاذ ${esc(shortT(s.owner))}</span><button class="btn-s" onclick="openTS(${s.id},'cls',${c.id})">حفظ الطالب</button></div>`:''}</div>`;}).join('')
     :'<div class="glass card empty">لا يوجد طلبة في هذا التصنيف</div>';
 }
+const OWNPEND=new Map(),OWNQ=new Map();
 async function toggleOwn(id){
   const s=byId(id);
   if(s.owner&&s.owner!==ME.id){toast('هذا الطالب مع الأستاذ '+shortT(s.owner),true);return;}
-  const prev=s.owner;s.owner=prev===ME.id?0:ME.id;drawRoster();
-  const r=await srv('toggle_owner',{p_student:id});
-  if(r.error){s.owner=prev;drawRoster();toast(r.error==='taken'?'هذا الطالب اختاره زميلك قبلك':'تعذّر الحفظ، حاول مرة ثانية',true);if(r.error==='taken'){await sync(true);drawRoster();}}
+  const prev=s.owner,want=prev===ME.id?0:ME.id;s.owner=want;
+  const e=OWNPEND.get(id)||{busy:0};e.want=want;e.t=Date.now();e.busy++;OWNPEND.set(id,e);drawRoster();
+  /* كل طالب له طابور: الأوامر تُرسل بالترتيب، وكل أمر صريح (اختر/ألغِ) فلا يقلب حالة بالخطأ */
+  const run=(OWNQ.get(id)||Promise.resolve()).then(()=>srv('set_owner',{p_student:id,p_own:!!want}));
+  OWNQ.set(id,run.catch(()=>{}));
+  const r=await run;e.busy--;e.t=Date.now();
+  if(r.error){if(!e.busy)OWNPEND.delete(id);
+    if(r.error==='taken'){toast('هذا الطالب اختاره زميلك قبلك',true);await sync(true);}
+    else{toast('تعذّر الحفظ، حاول مرة ثانية',true);if(!e.busy){s.owner=prev;}}
+    drawRoster();}
 }
 const vis=k=>T.sub===k?'':' hidden';
 function subTabs(){const tabs=[['hifz','التسميع'],['beh','السلوك']].concat(T.admin?[['adm','الإدارة']]:[]);
@@ -3003,7 +3013,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='eeaa91303f96';
+const BUILD='4cb2399554d3';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
