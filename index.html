@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="4cb2399554d3">
+<meta name="build" content="9dd23a89cede">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -875,7 +875,7 @@ function selSeg(s){const N=segsOf(s.c.g).length;let i=T.gi;
   return nxtIdx(s);}
 function pickSeg(i){T.gi=i;vStudent();(T.admin?$('admin-body'):$('teacher-body')).scrollTop=0;}
 function segRows(s,lim,edit){
-  const segs=segsOf(s.c.g),nx=nxtIdx(s),ex=expectedIdx(segs),sel=edit?selSeg(s):-1,lo=lim?Math.max(0,Math.min(nx<0?0:nx,segs.length-lim)):0;
+  const segs=segsOf(s.c.g),nx=nxtIdx(s),ex=expectedIdx(segs),sel=edit?selSeg(s):-1,lo=lim?Math.max(0,Math.min((nx<0?segs.length:nx)-1,segs.length-lim)):0;
   return segs.map((g,i)=>{
     const d=gAt(s,i),fut=g.d>TODAY;let rail='mute',mid='',sc2='<span style="color:var(--ink-2);font-size:13px">—</span>';
     if(d){rail='green';
@@ -1283,7 +1283,7 @@ function renderStudent(s){
     <div class="glass card${cur?' curseg':''}"><div class="mut">المقطع المطلوب الآن</div><div class="t" style="margin:2px 0">${cur?rng(cur):'أتممت كل المقاطع'}</div>${cur?`<span class="pill p-gold">${fmtR(cur)}</span>`:''}</div>
     <div class="glass card"><div class="mut">المقطع التالي</div><div class="t" style="margin:2px 0">${nxt?rng(nxt):'—'}</div>${nxt?`<span class="pill p-gray">${fmtR(nxt)}</span>`:''}</div>
    </div>
-   <div class="glass card" id="j-segs" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">كل المقاطع · الفصل ${TERMN[TERM-1]}</div>${segRows(s,2)}
+   <div class="glass card" id="j-segs" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">كل المقاطع · الفصل ${TERMN[TERM-1]}</div>${segRows(s,3)}
     <button class="btn-s" id="more-s" style="width:100%;margin:8px 0 10px" onclick="toggleMoreS()">مزيد</button></div>
    <div class="legend" style="flex-wrap:wrap;row-gap:4px"><span><i style="background:var(--green)"></i>ممتاز</span><span><i style="background:var(--gold)"></i>جيد</span><span><i style="background:var(--red)"></i>يحتاج تحسين</span><span><i style="background:transparent;border:2px solid var(--gold);width:9px;height:9px"></i>الإطار المتوهج: نحن هنا في الخطة</span></div>
    ${trailHTML(s,st)}
@@ -3013,7 +3013,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='4cb2399554d3';
+const BUILD='9dd23a89cede';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
