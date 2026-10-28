@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="7e5c2712bd98">
+<meta name="build" content="4e5ad918d1a4">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2925,7 +2925,7 @@ async function ignoreReset(id){await sop('ignore_reset',{id});await sync(true);a
 const MAIL_FROM='kafu.alik.gcc@gmail.com',MAIL_RE=/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 function mailLinks(q,s,pin){
   const subj='الكلمة السرية للطالب '+s.name,
-   body='السلام عليكم ورحمة الله وبركاته،\nمعكم إدارة المعهد الديني الابتدائي.\n\nهذه الكلمة السرية الخاصة بالطالب '+s.name+' ('+clsName(s.c)+'):\n\n'+pin+'\n\nنرجو حفظ الرقم وعدم مشاركته مع أحد.\nجزاكم الله خيراً،\nإدارة المعهد الديني الابتدائي',
+   body='السلام عليكم ورحمة الله وبركاته،\nمعكم إدارة منصة متابعة حفظ الطلبة لقسم العلوم الشرعية.\n\nهذه الكلمة السرية الخاصة بالطالب '+s.name+' ('+clsName(s.c)+'):\n\n'+pin+'\n\nنرجو حفظ الرقم وعدم مشاركته مع أحد.\nجزاكم الله خيراً،\nإدارة المعهد الديني الابتدائي',
    e=encodeURIComponent;
   return{gm:'https://mail.google.com/mail/?view=cm&fs=1&authuser='+e(MAIL_FROM)+'&to='+e(q.email)+'&su='+e(subj)+'&body='+e(body),
          mt:'mailto:'+q.email+'?subject='+e(subj)+'&body='+e(body)};}
@@ -3038,7 +3038,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='7e5c2712bd98';
+const BUILD='4e5ad918d1a4';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
