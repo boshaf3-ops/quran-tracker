@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="4e5ad918d1a4">
+<meta name="build" content="e8ad88ebda50">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -689,6 +689,7 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 .hpi .chk{display:none}.hpi.nomsel .chk{display:inline-flex}
 .honrow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 0;font-size:13px;border-top:1px solid rgba(22,94,80,.08)}
 .hnr{position:relative;margin:2px 2px 12px}
+.awstrip.awtop{position:relative;bottom:auto;z-index:1;margin:0 2px 10px}
 .awstrip.hn{position:relative;bottom:auto;z-index:1;margin:0;padding:8px 11px}
 .hn .awtx{white-space:normal;overflow:visible;text-overflow:clip;font-size:12px;line-height:1.7}
 .fwl{position:absolute;inset:-20px 0 -6px 0;pointer-events:none;z-index:3}
@@ -893,7 +894,7 @@ const behRows=s=>s.beh.length?s.beh.map(b=>`<span class="pill ${b[0]==='+'?'p-gr
 
 const show=id=>document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
 const meLine=()=>`<div class="melabel"><i></i><span>${esc(ME.name)}</span></div>`;
-const TOPT=()=>TOP+meLine();
+const TOPT=()=>TOP+awardStrip()+meLine();
 const TOP=`<div class="glass top"><div class="logo inst"></div><div class="ttl">متابعة الحفظ<small>المعهد الديني الابتدائي</small></div><div class="logo thabit"></div></div>`;
 function toast(msg,bad){const t=$('toast');t.textContent=msg;t.style.color=bad?'#7C1A10':'#145A31';t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),1800);}
 function sheet(html){$('sheet').innerHTML=`<div class="panel glass"><div class="grab"></div>${html}</div>`;$('sheet').classList.add('on');}
@@ -1400,7 +1401,7 @@ function setTab(t){T.tab=t;document.querySelectorAll('#t-tabs [data-tab]').forEa
 function go(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:false});if(view==='stu'&&p.sid){T.sub='hifz';T.gi=null;}if(view==='tcls'&&p.fm)T.csub='hifz';$('admin-body').innerHTML='';
   const b=$('teacher-body');
   ({tas:vTas,tcls:vTasClass,home:vHome,cls:vClass,stu:vStudent,curr:vCurr,msgs:vMsgs,thread:vThread,nom:vNom,amsgs:vAdmMsgs})[view]();
-  b.scrollTop=0;updBadge();updGate();}
+  b.scrollTop=0;updBadge();updGate();fitStrip();}
 function updBadge(){const n=myTh().reduce((a,t)=>a+t.unread,0)+admUnread();$('badge').hidden=!n;$('badge').textContent=n;}
 const head=(title,sub,backTo)=>`<div class="hdr"><button class="glass iconbtn" onclick="${backTo}" aria-label="رجوع">${BACK}</button><div class="ht"><b>${title}</b>${sub?`<span>${sub}</span>`:''}</div></div>`;
 
@@ -1466,7 +1467,7 @@ function honorStrip(){if(ROLE!=='student'||!HONOR||HONOR.exp<=new Date()||!HONOR
 const awMonth=m=>{const x=String(m||'').split('-');return MONTHS[(+x[1]||1)-1];};
 const awTeacher=()=>{const x=AWARD&&tById(AWARD.tid);return x?x.name.replace(/^الأستاذ\s*/,''):'';};
 function awardStrip(){if(!AWARD||ROLE!=='teacher'||!tById(AWARD.tid))return '';
-  return `<div class="awstrip" id="awstrip"><i class="awsh"></i><span class="awcup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span><span class="awtx" id="awtx">نبارك للأستاذ <b>${esc(awTeacher())}</b> حصوله على لقب الأكثر تفعيلاً لشهر ${awMonth(AWARD.month)}</span></div>`;}
+  return `<div class="awstrip awtop" id="awstrip"><i class="awsh"></i><span class="awcup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span><span class="awtx" id="awtx">نبارك للأستاذ <b>${esc(awTeacher())}</b> حصوله على لقب الأكثر تفعيلاً لشهر ${awMonth(AWARD.month)}</span></div>`;}
 function fitStrip(){const e=$('awtx'),b=$('awstrip');if(!e||!b)return;let f=11.5;e.style.fontSize=f+'px';let n=0;while(e.scrollWidth>e.clientWidth+1&&f>9.4&&n++<20){f-=.4;e.style.fontSize=f+'px';}}
 function awardPopup(){
   if(!AWARD||ROLE!=='teacher'||!tById(AWARD.tid))return;
@@ -1510,9 +1511,9 @@ function vTas(){
   const grp=(h,title,sub)=>{const list=withMine.filter(c=>halaqa(c.g)===h).sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar'));
     return list.length?`<div class="sec"><div><b>${title}</b><small>${sub}</small></div></div>`+list.map(tasCard).join(''):'';};
   const total=withMine.reduce((a,c)=>a+myIn(c).length,0);
-  $('teacher-body').innerHTML=TOP+profileBtn()+
+  $('teacher-body').innerHTML=TOP+awardStrip()+profileBtn()+
   (withMine.length?`<div class="sec" style="margin-top:6px"><b style="font-size:18px">التسميع</b><span class="pill p-gray">${total} طالباً معي</span></div>`+grp(1,'الحلقة الأولى','الصف الأول والثاني والثالث')+grp(2,'الحلقة الثانية','الصف الرابع والخامس والسادس')
-   :`<div class="glass card empty" style="padding:26px 16px"><div class="t" style="font-size:15px;margin-bottom:6px">لم تختر طلاباً بعد</div><div class="mut" style="margin-bottom:14px">افتح «الكشف» واضغط المربع بجانب اسم كل طالب معك، فيظهر صفه هنا.</div><button class="btn" onclick="go('home')">الذهاب إلى الكشف</button></div>`)+'<div style="height:90px"></div>'+awardStrip();
+   :`<div class="glass card empty" style="padding:26px 16px"><div class="t" style="font-size:15px;margin-bottom:6px">لم تختر طلاباً بعد</div><div class="mut" style="margin-bottom:14px">افتح «الكشف» واضغط المربع بجانب اسم كل طالب معك، فيظهر صفه هنا.</div><button class="btn" onclick="go('home')">الذهاب إلى الكشف</button></div>`)+'<div style="height:90px"></div>';
   fitStrip();
 }
 function vTasClass(){
@@ -3038,7 +3039,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='4e5ad918d1a4';
+const BUILD='e8ad88ebda50';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
