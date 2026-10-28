@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="9dd23a89cede">
+<meta name="build" content="06940326566f">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1248,7 +1248,7 @@ function trailHTML(s,st){
   if(st.k==='gold'){pos=today;col='#E0A21B';msg='أنت ماشٍ على الخطة. استمر.';}
   else if(st.k==='red'){pos=Math.min(own,today);col='#D63A2B';msg='أنت متأخر عن الخطة، حاول تلحق بالتسميع.';}
   else if(st.k==='green'){pos=Math.max(own,today);col='#2EAA5E';msg='ما شاء الله، أنت متقدم على الخطة.';}
-  return honorStrip()+`<div class="glass card trail"><div class="t">خط المسير</div><div class="mut">خطة الحفظ من ${fmt(start)} إلى ${fmt(end)}</div>
+  return `<div class="glass card trail"><div class="t">خط المسير</div><div class="mut">خطة الحفظ من ${fmt(start)} إلى ${fmt(end)}</div>
    <div class="tr-wrap"><div class="tr-char" style="right:${(pos*100).toFixed(2)}%">${STEVE}</div>
     <div class="tr-line"><i class="tr-fill" style="width:${(pos*100).toFixed(2)}%;background:${col}"></i>${segs.map(g=>`<i class="tr-dot" style="right:${(fr(g.e)*100).toFixed(2)}%"></i>`).join('')}</div>
     <div class="tr-today" style="right:${(today*100).toFixed(2)}%"><span>اليوم</span></div></div>
@@ -1274,7 +1274,7 @@ function renderStudent(s){
    <div class="tgrid${s.c.tids.length>1?' two':''}">${s.c.tids.map(i=>tcard(tById(i),i===s.owner)).join('')}</div>
    <div class="medpad">${medalsCard(s)}</div>`;
   $('student-body').innerHTML=TOP+kbarHTML()+`
-  <div class="wcA"><div class="glass card ${st.k==='red'?'st-late':st.k==='green'?'st-ahead':st.k==='none'?'st-none':''}" id="s-prof">${st.k==='green'?ORBS:''}${st.k==='none'?CRACKS:''}<div class="row">${avaHTML(s,'avatar')}
+  <div class="wcA"><div class="glass card ${st.k==='red'?'st-late':st.k==='green'?'st-ahead':st.k==='none'?'st-none':''}" id="s-prof">${st.k==='green'?ORBS:''}${st.k==='none'?CRACKS:''}${honorStrip()}<div class="row">${avaHTML(s,'avatar')}
     <div style="flex:1"><div class="title-big">${esc(s.name)}</div><div class="mut">${clsName(s.c)} · الفصل ${TERMN[TERM-1]}</div></div></div>
     <div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap"><span class="pill ${st.p}">${st.t}</span><span class="pill p-gold">${lvName(s)}</span><span style="margin-inline-start:auto">${lvBadge(lvLevel(s.beh,TODAY),lvLevel(s.beh,TODAY),40)}</span></div>${st.k==='red'?`<div class="smsg late">انتبه، أنت بحاجة لتسميع ${st.d===-1?'المقطع المتأخر':'المقاطع المتأخرة'}</div>`:st.k==='green'?`<div class="smsg ahead">ما شاء الله، أنت متقدم على الخطة، استمر</div>`:''}</div>
   <div class="glass seg2" id="s-seg" style="grid-template-columns:1fr 1fr"><button data-k="hifz" class="on" onclick="setSubS('hifz')">التسميع</button><button data-k="beh" onclick="setSubS('beh')">السلوك</button></div>
@@ -3013,7 +3013,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='9dd23a89cede';
+const BUILD='06940326566f';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
