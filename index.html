@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="77ae35cbf15f">
+<meta name="build" content="7e5c2712bd98">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2922,18 +2922,31 @@ async function resetPw(id){const q=RESETREQ.find(r=>r.id===id),x=tById(q.tid);
   const r=await sop('teacher_pin',{id:x.id});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);aPend();updABadge();pinSheet('كلمة سر جديدة لـ '+esc(x.name),'سلّمها للمعلم، وتعمل الآن بدل القديمة',r.pin);}
 async function ignoreReset(id){await sop('ignore_reset',{id});await sync(true);aPend();updABadge();toast('تم تجاهل الطلب',true);}
+const MAIL_FROM='kafu.alik.gcc@gmail.com',MAIL_RE=/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+function mailLinks(q,s,pin){
+  const subj='الكلمة السرية للطالب '+s.name,
+   body='السلام عليكم ورحمة الله وبركاته،\nمعكم إدارة المعهد الديني الابتدائي.\n\nهذه الكلمة السرية الخاصة بالطالب '+s.name+' ('+clsName(s.c)+'):\n\n'+pin+'\n\nنرجو حفظ الرقم وعدم مشاركته مع أحد.\nجزاكم الله خيراً،\nإدارة المعهد الديني الابتدائي',
+   e=encodeURIComponent;
+  return{gm:'https://mail.google.com/mail/?view=cm&fs=1&authuser='+e(MAIL_FROM)+'&to='+e(q.email)+'&su='+e(subj)+'&body='+e(body),
+         mt:'mailto:'+q.email+'?subject='+e(subj)+'&body='+e(body)};}
+function mailSheet(q,s,pin,reset){const L=mailLinks(q,s,pin);
+  sheet(`<div class="t" style="font-size:17px">${reset?'تم تغيير الكلمة السرية':'الكلمة السرية جاهزة للإرسال'}</div>
+   <div class="mut" style="margin:4px 0 0;line-height:1.8">الطالب <b>${esc(s.name)}</b> · ولي الأمر: <bdi>${esc(q.email)}</bdi></div>
+   <div style="font-size:34px;font-weight:800;letter-spacing:8px;direction:ltr;text-align:center;color:var(--teal-d);margin:14px 0 4px">${esc(pin)}</div>
+   <div class="mut" style="font-size:12.5px;line-height:1.8;margin-bottom:12px">اضغط «فتح Gmail» فتُفتح رسالة جاهزة فيها الإيميل ونص الرسالة والكلمة، وأنت تضغط «إرسال» بنفسك من حساب <bdi>${MAIL_FROM}</bdi>.</div>
+   <a class="btn" id="ml-gm" href="${L.gm}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">فتح Gmail</a>
+   <a class="btn-s" href="${L.mt}" style="display:block;text-align:center;text-decoration:none;margin-top:10px;padding:11px">فتح تطبيق البريد في الجهاز</a>
+   <div class="divider"></div>
+   <div class="mut" style="font-size:12.5px;margin-bottom:8px">بعد ما ترسل الإيميل، احذف الطلب من القائمة:</div>
+   <button class="btn" id="ml-done" style="margin-top:0">تم الإرسال، احذف الطلب</button><button class="btn-s" style="width:100%;margin-top:10px;padding:11px" onclick="closeSheet()">لاحقاً (يبقى الطلب)</button>`);
+  $('ml-done').onclick=async()=>{const r=await sop('ignore_reset',{id:q.id});if(r.error){toast('تعذّر التنفيذ',true);return;}closeSheet();await sync(true);aPend();updABadge();toast('تم حذف الطلب');};}
 function emailPin(rid,sid,mode){const q=STUDRESET.find(r=>r.id===rid),s=byId(sid);if(!q||!s)return;
-  const msg=mode==='reset'?`سيتم <b>تغيير</b> الكلمة السرية للطالب <b>${esc(s.name)}</b> وإرسال الجديدة إلى <bdi>${esc(q.email)}</bdi>.<br><span style="font-size:12.5px;font-weight:600">الكلمة القديمة ستتوقف ويخرج الطالب من أي جهاز مفتوح.</span>`
-   :`سيتم إرسال الكلمة السرية <b>الحالية</b> للطالب <b>${esc(s.name)}</b> إلى <bdi>${esc(q.email)}</bdi>.`;
-  confirmBox(msg,async()=>{
-    let r;try{const x=await fetch(SB_URL+'/functions/v1/send-pin',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({tok:TOK,rid,sid,mode})});r=await x.json();}
-    catch(e){toast('تعذّر الاتصال بالخادم، تأكد من الإنترنت',true);return false;}
-    if(r.ok){await sync(true);aPend();updABadge();toast('تم إرسال الكلمة السرية إلى '+r.email);return;}
-    if(r.error==='not_configured'){toast('خدمة البريد غير مفعّلة بعد، استخدم «تعيين يدوي»',true);return false;}
-    if(r.error==='send_failed'){closeSheet();await sync(true);aPend();
-      if(r.pin)pinSheet('تعذّر الإرسال بالبريد لـ '+esc(s.name),'الكلمة تغيّرت، أرسلها يدوياً إلى <bdi>'+esc(r.email||q.email)+'</bdi>',r.pin);else toast('تعذّر إرسال الإيميل، حاول مرة ثانية',true);return;}
-    if(r.error==='auth'){sessionExpired();return;}
-    toast(r.error==='norequest'?'الطلب غير موجود (ربما عُولج)':r.error==='bademail'?'الإيميل المكتوب غير صالح':'تعذّر التنفيذ',true);return false;});}
+  if(!MAIL_RE.test(String(q.email||''))){toast('الإيميل المكتوب غير صالح، اتصل بولي الأمر',true);return;}
+  if(mode==='current'){const pin=s.pin;if(!pin){toast('لا توجد كلمة سرية محفوظة، استخدم «إعادة تعيين»',true);return;}
+    window.open(mailLinks(q,s,pin).gm,'_blank','noopener');mailSheet(q,s,pin,false);return;}
+  confirmBox(`سيتم <b>تغيير</b> الكلمة السرية للطالب <b>${esc(s.name)}</b>، ثم يُفتح لك Gmail جاهزاً للإرسال إلى <bdi>${esc(q.email)}</bdi>.<br><span style="font-size:12.5px;font-weight:600">الكلمة القديمة ستتوقف ويخرج الطالب من أي جهاز مفتوح.</span>`,async()=>{
+    const r=await sop('student_pin',{id:sid});if(r.error||!r.pin){toast('تعذّر التنفيذ',true);return false;}
+    await sync(true);aPend();mailSheet(q,s,r.pin,true);});}
 async function resetStudentPw(rid,sid){const q=STUDRESET.find(r=>r.id===rid),s=byId(sid);
   const r=await sop('student_pin',{id:sid,rid});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);aPend();updABadge();
@@ -3025,7 +3038,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='77ae35cbf15f';
+const BUILD='7e5c2712bd98';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
