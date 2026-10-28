@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="06940326566f">
+<meta name="build" content="77ae35cbf15f">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2780,9 +2780,9 @@ const rqStud=r=>{const rc=CLASSES.find(c=>c.id===r.cid),m0=similar(r.name),m=m0.
    <div class="mut" style="margin:2px 0 6px">نسي كلمة السر · ${fmt(r.at)}</div>
    <div class="cinfo" style="border:0;padding:3px 0"><span class="mut">الصف المكتوب:</span> <b>${rc?esc(clsName(rc)):'غير محدد'}</b></div>
    <div class="cinfo" style="border:0;padding:3px 0"><span class="mut">موبايل ولي الأمر:</span> <bdi>${esc(r.phone)}</bdi></div>
-   <div class="cinfo" style="border:0;padding:0 0 4px"><span class="mut">الإيميل الرسمي:</span> <bdi>${esc(r.email)}</bdi></div>
+   <div class="cinfo" style="border:0;padding:0 0 4px"><span class="mut">إيميل ولي الأمر:</span> <bdi>${esc(r.email)}</bdi></div>
    <div class="divider"></div>
-   ${m.length?`<div class="mut" style="font-weight:600;margin-bottom:6px">الطلاب المطابقون للاسم، تحقق ثم اختر:</div>`+m.map(x=>`<div class="row sp" style="gap:8px;margin-bottom:8px"><div style="min-width:0"><div class="t" style="font-size:13.5px">${esc(x.name)}</div><div class="mut">${clsName(x.c)}${x.c&&x.c.id===r.cid?' <span class="pill p-green" style="font-size:10.5px">نفس الصف</span>':' <span class="pill p-gold" style="font-size:10.5px">صف مختلف</span>'}</div></div><button class="btn-s" style="flex:none" onclick="resetStudentPw(${r.id},${x.id})">إعادة تعيين وإرسال</button></div>`).join('')
+   ${m.length?`<div class="mut" style="font-weight:600;margin-bottom:6px">الطلاب المطابقون للاسم، تحقق ثم اختر:</div>`+m.map(x=>`<div class="row sp" style="gap:8px;margin-bottom:8px"><div style="min-width:0"><div class="t" style="font-size:13.5px">${esc(x.name)}</div><div class="mut">${clsName(x.c)}${x.c&&x.c.id===r.cid?' <span class="pill p-green" style="font-size:10.5px">نفس الصف</span>':' <span class="pill p-gold" style="font-size:10.5px">صف مختلف</span>'}</div></div><div style="flex:none;display:flex;flex-direction:column;gap:6px;align-items:stretch"><button class="btn-s" onclick="emailPin(${r.id},${x.id},'current')">إرسال الكلمة الحالية</button><button class="btn-s" onclick="emailPin(${r.id},${x.id},'reset')">إعادة تعيين وإرسال</button><button class="btn-s" style="opacity:.75;font-size:11.5px" onclick="resetStudentPw(${r.id},${x.id})">تعيين يدوي بدون بريد</button></div></div>`).join('')
      :'<div class="mut" style="color:#7C1A10;font-weight:600">لا يوجد طالب بهذا الاسم في الكشوف.</div>'}
    <button class="btn-s" style="width:100%;padding:10px;margin-top:4px" onclick="ignoreStudReset(${r.id})">تجاهل الطلب</button></div>`;};
 const rqTeach=r=>{const x=tById(r.tid);
@@ -2922,6 +2922,18 @@ async function resetPw(id){const q=RESETREQ.find(r=>r.id===id),x=tById(q.tid);
   const r=await sop('teacher_pin',{id:x.id});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);aPend();updABadge();pinSheet('كلمة سر جديدة لـ '+esc(x.name),'سلّمها للمعلم، وتعمل الآن بدل القديمة',r.pin);}
 async function ignoreReset(id){await sop('ignore_reset',{id});await sync(true);aPend();updABadge();toast('تم تجاهل الطلب',true);}
+function emailPin(rid,sid,mode){const q=STUDRESET.find(r=>r.id===rid),s=byId(sid);if(!q||!s)return;
+  const msg=mode==='reset'?`سيتم <b>تغيير</b> الكلمة السرية للطالب <b>${esc(s.name)}</b> وإرسال الجديدة إلى <bdi>${esc(q.email)}</bdi>.<br><span style="font-size:12.5px;font-weight:600">الكلمة القديمة ستتوقف ويخرج الطالب من أي جهاز مفتوح.</span>`
+   :`سيتم إرسال الكلمة السرية <b>الحالية</b> للطالب <b>${esc(s.name)}</b> إلى <bdi>${esc(q.email)}</bdi>.`;
+  confirmBox(msg,async()=>{
+    let r;try{const x=await fetch(SB_URL+'/functions/v1/send-pin',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({tok:TOK,rid,sid,mode})});r=await x.json();}
+    catch(e){toast('تعذّر الاتصال بالخادم، تأكد من الإنترنت',true);return false;}
+    if(r.ok){await sync(true);aPend();updABadge();toast('تم إرسال الكلمة السرية إلى '+r.email);return;}
+    if(r.error==='not_configured'){toast('خدمة البريد غير مفعّلة بعد، استخدم «تعيين يدوي»',true);return false;}
+    if(r.error==='send_failed'){closeSheet();await sync(true);aPend();
+      if(r.pin)pinSheet('تعذّر الإرسال بالبريد لـ '+esc(s.name),'الكلمة تغيّرت، أرسلها يدوياً إلى <bdi>'+esc(r.email||q.email)+'</bdi>',r.pin);else toast('تعذّر إرسال الإيميل، حاول مرة ثانية',true);return;}
+    if(r.error==='auth'){sessionExpired();return;}
+    toast(r.error==='norequest'?'الطلب غير موجود (ربما عُولج)':r.error==='bademail'?'الإيميل المكتوب غير صالح':'تعذّر التنفيذ',true);return false;});}
 async function resetStudentPw(rid,sid){const q=STUDRESET.find(r=>r.id===rid),s=byId(sid);
   const r=await sop('student_pin',{id:sid,rid});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);aPend();updABadge();
@@ -2951,26 +2963,26 @@ $('forgot').onclick=openForgot;
 const resetTotal=()=>RESETREQ.length+STUDRESET.length;
 async function openForgotS(){
   let cls=[];try{cls=await rpc('public_classes',{});}catch(e){toast('تعذّر الاتصال بالخادم، تأكد من الإنترنت',true);return;}
-  sheet(`<div class="t" style="font-size:17px;margin-bottom:2px">نسيت الكلمة السرية</div><div class="mut">اكتب بياناتك لتتحقق منها الإدارة، ثم تُرسل الكلمة السرية إلى إيميل الطالب الرسمي.</div>
-   <label class="fl" for="fs-n">اسم الطالب</label><input class="field" id="fs-n" maxlength="60" placeholder="الاسم الرباعي">
+  sheet(`<div class="t" style="font-size:17px;margin-bottom:2px">نسيت الكلمة السرية</div><div class="mut">اكتب بيانات الطالب لتتحقق منها الإدارة، ثم تُرسل الكلمة السرية إلى إيميل ولي الأمر.</div>
+   <label class="fl" for="fs-n">اسم الطالب الرباعي</label><input class="field" id="fs-n" maxlength="80" placeholder="الاسم الأول + الأب + الجد + العائلة">
    <label class="fl" for="fs-c">الصف</label><select class="field" id="fs-c"><option value="">اختر صف الطالب</option>${cls.map(c=>`<option value="${c.id}">الصف ${GRADES[c.g-1]} (${esc(c.sec)})</option>`).join('')}</select>
    <label class="fl" for="fs-p">رقم موبايل ولي الأمر</label><input class="field" id="fs-p" type="tel" inputmode="numeric" dir="ltr" style="text-align:right" maxlength="8">
-   <label class="fl" for="fs-m">إيميل الطالب الرسمي</label><input class="field" id="fs-m" type="email" dir="ltr" style="text-align:right" maxlength="60" placeholder="name@example.com">
-   <div class="glass card" style="margin:14px 0 0;padding:10px 14px;font-size:12.5px;font-weight:600;color:var(--teal-d);line-height:1.8">ملاحظة: سيتم إرسال الكلمة السرية من خلال البيانات التي تم إدخالها.</div>
+   <label class="fl" for="fs-m">إيميل ولي الأمر</label><input class="field" id="fs-m" type="email" dir="ltr" style="text-align:right" maxlength="60" placeholder="name@example.com">
+   <div class="glass card" style="margin:14px 0 0;padding:10px 14px;font-size:12.5px;font-weight:600;color:var(--teal-d);line-height:1.8">ملاحظة: بعد مراجعة الإدارة للطلب، سيتم إرسال الرقم السري لكم قريباً على الإيميل المكتوب.</div>
    <div class="fe" id="fs-e"></div><button class="btn" id="fs-send" style="margin-top:6px">إرسال الطلب</button>`);
   ['fs-n','fs-p','fs-m','fs-c'].forEach(i=>$(i).addEventListener('input',()=>$('fs-e').textContent=''));$('fs-c').addEventListener('change',()=>$('fs-e').textContent='');
   $('fs-p').addEventListener('input',()=>{$('fs-p').value=$('fs-p').value.replace(/\D/g,'').slice(0,8);});
   $('fs-send').onclick=async()=>{const n=$('fs-n').value.trim().replace(/\s+/g,' '),p=$('fs-p').value.trim(),m=$('fs-m').value.trim(),e=$('fs-e');
-    if(toks(n).length<2){e.textContent='اكتب اسمك الأول واسم الأب على الأقل';return;}
+    if(toks(n).length<4){e.textContent='اكتب اسم الطالب الرباعي كاملاً (الاسم + الأب + الجد + العائلة)';return;}
     if(!$('fs-c').value){e.textContent='اختر صف الطالب';return;}
     if(!/^[39]\d{7}$/.test(p)){e.textContent='رقم الموبايل 8 أرقام ويبدأ بـ 3 أو 9';return;}
-    if(!/^\S+@\S+\.\S+$/.test(m)){e.textContent='اكتب إيميل الطالب الرسمي بشكل صحيح';return;}
+    if(!/^\S+@\S+\.\S+$/.test(m)){e.textContent='اكتب إيميل ولي الأمر بشكل صحيح';return;}
     let r;try{r=await rpc('req_student_reset',{p_name:n,p_phone:p,p_email:m,p_class:+$('fs-c').value});}catch(ex){e.textContent='تعذّر الاتصال بالخادم، تأكد من الإنترنت';return;}
     if(r.error==='dup'){e.textContent='طلبك مرسل مسبقاً، بانتظار الإدارة';return;}
     if(r.error){e.textContent='تعذّر إرسال الطلب، تأكد من البيانات';return;}
     sheet(`<div style="text-align:center;padding:10px 4px 2px"><div style="width:64px;height:64px;border-radius:50%;background:rgba(46,170,94,.3);border:1px solid rgba(46,170,94,.6);color:#145A31;display:flex;align-items:center;justify-content:center;margin:0 auto 14px"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
      <div class="t" style="font-size:19px;color:var(--teal-d)">شكراً لك</div>
-     <div style="font-size:14.5px;line-height:1.9;margin-top:8px;color:var(--ink)">سيتم إرسال الكلمة السرية من خلال البيانات التي تم إرسالها.</div></div>
+     <div style="font-size:14.5px;line-height:1.9;margin-top:8px;color:var(--ink)">سيتم إرسال الرقم السري لكم قريباً على الإيميل الذي كتبتموه، بعد مراجعة الإدارة لطلبكم.<div style="margin-top:10px;font-size:12.5px;font-weight:600;color:#8A5A00;background:rgba(224,162,27,.16);border-radius:12px;padding:8px 12px">ملاحظة: قد تصل الرسالة إلى البريد غير الهام (Spam)، فتفقدوه إن لم تجدوها في صندوق الوارد.</div></div></div>
      <button class="btn" onclick="closeSheet()" style="margin-top:20px">حسناً</button>`);};
 }
 $('forgot-s').onclick=openForgotS;
@@ -3013,7 +3025,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='06940326566f';
+const BUILD='77ae35cbf15f';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
