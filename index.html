@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="caf6eefbe595">
+<meta name="build" content="abedaa5ec5b4">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2103,10 +2103,73 @@ async function rptSavePdf(title,btn){
   }catch(e){toast('تعذّر حفظ الملف، تأكد من الإنترنت وحاول مرة ثانية',true);}
   finally{try{if(restore)restore();if(restore2)restore2();if(d)d.body.style.zoom=z;}catch(_){}btn.disabled=false;btn.textContent=lbl;}
 }
+/* ---------- جدول إكسل لصف كامل: ملف xlsx حقيقي يُولَّد داخل الموقع بدون مكتبات ---------- */
+const XL_CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+function xlCrc(b){let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=XL_CRC[(c^b[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function xlZip(files){
+  const enc=new TextEncoder(),chunks=[],cen=[],u16=v=>[v&255,(v>>8)&255],u32=v=>[v&255,(v>>8)&255,(v>>16)&255,(v>>24)&255];let off=0;
+  files.forEach(([name,txt])=>{const nb=enc.encode(name),data=enc.encode(txt),crc=xlCrc(data),sz=data.length;
+    const lh=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0x21),...u32(crc),...u32(sz),...u32(sz),...u16(nb.length),...u16(0)]);
+    chunks.push(lh,nb,data);cen.push({nb,crc,sz,off});off+=lh.length+nb.length+sz;});
+  const cs=off;
+  cen.forEach(e=>{const ch=new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0x21),...u32(e.crc),...u32(e.sz),...u32(e.sz),...u16(e.nb.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(e.off)]);chunks.push(ch,e.nb);off+=ch.length+e.nb.length;});
+  chunks.push(new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(cen.length),...u16(cen.length),...u32(off-cs),...u32(cs),...u16(0)]));
+  return new Blob(chunks,{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});}
+const xlEsc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'');
+const xlCol=i=>{let s='',n=i+1;while(n>0){const m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26);}return s;};
+function xlStyles(){
+  const font=(o)=>`<font>${o.b?'<b/>':''}${o.i?'<i/>':''}<sz val="${o.sz||11}"/><color rgb="FF${o.c||'000000'}"/><name val="Arial"/></font>`;
+  const fonts=[{},{b:1,sz:15,c:'165E50'},{sz:10,c:'4F7A70'},{b:1,c:'FFFFFF'},{b:1},{b:1,sz:12},{i:1,sz:9,c:'6B7C77'},{b:1,c:'7C1A10'},{b:1,c:'6B4700'},{b:1,c:'145A31'}];
+  const fills=['<fill><patternFill patternType="none"/></fill>','<fill><patternFill patternType="gray125"/></fill>',...['1D7562','FADBD8','FDEBB0','CDEEDB','D9EFE9','E8EFED'].map(c=>`<fill><patternFill patternType="solid"><fgColor rgb="FF${c}"/><bgColor indexed="64"/></patternFill></fill>`)];
+  const bd='<border><left style="thin"><color rgb="FFBFD3CE"/></left><right style="thin"><color rgb="FFBFD3CE"/></right><top style="thin"><color rgb="FFBFD3CE"/></top><bottom style="thin"><color rgb="FFBFD3CE"/></bottom><diagonal/></border>';
+  const xf=(f,fl,b,h,v,w)=>`<xf numFmtId="0" fontId="${f}" fillId="${fl}" borderId="${b}" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="${h}" vertical="${v||'center'}"${w?' wrapText="1"':''}/></xf>`;
+  const xfs=[xf(0,0,0,'general'),xf(1,0,0,'center'),xf(2,0,0,'center'),xf(3,2,1,'center','center',1),xf(0,0,1,'right'),xf(7,3,1,'center'),xf(8,4,1,'center'),xf(9,5,1,'center'),xf(0,0,1,'center'),
+    xf(3,2,1,'center'),xf(4,0,1,'right'),xf(5,6,1,'center'),xf(5,5,1,'center'),xf(5,3,1,'center'),xf(6,0,0,'center','top',1),xf(2,7,1,'right'),xf(4,7,1,'center')];
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="${fonts.length}">${fonts.map(font).join('')}</fonts><fills count="${fills.length}">${fills.join('')}</fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>${bd}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length}">${xfs.join('')}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;}
+function xlsxClassBlob(c){
+  const MX=mxOf(c.g),segs=segsOf(c.g),N=segs.length,last=xlCol(N),tc=rptTeacher(c);
+  const list=c.students.filter(s=>!s.pending).slice().sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+  const due=segs.filter(x=>x.e<TODAY).length;let fin=0,onp=0,late=0,none=0;
+  list.forEach(s=>{const k=statusOf(s).k;if(segs.every((g,j)=>gAt(s,j)))fin++;else if(k==='red'||(k==='none'&&due>0)){late++;if(k==='none')none++;}else onp++;});
+  const rows=[],merges=[];const S=(v,s)=>({v,s}),E=s=>({s});
+  const row=(h,cells)=>rows.push({h,cells});
+  row(26,[S(clsName(c)+' · كشف الدرجات',1)]);merges.push('A1:'+last+'1');
+  row(18,[S('المعهد الديني الابتدائي · '+termTitle()+' · '+(tc?tc.name:'')+' · الدرجة من '+MX+' · '+TODAY.getDate()+' '+MONTHS[TODAY.getMonth()]+' '+TODAY.getFullYear(),2)]);merges.push('A2:'+last+'2');
+  row(46,[S('اسم الطالب',3),...segs.map(g=>S(g.n+'\n'+(g.f===g.t?g.f:g.f+' – '+g.t),3))]);
+  list.forEach(s=>row(20,[S(s.name,4),...segs.map((g,j)=>{const d=gAt(s,j);if(!d)return E(8);const v=Math.round((d[0]+(d[1]||0))*10)/10,q=TQ(v*10/MX);return {v,s:q==='g'?7:q==='y'?6:5,n:1};})]));
+  row(12,[]);
+  const r0=rows.length+1;
+  row(22,[S('ملخص الصف',9),S('العدد',9)]);
+  row(24,[S('عدد الطلبة الذين أنهوا المنهج',10),{v:fin,s:11,n:1}]);
+  row(24,[S('عدد الطلبة الماشين مع الخطة',10),{v:onp,s:12,n:1}]);
+  row(24,[S('عدد الطلبة المتأخرين',10),{v:late,s:13,n:1}]);
+  row(22,[S('إجمالي الطلبة',15),{v:list.length,s:16,n:1}]);
+  row(50,[S('كيف تُحسب الأرقام: «أنهوا المنهج» = سُمِّعت كل مقاطع المرحلة ('+N+'). «الماشين مع الخطة» = على الخطة أو متقدمون ولم ينهوا بعد. «المتأخرون» = سُمِّع لهم أقل من المقاطع المستحقة حتى اليوم'+(none?' (منهم '+none+' لم يبدؤوا التسجيل)':'')+'. الأرقام ثابتة وقت تنزيل الملف.',14)]);merges.push('A'+(rows.length)+':'+last+(rows.length));
+  const cellXml=(cell,ri,ci)=>{if(!cell||(cell.v===undefined&&cell.s===undefined))return '';const r=xlCol(ci)+(ri+1);
+    if(cell.v===undefined)return `<c r="${r}" s="${cell.s}"/>`;
+    return cell.n?`<c r="${r}" s="${cell.s}"><v>${cell.v}</v></c>`:`<c r="${r}" s="${cell.s}" t="inlineStr"><is><t xml:space="preserve">${xlEsc(cell.v)}</t></is></c>`;};
+  const sheetRows=rows.map((rw,ri)=>`<row r="${ri+1}" ht="${rw.h}" customHeight="1">${rw.cells.map((cl,ci)=>cellXml(cl,ri,ci)).join('')}</row>`).join('');
+  const sheet=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><sheetViews><sheetView rightToLeft="1" workbookViewId="0"><pane xSplit="1" ySplit="3" topLeftCell="B4" activePane="bottomRight" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/><cols><col min="1" max="1" width="36" customWidth="1"/><col min="2" max="${N+1}" width="12.5" customWidth="1"/></cols><sheetData>${sheetRows}</sheetData><mergeCells count="${merges.length}">${merges.map(m=>`<mergeCell ref="${m}"/>`).join('')}</mergeCells><pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.3" footer="0.3"/><pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>`;
+  const nm=xlEsc(clsName(c).replace(/[\[\]:*?\/\\]/g,' ').slice(0,31));
+  const H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  return xlZip([
+   ['[Content_Types].xml',H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'],
+   ['_rels/.rels',H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'],
+   ['xl/workbook.xml',H+'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="'+nm+'" sheetId="1" r:id="rId1"/></sheets></workbook>'],
+   ['xl/_rels/workbook.xml.rels',H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'],
+   ['xl/styles.xml',xlStyles()],
+   ['xl/worksheets/sheet1.xml',sheet]]);}
+function rptXlsx(cid){
+  const c=CLASSES.find(x=>x.id===cid);closeSheet();
+  if(!c||!c.students.some(s=>!s.pending)){toast('لا يوجد طلبة في هذا الصف',true);return;}
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(xlsxClassBlob(c));a.download=('جدول '+clsName(c)+'.xlsx').replace(/[\\/:*?"<>|]+/g,' ').trim();
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);toast('تم حفظ ملف الإكسل في جهازك');}
+  catch(e){toast('تعذّر إنشاء ملف الإكسل',true);}}
 function rptChoose(cid){
   const c=CLASSES.find(x=>x.id===cid),mine=c.students.filter(s=>s.owner===ME.id).length;
   sheet(`<div class="t" style="font-size:17px">تحميل تقرير الصف</div><div class="mut" style="margin:4px 0 6px">${esc(clsName(c))}</div>
    <button class="btn" onclick="rptRun('gen',${cid})">التقرير العام<br><small style="font-weight:600">كشف واحد لجميع طلاب الصف (${c.students.length})</small></button>
+   <button class="btn" onclick="rptXlsx(${cid})">جدول الإكسل<br><small style="font-weight:600">كل طلاب الصف: درجة كل مقطع + ملخص الصف (${c.students.filter(s=>!s.pending).length})</small></button>
    <button class="btn" onclick="rptRun('own',${cid})">التقرير الخاص<br><small style="font-weight:600">تقرير مستقل لكل طالب من طلابي (${mine})</small></button>
    <button class="btn" onclick="rptRun('agg',${cid})">تقرير الصف بالأرقام والرسوم<br><small style="font-weight:600">حالة الطلبة ومؤشرات الصف في صفحة واحدة</small></button>
    <button class="btn-s" style="width:100%;margin-top:12px" onclick="closeSheet()">إلغاء</button>`);
@@ -2115,6 +2178,7 @@ function rptChooseA(cid){
   const c=CLASSES.find(x=>x.id===cid),n=c.students.filter(s=>!s.pending).length;
   sheet(`<div class="t" style="font-size:17px">حفظ التقارير PDF</div><div class="mut" style="margin:4px 0 6px">${esc(clsName(c))}</div>
    <button class="btn" onclick="rptRun('gen',${cid})">التقرير العام<br><small style="font-weight:600">كشف واحد لجميع طلاب الصف (${n})</small></button>
+   <button class="btn" onclick="rptXlsx(${cid})">جدول الإكسل<br><small style="font-weight:600">كل طلاب الصف: درجة كل مقطع + ملخص الصف (${n})</small></button>
    <button class="btn" onclick="rptRun('all',${cid})">التقرير الخاص<br><small style="font-weight:600">تقرير مستقل لكل طالب في الصف (${n}) في ملف واحد</small></button>
    <button class="btn" onclick="rptRun('agg',${cid})">تقرير الصف بالأرقام والرسوم<br><small style="font-weight:600">حالة الطلبة ومؤشرات الصف في صفحة واحدة</small></button>
    <button class="btn-s" style="width:100%;margin-top:12px" onclick="closeSheet()">إلغاء</button>`);
@@ -3247,7 +3311,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='caf6eefbe595';
+const BUILD='abedaa5ec5b4';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
