@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="9a2d4052dcbe">
+<meta name="build" content="eec323f0a5f5">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -769,6 +769,39 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 @media (max-width:699px){
 .glass.tabbar{left:0;right:0;bottom:0;height:calc(80px + env(safe-area-inset-bottom));box-sizing:border-box;padding:0 8px calc(14px + env(safe-area-inset-bottom));border-radius:30px 30px 0 0;background:rgba(253,251,243,.97);border-width:1.5px 0 0;box-shadow:0 -6px 22px rgba(22,94,80,.16),inset 0 1.5px 0 #fff}
 }
+.vrow{display:flex;justify-content:space-between;align-items:center;margin:-2px 6px 6px;gap:8px}
+.vrow.srching{margin:2px 6px 8px}
+.vsrch{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.85);background:rgba(255,255,255,.72);display:flex;align-items:center;justify-content:center;color:var(--teal-d);cursor:pointer;flex:none;box-shadow:inset 0 1px 0 #fff,0 2px 8px rgba(22,94,80,.1)}
+.vsrch svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.sfield{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.9);border:1px solid #fff;border-radius:999px;padding:0 14px;height:38px;box-shadow:inset 0 1px 3px rgba(22,94,80,.14)}
+.sfield svg{width:17px;height:17px;fill:none;stroke:var(--ink-2);stroke-width:2.2;stroke-linecap:round;flex:none}
+.sfield input{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:14px;color:var(--ink);outline:none;padding:0}
+.srch-h{text-align:center;margin:14px 0}
+.sfield input[type=search]::-webkit-search-cancel-button,.sfield input[type=search]::-webkit-search-decoration{-webkit-appearance:none;display:none}
+.vsw{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.85);background:rgba(255,255,255,.72);border-radius:999px;padding:5px 11px;font:inherit;font-size:12px;font-weight:600;color:var(--ink-2);cursor:pointer;box-shadow:inset 0 1px 0 #fff,0 2px 8px rgba(22,94,80,.1)}
+.vsw b{color:var(--teal-d);font-weight:800}
+.vsw svg{width:15px;height:15px;fill:none;stroke:var(--teal-d);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.vsw svg.ar{width:11px;height:11px;stroke-width:2.8}
+.vopt{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;margin-bottom:10px;border-radius:20px;border:1.5px solid rgba(22,94,80,.12);background:rgba(255,255,255,.6);font:inherit;text-align:start;cursor:pointer;color:inherit}
+.vopt.on{border-color:var(--teal);background:rgba(35,130,111,.12)}
+.vopt .vic{width:42px;height:42px;border-radius:14px;background:rgba(22,94,80,.1);color:var(--teal-d);display:flex;align-items:center;justify-content:center;flex:none}
+.vopt .vic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.vopt .vtx{flex:1;min-width:0}.vopt b{display:block;font-size:15px;color:var(--teal-d)}.vopt small{display:block;font-size:11.5px;color:var(--ink-2);margin-top:1px}
+.vopt>svg{width:20px;height:20px;fill:none;stroke:var(--green);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.tg1{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.tl1{position:relative;text-align:start;font:inherit;color:inherit;cursor:pointer;padding:12px;border-radius:22px;display:flex;flex-direction:column;gap:5px;min-height:128px;width:100%}
+.tl1:active{transform:scale(.98)}
+.tl1 .nm{font-weight:900;font-size:18px;color:var(--teal-d);line-height:1.25}
+.tl1 .nm small{display:block;font-size:11px;color:var(--ink-2);font-weight:600}
+.tl1 .cnt{font-size:11.5px;font-weight:700;color:var(--ink-2)}
+.tl1 .mn{display:flex;gap:7px;align-items:center;font-size:12px;font-weight:800}
+.tl1 .mn span{display:inline-flex;align-items:center;gap:3px}
+.tl1 .mn i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.tl1 .bar{margin-top:auto;height:10px}
+.tlst{position:absolute;top:10px;left:10px;width:22px;height:22px;border-radius:50%;background:rgba(46,170,94,.25);color:#145A31;display:flex;align-items:center;justify-content:center}
+.tlst.pk{background:rgba(236,110,160,.25);color:#9A2A5E}
+.tlst svg{width:13px;height:13px;fill:currentColor;stroke:none}
+@media (min-width:700px){.tg1{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}}
 </style>
 </head>
 <body>
@@ -1564,13 +1597,51 @@ function noteQueue(){
   const close=()=>{NSEEN.add(m.id);m.seen=true;o.remove();NQ_OPEN=false;srv('msg_seen',{p_ids:[m.id]});setTimeout(noteQueue,250);};
   o.addEventListener('click',close);
 }
+/* ---------- شكل الصفوف في «التسميع»: مربعات أو قوائم ---------- */
+const TV_KEY='qt-tasview';
+function tasView(){try{return localStorage.getItem(TV_KEY)==='tiles'?'tiles':'list';}catch(e){return 'list';}}
+function setTasView(v){try{localStorage.setItem(TV_KEY,v);}catch(e){}closeSheet();vTas();}
+const ICO_GRID='<svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>';
+const ICO_LIST='<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.8" cy="6" r="1"/><circle cx="4.8" cy="12" r="1"/><circle cx="4.8" cy="18" r="1"/></svg>';
+const ICO_DN='<svg class="ar" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
+function openTasView(){const v=tasView();
+  sheet(`<div class="t" style="font-size:17px">تصنيف الطلبة حسب</div><div class="mut" style="margin:2px 0 12px">اختر الشكل اللي يناسبك لعرض صفوفك</div>
+   <button type="button" class="vopt${v==='tiles'?' on':''}" onclick="setTasView('tiles')"><span class="vic">${ICO_GRID}</span><span class="vtx"><b>مربعات</b><small>كل صف مربع فيه عدد طلابك وشريط التوزيع الملوّن</small></span>${v==='tiles'?CHECK:''}</button>
+   <button type="button" class="vopt${v==='list'?' on':''}" onclick="setTasView('list')"><span class="vic">${ICO_LIST}</span><span class="vtx"><b>قوائم</b><small>صف تحت صف، الشكل المعتاد</small></span>${v==='list'?CHECK:''}</button>`);}
+function tasTile(c){
+  const l=myIn(c),r=cnts(l),n=l.length,ns=nomOpen()&&n?nomOf(c):null,np=nomOpen()&&n&&!ns;
+  const num=(k,col,fg)=>`<span style="color:${fg}"><i style="background:${col}"></i>${r[k]}</span>`;
+  return `<button type="button" class="glass tl1" onclick="srchGo('c',${c.id})">${(ns||np)?`<span class="tlst${np?' pk':''}">${STAR}</span>`:''}
+   <div class="nm"><small>الصف</small>${GRADES[c.g-1]} (${c.sec})</div><div class="cnt">معي ${n} ${n===1?'طالب':'طلاب'}</div>
+   <div class="mn">${num('green','var(--green)','#145A31')}${num('gold','var(--gold)','#9A6B05')}${num('red','var(--red)','#9A2418')}${r.none?num('none','rgba(120,134,130,.55)','#5d7f77'):''}</div>${bar(r,n)}</button>`;}
+
+const ICO_SRCH='<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
+const ICO_X='<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+const normA=s=>String(s||'').replace(/[ً-ْٰ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/ـ/g,'').replace(/[()،,.\-_]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();
+const stemG=g=>normA(GRADES[g-1]).replace(/^ال/,'');
+function tasMatches(q){
+  const tk=normA(q).split(' ').filter(Boolean);if(!tk.length)return{cls:[],stu:[]};
+  const cls=myCls().filter(c=>myIn(c).length),sec=c=>normA(c.sec);
+  const cm=cls.filter(c=>tk.every(w=>{const w2=w.replace(/^ال/,'');return w==='الصف'||w==='صف'||(w2.length>0&&stemG(c.g).startsWith(w2))||w===sec(c);})&&tk.some(w=>w!=='الصف'&&w!=='صف'));
+  const stu=cls.flatMap(c=>myIn(c)).filter(s=>{const n=normA(s.name);return tk.every(w=>n.includes(w));}).slice(0,40);
+  return{cls:cm,stu};}
+function tasResHTML(){
+  const q=T.q||'';if(!normA(q))return '<div class="mut srch-h">اكتب اسم طالب، أو اسم صف مثل: رابع أ</div>';
+  const m=tasMatches(q);
+  if(!m.cls.length&&!m.stu.length)return `<div class="glass card empty" style="padding:22px 16px;text-align:center"><div class="t" style="font-size:14.5px">لا توجد نتائج لـ «${esc(q)}»</div><div class="mut" style="margin-top:4px">البحث في طلابك وصفوفك فقط</div></div>`;
+  return (m.cls.length?`<div class="sec"><div><b>صفوف</b></div></div><div class="tg1">${m.cls.map(tasTile).join('')}</div>`:'')+
+   (m.stu.length?`<div class="sec"><div><b>طلاب</b></div></div>`+m.stu.map(s=>`<button type="button" class="glass item" onclick="srchGo('s',${s.id},${s.c.id})">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div><div class="mut">${clsName(s.c)} · ${statusOf(s).t}</div></div>${CHEV}</button>`).join(''):'');}
+function srchOpen(){T.srch=true;T.q='';vTas();setTimeout(()=>{const e=$('srch-in');if(e)e.focus();},60);}
+function srchClose(){T.srch=false;T.q='';vTas();}
+function srchInput(v){T.q=v;const e=$('srch-res');if(e)e.innerHTML=tasResHTML();}
+function srchGo(kind,a,b){T.srch=false;T.q='';if(kind==='c')go('tcls',{cid:a,fm:'abc'});else openTS(a,'tas',b);}
 function vTas(){
   setTab('tas');const withMine=myCls().filter(c=>myIn(c).length);
   const grp=(h,title,sub)=>{const list=withMine.filter(c=>halaqa(c.g)===h).sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar'));
-    return list.length?`<div class="sec"><div><b>${title}</b><small>${sub}</small></div></div>`+list.map(tasCard).join(''):'';};
+    return list.length?`<div class="sec"><div><b>${title}</b><small>${sub}</small></div></div>`+(tasView()==='tiles'?`<div class="tg1">${list.map(tasTile).join('')}</div>`:list.map(tasCard).join('')):'';};
   const total=withMine.reduce((a,c)=>a+myIn(c).length,0);
   $('teacher-body').innerHTML=TOP+awardStrip()+profileBtn()+
-  (withMine.length?`<div class="sec" style="margin-top:6px"><b style="font-size:18px">التسميع</b><span class="pill p-gray">${total} طالباً معي</span></div>`+grp(1,'الحلقة الأولى','الصف الأول والثاني والثالث')+grp(2,'الحلقة الثانية','الصف الرابع والخامس والسادس')
+  (withMine.length?`<div class="sec" style="margin-top:6px"><b style="font-size:18px">التسميع</b><span class="pill p-gray">${total} طالباً معي</span></div>`+(T.srch?`<div class="vrow srching"><div class="sfield">${ICO_SRCH}<input id="srch-in" type="search" placeholder="اسم طالب أو صف" value="${esc(T.q||'')}" oninput="srchInput(this.value)" autocomplete="off"></div><button type="button" class="vsrch" onclick="srchClose()" aria-label="إغلاق">${ICO_X}</button></div><div id="srch-res">${tasResHTML()}</div>`:`<div class="vrow"><button type="button" class="vsrch" onclick="srchOpen()" aria-label="بحث">${ICO_SRCH}</button><button type="button" class="vsw" onclick="openTasView()"><span class="vi">${tasView()==='tiles'?ICO_GRID:ICO_LIST}</span>تصنيف الطلبة حسب: <b>${tasView()==='tiles'?'مربعات':'قوائم'}</b>${ICO_DN}</button></div>`)+(T.srch?'':grp(1,'الحلقة الأولى','الصف الأول والثاني والثالث')+grp(2,'الحلقة الثانية','الصف الرابع والخامس والسادس'))
    :`<div class="glass card empty" style="padding:26px 16px"><div class="t" style="font-size:15px;margin-bottom:6px">لم تختر طلاباً بعد</div><div class="mut" style="margin-bottom:14px">افتح «الكشف» واضغط المربع بجانب اسم كل طالب معك، فيظهر صفه هنا.</div><button class="btn" onclick="go('home')">الذهاب إلى الكشف</button></div>`)+'<div style="height:90px"></div>';
   fitStrip();
 }
@@ -3120,7 +3191,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='9a2d4052dcbe';
+const BUILD='eec323f0a5f5';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
