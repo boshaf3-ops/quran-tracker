@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="eec323f0a5f5">
+<meta name="build" content="8e722971139d">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -802,6 +802,21 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 .tlst.pk{background:rgba(236,110,160,.25);color:#9A2A5E}
 .tlst svg{width:13px;height:13px;fill:currentColor;stroke:none}
 @media (min-width:700px){.tg1{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}}
+.ccd{position:absolute;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;color:var(--ink-2)}
+.ccd svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.tg1{padding-top:10px}
+.tl1 .ccd{top:-10px;left:16px;width:60px;height:22px;border-radius:12px 12px 0 0;background:rgba(var(--rgb),.5);border:1.5px solid rgba(255,255,255,.95);border-bottom:0;box-shadow:inset 0 2px 5px rgba(255,255,255,.7),0 -2px 8px rgba(var(--rgb),.22);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.tl1 .ccd.none{background:rgba(255,255,255,.7);border:1.5px dashed rgba(22,94,80,.35);border-bottom:0;box-shadow:none}
+.tl1 .tlst{top:-6px;left:86px}
+.item .ccd.inl{position:static;width:22px;height:22px;border-radius:50%;flex:none;background:rgba(var(--rgb),.5);border:1.5px solid rgba(255,255,255,.95);box-shadow:inset 0 2px 5px rgba(255,255,255,.75),0 2px 6px rgba(var(--rgb),.35)}
+.item .ccd.inl.none{background:rgba(255,255,255,.65);border:1.5px dashed rgba(22,94,80,.35);box-shadow:none}
+.item.hascc{background:linear-gradient(135deg,rgba(var(--rgb),.36),rgba(var(--rgb),.14));border-color:rgba(var(--rgb),.5);box-shadow:0 8px 24px rgba(var(--rgb),.2),inset 0 1.5px 0 rgba(255,255,255,.85)}
+.ccg{display:grid;grid-template-columns:repeat(5,1fr);gap:12px 6px}
+.ccs{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:6px;font:inherit;font-size:11.5px;color:var(--ink-2);cursor:pointer;padding:0}
+.ccs i{width:46px;height:46px;border-radius:50%;background:rgba(var(--rgb),.5);border:2px solid rgba(255,255,255,.95);box-shadow:inset 0 3px 7px rgba(255,255,255,.75),0 4px 10px rgba(var(--rgb),.35);display:flex;align-items:center;justify-content:center}
+.ccs.on i{outline:3px solid rgba(var(--rgb),.95);outline-offset:1px}
+.ccs i svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+.ccs.on{color:var(--ink);font-weight:800}
 </style>
 </head>
 <body>
@@ -1067,7 +1082,7 @@ function saveTok(){let ok=false;try{localStorage.setItem('qt-tok',TOK);ok=true;}
 function loadTok(){let v=null;try{v=localStorage.getItem('qt-tok');}catch(e){}if(!v){try{v=sessionStorage.getItem('qt-tok');}catch(e){}}return v;}
 function dropTok(){try{localStorage.removeItem('qt-tok');}catch(e){}try{sessionStorage.removeItem('qt-tok');}catch(e){}}
 function sessionExpired(){if(!TOK)return;if(ROLE==='student'&&KIDS.length>1){kidDrop(TOK);return;}TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');toast('انتهت الجلسة، سجّل الدخول من جديد',true);}
-function clearData(){INBOX=[];SENT=[];NSEEN.clear();NQ_OPEN=false;{const np=document.getElementById('ntpop');if(np)np.remove();}AWARD=null;AWARDS=[];NOMS=[];HONOR=null;HONORS=[];HMONTH='';SUGG.length=0;TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
+function clearData(){PREFS=null;INBOX=[];SENT=[];NSEEN.clear();NQ_OPEN=false;{const np=document.getElementById('ntpop');if(np)np.remove();}AWARD=null;AWARDS=[];NOMS=[];HONOR=null;HONORS=[];HMONTH='';SUGG.length=0;TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
   ['student-body','teacher-body','admin-body'].forEach(i=>{if($(i))$(i).innerHTML='';});}
 function persist(){}
 function saveOwn(){}
@@ -1511,8 +1526,9 @@ const myIn=c=>c.students.filter(s=>s.owner===ME.id);
 const cnts=l=>{const r={green:0,gold:0,red:0,none:0};l.forEach(s=>r[statusOf(s).k]++);return r;};
 function tasCard(c){
   const l=myIn(c),r=cnts(l),ns=nomOpen()&&l.length?nomOf(c):null,np=nomOpen()&&l.length&&!ns;
-  return `<button class="glass item${np?' nomo':ns?' nomd':''}" style="display:block" onclick="go('tcls',{cid:${c.id},fm:'abc'})">
-    <div class="row sp"><div class="t">${clsName(c)}</div><div class="row" style="gap:6px"><span class="pill p-green">معي ${l.length} ${l.length===1?'طالب':'طلاب'}</span>${CHEV}</div></div>
+  const cc=ccGet(c.id);
+  return `<button class="glass item${np?' nomo':ns?' nomd':''}${cc?' hascc':''}" style="display:block${cc?`;--rgb:${cc[3]}`:''}" onclick="go('tcls',{cid:${c.id},fm:'abc'})">
+    <div class="row sp"><div class="t">${clsName(c)}</div><div class="row" style="gap:6px">${ccMark(c.id,cc,true)}<span class="pill p-green">معي ${l.length} ${l.length===1?'طالب':'طلاب'}</span>${CHEV}</div></div>
     ${ns?`<div class="nomtag">${STAR}الطالب المثالي المرشَّح: <b>${esc(shortN(ns.name))}</b></div>`:np?`<div class="nomtag pk">${STAR}لم تُرشّح طالباً من هذا الصف بعد</div>`:''}
     ${bar(r,l.length)}${legend(r)}</button>`;
 }
@@ -1611,7 +1627,8 @@ function openTasView(){const v=tasView();
 function tasTile(c){
   const l=myIn(c),r=cnts(l),n=l.length,ns=nomOpen()&&n?nomOf(c):null,np=nomOpen()&&n&&!ns;
   const num=(k,col,fg)=>`<span style="color:${fg}"><i style="background:${col}"></i>${r[k]}</span>`;
-  return `<button type="button" class="glass tl1" onclick="srchGo('c',${c.id})">${(ns||np)?`<span class="tlst${np?' pk':''}">${STAR}</span>`:''}
+  const cc=ccGet(c.id);
+  return `<button type="button" class="glass tl1${cc?' hascc':''}"${cc?` style="--rgb:${cc[3]}"`:''} onclick="srchGo('c',${c.id})">${ccMark(c.id,cc)}${(ns||np)?`<span class="tlst${np?' pk':''}">${STAR}</span>`:''}
    <div class="nm"><small>الصف</small>${GRADES[c.g-1]} (${c.sec})</div><div class="cnt">معي ${n} ${n===1?'طالب':'طلاب'}</div>
    <div class="mn">${num('green','var(--green)','#145A31')}${num('gold','var(--gold)','#9A6B05')}${num('red','var(--red)','#9A2418')}${r.none?num('none','rgba(120,134,130,.55)','#5d7f77'):''}</div>${bar(r,n)}</button>`;}
 
@@ -1635,7 +1652,37 @@ function srchOpen(){T.srch=true;T.q='';vTas();setTimeout(()=>{const e=$('srch-in
 function srchClose(){T.srch=false;T.q='';vTas();}
 function srchInput(v){T.q=v;const e=$('srch-res');if(e)e.innerHTML=tasResHTML();}
 function srchGo(kind,a,b){T.srch=false;T.q='';if(kind==='c')go('tcls',{cid:a,fm:'abc'});else openTS(a,'tas',b);}
+/* ---------- لون الملف لكل صف: يُحفظ في بيانات المعلم (إن كانت الدوال جاهزة في الخادم) وإلا في الجوال ---------- */
+const CC_KEY='qt-clscol';
+const CC_LIST=[['red','أحمر','#E5483B','229,72,59'],['orange','برتقالي','#F28C28','242,140,40'],['yellow','أصفر','#F2C230','242,194,48'],['green','أخضر','#34A853','52,168,83'],['teal','تركوازي','#16A5A3','22,165,163'],['blue','أزرق','#3B82F6','59,130,246'],['purple','بنفسجي','#8B5CF6','139,92,246'],['pink','وردي','#EC5B9A','236,91,154'],['brown','بني','#9A6B43','154,107,67'],['gray','رمادي','#7A8791','122,135,145']];
+const ICO_DROP='<svg viewBox="0 0 24 24"><path d="M12 3c3.5 4.2 6 7 6 10a6 6 0 0 1-12 0c0-3 2.5-5.8 6-10z"/></svg>';
+let PREFS=null,PREFS_BUSY=false;   /* null: لم تُحمَّل · كائن: من الخادم · false: الخادم لا يدعمها بعد */
+function ccLocal(){try{return JSON.parse(localStorage.getItem(CC_KEY)||'{}')||{};}catch(e){return {};}}
+const ccMap=()=>PREFS&&typeof PREFS==='object'?(PREFS.clscol||{}):ccLocal();
+function ccGet(cid){const k=ccMap()[cid];return CC_LIST.find(x=>x[0]===k)||null;}
+async function loadPrefs(){
+  if(ROLE!=='teacher'||!TOK||PREFS_BUSY)return;PREFS_BUSY=true;
+  try{const r=await rpc('get_prefs',{p_tok:TOK});
+    if(r&&r.prefs&&typeof r.prefs==='object'){PREFS=r.prefs;
+      const loc=ccLocal();   /* نقل مرة واحدة: ألوان الجوال القديمة إلى بيانات المعلم */
+      if(Object.keys(loc).length&&!Object.keys(PREFS.clscol||{}).length){PREFS.clscol=loc;srv('set_pref',{p_key:'clscol',p_val:loc});try{localStorage.removeItem(CC_KEY);}catch(e){}}
+    }else PREFS=false;
+  }catch(e){PREFS=false;}
+  PREFS_BUSY=false;if(T.view==='tas')vTas();}
+async function ccSet(cid,k){
+  const old=ccMap(),m=Object.assign({},old);if(k)m[cid]=k;else delete m[cid];
+  closeSheet();
+  if(PREFS&&typeof PREFS==='object'){PREFS.clscol=m;vTas();
+    const r=await srv('set_pref',{p_key:'clscol',p_val:m});
+    if(r&&r.error&&r.error!=='net'){PREFS.clscol=old;toast('تعذّر حفظ اللون، حاول مرة ثانية',true);if(T.view==='tas')vTas();}
+  }else{try{localStorage.setItem(CC_KEY,JSON.stringify(m));}catch(e){}vTas();}}
+const ccMark=(cid,cc,inl)=>`<span class="ccd${cc?'':' none'}${inl?' inl':''}" role="button" aria-label="تغيير لون الملف" onclick="openCC(${cid},event)">${cc?'':ICO_DROP}</span>`;
+function openCC(cid,ev){if(ev)ev.stopPropagation();const c=CLASSES.find(x=>x.id===cid),cur=ccGet(cid);
+  sheet(`<div class="t" style="font-size:17px">تغيير لون الملف</div><div class="mut" style="margin:2px 0 14px">${clsName(c)}</div>
+   <div class="ccg">${CC_LIST.map(x=>`<button type="button" class="ccs${cur&&cur[0]===x[0]?' on':''}" style="--rgb:${x[3]}" onclick="ccSet(${cid},'${x[0]}')"><i>${cur&&cur[0]===x[0]?CHECK:''}</i><span>${x[1]}</span></button>`).join('')}</div>
+   <button type="button" class="btn-s" style="width:100%;margin-top:12px;padding:11px" onclick="ccSet(${cid},'')">بدون لون (الافتراضي)</button>`);}
 function vTas(){
+  if(PREFS===null&&ROLE==='teacher')loadPrefs();
   setTab('tas');const withMine=myCls().filter(c=>myIn(c).length);
   const grp=(h,title,sub)=>{const list=withMine.filter(c=>halaqa(c.g)===h).sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar'));
     return list.length?`<div class="sec"><div><b>${title}</b><small>${sub}</small></div></div>`+(tasView()==='tiles'?`<div class="tg1">${list.map(tasTile).join('')}</div>`:list.map(tasCard).join('')):'';};
@@ -3191,7 +3238,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='eec323f0a5f5';
+const BUILD='8e722971139d';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
