@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="8e722971139d">
+<meta name="build" content="caf6eefbe595">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1615,8 +1615,14 @@ function noteQueue(){
 }
 /* ---------- شكل الصفوف في «التسميع»: مربعات أو قوائم ---------- */
 const TV_KEY='qt-tasview';
-function tasView(){try{return localStorage.getItem(TV_KEY)==='tiles'?'tiles':'list';}catch(e){return 'list';}}
-function setTasView(v){try{localStorage.setItem(TV_KEY,v);}catch(e){}closeSheet();vTas();}
+function tvLocal(){try{return localStorage.getItem(TV_KEY);}catch(e){return null;}}
+function tasView(){return (PREFS&&typeof PREFS==='object'?PREFS.tasview:tvLocal())==='tiles'?'tiles':'list';}
+async function setTasView(v){
+  const old=tasView();closeSheet();
+  if(PREFS&&typeof PREFS==='object'){PREFS.tasview=v;vTas();
+    const r=await srv('set_pref',{p_key:'tasview',p_val:v});
+    if(r&&r.error&&r.error!=='net'){PREFS.tasview=old;toast('تعذّر حفظ اختيارك، حاول مرة ثانية',true);if(T.view==='tas')vTas();}
+  }else{try{localStorage.setItem(TV_KEY,v);}catch(e){}vTas();}}
 const ICO_GRID='<svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>';
 const ICO_LIST='<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.8" cy="6" r="1"/><circle cx="4.8" cy="12" r="1"/><circle cx="4.8" cy="18" r="1"/></svg>';
 const ICO_DN='<svg class="ar" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
@@ -1666,6 +1672,9 @@ async function loadPrefs(){
     if(r&&r.prefs&&typeof r.prefs==='object'){PREFS=r.prefs;
       const loc=ccLocal();   /* نقل مرة واحدة: ألوان الجوال القديمة إلى بيانات المعلم */
       if(Object.keys(loc).length&&!Object.keys(PREFS.clscol||{}).length){PREFS.clscol=loc;srv('set_pref',{p_key:'clscol',p_val:loc});try{localStorage.removeItem(CC_KEY);}catch(e){}}
+      const lv=tvLocal();   /* نقل مرة واحدة: اختيار «مربعات/قوائم» القديم؛ وما في الخادم له الأولوية */
+      if((lv==='tiles'||lv==='list')&&!PREFS.tasview){PREFS.tasview=lv;srv('set_pref',{p_key:'tasview',p_val:lv});}
+      try{localStorage.removeItem(TV_KEY);}catch(e){}
     }else PREFS=false;
   }catch(e){PREFS=false;}
   PREFS_BUSY=false;if(T.view==='tas')vTas();}
@@ -3238,7 +3247,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='8e722971139d';
+const BUILD='caf6eefbe595';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
