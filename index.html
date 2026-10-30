@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="15316884120c">
+<meta name="build" content="f988c2d39a47">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -716,7 +716,7 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 .tabbar .tab.on:not(.center):not(.gate) svg{stroke:var(--d);fill:var(--f)}
 #a-tabs{padding:6px 4px}#a-tabs .tab{flex:1;min-width:0;padding:6px 1px;font-size:10px}
 .stu4{display:flex;align-items:center;gap:10px;padding:9px 12px;margin-bottom:10px;border-radius:22px}
-.stu4 .nm{font-weight:800;font-size:15px;color:var(--teal-d);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stu4 .nm{font-weight:800;font-size:15.5px;color:var(--teal-d);line-height:1.35}
 .stu4 .sb{font-size:11.5px;color:var(--ink-2)}
 .stu4 .grow{flex:1;min-width:0}
 .phbtn.sm{width:44px;height:44px;border-width:2px;box-shadow:0 3px 8px rgba(22,94,80,.25);flex:none;margin:0}
@@ -762,6 +762,10 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 .bg2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .bg2 .bopt{margin:0;padding:9px 6px;font-size:12.5px}
 @media (min-width:1000px) and (min-height:600px){.bstrip{display:none}}
+.gc4 .hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:3px}
+.gc4 .hrow .segr{flex:1;min-width:0}
+.gc4 .gst{flex:none;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.93);white-space:nowrap}
+.gc4 .gst.p-red{color:#B3261E}.gc4 .gst.p-gold{color:#7A5200}.gc4 .gst.p-green{color:#145A31}.gc4 .gst.p-gray{color:#52746c}
 </style>
 </head>
 <body>
@@ -1679,7 +1683,7 @@ function bindNote(root,get,set){
   if(nx)nx.onclick=e=>{e.stopPropagation();set(0);const cd=nb.closest('.card,.panel');if(cd)cd.classList.remove('nopen');redraw();};
 }
 document.addEventListener('click',e=>{if(!e.target.closest||e.target.closest('.nwrap'))return;document.querySelectorAll('.nmenu').forEach(x=>x.hidden=true);document.querySelectorAll('.nopen').forEach(x=>x.classList.remove('nopen'));});
-const stuBar4=(s,st)=>`<div class="glass stu4"><button class="phbtn sm" onclick="openPhoto(${s.id})" aria-label="التقاط صورة للطالب" style="${s.photo?`background-image:url('${s.photo}')`:''}">${s.photo?'':SIL}<span class="camb">${CAMI}</span></button><div class="grow"><div class="nm">${esc(s.name)}</div><div class="sb">${clsName(s.c)} · ${lvName(s)}</div></div><span class="pill ${st.p}">${st.t}</span></div>`;
+const stuBar4=(s,st,showPill)=>`<div class="glass stu4"><button class="phbtn sm" onclick="openPhoto(${s.id})" aria-label="التقاط صورة للطالب" style="${s.photo?`background-image:url('${s.photo}')`:''}">${s.photo?'':SIL}<span class="camb">${CAMI}</span></button><div class="grow"><div class="nm">${esc(s.name)}</div><div class="sb">${clsName(s.c)} · ${lvName(s)}</div></div>${showPill?`<span class="pill ${st.p}">${st.t}</span>`:''}</div>`;
 const behCnt=(s,sg)=>s.beh.filter(b=>(sg==='+'?b[0]==='+':b[0]!=='+')&&b[2].getTime()===TODAY.getTime()).length;
 const behOpts=(s,sg)=>(sg==='+'?BPOS:BNEG).map(x=>`<button class="bopt ${sg==='+'?'pos':'neg'}${behOn(s,sg,x)?' on':''}" data-b="${sg}|${x}">${x}<small>${sg}${(sg==='+'?BPT:BNT)[x]}</small></button>`).join('');
 const behStrip=s=>{const np=behCnt(s,'+'),nn=behCnt(s,'−'),lv=lvLevel(s.beh,TODAY),op=T.bop||'';
@@ -1709,11 +1713,11 @@ function vStudent(){
     const MX=mxOf(s.c.g),dd=gAt(s,gi),past=!!dd,ed=gi!==nI,init=past?Math.min(MX,Math.round((dd[0]+(dd[1]||0))*10)/10):MX;
     const nk=s.id+':'+gi;if(T.nk!==nk){T.nk=nk;T.note=past?(dd[3]||0):0;}
     const lab=!ed?'المقطع المطلوب اليوم':past?'تعديل درجة مقطع سابق':'تسميع مقطع قادم';
-    grade=`<div class="glass card gc4 ${ed?'g-strong':'g-mute'}"><div class="ghead"><div class="row sp"><span class="glab">${ed&&past?I_PEN:I_TGT}${lab}</span>${ed?'<button type="button" class="gback" onclick="pickSeg(null)">العودة لمقطع اليوم</button>':''}</div><div class="segn">${rng(seg)}</div><div class="segr">${fmtR(seg)} · مقطع ${gi+1} من ${segs.length}</div></div>
+    grade=`<div class="glass card gc4 ${ed?'g-strong':'g-mute'}"><div class="ghead"><div class="row sp"><span class="glab">${ed&&past?I_PEN:I_TGT}${lab}</span>${ed?'<button type="button" class="gback" onclick="pickSeg(null)">العودة لمقطع اليوم</button>':''}</div><div class="segn">${rng(seg)}</div><div class="hrow"><div class="segr">${fmtR(seg)} · مقطع ${gi+1} من ${segs.length}</div><span class="gst ${st.p}">${st.t}</span></div></div>
     <div class="gbody"><div class="lab"><span>الدرجة</span><span dir="ltr"><span id="g-hv">${init}</span> / ${MX}</span></div>
     <input type="range" id="g-h" min="0" max="${MX}" step="1" value="${init}">
     <div class="gfoot"><div class="numb" dir="ltr"><b id="g-tot">${init}</b><small>/${MX}</small></div><button class="btn" id="g-save">${past?'حفظ التعديل':'تثبيت الدرجة'}</button></div>${noteHTML(T.note||0)}${past?'<button type="button" class="btn-s gdel" id="g-del">حذف الدرجة…</button>':''}${navStrip(s)}</div></div>`;}
-  (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">حفظ تقرير الطالب PDF</button></div>`+stuBar4(s,st)+subTabs()+`<div class="wst"><div id="sub-hifz"${vis('hifz')}>`+grade+behStrip(s)+
+  (T.admin?$('admin-body'):$('teacher-body')).innerHTML=(T.admin?TOP:TOPT())+`<div class="hdr"><button class="glass iconbtn" onclick="${T.ret||`go('tas')`}" aria-label="رجوع">${BACK}</button><button class="btn-s" style="margin-inline-start:auto" onclick="rptRun('stu',${s.id})">حفظ تقرير الطالب PDF</button></div>`+stuBar4(s,st,!seg)+subTabs()+`<div class="wst"><div id="sub-hifz"${vis('hifz')}>`+grade+behStrip(s)+
    `<div class="glass card" id="cur-card" style="padding-bottom:4px"><div class="t" style="margin-bottom:4px">منهج الطالب</div>${segRows(s,0,true)}
     <div style="height:8px"></div></div></div>
     <div id="sub-beh"${vis('beh')}><div class="glass card" id="tlvbox">${lvInner(s)}</div>${medalsCard(s)}<div class="glass card"><div class="t">تسجيل السلوك</div>
@@ -1724,7 +1728,9 @@ function vStudent(){
   (T.admin?$('admin-body'):$('teacher-body')).classList.add('wstu');
   bindBeh();
   if(!seg)return;
-  const h=$('g-h'),upd=()=>{fill(h);$('g-hv').textContent=h.value;$('g-tot').textContent=h.value;};h.addEventListener('input',upd);upd();
+  const SLC={mute:{r:'#EE9A92',y:'#F2CF72',g:'#9ED5B5'},strong:{r:'#D63A2B',y:'#E0A21B',g:'#1FA04F'}};
+  const h=$('g-h'),upd=()=>{fill(h);$('g-hv').textContent=h.value;$('g-tot').textContent=h.value;
+    h.style.setProperty('--c',SLC[h.closest('.gc4').classList.contains('g-strong')?'strong':'mute'][TQ(+h.value*10/mxOf(s.c.g))]);};h.addEventListener('input',upd);upd();
   bindNote($('g-save').closest('.card'),()=>T.note||0,v=>{T.note=v;});
   if($('g-del'))$('g-del').onclick=()=>confirmDelGrade(s.id,gi);
   $('g-save').onclick=async()=>{const sc=+h.value,idx=gi,wasPast=!!gAt(s,idx);
@@ -3111,7 +3117,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='15316884120c';
+const BUILD='f988c2d39a47';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
