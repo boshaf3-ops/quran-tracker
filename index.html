@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="f988c2d39a47">
+<meta name="build" content="9a2d4052dcbe">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -766,6 +766,9 @@ body{display:block;padding:0;background:#0f2b26;min-height:100vh;min-height:100d
 .gc4 .hrow .segr{flex:1;min-width:0}
 .gc4 .gst{flex:none;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.93);white-space:nowrap}
 .gc4 .gst.p-red{color:#B3261E}.gc4 .gst.p-gold{color:#7A5200}.gc4 .gst.p-green{color:#145A31}.gc4 .gst.p-gray{color:#52746c}
+@media (max-width:699px){
+.glass.tabbar{left:0;right:0;bottom:0;height:calc(80px + env(safe-area-inset-bottom));box-sizing:border-box;padding:0 8px calc(14px + env(safe-area-inset-bottom));border-radius:30px 30px 0 0;background:rgba(253,251,243,.97);border-width:1.5px 0 0;box-shadow:0 -6px 22px rgba(22,94,80,.16),inset 0 1.5px 0 #fff}
+}
 </style>
 </head>
 <body>
@@ -3117,7 +3120,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='f988c2d39a47';
+const BUILD='9a2d4052dcbe';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
