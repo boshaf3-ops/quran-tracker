@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="b5c21e32e759">
+<meta name="build" content="7edbbf8f05fe">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1530,6 +1530,25 @@ async function gmtSave(){const g=GMTG,L=gmtEdit().map(p=>[String(p[0]).trim(),St
   const r=await srv('set_game_talk',{p_val:all});
   if(r&&r.ok){GMT=all;delete GMTD[g];toast(L.length?'انحفظ كلام الصف '+GMT_NAMES[g]+' ('+L.length+')':'صار الصف '+GMT_NAMES[g]+' على الكلام العام');aGmTalkG();}else toast(r&&r.error==='auth'?'تحتاج تدخل بحساب المدير':r&&r.error==='bad'?'الكلام كثير زيادة':'تعذّر الحفظ',true);}
 
+
+/* ===== النسخ الاحتياطي: زر في غرفة التحكم ينزّل ملف JSON فيه كل بيانات النظام ===== */
+function bkLast(){try{return +localStorage.getItem('qt-bk-last')||0;}catch(e){return 0;}}
+function bkCard(){const t=bkLast(),d=t?Math.floor((Date.now()-t)/864e5):null,warn=!t||d>=7;
+  return `<div class="sec" style="margin:16px 6px 8px"><b>النسخ الاحتياطي</b></div><button class="glass item" id="bk-btn" onclick="bkRun()" style="margin-bottom:6px${warn?';background:rgba(224,162,27,.28)':''}"><div class="mini">💾</div><div class="grow"><div class="t">تحميل نسخة احتياطية كاملة</div><div class="mut">${t?'آخر نسخة من هذا الجهاز: '+(d===0?'اليوم':'قبل '+d+' يوم'):'ما نزّلت نسخة من هذا الجهاز بعد'} · يُنصح مرة بالأسبوع</div></div>${CHEV}</button><div class="mut" style="margin:0 8px 10px;font-size:12.5px;line-height:1.8">الملف فيه الأرقام السرية وكل البيانات، احفظه في مكان آمن ولا ترسله لأحد.</div>`;}
+async function bkRun(){const b=$('bk-btn');if(b&&b.dataset.busy)return;if(b)b.dataset.busy='1';toast('جاري تجهيز النسخة...');
+  try{const a=await srv('export_backup',{p_part:'core'});
+    if(!a||!a.data){toast(a&&a.error==='auth'?'تحتاج تدخل بحساب المدير':'هذي الميزة تحتاج تشغيل ملف SQL جديد (export-backup)',true);return;}
+    const g=await srv('export_backup',{p_part:'game'});
+    if(!g||!g.data){toast('تعذّر تجهيز بيانات اللعبة، جرّب مرة ثانية',true);return;}
+    const out=Object.assign({exported_at:a.at,note:'نسخة احتياطية كاملة (بدون جلسات الدخول وسجل محاولات الدخول)'},a.data,g.data);
+    const n=Object.keys(out).filter(k=>Array.isArray(out[k])).reduce((s,k)=>s+out[k].length,0);
+    const blob=new Blob([JSON.stringify(out)],{type:'application/json'}),u=URL.createObjectURL(blob),el=document.createElement('a');
+    el.href=u;el.download='quran-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(el);el.click();el.remove();setTimeout(()=>URL.revokeObjectURL(u),30000);
+    try{localStorage.setItem('qt-bk-last',String(Date.now()));}catch(e){}
+    toast('نزلت النسخة ('+n+' سجل، '+Math.round(blob.size/1024)+' كيلوبايت)');if(T.view==='home')aHome();
+  }catch(e){toast('تعذّر تحميل النسخة',true);}
+  finally{if(b)delete b.dataset.busy;}}
+
 function renderStudent(s){
   SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
   const segs=segsOf(s.c.g),st=statusOf(s),nI=nxtIdx(s),cur=nI<0?null:segs[nI],nI2=nI<0?-1:nxtIdx(s,nI+1),nxt=nI2<0?null:segs[nI2];
@@ -2941,6 +2960,7 @@ function aHome(){
   <div class="sec" style="margin:14px 6px 8px"><b>نهاية السنة</b></div><button class="glass item" onclick="ago('yr')" style="margin-bottom:10px"><div class="grow"><div class="t">نقل السنة الدراسية</div><div class="mut">نقل الطلبة وأرشفة السادس ولصق الكشوف الجديدة</div></div>${CHEV}</button>
   <div class="sec" style="margin:14px 6px 8px"><b>إضافة سريعة</b></div>
   <div class="chips" style="margin:0 4px"><button class="btn-s" onclick="openAddStudent()">+ طالب</button><button class="btn-s" onclick="openAddClass(true)">+ صف</button><button class="btn-s" onclick="openAddTeacher()">+ معلم</button></div>
+  ${bkCard()}
   <div class="sec" style="margin:16px 6px 8px"><b>الأكواد والتصدير</b></div>
   <div class="chips" style="margin:0 4px"><button class="btn-s" onclick="codesAll()">تحميل أكواد كل الطلبة PDF</button><button class="btn-s" onclick="exportSheet()">تصدير البيانات</button></div>`;
 }
@@ -3473,7 +3493,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='b5c21e32e759';
+const BUILD='7edbbf8f05fe';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
