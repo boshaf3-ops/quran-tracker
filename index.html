@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="3710523802e9">
+<meta name="build" content="0e16ceba4c55">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -311,6 +311,9 @@ textarea.field{min-height:92px;resize:none;line-height:1.7}
 .rq-c{background:rgba(224,162,27,.2)!important}
 .rq-n{background:rgba(46,170,94,.18)!important}
 .rq-pw{background:rgba(127,119,221,.15)!important}
+.rq-bars{display:flex;flex-direction:column;gap:6px;margin:0 2px}
+.rq-bar{display:flex;align-items:center;gap:10px;width:100%;padding:8px 14px;border-radius:14px;border:1px dashed rgba(35,130,111,.35);background:rgba(255,255,255,.5);color:var(--ink);font:inherit;text-align:right;opacity:.62;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.rq-bar:active{opacity:1}.rq-bar .nm{flex:1;min-width:0;font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rq-bar small{font-size:11px;color:var(--gold-d);white-space:nowrap}.rq-bar i{font-style:normal;font-size:15px;opacity:.6}.rq-bar.dn small{color:var(--teal-d)}
 .trail{padding:14px 14px 12px}
 .tr-wrap{position:relative;height:132px;margin:8px 26px 0}
 .tr-line{position:absolute;bottom:30px;left:0;right:0;height:13px;border-radius:99px;background:rgba(120,134,130,.28);overflow:hidden;border:1px solid rgba(255,255,255,.7)}
@@ -942,7 +945,7 @@ const fmtR=g=>{const a=g.d,b=g.e;return a.getMonth()===b.getMonth()?`${a.getDate
 const halaqa=g=>g<=3?1:2;
 const clsName=c=>`الصف ${GRADES[c.g-1]} (${c.sec})`;
 
-const TLIST=[],CLASSES=[],POOL=[],THREADS=[],SMSG=[],CREQ=[],RESETREQ=[],STUDRESET=[],ARCH=[],SUGG=[];let INBOX=[],SENT=[],NSEEN=new Set(),NQ_OPEN=false;let AWARD=null,AWARDS=[];let NOMS=[],HONOR=null,HONORS=[],HMONTH='';let BKP=null;
+const TLIST=[],CLASSES=[],POOL=[],THREADS=[],SMSG=[],CREQ=[],RESETREQ=[],STUDRESET=[],ARCHRES=[],ARCH=[],SUGG=[];let INBOX=[],SENT=[],NSEEN=new Set(),NQ_OPEN=false;let AWARD=null,AWARDS=[];let NOMS=[],HONOR=null,HONORS=[],HMONTH='';let BKP=null;
 const tById=id=>TLIST.find(x=>x.id===id);
 const allStudents=()=>CLASSES.flatMap(c=>c.students);
 const byId=id=>allStudents().find(s=>s.id===id)||POOL.find(s=>s.id===id);
@@ -1058,7 +1061,8 @@ function hydrate(st){
     Object.values(tm).sort((a,b)=>b.msgs[b.msgs.length-1].at.localeCompare(a.msgs[a.msgs.length-1].at)).forEach(x=>SMSG.push(x));
   }
   CREQ.length=0;(st.creq||[]).forEach(r=>CREQ.push({id:r.id,tid:r.tid,cid:r.cid,status:r.status,at:new Date(r.at)}));
-  RESETREQ.length=0;STUDRESET.length=0;
+  RESETREQ.length=0;STUDRESET.length=0;ARCHRES.length=0;
+  (st.resets_arch||[]).forEach(r=>{ARCHRES.push({id:r.id,kind:r.kind,tid:r.tid,name:r.name,cid:r.cid||0,at:new Date(r.at),st:r.st,hat:r.hat?new Date(r.hat):null});});
   (st.resets||[]).forEach(r=>{if(r.kind==='teacher')RESETREQ.push({id:r.id,tid:r.tid,at:new Date(r.at)});else STUDRESET.push({id:r.id,name:r.name,phone:r.phone,email:r.email,cid:r.cid||0,at:new Date(r.at)});});
   AWARD=st.award?{id:st.award.id,tid:st.award.tid,month:st.award.month,exp:new Date(st.award.exp)}:null;AWARDS=(st.awards||[]).map(a=>({id:a.id,tid:a.tid,month:a.month,at:new Date(a.at),exp:new Date(a.exp)}));
   INBOX=(st.inbox||[]).map(m=>({id:+m.id,kind:m.kind,level:m.level||'',title:m.title||'',body:m.body||'',at:new Date(m.at),seen:!!m.seen}));
@@ -1086,7 +1090,7 @@ function saveTok(){let ok=false;try{localStorage.setItem('qt-tok',TOK);ok=true;}
 function loadTok(){let v=null;try{v=localStorage.getItem('qt-tok');}catch(e){}if(!v){try{v=sessionStorage.getItem('qt-tok');}catch(e){}}return v;}
 function dropTok(){try{localStorage.removeItem('qt-tok');}catch(e){}try{sessionStorage.removeItem('qt-tok');}catch(e){}}
 function sessionExpired(){if(!TOK)return;if(ROLE==='student'&&KIDS.length>1){kidDrop(TOK);return;}TOK=null;ROLE=null;dropTok();closeSheet();clearData();show('s-student-login');toast('انتهت الجلسة، سجّل الدخول من جديد',true);}
-function clearData(){PREFS=null;INBOX=[];SENT=[];NSEEN.clear();NQ_OPEN=false;{const np=document.getElementById('ntpop');if(np)np.remove();}AWARD=null;AWARDS=[];NOMS=[];HONOR=null;HONORS=[];HMONTH='';SUGG.length=0;TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
+function clearData(){PREFS=null;INBOX=[];SENT=[];NSEEN.clear();NQ_OPEN=false;{const np=document.getElementById('ntpop');if(np)np.remove();}AWARD=null;AWARDS=[];NOMS=[];HONOR=null;HONORS=[];HMONTH='';SUGG.length=0;TLIST.length=0;CLASSES.length=0;POOL.length=0;THREADS.length=0;CREQ.length=0;RESETREQ.length=0;STUDRESET.length=0;ARCHRES.length=0;ARCH.length=0;BKP=null;ME=null;CURS=null;LAST='';
   ['student-body','teacher-body','admin-body'].forEach(i=>{if($(i))$(i).innerHTML='';});}
 function persist(){}
 function saveOwn(){}
@@ -3390,11 +3394,16 @@ const rqStud=r=>{const rc=CLASSES.find(c=>c.id===r.cid),m0=similar(r.name),m=m0.
    <div class="divider"></div>
    ${m.length?`<div class="mut" style="font-weight:600;margin-bottom:6px">الطلاب المطابقون للاسم، تحقق ثم اختر:</div>`+m.map(x=>`<div class="row sp" style="gap:8px;margin-bottom:8px"><div style="min-width:0"><div class="t" style="font-size:13.5px">${esc(x.name)}</div><div class="mut">${clsName(x.c)}${x.c&&x.c.id===r.cid?' <span class="pill p-green" style="font-size:10.5px">نفس الصف</span>':' <span class="pill p-gold" style="font-size:10.5px">صف مختلف</span>'}</div></div><div style="flex:none;display:flex;flex-direction:column;gap:6px;align-items:stretch"><button class="btn-s" onclick="emailPin(${r.id},${x.id},'current')">إرسال الكلمة الحالية</button><button class="btn-s" onclick="emailPin(${r.id},${x.id},'reset')">إعادة تعيين وإرسال</button><button class="btn-s" style="opacity:.75;font-size:11.5px" onclick="resetStudentPw(${r.id},${x.id})">تعيين يدوي بدون بريد</button></div></div>`).join('')
      :'<div class="mut" style="color:#7C1A10;font-weight:600">لا يوجد طالب بهذا الاسم في الكشوف.</div>'}
-   <button class="btn-s" style="width:100%;padding:10px;margin-top:4px" onclick="ignoreStudReset(${r.id})">تجاهل الطلب</button></div>`;};
+   <div class="row" style="gap:8px;margin-top:6px"><button class="btn" style="flex:1;padding:10px" onclick="doneReset(${r.id})">✓ تم الطلب</button><button class="btn-s" style="flex:1;padding:10px" onclick="ignoreStudReset(${r.id})">تجاهل</button></div></div>`;};
 const rqTeach=r=>{const x=tById(r.tid);
   return `<div class="glass card rq-t"><div class="row sp"><div class="t">${esc(x.name)}</div><span class="pill p-purple">معلم</span></div>
    <div class="mut" style="margin:2px 0 8px">نسي كلمة السر ويطلب إعادة تعيينها · ${fmt(r.at)}</div>
-   <div class="row" style="gap:8px"><button class="btn" style="flex:1;padding:11px" onclick="resetPw(${r.id})">إعادة تعيين الكلمة</button><button class="btn-s" style="padding:11px 16px" onclick="ignoreReset(${r.id})">تجاهل</button></div></div>`;};
+   <div class="row" style="gap:8px"><button class="btn" style="flex:1;padding:11px" onclick="resetPw(${r.id})">إعادة تعيين الكلمة</button><button class="btn-s" style="padding:11px 14px" onclick="doneReset(${r.id})">✓ تم</button><button class="btn-s" style="padding:11px 14px" onclick="ignoreReset(${r.id})">تجاهل</button></div></div>`;};
+/* شريط صغير باهت للطلب المؤرشف: اسم فقط، والضغط عليه يرجعه للطلبات */
+const rqBar=r=>{const nm=r.kind==='teacher'?(tById(r.tid)||{}).name||'معلم':r.name,d=r.hat||r.at;
+  return `<button class="rq-bar ${r.st==='done'?'dn':'ig'}" onclick="restoreReset(${r.id})" title="اضغط لإرجاع الطلب"><span class="nm">${esc(nm)}</span><small>${r.st==='done'?'تم':'تجاهل'} · ${fmt(d)}</small><i>↩</i></button>`;};
+let PWA_F='all';
+const archList=()=>ARCHRES.filter(r=>PWA_F==='all'||r.st===PWA_F);
 const rqClass=r=>{const c=CLASSES.find(x=>x.id===r.cid),tc=tById(r.tid);
   return `<div class="glass card rq-c"><div class="t">${esc(tc.name)}</div><div class="mut" style="margin:2px 0 6px">يطلب تدريس <b>${clsName(c)}</b> · ${fmt(r.at)}</div>
    <div class="mut">${c.tids.length?'يدرّسه الآن: '+esc(tNames(c)):'لا يوجد معلم لهذا الصف حالياً'}${c.tids.length>=2?' <span class="pill p-gold" style="font-size:11px">عنده معلمان بالفعل</span>':''}</div>
@@ -3491,6 +3500,7 @@ function aPend(){
   if(!pk){
     html=`<div class="sec" style="margin-top:2px"><b style="font-size:18px">الرسائل</b></div><div class="sec" style="margin-top:6px"><div><b>الطلبات</b><small>${pendTotal()?pendTotal()+' بانتظار قرارك':'لا توجد طلبات جديدة'}</small></div></div>`+
       pendTile('طلبات الكلمات السرية',STUDRESET.length+' من طلاب · '+RESETREQ.length+' من معلمين',resetTotal(),'pw','rq-pw')+
+      pendTile('أرشيف الطلبات','طلبات الكلمات السرية التي عالجتها · تقدر ترجع أي طلب',ARCHRES.length,'pwa','rq-pw')+
       pendTile('طلبات إضافة صفوف','معلمون يطلبون تدريس صفوف',creqPend().length,'cls','rq-c')+
       pendTile('طلبات إضافة طلاب','طلاب أضافهم المعلمون وتنتظر اعتمادك',pendList().length,'stu','rq-n')+
       pendTile('المقترحات','مقترحات الطلاب والمعلمين للإدارة · '+SUGG.length+' مقترح',suggNew().length,'sg','rq-g')+
@@ -3502,7 +3512,12 @@ function aPend(){
   }else if(pk==='pw'){
     const items=[...STUDRESET.map(r=>({k:'s',r})),...RESETREQ.map(r=>({k:'t',r}))].sort((a,b)=>b.r.at-a.r.at);
     html=reqHead('طلبات الكلمات السرية',resetTotal()+' طلب')+`<div class="chips" style="margin:0 4px 10px"><span class="pill p-blue">طالب</span><span class="pill p-purple">معلم</span></div>`+
-      (items.length?items.map(o=>o.k==='s'?rqStud(o.r):rqTeach(o.r)).join(''):'<div class="glass card empty">لا توجد طلبات كلمات سرية.</div>');
+      (items.length?items.map(o=>o.k==='s'?rqStud(o.r):rqTeach(o.r)).join(''):'<div class="glass card empty">لا توجد طلبات كلمات سرية.</div>')+
+      (ARCHRES.length?`<div class="sec" style="margin:18px 4px 6px"><div><b>أرشيف الطلبات</b><small>${ARCHRES.length} طلب · اضغط على أي شريط لإرجاعه</small></div></div><div class="rq-bars">${ARCHRES.slice(0,12).map(rqBar).join('')}</div>`+(ARCHRES.length>12?`<button class="btn-s" style="width:100%;margin-top:8px;padding:10px" onclick="ago('pend',{pk:'pwa'})">عرض كل الأرشيف (${ARCHRES.length})</button>`:''):'');
+  }else if(pk==='pwa'){
+    const l=archList(),nd=ARCHRES.filter(r=>r.st==='done').length,ni=ARCHRES.filter(r=>r.st==='ignored').length;
+    html=reqHead('أرشيف الطلبات',ARCHRES.length+' طلب')+`<div class="chips" style="margin:0 4px 10px;gap:8px"><button class="pill ${PWA_F==='all'?'p-blue':''}" onclick="PWA_F='all';aPend()">الكل ${ARCHRES.length}</button><button class="pill ${PWA_F==='done'?'p-green':''}" onclick="PWA_F='done';aPend()">تم ${nd}</button><button class="pill ${PWA_F==='ignored'?'p-gold':''}" onclick="PWA_F='ignored';aPend()">تجاهل ${ni}</button></div><div class="mut" style="margin:0 6px 10px;line-height:1.8">كل طلب تضغط عليه «تم» أو «تجاهل» يجي هنا ولا يُحذف. اضغط على أي شريط لإرجاعه لقائمة الطلبات.</div>`+
+      (l.length?`<div class="rq-bars">${l.map(rqBar).join('')}</div>`:'<div class="glass card empty">لا توجد طلبات في الأرشيف.</div>');
   }else if(pk==='sg'){
     html=reqHead('المقترحات',SUGG.length+' مقترح · '+suggNew().length+' جديد')+(suggNew().length?`<div class="fbar" style="margin:0 4px 10px"><span class="mut">كل المقترحات الجديدة</span><button class="btn-s" onclick="suggAllSeen()">اعتبار الكل مقروءاً</button></div>`:'')+
       (SUGG.length?SUGG.map(g=>`<div class="glass card"><div class="row sp"><div class="t" style="font-size:14.5px">${esc(g.name)}</div><span class="pill ${g.role==='teacher'?'p-purple':'p-blue'}">${g.role==='teacher'?'معلم':'طالب'}</span></div>
@@ -3527,7 +3542,9 @@ async function rejectReq(id){const r=await sop('reject_creq',{id});if(r.error){t
 async function resetPw(id){const q=RESETREQ.find(r=>r.id===id),x=tById(q.tid);
   const r=await sop('teacher_pin',{id:x.id});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);aPend();updABadge();pinSheet('كلمة سر جديدة لـ '+esc(x.name),'سلّمها للمعلم، وتعمل الآن بدل القديمة',r.pin);}
-async function ignoreReset(id){await sop('ignore_reset',{id});await sync(true);aPend();updABadge();toast('تم تجاهل الطلب',true);}
+async function ignoreReset(id){const r=await sop('ignore_reset',{id});if(r.error){toast('تعذّر التنفيذ',true);return;}await sync(true);aPend();updABadge();toast('نُقل الطلب لأرشيف الطلبات (تجاهل)');}
+async function doneReset(id){const r=await sop('done_reset',{id});if(r.error){toast('تعذّر التنفيذ (شغّل ملف أرشيف الطلبات في قاعدة البيانات أولاً)',true);return;}await sync(true);aPend();updABadge();toast('نُقل الطلب لأرشيف الطلبات (تم)');}
+async function restoreReset(id){const r=await sop('restore_reset',{id});if(r.error){toast('تعذّر التنفيذ',true);return;}await sync(true);aPend();updABadge();toast('رجع الطلب للقائمة');}
 const MAIL_FROM='kafu.alik.gcc@gmail.com',MAIL_RE=/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 function mailLinks(q,s,pin){
   const subj='الكلمة السرية للطالب '+s.name,
@@ -3543,9 +3560,9 @@ function mailSheet(q,s,pin,reset){const L=mailLinks(q,s,pin);
    <a class="btn" id="ml-gm" href="${L.gm}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">فتح Gmail</a>
    <a class="btn-s" href="${L.mt}" style="display:block;text-align:center;text-decoration:none;margin-top:10px;padding:11px">فتح تطبيق البريد في الجهاز</a>
    <div class="divider"></div>
-   <div class="mut" style="font-size:12.5px;margin-bottom:8px">بعد ما ترسل الإيميل، احذف الطلب من القائمة:</div>
-   <button class="btn" id="ml-done" style="margin-top:0">تم الإرسال، احذف الطلب</button><button class="btn-s" style="width:100%;margin-top:10px;padding:11px" onclick="closeSheet()">لاحقاً (يبقى الطلب)</button>`);
-  $('ml-done').onclick=async()=>{const r=await sop('ignore_reset',{id:q.id});if(r.error){toast('تعذّر التنفيذ',true);return;}closeSheet();await sync(true);aPend();updABadge();toast('تم حذف الطلب');};}
+   <div class="mut" style="font-size:12.5px;margin-bottom:8px">بعد ما ترسل الإيميل، انقل الطلب لأرشيف الطلبات:</div>
+   <button class="btn" id="ml-done" style="margin-top:0">تم الإرسال، انقل الطلب للأرشيف</button><button class="btn-s" style="width:100%;margin-top:10px;padding:11px" onclick="closeSheet()">لاحقاً (يبقى الطلب)</button>`);
+  $('ml-done').onclick=async()=>{const r=await sop('done_reset',{id:q.id});if(r.error){toast('تعذّر التنفيذ',true);return;}closeSheet();await sync(true);aPend();updABadge();toast('نُقل الطلب لأرشيف الطلبات (تم)');};}
 function emailPin(rid,sid,mode){const q=STUDRESET.find(r=>r.id===rid),s=byId(sid);if(!q||!s)return;
   if(!MAIL_RE.test(String(q.email||''))){toast('الإيميل المكتوب غير صالح، اتصل بولي الأمر',true);return;}
   if(mode==='current'){const pin=s.pin;if(!pin){toast('لا توجد كلمة سرية محفوظة، استخدم «إعادة تعيين»',true);return;}
@@ -3557,7 +3574,7 @@ async function resetStudentPw(rid,sid){const q=STUDRESET.find(r=>r.id===rid),s=b
   const r=await sop('student_pin',{id:sid,rid});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);aPend();updABadge();
   pinSheet('كلمة سر جديدة لـ '+esc(s.name),'تُرسل إلى <bdi>'+esc(q.email)+'</bdi> · الإرسال الفعلي بالبريد يحتاج خدمة بريد',r.pin);}
-async function ignoreStudReset(id){await sop('ignore_reset',{id});await sync(true);aPend();updABadge();toast('تم تجاهل الطلب',true);}
+async function ignoreStudReset(id){return ignoreReset(id);}
 async function approveP(id){const s=byId(id);const r=await sop('approve_pending',{id});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);aPend();updABadge();pinSheet('تم اعتماد '+esc(s.name),'الرقم السري للطالب',r.pin);}
 async function mergeP(id,keepId){const r=await sop('merge_pending',{id,keep:keepId});if(r.error){toast('تعذّر التنفيذ',true);return;}
@@ -3644,7 +3661,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='3710523802e9';
+const BUILD='0e16ceba4c55';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
