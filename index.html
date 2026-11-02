@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="c5942ef0b73f">
+<meta name="build" content="a0b6ce009514">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -209,12 +209,19 @@ button{font-family:inherit}
   animation:catglow 3s ease-in-out infinite}
 .catc.on svg{filter:drop-shadow(0 1px 2px rgba(0,0,0,.28))}
 @keyframes catglow{0%,100%{box-shadow:inset 0 -3px 6px rgba(0,0,0,.12),inset 0 1px 2px rgba(255,255,255,.95),0 0 0 1.5px rgba(var(--rgb),.22),0 0 8px 1px rgba(var(--rgb),.65),0 0 16px 3px rgba(var(--rgb),.28)}50%{box-shadow:inset 0 -3px 6px rgba(0,0,0,.12),inset 0 1px 2px rgba(255,255,255,.95),0 0 0 1px rgba(var(--rgb),.16),0 0 5px 1px rgba(var(--rgb),.45),0 0 11px 2px rgba(var(--rgb),.18)}}
+.catc.lamp{width:26px;height:26px;margin-inline-end:2px;cursor:default;flex:none}.catc.lamp svg{width:15px;height:15px}.catc.lamp::before{display:none}
 .catc.dim{opacity:.75}.catc:active{transform:scale(.92)}
 @media (prefers-reduced-motion:reduce){.catc.on{animation:none}}
 .catc.ro{cursor:default;width:17px;height:17px;animation:none!important}.catc.ro svg{width:10px;height:10px}.catc.ro::before{display:none}
 .catn{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;color:var(--ink)}.catn .catc{width:18px;height:18px;transform:none;cursor:default;animation:none!important}.catn .catc svg{width:11px;height:11px}.catn .catc::before{display:none}
-.catg{display:flex;gap:8px;align-items:flex-start;margin-top:10px}.catg .catc{margin-top:2px;animation:none!important}.catg .nm{display:flex;flex-wrap:wrap;gap:6px;flex:1}
-.catg .nm button{font:inherit;font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:999px;border:1px solid var(--glass-border);background:rgba(255,255,255,.62);color:var(--ink);cursor:pointer}
+.cat3{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px}
+.cat3 .cc{padding:2px 6px 4px;min-width:0;text-align:center}.cat3 .cc+.cc{border-inline-start:1.5px solid rgba(22,94,80,.16)}
+.cat3 .chd{display:flex;align-items:center;justify-content:center;gap:7px;padding-bottom:9px;margin-bottom:7px;border-bottom:1.5px solid rgba(22,94,80,.16)}
+.cat3 .chd .catc{width:28px;height:28px;cursor:default;transform:none;animation:none!important}.cat3 .chd .catc svg{width:16px;height:16px}.cat3 .chd .catc::before{display:none}
+.cat3 .chd b{font-size:15px;font-weight:900;color:var(--ink)}
+.cat3 .cc button{display:block;width:100%;margin-top:6px;font:inherit;font-size:12.5px;font-weight:700;line-height:1.4;padding:6px 5px;border-radius:14px;border:1px solid var(--glass-border);background:rgba(255,255,255,.62);color:var(--ink);cursor:pointer;word-break:break-word}
+.catun{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px;padding-top:10px;border-top:1px dashed rgba(22,94,80,.25)}.catun .mut{font-size:12px;flex:none}
+.catun button{font:inherit;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid var(--glass-border);background:rgba(255,255,255,.5);color:var(--ink-2);cursor:pointer;opacity:.8}
 .catsum{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}.catsum div{text-align:center;padding:9px 4px;border-radius:18px;background:rgba(255,255,255,.5);border:1px solid var(--glass-border);font-size:12px;font-weight:700;color:var(--ink-2)}.catsum b{display:block;font-size:20px;font-weight:900;color:var(--ink);margin-top:3px}.catsum .catc{margin:0 auto;cursor:default;transform:none;animation:none!important;width:26px;height:26px}.catsum .catc svg{width:15px;height:15px}.catsum .catc::before{display:none}
 .sno{flex:none;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:rgba(22,94,80,.1);color:var(--teal-d);font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
 .snav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(22,94,80,.12)}
@@ -1883,15 +1890,15 @@ async function setCat(id,k,ev){if(ev){ev.stopPropagation();ev.preventDefault();}
   const r=await srv('set_student_cat',{p_student:id,p_cat:nw});
   if(!r||r.error){CATPEND.delete(id);s.cat=old;const e2=$('cats-'+id);if(e2)e2.outerHTML=catRow(s);toast(r&&r.error==='forbidden'?'ما تقدر تغيّر فئة هذا الطالب':'تعذّر حفظ الفئة، حاول مرة ثانية',true);}}
 function catGroups(l,openFn){const g=k=>l.filter(s=>(s.cat||0)===k);
-  const row=k=>{const m=g(k);return m.length?`<div class="catg"><span class="catc c${k} on" style="cursor:default;transform:none">${CAT_SVG[k]}</span><div class="nm">${m.map(s=>`<button onclick="${openFn(s)}">${esc(shortN(s.name))}</button>`).join('')}</div></div>`:'';};
+  const col=k=>{const m=g(k);return `<div class="cc c${k}"><div class="chd"><span class="catc c${k} on">${CAT_SVG[k]}</span><b>${m.length}</b></div>${m.map(s=>`<button type="button" onclick="${openFn(s)}">${esc(shortN(s.name))}</button>`).join('')}</div>`;};
   const un=g(0);
-  return [1,2,3].map(row).join('')+(un.length?`<div class="catg"><span class="mut" style="font-size:12px;padding-top:5px;flex:none">بلا فئة</span><div class="nm">${un.map(s=>`<button style="opacity:.6" onclick="${openFn(s)}">${esc(shortN(s.name))}</button>`).join('')}</div></div>`:'');}
+  return `<div class="cat3">${[1,2,3].map(col).join('')}</div>`+(un.length?`<div class="catun"><span class="mut">بلا فئة</span>${un.map(s=>`<button type="button" onclick="${openFn(s)}">${esc(shortN(s.name))}</button>`).join('')}</div>`:'');}
 function vCats(){
   setTab('tas');const cl=myCls().filter(c=>myIn(c).length).sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar')),all=cl.reduce((a,c)=>a.concat(myIn(c)),[]),r=catCnt(all);
   $('teacher-body').innerHTML=TOPT()+head('فئات الطلبة',all.length+' طالباً معك',"go('tas')")+
   `<div class="glass card"><div class="catsum">${[1,2,3].map(k=>`<div><span class="catc c${k} on">${CAT_SVG[k]}</span><b>${r[k]}</b></div>`).join('')}<div><span class="mut" style="display:block;font-size:11.5px;margin-top:2px">بلا فئة</span><b>${r[0]}</b></div></div>
    <div class="mut" style="margin-top:10px;line-height:1.8">حدّد فئة كل طالب من قائمة صفه (الدوائر تحت اسمه). نجمع هذي البيانات لبناء الخطط العلاجية والإثرائية.</div></div>`+
-  (cl.length?cl.map(c=>{const l=myIn(c);return `<div class="glass card"><div class="row sp"><div class="t">${clsName(c)}</div><span class="row" style="gap:10px">${catNums(l)}</span></div>${catGroups(l,s=>`openTS(${s.id},'tas',${c.id})`)}</div>`;}).join(''):'<div class="glass card empty">لم تختر طلاباً بعد.</div>')+'<div style="height:90px"></div>';
+  (cl.length?cl.map(c=>{const l=myIn(c);return `<div class="glass card"><div class="row sp"><div class="t">${clsName(c)}</div><span class="pill p-gray">${l.length} ${l.length===1?'طالب':'طلاب'}</span></div>${catGroups(l,s=>`openTS(${s.id},'tas',${c.id})`)}</div>`;}).join(''):'<div class="glass card empty">لم تختر طلاباً بعد.</div>')+'<div style="height:90px"></div>';
   fitStrip();
 }
 function updBadge(){const n=myTh().reduce((a,t)=>a+t.unread,0)+admUnread();$('badge').hidden=!n;$('badge').textContent=n;}
@@ -2199,7 +2206,7 @@ function bindNote(root,get,set){
   if(nx)nx.onclick=e=>{e.stopPropagation();set(0);const cd=nb.closest('.card,.panel');if(cd)cd.classList.remove('nopen');redraw();};
 }
 document.addEventListener('click',e=>{if(!e.target.closest||e.target.closest('.nwrap'))return;document.querySelectorAll('.nmenu').forEach(x=>x.hidden=true);document.querySelectorAll('.nopen').forEach(x=>x.classList.remove('nopen'));});
-const stuBar4=(s,st,showPill)=>`<div class="glass stu4"><button class="phbtn sm" onclick="openPhoto(${s.id})" aria-label="التقاط صورة للطالب" style="${s.photo?`background-image:url('${s.photo}')`:''}">${s.photo?'':SIL}<span class="camb">${CAMI}</span></button><div class="grow"><div class="nm">${esc(s.name)}</div><div class="sb">${clsName(s.c)} · ${lvName(s)}</div></div>${showPill?`<span class="pill ${st.p}">${st.t}</span>`:''}</div>`;
+const stuBar4=(s,st,showPill)=>`<div class="glass stu4"><button class="phbtn sm" onclick="openPhoto(${s.id})" aria-label="التقاط صورة للطالب" style="${s.photo?`background-image:url('${s.photo}')`:''}">${s.photo?'':SIL}<span class="camb">${CAMI}</span></button><div class="grow"><div class="nm">${esc(s.name)}</div><div class="sb">${clsName(s.c)} · ${lvName(s)}</div></div>${s.cat?`<span class="catc c${s.cat} on lamp" aria-hidden="true">${CAT_SVG[s.cat]}</span>`:''}${showPill?`<span class="pill ${st.p}">${st.t}</span>`:''}</div>`;
 const behCnt=(s,sg)=>s.beh.filter(b=>(sg==='+'?b[0]==='+':b[0]!=='+')&&b[2].getTime()===TODAY.getTime()).length;
 const behOpts=(s,sg)=>(sg==='+'?BPOS:BNEG).map(x=>`<button class="bopt ${sg==='+'?'pos':'neg'}${behOn(s,sg,x)?' on':''}" data-b="${sg}|${x}">${x}<small>${sg}${(sg==='+'?BPT:BNT)[x]}</small></button>`).join('');
 const behStrip=s=>{const np=behCnt(s,'+'),nn=behCnt(s,'−'),lv=lvLevel(s.beh,TODAY),op=T.bop||'';
@@ -3199,7 +3206,7 @@ function aClass(){
   `<div class="fbar" style="margin:0 4px 10px"><span class="t" style="font-size:15px">طلاب الصف</span><span class="row" style="gap:8px"><button class="btn-s" onclick="rptChooseA(${c.id})">حفظ التقارير PDF</button><button class="btn-s" onclick="openAddStudentA(${c.id})">+ إضافة طالب</button></span></div>`+
   `<div class="fbar" style="margin:0 4px 10px"><span class="mut">كشف أسماء جديد لهذا الصف</span><button class="btn-s" onclick="openRoster(${c.id})">لصق كشف الأسماء</button></div>`+
   `<div class="fbar" style="margin:0 4px 10px"><span class="mut">أكواد دخول طلاب الصف</span><button class="btn-s" onclick="codesClass(${c.id})">تحميل أكواد الصف PDF</button></div>`+
-  (n?`<div class="glass card">${bar(r,n)}${legend(r)}</div><div class="glass card"><div class="row sp"><div class="t">فئات الطلبة</div><span class="row" style="gap:10px">${catNums(c.students)}</span></div>${catGroups(c.students,s=>`openAStu(${s.id},'cls',${c.id})`)}</div><div id="cf"></div><div id="sl"></div>`:'<div class="glass card empty">لا يوجد طلبة في هذا الصف</div>');
+  (n?`<div class="glass card">${bar(r,n)}${legend(r)}</div><div class="glass card"><div class="row sp"><div class="t">فئات الطلبة</div><span class="pill p-gray">${n} ${n===1?'طالب':'طلاب'}</span></div>${catGroups(c.students,s=>`openAStu(${s.id},'cls',${c.id})`)}</div><div id="cf"></div><div id="sl"></div>`:'<div class="glass card empty">لا يوجد طلبة في هذا الصف</div>');
   if(n){if(T.focid!==c.id){T.fo=0;T.focid=c.id;}drawClassFilters();drawStudents();}
   const ad=$('ac-add');if(ad)ad.onclick=async()=>{const r=await sop('class_add_t',{cid:c.id,tid:+$('ac-t').value});if(r.error){toast('تعذّر التنفيذ',true);return;}await sync(true);toast('أُضيف المعلم إلى '+clsName(c));aClass();};
 }
@@ -3711,7 +3718,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='c5942ef0b73f';
+const BUILD='a0b6ce009514';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
