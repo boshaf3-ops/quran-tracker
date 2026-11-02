@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="0e16ceba4c55">
+<meta name="build" content="c5942ef0b73f">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -194,6 +194,28 @@ button{font-family:inherit}
 .nth{margin-top:14px;font-size:11.5px;color:#9aa3a1}
 .ntbox.sm{padding:14px 14px 12px;animation:none;box-shadow:none;max-width:none}.ntbox.sm .ntt{font-size:16px;margin-top:8px}.ntbox.sm .ntb{font-size:13px;line-height:1.8}
 .ntbox.remind.sm{animation:none}
+.cats{display:flex;gap:9px;margin-top:7px;align-items:center;margin-inline-start:-5px}
+.catc{--rgb:229,72,59;position:relative;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:none;color:rgba(var(--rgb),.5);
+  background:radial-gradient(circle at 31% 25%,rgba(255,255,255,.95) 0 7%,rgba(255,255,255,.5) 8% 18%,transparent 34%),radial-gradient(circle at 50% 64%,rgba(var(--rgb),.26),rgba(var(--rgb),.08) 72%),rgba(255,255,255,.34);
+  border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 -3px 5px rgba(var(--rgb),.16),inset 0 1px 2px rgba(255,255,255,.95),0 2px 5px rgba(40,60,55,.14);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:box-shadow .35s,background .35s,color .35s,transform .15s;-webkit-tap-highlight-color:transparent}
+.catc::before{content:'';position:absolute;inset:-8px}
+.catc::after{content:'';position:absolute;left:19%;top:11%;width:34%;height:20%;border-radius:50%;background:rgba(255,255,255,.75);transform:rotate(-28deg);filter:blur(.4px);pointer-events:none}
+.catc svg{position:relative;z-index:1;width:11px;height:11px;fill:currentColor;stroke:none}.catc svg .o{fill:none;stroke:currentColor;stroke-width:1.7}
+.catc.c2{--rgb:245,176,25}.catc.c3{--rgb:52,168,83}
+.catc.on{color:#fff;border-color:rgba(255,255,255,.95);
+  background:radial-gradient(circle at 31% 25%,rgba(255,255,255,.98) 0 6%,rgba(255,255,255,.5) 7% 17%,transparent 32%),radial-gradient(circle at 50% 60%,rgba(var(--rgb),1),rgba(var(--rgb),.86) 62%,rgba(var(--rgb),.66));
+  box-shadow:inset 0 -3px 6px rgba(0,0,0,.12),inset 0 1px 2px rgba(255,255,255,.95),0 0 0 1.5px rgba(var(--rgb),.22),0 0 8px 1px rgba(var(--rgb),.65),0 0 16px 3px rgba(var(--rgb),.28);
+  animation:catglow 3s ease-in-out infinite}
+.catc.on svg{filter:drop-shadow(0 1px 2px rgba(0,0,0,.28))}
+@keyframes catglow{0%,100%{box-shadow:inset 0 -3px 6px rgba(0,0,0,.12),inset 0 1px 2px rgba(255,255,255,.95),0 0 0 1.5px rgba(var(--rgb),.22),0 0 8px 1px rgba(var(--rgb),.65),0 0 16px 3px rgba(var(--rgb),.28)}50%{box-shadow:inset 0 -3px 6px rgba(0,0,0,.12),inset 0 1px 2px rgba(255,255,255,.95),0 0 0 1px rgba(var(--rgb),.16),0 0 5px 1px rgba(var(--rgb),.45),0 0 11px 2px rgba(var(--rgb),.18)}}
+.catc.dim{opacity:.75}.catc:active{transform:scale(.92)}
+@media (prefers-reduced-motion:reduce){.catc.on{animation:none}}
+.catc.ro{cursor:default;width:17px;height:17px;animation:none!important}.catc.ro svg{width:10px;height:10px}.catc.ro::before{display:none}
+.catn{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;color:var(--ink)}.catn .catc{width:18px;height:18px;transform:none;cursor:default;animation:none!important}.catn .catc svg{width:11px;height:11px}.catn .catc::before{display:none}
+.catg{display:flex;gap:8px;align-items:flex-start;margin-top:10px}.catg .catc{margin-top:2px;animation:none!important}.catg .nm{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+.catg .nm button{font:inherit;font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:999px;border:1px solid var(--glass-border);background:rgba(255,255,255,.62);color:var(--ink);cursor:pointer}
+.catsum{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}.catsum div{text-align:center;padding:9px 4px;border-radius:18px;background:rgba(255,255,255,.5);border:1px solid var(--glass-border);font-size:12px;font-weight:700;color:var(--ink-2)}.catsum b{display:block;font-size:20px;font-weight:900;color:var(--ink);margin-top:3px}.catsum .catc{margin:0 auto;cursor:default;transform:none;animation:none!important;width:26px;height:26px}.catsum .catc svg{width:15px;height:15px}.catsum .catc::before{display:none}
 .sno{flex:none;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:rgba(22,94,80,.1);color:var(--teal-d);font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
 .snav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(22,94,80,.12)}
 .snav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;padding:10px 8px;line-height:1.35;border-radius:18px;margin:0}
@@ -1044,12 +1066,13 @@ function hydrate(st){
   st.classes.forEach(c=>{const o={id:c.id,g:c.g,sec:c.sec,tids:c.tids.slice(),students:[]};cm[c.id]=o;CLASSES.push(o);});
   st.students.forEach(x=>{
     const s={id:x.id,name:x.name,init:x.name.split(' ').slice(0,2).map(w=>w[0]).join(' '),done:x.done.map(d=>[+d[0],d[1]===null?null:+d[1],+d[2]||0,+d[3]||0]),dix:(x.dix&&x.dix.length===x.done.length)?x.dix.map(Number):x.done.map((_,i)=>i),partial:x.partial||0,
-      beh:x.beh.map(b=>[b[0]==='-'?'−':'+',b[1],dayDate(b[2])]),owner:x.owner||0,pin:x.pin||'',photo:x.photo||undefined,medals:x.medals||{},pending:!!x.pending,
+      beh:x.beh.map(b=>[b[0]==='-'?'−':'+',b[1],dayDate(b[2])]),owner:x.owner||0,pin:x.pin||'',photo:x.photo||undefined,medals:x.medals||{},pending:!!x.pending,cat:x.cat||0,
       by:x.by||0,at:x.at?new Date(x.at):undefined,prev:x.prev||undefined,nextG:x.nextG||undefined,c:null};
     const c=cm[x.c];if(c){s.c=c;c.students.push(s);}else if(ROLE==='admin')POOL.push(s);});
   CLASSES.forEach(c=>c.students.sort((p,q)=>p.name.localeCompare(q.name,'ar')));POOL.sort((p,q)=>p.name.localeCompare(q.name,'ar'));
   /* حماية اختيارات المعلم الأخيرة من تحديث قديم يصل قبل ما تنحفظ على الخادم */
   OWNPEND.forEach((v,id)=>{if(!v.busy&&Date.now()-v.t>10000){OWNPEND.delete(id);return;}const s0=CLASSES.reduce((a,c)=>a||c.students.find(q=>q.id===id),null);if(s0)s0.owner=v.want;});
+  CATPEND.forEach((v,id)=>{if(Date.now()-v.t>10000){CATPEND.delete(id);return;}const s0=CLASSES.reduce((a,c)=>a||c.students.find(q=>q.id===id),null);if(s0)s0.cat=v.want;});
   THREADS.length=0;SMSG.length=0;const tm={};
   if(ROLE==='teacher'){
     (st.msgs||[]).forEach(m=>{const k=m.kind+':'+m.ref;let th=tm[k];if(!th){th={id:k,tid:st.me,kind:m.kind,ref:m.ref,unread:0,msgs:[]};tm[k]=th;}
@@ -1218,7 +1241,7 @@ function drawStudents(){
   $('sl').innerHTML=l.length?l.map(s=>{const st=statusOf(s),
     oc=T.admin?`openAStu(${s.id},'cls',${c.id})`:`go('stu',{sid:${s.id}})`;
     return `<button class="glass item" onclick="${oc}">${sno(NM[s.id])}${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div>
-      <div class="mut">${nxtTxt(s)} · ${s.done.length} من ${segsOf(c.g).length}</div><div class="mut">${s.owner?'مع الأستاذ '+esc(shortT(s.owner)):'غير مختار من أي معلم'}</div></div><span class="pill ${st.p}">${stShort(st)}</span>${CHEV}</button>`;}).join('')
+      <div class="mut">${nxtTxt(s)} · ${s.done.length} من ${segsOf(c.g).length}</div><div class="mut">${s.owner?'مع الأستاذ '+esc(shortT(s.owner)):'غير مختار من أي معلم'}</div></div>${catDot(s)}<span class="pill ${st.p}">${stShort(st)}</span>${CHEV}</button>`;}).join('')
     :'<div class="glass card empty">لا يوجد طلبة في هذا التصنيف</div>';
 }
 function profileCard(s,st){
@@ -1842,8 +1865,35 @@ document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest
 function setTab(t){T.tab=t;document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));}
 function go(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:false});if(view==='stu'&&p.sid){T.sub='hifz';T.gi=null;}if(view==='tcls'&&p.fm)T.csub='hifz';$('admin-body').innerHTML='';
   const b=$('teacher-body');
-  ({tas:vTas,tcls:vTasClass,home:vHome,cls:vClass,stu:vStudent,curr:vCurr,msgs:vMsgs,thread:vThread,nom:vNom,amsgs:vAdmMsgs})[view]();
+  ({tas:vTas,tcls:vTasClass,cats:vCats,home:vHome,cls:vClass,stu:vStudent,curr:vCurr,msgs:vMsgs,thread:vThread,nom:vNom,amsgs:vAdmMsgs})[view]();
   b.scrollTop=0;updBadge();updGate();fitStrip();}
+/* ---------- فئات الطلبة: ثلاث دوائر زجاجية (هلال أحمر · نصف قمر أصفر · بدر أخضر) ---------- */
+const CAT_SVG={1:'<svg viewBox="0 0 24 24"><path d="M20.5 14.2A8.7 8.7 0 1 1 9.8 3.5a7 7 0 0 0 10.7 10.7z"/></svg>',
+ 2:'<svg viewBox="0 0 24 24"><circle class="o" cx="12" cy="12" r="8.2"/><path d="M12 3.8a8.2 8.2 0 0 1 0 16.4z"/></svg>',
+ 3:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><circle cx="9.2" cy="9.6" r="1.7" fill="#fff" opacity=".35"/><circle cx="14.6" cy="14.2" r="2.1" fill="#fff" opacity=".3"/></svg>'};
+const CATPEND=new Map();
+const catAria={1:'فئة حمراء',2:'فئة صفراء',3:'فئة خضراء'};
+function catRow(s){return `<span class="cats" id="cats-${s.id}">${[1,2,3].map(k=>`<span class="catc c${k}${s.cat===k?' on':s.cat?' dim':''}" role="button" aria-label="${catAria[k]}" onclick="setCat(${s.id},${k},event)">${CAT_SVG[k]}</span>`).join('')}</span>`;}
+const catDot=s=>s.cat?`<span class="catc c${s.cat} on ro" aria-hidden="true">${CAT_SVG[s.cat]}</span>`:'';
+const catCnt=l=>{const r={1:0,2:0,3:0,0:0};l.forEach(s=>r[s.cat||0]++);return r;};
+const catNums=l=>{const r=catCnt(l);return [1,2,3].map(k=>`<span class="catn"><span class="catc c${k} on">${CAT_SVG[k]}</span>${r[k]}</span>`).join('');};
+async function setCat(id,k,ev){if(ev){ev.stopPropagation();ev.preventDefault();}
+  const s=byId(id);if(!s)return;const old=s.cat||0,nw=old===k?0:k;s.cat=nw;CATPEND.set(id,{want:nw,t:Date.now()});
+  const el=$('cats-'+id);if(el)el.outerHTML=catRow(s);
+  const r=await srv('set_student_cat',{p_student:id,p_cat:nw});
+  if(!r||r.error){CATPEND.delete(id);s.cat=old;const e2=$('cats-'+id);if(e2)e2.outerHTML=catRow(s);toast(r&&r.error==='forbidden'?'ما تقدر تغيّر فئة هذا الطالب':'تعذّر حفظ الفئة، حاول مرة ثانية',true);}}
+function catGroups(l,openFn){const g=k=>l.filter(s=>(s.cat||0)===k);
+  const row=k=>{const m=g(k);return m.length?`<div class="catg"><span class="catc c${k} on" style="cursor:default;transform:none">${CAT_SVG[k]}</span><div class="nm">${m.map(s=>`<button onclick="${openFn(s)}">${esc(shortN(s.name))}</button>`).join('')}</div></div>`:'';};
+  const un=g(0);
+  return [1,2,3].map(row).join('')+(un.length?`<div class="catg"><span class="mut" style="font-size:12px;padding-top:5px;flex:none">بلا فئة</span><div class="nm">${un.map(s=>`<button style="opacity:.6" onclick="${openFn(s)}">${esc(shortN(s.name))}</button>`).join('')}</div></div>`:'');}
+function vCats(){
+  setTab('tas');const cl=myCls().filter(c=>myIn(c).length).sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar')),all=cl.reduce((a,c)=>a.concat(myIn(c)),[]),r=catCnt(all);
+  $('teacher-body').innerHTML=TOPT()+head('فئات الطلبة',all.length+' طالباً معك',"go('tas')")+
+  `<div class="glass card"><div class="catsum">${[1,2,3].map(k=>`<div><span class="catc c${k} on">${CAT_SVG[k]}</span><b>${r[k]}</b></div>`).join('')}<div><span class="mut" style="display:block;font-size:11.5px;margin-top:2px">بلا فئة</span><b>${r[0]}</b></div></div>
+   <div class="mut" style="margin-top:10px;line-height:1.8">حدّد فئة كل طالب من قائمة صفه (الدوائر تحت اسمه). نجمع هذي البيانات لبناء الخطط العلاجية والإثرائية.</div></div>`+
+  (cl.length?cl.map(c=>{const l=myIn(c);return `<div class="glass card"><div class="row sp"><div class="t">${clsName(c)}</div><span class="row" style="gap:10px">${catNums(l)}</span></div>${catGroups(l,s=>`openTS(${s.id},'tas',${c.id})`)}</div>`;}).join(''):'<div class="glass card empty">لم تختر طلاباً بعد.</div>')+'<div style="height:90px"></div>';
+  fitStrip();
+}
 function updBadge(){const n=myTh().reduce((a,t)=>a+t.unread,0)+admUnread();$('badge').hidden=!n;$('badge').textContent=n;}
 const head=(title,sub,backTo)=>`<div class="hdr"><button class="glass iconbtn" onclick="${backTo}" aria-label="رجوع">${BACK}</button><div class="ht"><b>${title}</b>${sub?`<span>${sub}</span>`:''}</div></div>`;
 
@@ -2033,7 +2083,7 @@ function vTas(){
     return list.length?`<div class="sec"><div><b>${title}</b><small>${sub}</small></div></div>`+(tasView()==='tiles'?`<div class="tg1">${list.map(tasTile).join('')}</div>`:list.map(tasCard).join('')):'';};
   const total=withMine.reduce((a,c)=>a+myIn(c).length,0);
   $('teacher-body').innerHTML=TOP+awardStrip()+profileBtn()+
-  (withMine.length?`<div class="sec" style="margin-top:6px"><b style="font-size:18px">التسميع</b><span class="pill p-gray">${total} طالباً معي</span></div>`+(T.srch?`<div class="vrow srching"><div class="sfield">${ICO_SRCH}<input id="srch-in" type="search" placeholder="اسم طالب أو صف" value="${esc(T.q||'')}" oninput="srchInput(this.value)" autocomplete="off"></div><button type="button" class="vsrch" onclick="srchClose()" aria-label="إغلاق">${ICO_X}</button></div><div id="srch-res">${tasResHTML()}</div>`:`<div class="vrow"><button type="button" class="vsrch" onclick="srchOpen()" aria-label="بحث">${ICO_SRCH}</button><button type="button" class="vsw" onclick="openTasView()"><span class="vi">${tasView()==='tiles'?ICO_GRID:ICO_LIST}</span>تصنيف الطلبة حسب: <b>${tasView()==='tiles'?'مربعات':'قوائم'}</b>${ICO_DN}</button></div>`)+(T.srch?'':grp(1,'الحلقة الأولى','الصف الأول والثاني والثالث')+grp(2,'الحلقة الثانية','الصف الرابع والخامس والسادس'))
+  (withMine.length?`<div class="sec" style="margin-top:6px"><b style="font-size:18px">التسميع</b><span class="pill p-gray">${total} طالباً معي</span></div>`+`<button class="glass item" style="margin-bottom:12px" onclick="go('cats')"><span class="cats" style="margin:0">${[1,2,3].map(k=>`<span class="catc c${k} on" style="transform:none">${CAT_SVG[k]}</span>`).join('')}</span><div class="grow"><div class="t">فئات الطلبة</div><div class="mut">${catCnt(withMine.reduce((a,c)=>a.concat(myIn(c)),[]))[0]} بلا فئة · للخطط العلاجية والإثرائية</div></div>${CHEV}</button>`+(T.srch?`<div class="vrow srching"><div class="sfield">${ICO_SRCH}<input id="srch-in" type="search" placeholder="اسم طالب أو صف" value="${esc(T.q||'')}" oninput="srchInput(this.value)" autocomplete="off"></div><button type="button" class="vsrch" onclick="srchClose()" aria-label="إغلاق">${ICO_X}</button></div><div id="srch-res">${tasResHTML()}</div>`:`<div class="vrow"><button type="button" class="vsrch" onclick="srchOpen()" aria-label="بحث">${ICO_SRCH}</button><button type="button" class="vsw" onclick="openTasView()"><span class="vi">${tasView()==='tiles'?ICO_GRID:ICO_LIST}</span>تصنيف الطلبة حسب: <b>${tasView()==='tiles'?'مربعات':'قوائم'}</b>${ICO_DN}</button></div>`)+(T.srch?'':grp(1,'الحلقة الأولى','الصف الأول والثاني والثالث')+grp(2,'الحلقة الثانية','الصف الرابع والخامس والسادس'))
    :`<div class="glass card empty" style="padding:26px 16px"><div class="t" style="font-size:15px;margin-bottom:6px">لم تختر طلاباً بعد</div><div class="mut" style="margin-bottom:14px">افتح «الكشف» واضغط المربع بجانب اسم كل طالب معك، فيظهر صفه هنا.</div><button class="btn" onclick="go('home')">الذهاب إلى الكشف</button></div>`)+'<div style="height:90px"></div>';
   fitStrip();
 }
@@ -2069,7 +2119,7 @@ function drawMine(){
   const c=CLASSES.find(x=>x.id===T.cid),l=filtList(myIn(c),T.fm),NM=nums(myIn(c));
   $('sl').innerHTML=l.length?l.map(s=>{const st=statusOf(s);
     return `<button class="glass item" onclick="openTS(${s.id},'tas',${c.id})">${sno(NM[s.id])}${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)} ${s.pending?'<span class="pill p-gold" style="font-size:11px;margin-inline-start:6px">بانتظار الإدارة</span>':''}</div>
-     <div class="mut">${nxtTxt(s)} · ${s.done.length} من ${segsOf(c.g).length}</div></div><span class="pill ${st.p}">${stShort(st)}</span>${CHEV}</button>`;}).join('')
+     <div class="mut">${nxtTxt(s)} · ${s.done.length} من ${segsOf(c.g).length}</div>${catRow(s)}</div><span class="pill ${st.p}">${stShort(st)}</span>${CHEV}</button>`;}).join('')
     :'<div class="glass card empty">لا يوجد طلبة في هذا التصنيف</div>';
 }
 function vHome(){
@@ -3135,7 +3185,7 @@ function aClasses(){
   setATab('classes');
   const grp=(h,title,sub)=>{const l=CLASSES.filter(c=>halaqa(c.g)===h).sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar'));
     return `<div class="sec"><div><b>${title}</b><small>${sub}</small></div></div>`+(l.length?l.map(c=>{const r=counts(c),n=c.students.length;
-      return `<button class="glass item" style="display:block" onclick="ago('cls',{cid:${c.id},fm:'abc'})"><div class="row sp"><div><div class="t">${clsName(c)}</div><div class="mut">${esc(teacherOf(c).name)}</div></div><div class="row" style="gap:6px"><span class="pill p-gray">${n} ${n===1?'طالب':'طلاب'}</span>${CHEV}</div></div>${n?bar(r,n):''}</button>`;}).join(''):'<div class="glass card empty">لا توجد صفوف</div>');};
+      return `<button class="glass item" style="display:block" onclick="ago('cls',{cid:${c.id},fm:'abc'})"><div class="row sp"><div><div class="t">${clsName(c)}</div><div class="mut">${esc(teacherOf(c).name)}</div></div><div class="row" style="gap:6px"><span class="pill p-gray">${n} ${n===1?'طالب':'طلاب'}</span>${CHEV}</div></div>${n?bar(r,n):''}${n&&c.students.some(q=>q.cat)?`<div class="row" style="gap:12px;margin-top:8px">${catNums(c.students)}</div>`:''}</button>`;}).join(''):'<div class="glass card empty">لا توجد صفوف</div>');};
   $('admin-body').innerHTML=AT+`<div class="sec" style="margin-top:2px"><b style="font-size:18px">الصفوف</b><button class="btn-s" onclick="openAddClass(true)">+ إضافة صف</button></div>`+
     grp(1,'الحلقة الأولى','الصف الأول والثاني والثالث')+grp(2,'الحلقة الثانية','الصف الرابع والخامس والسادس');
 }
@@ -3149,7 +3199,7 @@ function aClass(){
   `<div class="fbar" style="margin:0 4px 10px"><span class="t" style="font-size:15px">طلاب الصف</span><span class="row" style="gap:8px"><button class="btn-s" onclick="rptChooseA(${c.id})">حفظ التقارير PDF</button><button class="btn-s" onclick="openAddStudentA(${c.id})">+ إضافة طالب</button></span></div>`+
   `<div class="fbar" style="margin:0 4px 10px"><span class="mut">كشف أسماء جديد لهذا الصف</span><button class="btn-s" onclick="openRoster(${c.id})">لصق كشف الأسماء</button></div>`+
   `<div class="fbar" style="margin:0 4px 10px"><span class="mut">أكواد دخول طلاب الصف</span><button class="btn-s" onclick="codesClass(${c.id})">تحميل أكواد الصف PDF</button></div>`+
-  (n?`<div class="glass card">${bar(r,n)}${legend(r)}</div><div id="cf"></div><div id="sl"></div>`:'<div class="glass card empty">لا يوجد طلبة في هذا الصف</div>');
+  (n?`<div class="glass card">${bar(r,n)}${legend(r)}</div><div class="glass card"><div class="row sp"><div class="t">فئات الطلبة</div><span class="row" style="gap:10px">${catNums(c.students)}</span></div>${catGroups(c.students,s=>`openAStu(${s.id},'cls',${c.id})`)}</div><div id="cf"></div><div id="sl"></div>`:'<div class="glass card empty">لا يوجد طلبة في هذا الصف</div>');
   if(n){if(T.focid!==c.id){T.fo=0;T.focid=c.id;}drawClassFilters();drawStudents();}
   const ad=$('ac-add');if(ad)ad.onclick=async()=>{const r=await sop('class_add_t',{cid:c.id,tid:+$('ac-t').value});if(r.error){toast('تعذّر التنفيذ',true);return;}await sync(true);toast('أُضيف المعلم إلى '+clsName(c));aClass();};
 }
@@ -3661,7 +3711,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='0e16ceba4c55';
+const BUILD='c5942ef0b73f';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
