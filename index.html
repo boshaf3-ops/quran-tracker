@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="a0b6ce009514">
+<meta name="build" content="9b951270302b">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -223,6 +223,9 @@ button{font-family:inherit}
 .catun{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px;padding-top:10px;border-top:1px dashed rgba(22,94,80,.25)}.catun .mut{font-size:12px;flex:none}
 .catun button{font:inherit;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid var(--glass-border);background:rgba(255,255,255,.5);color:var(--ink-2);cursor:pointer;opacity:.8}
 .catsum{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}.catsum div{text-align:center;padding:9px 4px;border-radius:18px;background:rgba(255,255,255,.5);border:1px solid var(--glass-border);font-size:12px;font-weight:700;color:var(--ink-2)}.catsum b{display:block;font-size:20px;font-weight:900;color:var(--ink);margin-top:3px}.catsum .catc{margin:0 auto;cursor:default;transform:none;animation:none!important;width:26px;height:26px}.catsum .catc svg{width:15px;height:15px}.catsum .catc::before{display:none}
+.vrow .vsw{white-space:nowrap;font-size:12.5px;padding-inline:10px}.vbulk{font:inherit;font-weight:800;font-size:12.5px;padding:8px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.85);cursor:pointer;color:#fff;background:linear-gradient(135deg,#34a853,#1f7a3d);box-shadow:0 6px 14px rgba(31,122,61,.3),inset 0 1px 0 rgba(255,255,255,.4);white-space:nowrap;flex:none}
+.vbulk2{color:#fff!important;background:linear-gradient(135deg,#34a853,#1f7a3d)!important;border-color:rgba(255,255,255,.85)!important}
+.bulkg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.bulkb{font:inherit;font-weight:800;font-size:15px;padding:16px 8px;border-radius:22px;cursor:pointer;color:#14602c;background:linear-gradient(150deg,rgba(255,255,255,.75),rgba(52,168,83,.28));border:1px solid rgba(255,255,255,.9);box-shadow:0 8px 18px rgba(31,122,61,.2),inset 0 1.5px 0 rgba(255,255,255,.95);display:flex;flex-direction:column;align-items:center;gap:4px}.bulkb small{font-size:12px;font-weight:700;color:#1f7a3d}.bulkb:active{transform:scale(.96)}
 .sno{flex:none;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:rgba(22,94,80,.1);color:var(--teal-d);font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
 .snav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(22,94,80,.12)}
 .snav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;padding:10px 8px;line-height:1.35;border-radius:18px;margin:0}
@@ -1901,6 +1904,19 @@ function vCats(){
   (cl.length?cl.map(c=>{const l=myIn(c);return `<div class="glass card"><div class="row sp"><div class="t">${clsName(c)}</div><span class="pill p-gray">${l.length} ${l.length===1?'طالب':'طلاب'}</span></div>${catGroups(l,s=>`openTS(${s.id},'tas',${c.id})`)}</div>`;}).join(''):'<div class="glass card empty">لم تختر طلاباً بعد.</div>')+'<div style="height:90px"></div>';
   fitStrip();
 }
+/* ---------- سلوك إيجابي لجميع الطلبة (طلاب المعلم فقط، لا طلاب زميله) ---------- */
+function bulkTargets(cid){const cl=cid?[CLASSES.find(x=>x.id===cid)]:myCls();return cl.reduce((a,c)=>a.concat(myIn(c)),[]);}
+function openBulkBeh(cid){const l=bulkTargets(cid),c=cid?CLASSES.find(x=>x.id===cid):null;
+  if(!l.length){toast('ما عندك طلاب',true);return;}
+  sheet(`<div class="t" style="font-size:17px">سلوك إيجابي لجميع الطلبة</div><div class="mut" style="margin:4px 0 12px;line-height:1.8">${c?'طلابك في '+clsName(c):'كل طلابك'}: <b>${l.length} ${l.length===1?'طالب':'طلاب'}</b> (طلابك فقط، دون طلاب زميلك). اضغط على السلوك فيُسجَّل لهم اليوم مباشرة.</div>
+   <div class="bulkg">${BPOS.map(x=>`<button type="button" class="bulkb" onclick="bulkBeh(${cid||0},'${x}')">${x}<small>+${BPT[x]}</small></button>`).join('')}</div>
+   <button type="button" class="btn-s" style="width:100%;margin-top:12px;padding:11px" onclick="closeSheet()">إلغاء</button>`);}
+async function bulkBeh(cid,tx){const l=bulkTargets(cid);closeSheet();
+  const need=l.filter(s=>!behOn(s,'+',tx));   /* من عنده السلوك اليوم لا يتكرر */
+  need.forEach(s=>s.beh.unshift(['+',tx,new Date(TODAY)]));
+  const r=await srv('bulk_behavior',{p_students:need.map(s=>s.id),p_sign:'+',p_txt:tx});
+  if(!r||r.error){need.forEach(s=>{const i=s.beh.findIndex(b=>b[0]==='+'&&b[1]===tx&&b[2].getTime()===TODAY.getTime());if(i>=0)s.beh.splice(i,1)});toast(r&&r.error==='forbidden'?'بعض الطلاب ليسوا من طلابك':'تعذّر تسجيل السلوك، حاول مرة ثانية',true);await sync(true);return;}
+  toast(need.length?`سُجّل «${tx}» لـ ${need.length} ${need.length===1?'طالب':'طلاب'}`+(l.length>need.length?` (${l.length-need.length} عندهم من قبل)`:''):'كل الطلبة عندهم هذا السلوك اليوم');}
 function updBadge(){const n=myTh().reduce((a,t)=>a+t.unread,0)+admUnread();$('badge').hidden=!n;$('badge').textContent=n;}
 const head=(title,sub,backTo)=>`<div class="hdr"><button class="glass iconbtn" onclick="${backTo}" aria-label="رجوع">${BACK}</button><div class="ht"><b>${title}</b>${sub?`<span>${sub}</span>`:''}</div></div>`;
 
@@ -2090,13 +2106,13 @@ function vTas(){
     return list.length?`<div class="sec"><div><b>${title}</b><small>${sub}</small></div></div>`+(tasView()==='tiles'?`<div class="tg1">${list.map(tasTile).join('')}</div>`:list.map(tasCard).join('')):'';};
   const total=withMine.reduce((a,c)=>a+myIn(c).length,0);
   $('teacher-body').innerHTML=TOP+awardStrip()+profileBtn()+
-  (withMine.length?`<div class="sec" style="margin-top:6px"><b style="font-size:18px">التسميع</b><span class="pill p-gray">${total} طالباً معي</span></div>`+`<button class="glass item" style="margin-bottom:12px" onclick="go('cats')"><span class="cats" style="margin:0">${[1,2,3].map(k=>`<span class="catc c${k} on" style="transform:none">${CAT_SVG[k]}</span>`).join('')}</span><div class="grow"><div class="t">فئات الطلبة</div><div class="mut">${catCnt(withMine.reduce((a,c)=>a.concat(myIn(c)),[]))[0]} بلا فئة · للخطط العلاجية والإثرائية</div></div>${CHEV}</button>`+(T.srch?`<div class="vrow srching"><div class="sfield">${ICO_SRCH}<input id="srch-in" type="search" placeholder="اسم طالب أو صف" value="${esc(T.q||'')}" oninput="srchInput(this.value)" autocomplete="off"></div><button type="button" class="vsrch" onclick="srchClose()" aria-label="إغلاق">${ICO_X}</button></div><div id="srch-res">${tasResHTML()}</div>`:`<div class="vrow"><button type="button" class="vsrch" onclick="srchOpen()" aria-label="بحث">${ICO_SRCH}</button><button type="button" class="vsw" onclick="openTasView()"><span class="vi">${tasView()==='tiles'?ICO_GRID:ICO_LIST}</span>تصنيف الطلبة حسب: <b>${tasView()==='tiles'?'مربعات':'قوائم'}</b>${ICO_DN}</button></div>`)+(T.srch?'':grp(1,'الحلقة الأولى','الصف الأول والثاني والثالث')+grp(2,'الحلقة الثانية','الصف الرابع والخامس والسادس'))
+  (withMine.length?`<div class="sec" style="margin-top:6px"><b style="font-size:18px">التسميع</b><span class="pill p-gray">${total} طالباً معي</span></div>`+(T.srch?`<div class="vrow srching"><div class="sfield">${ICO_SRCH}<input id="srch-in" type="search" placeholder="اسم طالب أو صف" value="${esc(T.q||'')}" oninput="srchInput(this.value)" autocomplete="off"></div><button type="button" class="vsrch" onclick="srchClose()" aria-label="إغلاق">${ICO_X}</button></div><div id="srch-res">${tasResHTML()}</div>`:`<div class="vrow"><button type="button" class="vbulk" onclick="openBulkBeh()">＋ إيجابي للجميع</button><button type="button" class="vsrch" onclick="srchOpen()" aria-label="بحث">${ICO_SRCH}</button><button type="button" class="vsw" onclick="openTasView()"><span class="vi">${tasView()==='tiles'?ICO_GRID:ICO_LIST}</span>تصنيف الطلبة حسب: <b>${tasView()==='tiles'?'مربعات':'قوائم'}</b>${ICO_DN}</button></div>`)+(T.srch?'':grp(1,'الحلقة الأولى','الصف الأول والثاني والثالث')+grp(2,'الحلقة الثانية','الصف الرابع والخامس والسادس')+`<button class="glass item" style="margin:6px 0 12px" onclick="go('cats')"><span class="cats" style="margin:0">${[1,2,3].map(k=>`<span class="catc c${k} on" style="transform:none">${CAT_SVG[k]}</span>`).join('')}</span><div class="grow"><div class="t">فئات الطلبة</div><div class="mut">${catCnt(withMine.reduce((a,c)=>a.concat(myIn(c)),[]))[0]} بلا فئة · للخطط العلاجية والإثرائية</div></div>${CHEV}</button>`)
    :`<div class="glass card empty" style="padding:26px 16px"><div class="t" style="font-size:15px;margin-bottom:6px">لم تختر طلاباً بعد</div><div class="mut" style="margin-bottom:14px">افتح «الكشف» واضغط المربع بجانب اسم كل طالب معك، فيظهر صفه هنا.</div><button class="btn" onclick="go('home')">الذهاب إلى الكشف</button></div>`)+'<div style="height:90px"></div>';
   fitStrip();
 }
 function vTasClass(){
   setTab('tas');const c=CLASSES.find(x=>x.id===T.cid),l=myIn(c),r=cnts(l);
-  $('teacher-body').innerHTML=TOPT()+head(clsName(c),l.length+' '+(l.length===1?'طالب':'طلاب')+' معك',"go('tas')")+nomBar(c)+addBar(c)+rptBar(c)+
+  $('teacher-body').innerHTML=TOPT()+head(clsName(c),l.length+' '+(l.length===1?'طالب':'طلاب')+' معك',"go('tas')")+nomBar(c)+addBar(c)+rptBar(c)+(l.length?bulkBar(c):'')+
   (l.length?`<div class="glass card">${bar(r,l.length)}${legend(r)}</div>`+filterUI('drawMine')+`<div id="sl"></div>`
    :'<div class="glass card empty">لا يوجد طلبة معك في هذا الصف. اخترهم من «الكشف».</div>');
   if(l.length)drawMine();
@@ -2617,6 +2633,7 @@ function similar(name,exclude){const a=toks(name);if(!a.length)return[];
   return allStudents().filter(x=>x!==exclude&&!x.pending).map(x=>{const b=toks(x.name),com=a.filter(w=>b.includes(w)).length;return{x,com,score:com/a.length+(norm(x.name)===norm(name)?1:0)};})
    .filter(o=>o.com>=Math.min(2,a.length)&&o.score>=0.75).sort((p,q)=>q.score-p.score).slice(0,5).map(o=>o.x);}
 const rptBar=c=>`<div class="fbar" style="margin:0 4px 10px"><span class="mut">كشف الصف وتقارير الطلاب</span><button class="btn-s" onclick="rptChoose(${c.id})">تحميل تقرير الصف</button></div>`;
+const bulkBar=c=>`<div class="fbar" style="margin:0 4px 10px"><span class="mut">سلوك إيجابي لجميع طلابك في هذا الصف</span><button class="btn-s vbulk2" onclick="openBulkBeh(${c.id})">＋ إيجابي للجميع</button></div>`;
 const addBar=c=>`<div class="fbar" style="margin:0 4px 10px"><span class="mut">ينقصك طالب في الكشف؟</span><button class="btn-s" onclick="openAddStudentT(${c.id})">+ إضافة طالب</button></div>`;
 function refreshT(){if(T.view==='tcls')vTasClass();else if(T.view==='cls')vClass();}
 function openAddStudentT(cid){
@@ -3718,7 +3735,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='a0b6ce009514';
+const BUILD='9b951270302b';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
