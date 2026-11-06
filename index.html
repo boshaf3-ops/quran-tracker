@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="a7c0ef438714">
+<meta name="build" content="11630f5d3538">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1467,7 +1467,7 @@ async function aGmSet(){setATab('game');const hd=AT+head('الإعدادات','�
 
 /* ===== مساجد الطلاب في غرفة التحكم + رفع حالة لعبة الطالب للسيرفر ===== */
 window.addEventListener('message',e=>{const d=e.data;if(!d||d.type!=='gm-state'||ROLE!=='student')return;const f=document.getElementById('gm-fr');if(!f||e.source!==f.contentWindow)return;gmPush(d);});
-async function gmPush(d){try{if(d.isl&&d.isl!=='sea')await rpc('save_game_isl',{p_tok:TOK,p_isl:d.isl,p_state:JSON.parse(d.state),p_lv:d.lv|0,p_pts:d.pts|0});else await rpc('save_game_state',{p_tok:TOK,p_state:JSON.parse(d.state),p_lv:d.lv|0,p_pts:d.pts|0});}catch(e){}}
+async function gmPush(d){try{const k=d.isl||'sea',sp=(window.__gmSrv&&window.__gmSrv[k])|0;if(sp>=60&&(d.pts|0)<sp*.25){try{console.warn('gm: لن نكتب نسخة أقل بكثير من اللي بالسيرفر',d.pts,sp);}catch(e){}return;}if(d.isl&&d.isl!=='sea')await rpc('save_game_isl',{p_tok:TOK,p_isl:d.isl,p_state:JSON.parse(d.state),p_lv:d.lv|0,p_pts:d.pts|0});else await rpc('save_game_state',{p_tok:TOK,p_state:JSON.parse(d.state),p_lv:d.lv|0,p_pts:d.pts|0});if(window.__gmSrv)window.__gmSrv[k]=d.pts|0;}catch(e){}}
 let GMLST=null,GMLERR='';
 /* k: lv = كل الطلبة بالمستوى (dir -1 الأعلى أولاً / 1 الأدنى أولاً) · cls = كل الصفوف مجمّعة (cid=0) أو صف واحد · hal = الحلقتان مجمّعتين (hal=0) أو حلقة واحدة */
 const GMS={k:'lv',dir:-1,cid:0,hal:0,q:'',open:0,sub:''};
@@ -1622,7 +1622,16 @@ async function gmSyncIsl(s){if(!s)return false;try{const r=await srv('game_isl_s
   GM_ISLS.forEach(function(x){if(x[0]!=='sea'&&o.chosen.indexOf(x[0])<0){try{localStorage.removeItem('mq_sample_v3_'+s.id+'_'+x[0]);}catch(e){}}});
   gmIslSave(s,o);return true;}}catch(e){}return false;}
 function gmCardRefresh(){if(ROLE!=='student'||!CURS)return;const e=$('gm-card');if(e&&typeof gmCard==='function'){const h=gmCard(CURS);if(h){const t=document.createElement('div');t.innerHTML=h;const n=t.firstElementChild;if(n)e.replaceWith(n);}}}
-function gmLaunch(s,extra){const p=gmParts(s),il=gmIsl(s);gmLoad('emb=1&sid='+s.id+'&earned='+p.tot+'&isl='+il.cur+(extra||''));}
+/* ===== مزامنة التقدم بين الأجهزة =====
+   اللعبة كانت تقرأ من ذاكرة الجهاز فقط، فلو الطالب فتح حسابه بجهاز ثاني تبدأ من الصفر وتكتب فوق نسخة السيرفر.
+   الحين قبل ما تنفتح نسحب آخر حفظ من السيرفر ونكتبه بذاكرة الجهاز لو أحدث من اللي عند الجهاز، ولو السحب فشل والجهاز فاضي ما نفتح اللعبة (عشان ما نكتب فاضي فوق التقدم). */
+window.__gmSrv=window.__gmSrv||{};
+async function gmPull(s,isl){isl=isl||'sea';const key='mq_sample_v3_'+s.id+(isl!=='sea'?'_'+isl:'');let loc=null;try{loc=JSON.parse(localStorage.getItem(key)||'null');}catch(e){}
+  let r=null;try{r=await rpc('get_game_isl',{p_tok:TOK,p_isl:isl});}catch(e){}
+  if(r&&r.state&&typeof r.state==='object'&&!r.error){window.__gmSrv[isl]=r.pts|0;const sa=+r.state.at||0,la=loc?(+loc.at||0):-1;if(!loc||sa>la){try{localStorage.setItem(key,JSON.stringify(r.state));}catch(e){}}return'ok';}
+  if(r&&r.error==='none')return'ok';
+  return loc?'ok':'fail';}
+async function gmLaunch(s,extra){toast('جاري تحميل مسجدك...');const il=gmIsl(s),st=await gmPull(s,il.cur);if(st==='fail'){toast('تعذّر تحميل تقدمك من السيرفر. تأكد من الإنترنت وحاول مرة ثانية',true);return;}const p=gmParts(s);gmLoad('emb=1&sid='+s.id+'&earned='+p.tot+'&isl='+il.cur+(extra||''));}
 /* اختيار الجزيرة الجديدة */
 function gmPickUI(){const s=CURS;if(!s)return;const il=gmIsl(s),av=GM_ISLS.filter(x=>x[0]!=='sea'&&il.chosen.indexOf(x[0])<0);
   sheet(`<div class="t" style="font-size:19px">🎉 مبروك! أنهيت جزيرتك</div><div class="mut" style="margin:6px 0 12px;line-height:1.9">اختر جزيرتك الجديدة للسنة الجاية. تقدر تعاين شكلها وهي فاضية، ولما تثبّت اختيارك <b>ما تقدر تغيّره</b>. وجزيرتك القديمة تبقى تقدر تزورها.</div>
@@ -3736,7 +3745,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='a7c0ef438714';
+const BUILD='11630f5d3538';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
