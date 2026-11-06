@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="aa7512a63aba">
+<meta name="build" content="e82069a96124">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1419,12 +1419,12 @@ function gmLoginDays(s){const k='qt-gm-login-'+s.id;let a=[];try{a=JSON.parse(lo
 function gmParts(s){const c=gmCfg(),segs=segsOf(s.c.g),mx=mxOf(s.c.g),n=s.done.length,due=segs.filter(x=>x.e<TODAY).length;
   const seg=Math.round(s.done.reduce((a,d)=>a+Math.min(1,(+d[0]||0)/mx),0)*c.eSeg);
   let pl=Math.min(n,due)*c.eOn;for(let j=1;j<=Math.max(0,n-due);j++)pl+=c.eAb+c.eSt*Math.min(j,c.eCap);
-  const ex=gmEx(s),days=ex?ex.d:gmLoginDays(s),lg=days*c.eLg,bh=s.beh.filter(b=>b[0]==='+').length*c.eBh,lk=ex?ex.l:0;
-  const raw=seg+pl+lg+bh+lk,base=gmIsl(s).base||0;
-  return{seg:seg,pl:pl,lg:lg,bh:bh,lk:lk,days:days,raw:raw,base:base,tot:Math.max(0,raw-base),n:n,due:due};}
+  const ex=gmEx(s),days=ex?ex.d:gmLoginDays(s),lg=days*c.eLg,bh=s.beh.filter(b=>b[0]==='+').length*c.eBh,lk=ex?ex.l:0,adm=ex?(ex.a|0):0;
+  const raw=seg+pl+lg+bh+lk+adm,base=gmIsl(s).base||0;
+  return{seg:seg,pl:pl,lg:lg,bh:bh,lk:lk,adm:adm,days:days,raw:raw,base:base,tot:Math.max(0,raw-base),n:n,due:due};}
 /* أيام الدخول ونقاط اللايكات تنحسب بالسيرفر على حساب الطالب (game_points_sync)، ولو الدالة ما اشتغلت نرجع لعدّ الجهاز */
 function gmEx(s){try{const o=JSON.parse(localStorage.getItem('mq_gm_ex_'+s.id)||'null');return(o&&typeof o.d==='number')?o:null;}catch(e){return null;}}
-async function gmSyncEx(s){if(!s)return false;try{const r=await srv('game_points_sync',{});if(r&&typeof r.days==='number'&&!r.error){localStorage.setItem('mq_gm_ex_'+s.id,JSON.stringify({d:r.days,l:r.likes|0}));return true;}}catch(e){}return false;}
+async function gmSyncEx(s){if(!s)return false;try{const r=await srv('game_points_sync',{});if(r&&typeof r.days==='number'&&!r.error){localStorage.setItem('mq_gm_ex_'+s.id,JSON.stringify({d:r.days,l:r.likes|0,a:r.adm|0}));return true;}}catch(e){}return false;}
 function gmSaved(s){try{const c=gmIsl(s).cur;return JSON.parse(localStorage.getItem('mq_sample_v3_'+s.id+(c!=='sea'?'_'+c:''))||'null')||{};}catch(e){return{};}}
 function gmBal(s){const p=gmParts(s),il=gmIsl(s);if(il.unlocked)return p.tot;const sv=gmSaved(s);return Math.max(0,p.tot+(sv.coins||0)-(sv.spent||0));}
 function gmDayM(){try{const o=JSON.parse(localStorage.getItem('mq_cfg_v1')||'null');return(o&&o.f&&typeof o.f.dayM==='number')?o.f.dayM:40;}catch(e){return 40;}}
@@ -1441,7 +1441,7 @@ function gmHow(id){const c=gmCfg(),s=byId(id),p=gmParts(s);
   <div class="glass card" style="margin-bottom:8px"><div class="row sp"><span>📅 دخولك كل يوم</span><b>+${c.eLg}</b></div></div>
   <div class="glass card" style="margin-bottom:8px"><div class="row sp"><span>👍 كل سلوك إيجابي</span><b>+${c.eBh}</b></div></div>
   <div class="glass card" style="margin-bottom:8px"><div class="row sp"><span>❤️ لايك تعطيه لصديق (حد ${c.eLkGd} باليوم)</span><b>+${c.eLkG}</b></div><div class="row sp"><span>❤️ كل ${c.eLkRn} لايكات تستلمها</span><b>+${c.eLkR}</b></div><div class="mut">أقصى ما تكسبه من اللايكات ${c.eLkCap} نقطة في الشهر</div></div>
-  <div class="glass card" style="margin-bottom:8px"><div class="t" style="margin-bottom:6px">كسبت لحد الحين: ${p.tot}</div><div class="row sp mut"><span>الحفظ (${p.n} مقطع)</span><b>${p.seg}</b></div><div class="row sp mut"><span>الخطة والتجاوز</span><b>${p.pl}</b></div><div class="row sp mut"><span>الدخول (${p.days} يوم)</span><b>${p.lg}</b></div><div class="row sp mut"><span>السلوك</span><b>${p.bh}</b></div><div class="row sp mut"><span>اللايكات</span><b>${p.lk}</b></div></div>
+  <div class="glass card" style="margin-bottom:8px"><div class="t" style="margin-bottom:6px">كسبت لحد الحين: ${p.tot}</div><div class="row sp mut"><span>الحفظ (${p.n} مقطع)</span><b>${p.seg}</b></div><div class="row sp mut"><span>الخطة والتجاوز</span><b>${p.pl}</b></div><div class="row sp mut"><span>الدخول (${p.days} يوم)</span><b>${p.lg}</b></div><div class="row sp mut"><span>السلوك</span><b>${p.bh}</b></div><div class="row sp mut"><span>اللايكات</span><b>${p.lk}</b></div>${p.adm?`<div class="row sp mut"><span>من الإدارة</span><b>${p.adm}</b></div>`:''}</div>
   <button class="btn-s" style="width:100%;margin-top:6px" onclick="closeSheet()">تمام</button>`);}
 
 async function gmSync(){gmSyncTalk();try{const r=await srv('get_game_cfg',{});if(r&&r.cfg&&typeof r.cfg==='object'&&!r.error){localStorage.setItem('mq_cfg_v1',JSON.stringify(r.cfg));return true;}}catch(e){}return false;}
@@ -1454,7 +1454,7 @@ async function gmLoadSrv(){const r=await srv('get_game_cfg',{});if(r&&r.cfg&&typ
 function gmRetry(){GMERR='';GMCFG=null;aGmSet();}
 async function gmPickDay(n){const c=Object.assign({},GMCFG||{});c.f=Object.assign({},c.f||{},{dayM:n});const r=await srv('set_game_cfg',{p_val:c});
   if(r&&r.ok){GMCFG=c;toast('صار يوم اللعبة '+n+' دقيقة، ويتطبق عند الطلاب لما يفتحون اللعبة');aGmSet();}else toast(r&&r.error==='auth'?'تحتاج تدخل بحساب المدير':'تعذّر الحفظ',true);}
-function aGame(){setATab('game');$('admin-body').innerHTML=AT+head('اللعبة','لعبة «ابنِ مسجدك»',"ago('home')")+`<button class="glass item" onclick="ago('gmset')" style="margin-bottom:10px"><div class="mini">⚙</div><div class="grow"><div class="t">الإعدادات</div><div class="mut">طول يوم اللعبة (٣٠ أو ٤٠ أو ٦٠ دقيقة)</div></div>${CHEV}</button>`+`<button class="glass item" onclick="GMLST=null;ago('gmstu')" style="margin-bottom:10px"><div class="mini">🕌</div><div class="grow"><div class="t">مساجد الطلاب</div><div class="mut">شاهد مسجد ومدينة كل طالب ورتّبهم حسب المستوى أو الصف أو الحلقة</div></div>${CHEV}</button>`+`<button class="glass item" onclick="GMT=null;ago('gmtalk')" style="margin-bottom:10px"><div class="mini">💬</div><div class="grow"><div class="t">المعلومات داخل اللعبة</div><div class="mut">كلام الناس مع الإمام: أسئلة وأجوبة لكل صف</div></div>${CHEV}</button>`+`<button class="glass item" onclick="ago('gmbag')" style="margin-bottom:10px"><div class="mini">🎒</div><div class="grow"><div class="t">إعدادات الحقيبة</div><div class="mut">أقصى عدد يحفظه الطالب من كل نوع في حقيبته</div></div>${CHEV}</button>`+`<button class="glass item" onclick="ago('gmisl')" style="margin-bottom:10px"><div class="mini">🏝</div><div class="grow"><div class="t">الجزر ونهاية السنة</div><div class="mut">افتح الجزر الجديدة للطلاب اللي أنهوا السنة</div></div>${CHEV}</button>`+`<button class="glass item" onclick="ago('gmprice')" style="margin-bottom:10px"><div class="mini">🏷</div><div class="grow"><div class="t">أسعار المتجر</div><div class="mut">غيّر أسعار القطع وسوّي تخفيضات بتاريخ</div></div>${CHEV}</button>`;$('admin-body').scrollTop=0;}
+function aGame(){setATab('game');$('admin-body').innerHTML=AT+head('اللعبة','لعبة «ابنِ مسجدك»',"ago('home')")+`<button class="glass item" onclick="ago('gmpts')" style="margin-bottom:10px"><div class="mini">🪙</div><div class="grow"><div class="t">منح نقاط</div><div class="mut">أضف نقاط لطالب أو صف أو حلقة أو كل المعهد بضغطة</div></div>${CHEV}</button>`+`<button class="glass item" onclick="ago('gmset')" style="margin-bottom:10px"><div class="mini">⚙</div><div class="grow"><div class="t">الإعدادات</div><div class="mut">طول يوم اللعبة (٣٠ أو ٤٠ أو ٦٠ دقيقة)</div></div>${CHEV}</button>`+`<button class="glass item" onclick="GMLST=null;ago('gmstu')" style="margin-bottom:10px"><div class="mini">🕌</div><div class="grow"><div class="t">مساجد الطلاب</div><div class="mut">شاهد مسجد ومدينة كل طالب ورتّبهم حسب المستوى أو الصف أو الحلقة</div></div>${CHEV}</button>`+`<button class="glass item" onclick="GMT=null;ago('gmtalk')" style="margin-bottom:10px"><div class="mini">💬</div><div class="grow"><div class="t">المعلومات داخل اللعبة</div><div class="mut">كلام الناس مع الإمام: أسئلة وأجوبة لكل صف</div></div>${CHEV}</button>`+`<button class="glass item" onclick="ago('gmbag')" style="margin-bottom:10px"><div class="mini">🎒</div><div class="grow"><div class="t">إعدادات الحقيبة</div><div class="mut">أقصى عدد يحفظه الطالب من كل نوع في حقيبته</div></div>${CHEV}</button>`+`<button class="glass item" onclick="ago('gmisl')" style="margin-bottom:10px"><div class="mini">🏝</div><div class="grow"><div class="t">الجزر ونهاية السنة</div><div class="mut">افتح الجزر الجديدة للطلاب اللي أنهوا السنة</div></div>${CHEV}</button>`+`<button class="glass item" onclick="ago('gmprice')" style="margin-bottom:10px"><div class="mini">🏷</div><div class="grow"><div class="t">أسعار المتجر</div><div class="mut">غيّر أسعار القطع وسوّي تخفيضات بتاريخ</div></div>${CHEV}</button>`;$('admin-body').scrollTop=0;}
 async function aGmSet(){setATab('game');const hd=AT+head('الإعدادات','اللعبة · طول اليوم',"ago('game')");
   if(!GMCFG&&!GMERR){$('admin-body').innerHTML=hd+'<div class="glass card empty">جاري التحميل...</div>';await gmLoadSrv();if(T.view!=='gmset')return;}
   if(!GMCFG){$('admin-body').innerHTML=hd+`<div class="glass card"><div class="t">${GMERR==='auth'?'تحتاج تدخل بحساب المدير':'إعدادات اللعبة لم تُفعَّل بعد'}</div><div class="mut" style="margin:6px 0 10px;line-height:1.8">${GMERR==='auth'?'':'تحتاج دالتين جديدتين في قاعدة البيانات (ملف 2026-10-31-game-cfg-migration.sql). بعد تشغيلهما اضغط إعادة المحاولة.'}</div><button class="btn-s" onclick="gmRetry()">إعادة المحاولة</button></div>`;return;}
@@ -1746,6 +1746,81 @@ function gmOpenLocalStr(){const ms=GMCFG&&GMCFG.open&&Date.parse(GMCFG.open)>0?D
 function gmOpenCardHTML(){return `<div class="glass card" style="margin-top:10px"><div class="t" style="font-size:17px">🚀 موعد افتتاح اللعبة</div><div class="mut" style="margin:4px 0 10px;line-height:1.9">قبل هذا الموعد يشوف الطلبة عد تنازلي بدل زر «ادخل». بتوقيت البحرين، ويتطبق عند الطالب لما يفتح صفحته. الحين: <b>${Date.now()>=(GMCFG&&GMCFG.open&&Date.parse(GMCFG.open)>0?Date.parse(GMCFG.open):Date.parse(GM_OPEN_DEF))?'اللعبة مفتوحة':'ما انفتحت بعد'}</b></div><input id="gmo-t" type="datetime-local" value="${gmOpenLocalStr()}" style="width:100%;padding:10px;border-radius:12px;border:1px solid var(--glass-border);font:inherit;text-align:center"><div class="row" style="gap:8px;margin-top:10px"><button class="btn" style="flex:1" onclick="gmOpenSave()">حفظ الموعد</button><button class="btn-s" style="flex:1" onclick="gmOpenDef()">الموعد الأصلي (٤ نوفمبر ٣ م)</button></div></div>`;}
 async function gmOpenSave(){const v=$('gmo-t').value;if(!v){toast('اختر التاريخ والوقت',true);return;}const c=Object.assign({},GMCFG||{});c.open=v+':00+03:00';const r=await srv('set_game_cfg',{p_val:c});if(r&&r.ok){GMCFG=c;toast('انحفظ موعد الافتتاح');aGmSet();}else toast(r&&r.error==='auth'?'تحتاج تدخل بحساب المدير':'تعذّر الحفظ',true);}
 async function gmOpenDef(){const c=Object.assign({},GMCFG||{});delete c.open;const r=await srv('set_game_cfg',{p_val:c});if(r&&r.ok){GMCFG=c;toast('رجع الموعد الأصلي');aGmSet();}else toast('تعذّر الحفظ',true);}
+
+/* ===== منح نقاط من غرفة التحكم: لطالب أو صف أو حلقة أو كل المعهد ===== */
+const GMP={scope:'stu',sid:0,cid:0,hal:1,amt:5,note:'',q:'',log:null,busy:false};
+const gmpAr=n=>(+n).toLocaleString('ar-EG');
+const gmpStu=n=>n===1?'طالب':n===2?'طالبين':(n>=3&&n<=10)?'طلاب':'طالب';
+function gmpAll(){return allStudents().filter(s=>!s.pending);}
+function gmpTargets(){const l=gmpAll();
+  if(GMP.scope==='stu')return GMP.sid?l.filter(s=>s.id===GMP.sid):[];
+  if(GMP.scope==='cls')return GMP.cid?l.filter(s=>s.c.id===GMP.cid):[];
+  if(GMP.scope==='hal')return l.filter(s=>halaqa(s.c.g)===GMP.hal);
+  return l;}
+function gmpLabel(){
+  if(GMP.scope==='stu'){const s=byId(GMP.sid);return s?'طالب: '+s.name:'';}
+  if(GMP.scope==='cls'){const c=CLASSES.find(x=>x.id===GMP.cid);return c?'الصف: '+clsName(c):'';}
+  if(GMP.scope==='hal')return GMP.hal===1?'الحلقة الأولى':'الحلقة الثانية';
+  return 'كل المعهد';}
+async function aGmPts(){setATab('game');
+  $('admin-body').innerHTML=AT+head('منح نقاط','اللعبة · أضف نقاط على مزاجك',"ago('game')")+'<div id="gmp-body"></div>';
+  gmpDraw();gmpLoadLog();$('admin-body').scrollTop=0;}
+function gmpScope(k){GMP.scope=k;GMP.q='';gmpDraw();}
+function gmpPickStu(id){GMP.sid=id;GMP.q='';gmpDraw();}
+function gmpClr(){GMP.sid=0;gmpDraw();}
+function gmpCls(v){GMP.cid=+v||0;gmpDraw();}
+function gmpHal(h){GMP.hal=h;gmpDraw();}
+function gmpAmt(v){GMP.amt=Math.max(-1000,Math.min(1000,Math.round(+v||0)));const i=$('gmp-amt');if(i&&document.activeElement!==i)i.value=GMP.amt;gmpPrev();}
+function gmpAmtChip(v){GMP.amt=v;const i=$('gmp-amt');if(i)i.value=v;document.querySelectorAll('.gmp-chip').forEach(b=>b.classList.toggle('on',+b.dataset.v===v));gmpPrev();}
+function gmpSearch(v){GMP.q=v;const el=$('gmp-res');if(!el)return;const q=norm(v||'');
+  if(!q){el.innerHTML='';return;}
+  const l=gmpAll().filter(s=>norm(s.name).includes(q)).slice(0,7);
+  el.innerHTML=l.length?l.map(s=>`<button class="glass item" style="margin:6px 0" onclick="gmpPickStu(${s.id})">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div><div class="mut">${clsName(s.c)}</div></div></button>`).join(''):'<div class="mut" style="padding:8px 4px">ما فيه طالب بهذا الاسم</div>';}
+function gmpPrev(){const el=$('gmp-prev'),btn=$('gmp-go');if(!el)return;const t=gmpTargets(),n=t.length,a=GMP.amt;
+  let ok=n>0&&a!==0,html;
+  if(!n)html=GMP.scope==='stu'?'اختر الطالب أول':GMP.scope==='cls'?'اختر الصف أول':'لا يوجد طلبة';
+  else if(!a)html='اكتب عدد النقاط (من ١ إلى ١٠٠٠)';
+  else html=`${a>0?'ستضاف':'ستُخصم'} <b>${gmpAr(Math.abs(a))}</b> ${Math.abs(a)===1?'نقطة':'نقاط'} ${n===1?'لهذا الطالب':'لكل واحد من <b>'+gmpAr(n)+'</b> '+gmpStu(n)}${n>1?`<br><span style="font-size:12.5px;opacity:.8">المجموع ${gmpAr(Math.abs(a)*n)} نقطة</span>`:''}`;
+  el.innerHTML=html;el.style.background=ok?(a>0?'#EAF7EE':'#FDEDEA'):'#F3F5F5';el.style.color=ok?(a>0?'#16623f':'#9a2a1d'):'#6a7775';
+  if(btn){btn.disabled=!ok||GMP.busy;btn.style.opacity=(ok&&!GMP.busy)?1:.5;}}
+function gmpDraw(){const el=$('gmp-body');if(!el)return;const t=gmpTargets();
+  const seg=(k,txt)=>`<button class="qc${GMP.scope===k?' on':''}" onclick="gmpScope('${k}')">${txt}</button>`;
+  const cl=gmCls(),h1=gmpAll().filter(s=>halaqa(s.c.g)===1).length,h2=gmpAll().filter(s=>halaqa(s.c.g)===2).length;
+  let who='';
+  if(GMP.scope==='stu'){const s=byId(GMP.sid);
+    who=s?`<div class="glass item" style="margin:0">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div><div class="mut">${clsName(s.c)}</div></div><button class="btn-s" style="padding:6px 12px" onclick="gmpClr()">تغيير</button></div>`
+     :`<div class="sfield" style="margin:0"><input id="gmp-q" type="search" placeholder="ابحث باسم الطالب" value="${esc(GMP.q)}" oninput="gmpSearch(this.value)" autocomplete="off"></div><div id="gmp-res"></div>`;}
+  else if(GMP.scope==='cls')who=`<select class="gmp-sel" onchange="gmpCls(this.value)"><option value="0">اختر الصف...</option>${cl.map(c=>`<option value="${c.id}"${GMP.cid===c.id?' selected':''}>${clsName(c)} · ${gmpAr(c.students.filter(s=>!s.pending).length)} طالب</option>`).join('')}</select>`;
+  else if(GMP.scope==='hal')who=`<div class="chips2"><button class="qc${GMP.hal===1?' on':''}" onclick="gmpHal(1)">الحلقة الأولى · ${gmpAr(h1)}</button><button class="qc${GMP.hal===2?' on':''}" onclick="gmpHal(2)">الحلقة الثانية · ${gmpAr(h2)}</button></div>`;
+  else who=`<div class="mut" style="line-height:1.9">كل طلبة المعهد (${gmpAr(gmpAll().length)} طالب) من الحلقتين. اضغط الزر وتنضاف لهم كلهم.</div>`;
+  el.innerHTML=`<style>.gmp-sel{width:100%;padding:12px;border-radius:14px;border:1px solid var(--glass-border);background:rgba(255,255,255,.9);font:inherit;font-size:15px}.gmp-amt{width:100%;text-align:center;font:inherit;font-size:34px;font-weight:800;padding:8px;border-radius:16px;border:1px solid var(--glass-border);background:rgba(255,255,255,.95);color:#8a6200}.gmp-chip{min-width:52px}#gmp-prev{padding:12px 14px;border-radius:14px;line-height:1.9;text-align:center;font-size:15px;margin-top:12px}.gmp-lr{display:flex;gap:10px;align-items:center;padding:10px 4px;border-top:1px solid rgba(0,0,0,.06)}.gmp-lr:first-child{border-top:0}<\/style>
+  <div class="glass card"><div class="t" style="font-size:17px;margin-bottom:10px">لمن؟</div><div class="chips2" style="margin-bottom:12px">${seg('stu','طالب')}${seg('cls','صف')}${seg('hal','حلقة')}${seg('all','كل المعهد')}</div>${who}</div>
+  <div class="glass card" style="margin-top:10px"><div class="t" style="font-size:17px;margin-bottom:10px">كم نقطة؟</div>
+   <div class="row" style="gap:10px;align-items:center"><button class="btn-s" style="width:50px;height:50px;font-size:24px;padding:0" onclick="gmpAmt(GMP.amt-1)">−</button><input id="gmp-amt" class="gmp-amt" type="number" inputmode="numeric" min="-1000" max="1000" value="${GMP.amt}" oninput="gmpAmt(this.value)"><button class="btn-s" style="width:50px;height:50px;font-size:24px;padding:0" onclick="gmpAmt(GMP.amt+1)">+</button></div>
+   <div class="chips2" style="margin-top:10px;justify-content:center">${[1,5,10,20,50,100].map(v=>`<button class="qc gmp-chip${GMP.amt===v?' on':''}" data-v="${v}" onclick="gmpAmtChip(${v})">${gmpAr(v)}</button>`).join('')}</div>
+   <input id="gmp-note" type="text" maxlength="120" placeholder="السبب (اختياري، يظهر لك بالسجل)" value="${esc(GMP.note)}" oninput="GMP.note=this.value" style="width:100%;margin-top:12px;padding:12px;border-radius:14px;border:1px solid var(--glass-border);font:inherit;background:rgba(255,255,255,.9)">
+   <div id="gmp-prev"></div>
+   <button class="btn" id="gmp-go" style="width:100%;margin-top:12px;padding:14px" onclick="gmpGo()">إضافة النقاط</button>
+   <div class="mut" style="margin-top:10px;font-size:12px;line-height:1.8">تنضاف للرصيد داخل اللعبة. تقدر تكتب رقم بالسالب لو غلطت وتبي تخصم، أو تتراجع عن أي عملية من السجل تحت.</div></div>
+  <div class="glass card" style="margin-top:10px"><div class="t" style="font-size:17px;margin-bottom:6px">آخر العمليات</div><div id="gmp-log" class="mut" style="padding:6px 0">جاري التحميل...</div></div>`;
+  gmpPrev();gmpDrawLog();}
+function gmpGo(){if(GMP.busy)return;const t=gmpTargets(),a=GMP.amt;if(!t.length||!a)return;
+  if(t.length===1&&Math.abs(a)<=50)return gmpDo();
+  sheet(`<div class="t" style="font-size:18px">تأكيد العملية</div><div style="margin:10px 0 14px;line-height:2;font-size:15px">${a>0?'إضافة':'خصم'} <b>${gmpAr(Math.abs(a))}</b> نقطة ${t.length===1?'لـ':'لكل واحد من'} <b>${t.length===1?esc(t[0].name):gmpAr(t.length)+' '+gmpStu(t.length)}</b><br><span class="mut">${esc(gmpLabel())}</span></div><div class="row" style="gap:10px"><button class="btn" style="flex:1" onclick="closeSheet();gmpDo()">تأكيد</button><button class="btn-s" style="flex:1" onclick="closeSheet()">إلغاء</button></div>`);}
+async function gmpDo(){const t=gmpTargets(),a=GMP.amt;if(!t.length||!a||GMP.busy)return;GMP.busy=true;gmpPrev();
+  const r=await srv('admin_add_points',{p_ids:t.map(s=>s.id),p_pts:a,p_note:(GMP.note||'').trim()||null,p_label:gmpLabel()});GMP.busy=false;
+  if(r&&r.ok){toast(`تمت ${a>0?'إضافة':'خصم'} ${gmpAr(Math.abs(a))} نقطة ${r.n===1?'لهذا الطالب':'لـ '+gmpAr(r.n)+' '+gmpStu(r.n)}`);GMP.note='';const n=$('gmp-note');if(n)n.value='';gmpLoadLog();}
+  else if(r&&r.error==='auth')toast('تحتاج تدخل بحساب المدير',true);
+  else if(r&&r.error&&r.error!=='net')toast('تعذّر الإضافة. تأكد إنك شغّلت ملف SQL الجديد (2026-11-06-admin-points-migration.sql)',true);
+  gmpPrev();}
+async function gmpLoadLog(){const r=await srv('admin_points_log',{});GMP.log=(r&&Array.isArray(r.rows))?r.rows:(r&&r.error==='net'?GMP.log:null);gmpDrawLog();}
+function gmpDrawLog(){const el=$('gmp-log');if(!el)return;
+  if(GMP.log===null){el.innerHTML='ما انفتح السجل (تأكد من ملف SQL)';return;}
+  if(!GMP.log.length){el.innerHTML='ما فيه عمليات بعد';return;}
+  el.innerHTML=GMP.log.map(x=>`<div class="gmp-lr"><div style="flex:1;min-width:0"><div style="color:#1c2b2a;font-weight:700">${esc(x.label||'—')}</div><div class="mut" style="font-size:12px">${msgWhen(x.at)} · ${gmpAr(x.n)} ${gmpStu(x.n)}${x.note?' · '+esc(x.note):''}</div></div><b style="color:${x.pts>0?'#1F7A56':'#c73a2b'};font-size:16px">${x.pts>0?'+':''}${gmpAr(x.pts)}</b><button class="btn-s" style="padding:6px 10px;font-size:12.5px" onclick="gmpUndo('${x.batch}')">تراجع</button></div>`).join('');}
+function gmpUndo(b){const x=(GMP.log||[]).find(r=>r.batch===b);if(!x)return;
+  sheet(`<div class="t" style="font-size:18px">التراجع عن العملية؟</div><div style="margin:10px 0 14px;line-height:1.9">${esc(x.label||'')}<br><b>${x.pts>0?'+':''}${gmpAr(x.pts)}</b> لـ ${gmpAr(x.n)} ${gmpStu(x.n)}<div class="mut" style="margin-top:6px">تنشال النقاط من رصيدهم.</div></div><div class="row" style="gap:10px"><button class="btn" style="flex:1;background:#c73a2b" onclick="closeSheet();gmpUndoGo('${b}')">تراجع</button><button class="btn-s" style="flex:1" onclick="closeSheet()">لا</button></div>`);}
+async function gmpUndoGo(b){const r=await srv('admin_points_undo',{p_batch:b});if(r&&r.ok){toast('تم التراجع عن العملية');gmpLoadLog();}else if(!r||r.error!=='net')toast('تعذّر التراجع',true);}
 
 function renderStudent(s){
   SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
@@ -3140,7 +3215,7 @@ const AT=`<div class="glass top"><div class="logo inst"></div><div class="ttl">�
 const teacherOf=c=>({name:tNames(c)});
 const setATab=n=>document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.classList.toggle('on',b.dataset.atab===n));
 function ago(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:true});if(view==='stu'&&p.sid){T.sub='hifz';T.gi=null;}if(view==='tcls'&&p.fm)T.csub='hifz';$('teacher-body').innerHTML='';
-  ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm,tact:aTAct,honor:aHonor,reports:aReports,act:aAct,game:aGame,gmset:aGmSet,gmstu:aGmStu,gmtalk:aGmTalk,gmtalkg:aGmTalkG,gmbag:aGmBag,gmisl:aGmIsl,gmprice:aGmPrice})[view]();
+  ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm,tact:aTAct,honor:aHonor,reports:aReports,act:aAct,game:aGame,gmset:aGmSet,gmstu:aGmStu,gmtalk:aGmTalk,gmtalkg:aGmTalkG,gmbag:aGmBag,gmisl:aGmIsl,gmprice:aGmPrice,gmpts:aGmPts})[view]();
   $('admin-body').scrollTop=0;updABadge();}
 function openAStu(id,from,arg){T.ret=from==='cls'?`ago('cls',{cid:${arg}})`:from==='tch'?`ago('tch',{tid:${arg}})`:`ago('list')`;ago('stu',{sid:id});}
 const stuRow=(s,from,arg)=>{const st=statusOf(s);return `<button class="glass item" onclick="openAStu(${s.id},'${from}',${arg||0})">${avaHTML(s,'mini')}
@@ -3745,7 +3820,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='aa7512a63aba';
+const BUILD='e82069a96124';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
