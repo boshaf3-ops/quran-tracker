@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="48d269165fda">
+<meta name="build" content="278c55d32349">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -803,6 +803,26 @@ mark{background:rgba(224,162,27,.38);color:inherit;border-radius:4px;padding:0 1
 .ux-ttl{padding:12px 16px;margin-bottom:2px;border-radius:22px;font-size:23px;font-weight:800;color:var(--teal-d);background:rgba(255,255,255,.62);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);border:1px solid var(--glass-border)}.ux-ttl small{display:block;font-size:13px;font-weight:600;color:var(--ink-2)}
 .ux-fch{display:flex;gap:8px;overflow-x:auto;margin:0 -14px;padding:8px 14px 10px;scrollbar-width:none}.ux-fch::-webkit-scrollbar{display:none}
 .ux-grp h4{font-size:13px;font-weight:800;color:var(--ink-2);margin:16px 4px 8px}
+/* ===== لوحة التحكم على الكمبيوتر والآيباد: عمود مرتب وواسع، والشرائح الأفقية تلتف بدل ما تنضغط ===== */
+@media (min-width:700px) and (min-height:600px){
+  #admin-body.uxv{display:block;max-width:1100px;margin-left:auto;margin-right:auto}
+  #admin-body.uxv>*{grid-column:auto}
+  .uxv .ux-hello{padding:14px 18px;border-radius:26px}
+  .uxv .ux-sec{margin:24px 4px 12px}.uxv .ux-sec b{font-size:20px}.uxv .ux-sec small,.uxv .ux-sec a{font-size:14px}
+  .uxv .ux-als{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;overflow:visible;margin:0;padding:2px 0 8px;scroll-snap-type:none}
+  .uxv .ux-al{width:auto;padding:16px}.uxv .ux-al.ok{grid-column:1/-1}.uxv .ux-al .n{font-size:16.5px}.uxv .ux-al p{font-size:13.5px}
+  .uxv .ux-grid{gap:22px 14px}
+  .uxv .ux-cat .ux-ic{width:80px;height:80px;border-radius:26px}.uxv .ux-cat .ux-ic svg{width:36px;height:36px}
+  .uxv .ux-cat span{font-size:15.5px}.uxv .ux-cat small{font-size:12.5px}
+  .uxv .ux-chips,.uxv .ux-fch{flex-wrap:wrap;overflow:visible;margin:0;padding:4px 0 8px;gap:10px}
+  .uxv .ux-chip{padding:12px 20px;font-size:15px}.uxv .ux-chip svg{width:20px;height:20px}
+  .uxv .ux-stat3{gap:14px}.uxv .ux-stat{padding:18px 10px 16px}.uxv .ux-stat b{font-size:34px}.uxv .ux-stat span{font-size:14.5px}
+  .uxv .ux-ttl{font-size:28px;padding:16px 22px}.uxv .ux-ttl small{font-size:15px}
+  .uxv .ux-grp h4{font-size:15px;margin:22px 4px 10px}
+  .uxv .ux-2col{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .uxv .ux-row{padding:15px 18px}.uxv .ux-row .g b{font-size:16px}.uxv .ux-row .g span{font-size:13.5px}
+  .uxv .ux-row .ux-mi{width:52px;height:52px}
+}
 .ux-sfw{position:sticky;top:-14px;z-index:5;margin:-14px -14px 4px;padding:calc(14px + env(safe-area-inset-top)) 14px 4px;background:rgba(253,249,236,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
 .ux-sfield{display:flex;align-items:center;gap:10px;height:52px;padding:0 16px;border-radius:99px;border:2px solid var(--teal)}
 .ux-sfield input{flex:1;border:0;background:none;font:inherit;font-size:16px;font-weight:600;color:var(--ink);outline:none;min-width:0}
@@ -3757,7 +3777,7 @@ const ATABMAP={classes:'sections',teachers:'sections',reports:'sections',honor:'
 const setATab=n=>{n=ATABMAP[n]||n;document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.classList.toggle('on',b.dataset.atab===n));};
 function ago(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:true});if(view==='stu'&&p.sid){T.sub='hifz';T.gi=null;}if(view==='tcls'&&p.fm)T.csub='hifz';$('teacher-body').innerHTML='';
   ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm,tact:aTAct,honor:aHonor,reports:aReports,act:aAct,sections:aSections,search:aSearch,game:aGame,gmset:aGmSet,gmstu:aGmStu,gmtalk:aGmTalk,gmtalkg:aGmTalkG,gmbag:aGmBag,gmisl:aGmIsl,gmprice:aGmPrice,gmpts:aGmPts,gmfeat:aGmFeat})[view]();
-  $('admin-body').scrollTop=0;updABadge();}
+  $('admin-body').scrollTop=0;$('admin-body').classList.toggle('uxv',view==='home'||view==='sections'||view==='search');updABadge();}
 function openAStu(id,from,arg){T.ret=from==='cls'?`ago('cls',{cid:${arg}})`:from==='tch'?`ago('tch',{tid:${arg}})`:`ago('list')`;ago('stu',{sid:id});}
 const stuRow=(s,from,arg)=>{const st=statusOf(s);return `<button class="glass item" onclick="openAStu(${s.id},'${from}',${arg||0})">${avaHTML(s,'mini')}
   <div class="grow"><div class="t">${esc(s.name)}</div><div class="mut">${clsName(s.c)} · ${esc(teacherOf(s.c).name)}</div></div>
@@ -3919,7 +3939,7 @@ function aHome(){
   <div class="glass card" style="margin-top:10px">${bar(r,n)}${legend(r)}</div>
   ${r.none?`<button class="glass ux-row" onclick="openList('none')" style="margin-top:10px"><div class="g"><b>لم يبدأ تسجيلهم بعد</b><span>طلاب لم تُسجَّل لهم أي درجة</span></div><em class="ux-pill gray">${r.none}</em><span class="ch">${uxIc('chev')}</span></button>`:''}
   <div class="ux-sec"><b>المتابعة والمنهج</b></div>
-  ${[by('التفاعل'),by('خطة المقاطع'),by('الفصل الدراسي'),by('نقل السنة الدراسية')].map(uxRow).join('')}
+  <div class="ux-2col">${[by('التفاعل'),by('خطة المقاطع'),by('الفصل الدراسي'),by('نقل السنة الدراسية')].map(uxRow).join('')}</div>
   ${typeof bkCard==='function'?bkCard():''}`;
 }
 /* صفحة الأقسام: كل شيء بمجموعات */
@@ -3930,7 +3950,7 @@ function aSections(){
   const acc={g:'الحساب',k:'out',t:'تسجيل الخروج',d:'الخروج من حساب الإدارة',c:'tool',go:"doLogout()"};
   $('admin-body').innerHTML=`<div class="ux-ttl">الأقسام<small>كل ما في غرفة التحكم، مرتب بمجموعات</small></div>
   <div class="ux-fch">${gs.map(x=>`<button class="glass ux-chip${x===UXG?' on':''}" onclick="UXG='${x}';aSections()">${x}</button>`).join('')}</div>`+
-  show.map(x=>`<div class="ux-grp"><h4>${x}</h4>${(x==='الحساب'?[acc]:S.filter(t=>t.g===x)).map(uxRow).join('')}</div>`).join('');
+  show.map(x=>`<div class="ux-grp"><h4>${x}</h4><div class="ux-2col">${(x==='الحساب'?[acc]:S.filter(t=>t.g===x)).map(uxRow).join('')}</div></div>`).join('');
 }
 /* البحث */
 const UXQ={q:'',f:'الكل',more:0};
@@ -4555,7 +4575,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='48d269165fda';
+const BUILD='278c55d32349';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
