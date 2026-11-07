@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="9ffd36cdcbfc">
+<meta name="build" content="9bd5bfeac9bf">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2127,13 +2127,15 @@ function gmTDay(){try{return new Date().toLocaleDateString('en-CA',{timeZone:'As
 function gmTKey(){return 'mq_gt_'+(CURS?CURS.id:0)+'_'+gmTDay();}
 function gmTLocal(){try{return +localStorage.getItem(gmTKey())||0;}catch(e){return 0;}}
 function gmTUsed(){const u=gmT.base+(gmT.ts?(performance.now()-gmT.ts)/1000:0);return Math.max(0,Math.min(gmT.limit,u));}
-function gmTStore(){try{localStorage.setItem(gmTKey(),String(Math.floor(gmTUsed())));}catch(e){}}
+function gmTStore(){if(!gmT.synced||gmT.day!==gmTDay())return;try{localStorage.setItem(gmTKey(),String(Math.floor(gmTUsed())));}catch(e){}}
 function gmTimeLocked(){return ROLE==='student'&&gmT.locked;}
+function gmTResetLeft(){if(gmT.resetAt)return Math.max(0,(gmT.resetAt-performance.now())/1000);const t=Math.floor((Date.now()+3*3600e3)/1000);return 86400-(t%86400);}
+function gmTClock(sec){sec=Math.max(0,Math.ceil(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),x=sec%60,z=n=>String(n).padStart(2,'0');return z(h)+':'+z(m)+':'+z(x);}
 window.gmTime={on(){return ROLE==='student'&&!!CURS;},used:gmTUsed,limit(){return gmT.limit;},left(){return Math.max(0,gmT.limit-gmTUsed());}};
 function gmTFlush(){if(!gmT.ts)return;const n=performance.now(),d=(n-gmT.ts)/1000;gmT.ts=n;gmT.base+=d;gmT.pend+=d;}
 async function gmTimeSync(){const day=gmTDay();
   try{const r=await rpc('game_time_tick',{p_tok:TOK,p_sec:0});
-    if(r&&typeof r.used==='number'){gmT.srv=true;gmT.limit=r.limit||2400;gmT.day=r.day||day;gmT.base=Math.max(r.used,gmTLocal());gmT.pend=0;}
+    if(r&&typeof r.used==='number'){gmT.srv=true;gmT.limit=r.limit||2400;gmT.day=r.day||day;gmT.base=r.used;gmT.pend=0;gmT.resetAt=typeof r.reset_in==='number'?performance.now()+r.reset_in*1000:0;try{localStorage.setItem('mq_gt_'+(CURS?CURS.id:0)+'_'+gmT.day,String(r.used));}catch(e){}}
     else throw 0;
   }catch(e){gmT.srv=false;let m=40;try{m=gmDayM();}catch(x){}gmT.limit=Math.max(5,Math.min(120,m))*60;gmT.day=day;gmT.base=gmTLocal();gmT.pend=0;}
   gmT.synced=true;gmT.locked=gmT.base>=gmT.limit-.01;}
@@ -2156,7 +2158,7 @@ function gmTimeLock(){if(gmT.locked)return;gmTFlush();gmT.locked=true;gmTimeStop
 const _gmLoadT=gmLoad,_gmCloseT=gmClose;
 gmLoad=function(q){if(ROLE!=='student'||!CURS||/(^|&)(adm|admin)=1/.test(q||''))return _gmLoadT(q);gmTimeEnter(q);};
 gmClose=function(){gmTimeStop();const l=$('gm-lock');if(l)l.remove();_gmCloseT();};
-async function gmTimeEnter(q){if(!gmT.synced||gmT.day!==gmTDay())await gmTimeSync();
+async function gmTimeEnter(q){await gmTimeSync();
   if(gmT.locked){gmLockShow();return;}
   gmTimeStart();_gmLoadT(q);}
 document.addEventListener('visibilitychange',()=>{if(ROLE!=='student')return;if(document.hidden)gmTimeStop();else{const o=$('gm-ov');if(o&&o.style.display==='block'&&gmT.synced&&!gmT.locked&&!$('gm-lock'))gmTimeStart();}});
@@ -2175,6 +2177,7 @@ function gmLockCss(){if($('gml-css'))return;const st=document.createElement('sty
    +'#gm-lock .gml-t1{position:relative;font-size:32px;font-weight:900;color:#ffe9a6;text-shadow:0 0 20px rgba(255,214,120,.55)}'
    +'#gm-lock .gml-t2{position:relative;font-size:21px;font-weight:800;line-height:1.7}'
    +'#gm-lock .gml-t3{position:relative;font-size:15px;line-height:1.9;color:rgba(255,255,255,.82);max-width:340px}'
+   +'#gm-lock .gml-cd{position:relative;margin-top:2px;padding:10px 22px;border-radius:18px;background:rgba(255,224,138,.12);border:1px solid rgba(255,224,138,.4)}#gm-lock .gml-cd small{display:block;font-size:13px;color:#ffe9a6;font-weight:700}#gm-lock .gml-cd b{display:block;font-size:36px;font-weight:900;letter-spacing:2px;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 0 16px rgba(255,214,120,.5)}'
    +'#gm-lock .gml-nt{position:relative;max-width:340px;margin-top:4px;padding:12px 16px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);font-size:14.5px;line-height:1.95;color:#fff}'
    +'#gm-lock button{position:relative;margin-top:12px;padding:13px 34px;border-radius:999px;border:2px solid #ffe08a;background:linear-gradient(180deg,#f3cf5c,#d9a826);color:#3a2a00;font:inherit;font-weight:800;font-size:17px;box-shadow:0 6px 18px rgba(0,0,0,.4)}';
   document.head.appendChild(st);}
@@ -2188,10 +2191,13 @@ function gmLockShow(){if($('gm-lock'))return;gmLockCss();const m=Math.round(gmT.
    <rect x="148" y="116" width="24" height="36" rx="12" fill="#0b1030"/></svg>
   <span class="gml-z" style="left:55%;top:30%;font-size:22px">Z</span><span class="gml-z" style="left:60%;top:34%;font-size:16px;animation-delay:1.2s">z</span><span class="gml-z" style="left:50%;top:36%;font-size:18px;animation-delay:2.2s">z</span>
   <div class="gml-t1">نام أهل المسجد 🌙</div><div class="gml-t2">لقد استنفذت وقتك لهذا اليوم</div>
-  <div class="gml-t3">وقتك اليومي ${m} دقيقة. ارجع في اليوم التالي بإذن الله، ويتجدد وقتك عند منتصف الليل.</div>
+  <div class="gml-t3">وقتك اليومي ${m} دقيقة. ويتجدد وقتك عند الساعة 12 منتصف الليل بتوقيت البحرين.</div>
+  <div class="gml-cd"><small>باقي على فتح المدينة لك</small><b id="gml-cd" dir="ltr">${gmTClock(gmTResetLeft())}</b></div>
   <div class="gml-nt">📚 اهتم بدروسك وحفظك أولاً، فاللعبة مكافأة لك على اجتهادك، ونحن ما نبيك تلعب وايد 🤍</div>
   <button id="gml-b">رجوع لصفحتي</button>`;
-  document.body.appendChild(el);$('gml-b').onclick=()=>{el.remove();gmClose();};}
+  document.body.appendChild(el);
+  const cd=$('gml-cd'),iv=setInterval(()=>{if(!document.body.contains(el)){clearInterval(iv);return;}const r=gmTResetLeft();cd.textContent=gmTClock(r);if(r<=0&&!el.dataset.ready){clearInterval(iv);el.dataset.ready='1';gmTimeSync().then(()=>{if(!gmT.locked){cd.textContent='00:00:00';const t1=el.querySelector('.gml-t1'),t2=el.querySelector('.gml-t2');if(t1)t1.textContent='تجدّد وقتك 🎉';if(t2)t2.textContent='المسجد مفتوح لك من جديد';$('gml-b').textContent='افتح اللعبة';}});}},1000);
+  $('gml-b').onclick=()=>{const rd=el.dataset.ready&&!gmT.locked;el.remove();gmClose();if(rd&&CURS)setTimeout(()=>gmOpen(CURS.id),250);};}
 
 /* صفحة «مسجدي» في واجهة الطالب: بطاقة السماء والمسجد والنقاط والإعجابات والمستوى */
 (function(){const st=document.createElement('style');st.textContent=`
@@ -2209,6 +2215,7 @@ function gmLockShow(){if($('gm-lock'))return;gmLockCss();const m=Math.round(gmT.
 .sm-lvb{height:9px;border-radius:99px;background:rgba(22,94,80,.14);overflow:hidden;margin-top:10px}.sm-lvb i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#E0A21B,#F6D36B)}
 .sm-lvt{display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;color:var(--ink-2);margin-top:5px}
 .sm-go{width:100%;height:52px;border-radius:99px;margin-top:12px;font-size:16.5px;font-weight:800;color:#3b2a00;border:0;cursor:pointer;font-family:inherit;background:linear-gradient(180deg,#FFE08A,#E0A21B);box-shadow:inset 0 2px 1px rgba(255,255,255,.7),0 8px 16px -6px rgba(154,107,5,.55);display:flex;align-items:center;justify-content:center;gap:8px}
+.sm-lk{margin-top:12px;padding:14px;border-radius:22px;text-align:center;background:linear-gradient(160deg,#1b2552,#0e1535);color:#fff;border:1.5px solid rgba(255,224,138,.5);box-shadow:0 8px 18px -8px rgba(14,21,53,.7)}.sm-lk b{display:block;font-size:17px;font-weight:800;color:#ffe9a6}.sm-lk span{display:block;font-size:12.5px;opacity:.9;margin-top:2px}.sm-lk .cd{font-size:34px;font-weight:900;letter-spacing:2px;margin:6px 0 2px;font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(255,214,120,.5)}.sm-lk small{font-size:11.5px;opacity:.8}
 .sm-sec{margin:16px 4px 9px;font-size:17px;font-weight:800;color:var(--teal-d)}
 .sm-row{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:20px;text-align:right;margin-bottom:9px;cursor:pointer;border:1px solid rgba(255,255,255,.82);font-family:inherit;color:inherit}
 .sm-row .g{flex:1;min-width:0}.sm-row .g b{display:block;font-size:14.5px;font-weight:800}.sm-row .g span{display:block;font-size:12px;color:var(--ink-2);margin-top:1px;line-height:1.5}
@@ -2225,6 +2232,13 @@ const smMosqueSvg=w=>`<svg viewBox="0 0 120 110" style="width:${w}px;height:${Ma
 const smLvOf=sc=>Math.min(100,1+Math.floor(99*Math.pow(Math.max(0,Math.min(sc,19000))/19000,1/1.3)+1e-9));
 const smPtsFor=L=>L<=1?0:19000*Math.pow((L-1)/99,1.3);
 function smScore(s){try{const isl=gmIsl(s).cur,loc=+localStorage.getItem('mq_gm_sc_'+s.id+'_'+isl)||0,srvp=(window.__gmSrv&&window.__gmSrv[isl])|0;return Math.max(loc,srvp);}catch(e){return 0;}}
+function smLockedToday(){return typeof gmT!=='undefined'&&gmT.locked&&gmT.day===gmTDay();}
+function smGoHtml(s){
+  if(smLockedToday())return `<div class="sm-lk"><b>🌙 المسجد نايم اليوم</b><span>استنفذت وقتك اليومي. باقي على فتحه لك</span><div class="cd" dir="ltr" id="sm-cd">${gmTClock(gmTResetLeft())}</div><small>يتجدد عند الساعة 12 منتصف الليل بتوقيت البحرين</small></div>`;
+  return `<button class="sm-go" onclick="gmOpen(${s.id})"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#3b2a00"><path d="M7 4l13 8-13 8z"/></svg>${gmIsl(s).unlocked?'اختر جزيرتك':'ادخل مسجدك'}</button>`;}
+function smGoTick(s){clearInterval(window.__smCd);window.__smCd=setInterval(()=>{const b=$('sm-gobox');if(!b||typeof SS==='undefined'||SS!=='mosque'||CURS!==s){clearInterval(window.__smCd);return;}
+  const e=$('sm-cd');if(e){const r=gmTResetLeft();e.textContent=gmTClock(r);if(r<=0){clearInterval(window.__smCd);smGoSync(s);}}},1000);}
+function smGoSync(s){if(typeof gmTimeSync!=='function'||gmT.ts)return;gmTimeSync().then(()=>{const b=$('sm-gobox');if(b&&SS==='mosque'&&CURS===s){b.innerHTML=smGoHtml(s);smGoTick(s);}});}
 async function drawMosqueS(){
   const s=CURS,box=$('ss-mosque');if(!s||!box)return;
   const sc=smScore(s),lvS=+localStorage.getItem('mq_gm_lv_'+s.id)||0,lv=sc>0?smLvOf(sc):lvS,lk=+localStorage.getItem('mq_gm_lk_'+s.id)||0,pts=+gmBal(s)||0,isl=gmIslName(gmIsl(s).cur),first=s.name.split(' ')[0];
@@ -2235,11 +2249,12 @@ async function drawMosqueS(){
   box.innerHTML=`<div class="sm-msq"><div class="sk"></div><div class="sm-isl">${isl} · مسجد ${esc(first)}</div><div style="margin:2px auto 0;width:170px">${smMosqueSvg(170)}</div>
    <div class="sm-tri"><div><b>${pts}</b><span>🪙 نقطة</span></div><div><b>${lk}</b><span>❤️ إعجاب</span></div><div><b>${lv}</b><span>⭐ المستوى</span></div></div>
    <div class="sm-lvb"><i style="width:${bar}%"></i></div><div class="sm-lvt"><span>${left}</span><span>${right}</span></div>
-   <button class="sm-go" onclick="gmOpen(${s.id})"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#3b2a00"><path d="M7 4l13 8-13 8z"/></svg>${gmIsl(s).unlocked?'اختر جزيرتك':'ادخل مسجدك'}</button></div>
+   <div id="sm-gobox">${smGoHtml(s)}</div></div>
    <div class="sm-sec">ملخص مسجدك</div>
    <div class="glass sm-row"><div class="sm-mi sm-y"><svg viewBox="0 0 24 24">${SM_I.mosque}</svg></div><div class="g"><b>مستوى المسجد ${lv}</b><span>كل ما تبني في مسجدك يرفع مستواك</span></div></div>
    <div class="glass sm-row"><div class="sm-mi sm-r"><svg viewBox="0 0 24 24">${SM_I.heart}</svg></div><div class="g"><b>${lk} إعجابات من أصدقائك</b><span>كل لايك يزيدك نقاطاً</span></div></div>
    <button class="glass sm-row" onclick="gmHow(${s.id})"><div class="sm-mi sm-c"><svg viewBox="0 0 24 24">${SM_I.info}</svg></div><div class="g"><b>كيف أكسب النقاط؟</b><span>اعرف مصادر نقاطك</span></div></button>`;
+  smGoTick(s);smGoSync(s);
   if(!s.__msync&&typeof gmSyncIsl==='function'){s.__msync=1;try{await gmSyncIsl(s);}catch(e){}if(typeof SS!=='undefined'&&SS==='mosque'&&CURS===s)drawMosqueS();}
 }
 window.addEventListener('message',e=>{const d=e.data;if(!d)return;if(d.type==='gm-state'&&typeof CURS!=='undefined'&&CURS){try{localStorage.setItem('mq_gm_sc_'+CURS.id+'_'+(d.isl||'sea'),String(d.pts|0));}catch(x){}}
@@ -4451,7 +4466,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='9ffd36cdcbfc';
+const BUILD='9bd5bfeac9bf';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
