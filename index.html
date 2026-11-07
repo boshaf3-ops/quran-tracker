@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="170289d4c6b9">
+<meta name="build" content="5a3e5e73803b">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -744,6 +744,100 @@ html,body{overflow-x:hidden;max-width:100%}#teacher-body,#admin-body,#student-bo
 .tabbar .tab[data-atab=honor]{--d:#B8860B;--f:#FFE27A}
 .tabbar .tab[data-atab=pend]{--d:#C73A2B;--f:#F8B8B0}
 .tabbar .tab[data-atab=game]{--d:#1F7A56;--f:#BFE8D2}
+/* ===== غرفة التحكم السريعة: مربعات زجاجية لامعة ===== */
+.uxc-stu{--rgb:42,111,196;--c:#1F5BAA}.uxc-cls{--rgb:224,138,12;--c:#B36A05}.uxc-tch{--rgb:47,160,70;--c:#23762F}
+.uxc-rep{--rgb:122,79,194;--c:#6A3FB5}.uxc-hon{--rgb:226,170,20;--c:#9A6B05}.uxc-msg{--rgb:214,58,43;--c:#B72E20}
+.uxc-gam{--rgb:29,140,118;--c:#14705E}.uxc-cur{--rgb:14,140,176;--c:#0A6F8C}.uxc-tool{--rgb:91,107,115;--c:#46555C}
+.ux-ic,.ux-mi,.ux-al .b,.ux-av,.ux-act .bb{position:relative;overflow:hidden;isolation:isolate;display:grid;place-items:center}
+.ux-ic svg,.ux-mi svg,.ux-al .b svg,.ux-act .bb svg,.ux-chip svg,.ux-sbar svg,.ux-sfield svg,.ux-ib svg,.ux-rcpt svg,.ux-row .ch svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ux-ic,.ux-mi{background:linear-gradient(150deg,rgba(var(--rgb),.46) 0%,rgba(var(--rgb),.16) 55%,rgba(var(--rgb),.30) 100%);backdrop-filter:blur(10px) saturate(190%);-webkit-backdrop-filter:blur(10px) saturate(190%);border:1.5px solid rgba(255,255,255,.85);color:var(--c);
+  box-shadow:0 10px 20px -6px rgba(var(--rgb),.55),0 2px 4px rgba(var(--rgb),.18),inset 0 2px 1px rgba(255,255,255,.95),inset 0 -10px 16px -6px rgba(var(--rgb),.38)}
+.ux-ic::before,.ux-mi::before,.ux-al .b::before,.ux-av::before,.ux-act .bb::before{content:"";position:absolute;z-index:0;left:6%;right:6%;top:3%;height:48%;border-radius:50% 50% 60% 60%/70% 70% 40% 40%;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.12));pointer-events:none}
+.ux-ic::after,.ux-mi::after,.ux-al .b::after,.ux-act .bb::after{content:"";position:absolute;z-index:0;top:-20%;bottom:-20%;width:34%;left:-60%;transform:rotate(22deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:uxsheen 5.5s ease-in-out infinite;pointer-events:none}
+.ux-grid .ux-cat:nth-child(2n) .ux-ic::after,.ux-row:nth-child(2n) .ux-mi::after{animation-delay:1.1s}.ux-grid .ux-cat:nth-child(3n) .ux-ic::after,.ux-row:nth-child(3n) .ux-mi::after{animation-delay:2.3s}.ux-grid .ux-cat:nth-child(4n) .ux-ic::after{animation-delay:3.4s}
+@keyframes uxsheen{0%,62%{left:-60%}100%{left:130%}}
+@media (prefers-reduced-motion:reduce){.ux-ic::after,.ux-mi::after,.ux-al .b::after,.ux-act button::after{animation:none}}
+.ux-ic svg,.ux-mi svg,.ux-al .b svg,.ux-act .bb svg{position:relative;z-index:1;filter:drop-shadow(0 1px 1px rgba(255,255,255,.7))}
+.ux-hello{display:flex;align-items:center;gap:11px;margin:2px 0 10px;padding:10px 12px;border-radius:24px;background:rgba(255,255,255,.62);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);border:1px solid var(--glass-border);box-shadow:0 4px 18px rgba(22,94,80,.10)}
+.ux-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2FA088,var(--teal-d));color:#fff;font-weight:800;font-size:19px;border:0;cursor:pointer;box-shadow:inset 0 2px 1px rgba(255,255,255,.55),inset 0 -6px 10px rgba(0,0,0,.18),0 3px 10px rgba(22,94,80,.35);flex:none;font-family:inherit}
+.ux-hello .tx{flex:1;min-width:0}.ux-hello .tx b{display:block;font-size:16px;font-weight:800;color:var(--teal-d)}.ux-hello .tx span{font-size:12px;color:var(--ink-2)}
+.ux-ib{position:relative;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;cursor:pointer;border:1px solid var(--glass-border);color:var(--teal-d);flex:none;padding:0}
+.ux-ib svg{width:22px;height:22px}.ux-ib .dot{position:absolute;top:-4px;right:-4px;min-width:19px;height:19px;border-radius:99px;background:var(--red);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 5px;border:2px solid #fff;font-style:normal}
+.ux-sbar{display:flex;align-items:center;gap:10px;width:100%;padding:0 16px;height:50px;border-radius:99px;color:var(--ink-2);font-size:14.5px;font-weight:600;text-align:right;cursor:pointer;border:1px solid var(--glass-border);font-family:inherit}
+.ux-sbar svg{color:var(--teal);flex:none;width:22px;height:22px}
+.ux-sec{display:flex;align-items:baseline;justify-content:space-between;margin:18px 4px 10px}.ux-sec b{font-size:17px;font-weight:800;color:var(--teal-d)}.ux-sec small{font-size:12.5px;color:var(--ink-2)}.ux-sec a{font-size:13px;font-weight:700;color:var(--teal-d);cursor:pointer}
+.ux-als{display:flex;gap:10px;overflow-x:auto;margin:0 -14px;padding:2px 14px 8px;scroll-snap-type:x mandatory;scrollbar-width:none}.ux-als::-webkit-scrollbar{display:none}
+.ux-al{flex:none;width:236px;scroll-snap-align:start;border-radius:22px;padding:14px;text-align:right;display:block;cursor:pointer;border:1px solid var(--glass-border);font-family:inherit;color:inherit}
+.ux-al.ok{width:100%;cursor:default;background:linear-gradient(160deg,#E6F7EC,#fff)}.ux-al.ok .b{background:var(--green)}
+.ux-al .n{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px}
+.ux-al .b{width:38px;height:38px;border-radius:13px;color:#fff;flex:none;border:1.5px solid rgba(255,255,255,.7);box-shadow:inset 0 2px 1px rgba(255,255,255,.7),inset 0 -8px 12px rgba(0,0,0,.2),0 6px 12px rgba(0,0,0,.18)}
+.ux-al .b svg{width:21px;height:21px;stroke:#fff}
+.ux-al p{font-size:12.5px;color:var(--ink-2);margin:6px 0 10px;line-height:1.6}
+.ux-al .go{display:inline-block;padding:6px 14px;border-radius:99px;font-size:12.5px;font-weight:800;color:#fff}
+.ux-al.r{background:linear-gradient(160deg,#FFE9E6,#fff)}.ux-al.r .b,.ux-al.r .go{background:var(--red)}
+.ux-al.m{background:linear-gradient(160deg,#E9F3FF,#fff)}.ux-al.m .b,.ux-al.m .go{background:#2A6FC4}
+.ux-al.g{background:linear-gradient(160deg,#FFF3C9,#fff)}.ux-al.g .b,.ux-al.g .go{background:#9A6B05}
+.ux-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px}
+.ux-cat{display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;cursor:pointer;background:none;border:0;font-family:inherit;color:var(--ink);padding:0}
+.ux-cat .ux-ic{width:66px;height:66px;border-radius:22px;transition:transform .12s}.ux-cat:active .ux-ic{transform:scale(.92)}
+.ux-cat .ux-ic svg{width:30px;height:30px}
+.ux-cat span{font-size:12.5px;font-weight:700;line-height:1.3;text-align:center}
+.ux-cat small{font-size:10.5px;color:var(--ink-2);margin-top:-5px;min-height:14px}
+.ux-bd{position:absolute;top:-5px;right:calc(50% - 40px);min-width:20px;height:20px;border-radius:99px;background:var(--red);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 5px;border:2px solid #fff;font-style:normal}
+.ux-chips{display:flex;gap:8px;overflow-x:auto;margin:0 -14px;padding:2px 14px 6px;scrollbar-width:none}.ux-chips::-webkit-scrollbar{display:none}
+.ux-chip{flex:none;display:flex;align-items:center;gap:7px;padding:10px 15px;border-radius:99px;font-size:13.5px;font-weight:700;white-space:nowrap;cursor:pointer;border:1px solid var(--glass-border);font-family:inherit;color:var(--ink)}
+.ux-chip svg{width:18px;height:18px;color:var(--teal)}
+.ux-chip.on{background:var(--teal-d);color:#fff;border-color:var(--teal-d)}
+.ux-chip.cs{background:linear-gradient(150deg,#4C97E8,#1E55A0);color:#fff;border-color:rgba(255,255,255,.5)}.ux-chip.ct{background:linear-gradient(150deg,#52C06A,#1F7A33);color:#fff;border-color:rgba(255,255,255,.5)}
+.ux-chip.cs svg,.ux-chip.ct svg{color:#fff}
+.ux-stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.ux-stat{border-radius:20px;padding:12px 8px 11px;text-align:center;cursor:pointer;border:1px solid var(--glass-border);font-family:inherit;color:inherit}
+.ux-stat b{display:block;font-size:26px;font-weight:800;line-height:1.1}.ux-stat span{font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.ux-row{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:20px;text-align:right;margin-bottom:9px;cursor:pointer;border:1px solid var(--glass-border);font-family:inherit;color:inherit}
+.ux-row .ux-mi{width:46px;height:46px;border-radius:16px;flex:none}.ux-row .ux-mi svg{width:23px;height:23px}
+.ux-row .mini{flex:none}
+.ux-row .g{flex:1;min-width:0}.ux-row .g b{display:block;font-size:14.5px;font-weight:800}.ux-row .g span{display:block;font-size:12px;color:var(--ink-2);margin-top:1px;line-height:1.5}
+.ux-row .ch{color:#9bb5ad;flex:none}.ux-row .ch svg{width:18px;height:18px}
+.ux-pill{padding:3px 10px;border-radius:99px;font-size:11.5px;font-weight:800;flex:none;background:#FBD9D4;color:#7C1A10;font-style:normal}.ux-pill.gray{background:#E6EBEA;color:#4B5B57}
+mark{background:rgba(224,162,27,.38);color:inherit;border-radius:4px;padding:0 1px}
+.ux-ttl{padding:12px 16px;margin-bottom:2px;border-radius:22px;font-size:23px;font-weight:800;color:var(--teal-d);background:rgba(255,255,255,.62);backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);border:1px solid var(--glass-border)}.ux-ttl small{display:block;font-size:13px;font-weight:600;color:var(--ink-2)}
+.ux-fch{display:flex;gap:8px;overflow-x:auto;margin:0 -14px;padding:8px 14px 10px;scrollbar-width:none}.ux-fch::-webkit-scrollbar{display:none}
+.ux-grp h4{font-size:13px;font-weight:800;color:var(--ink-2);margin:16px 4px 8px}
+.ux-sfw{position:sticky;top:-14px;z-index:5;margin:-14px -14px 4px;padding:calc(14px + env(safe-area-inset-top)) 14px 4px;background:rgba(253,249,236,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.ux-sfield{display:flex;align-items:center;gap:10px;height:52px;padding:0 16px;border-radius:99px;border:2px solid var(--teal)}
+.ux-sfield input{flex:1;border:0;background:none;font:inherit;font-size:16px;font-weight:600;color:var(--ink);outline:none;min-width:0}
+.ux-sfield svg{color:var(--teal);flex:none;width:22px;height:22px}
+.ux-sfield .x{width:26px;height:26px;border-radius:50%;background:rgba(22,94,80,.14);display:grid;place-items:center;border:0;cursor:pointer;padding:0}.ux-sfield .x[hidden]{display:none}.ux-sfield .x svg{width:14px;height:14px;color:var(--teal-d)}
+.ux-rh{font-size:12.5px;font-weight:800;color:var(--ink-2);margin:16px 4px 8px;display:flex;justify-content:space-between}
+.ux-act{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:4px 0 14px}
+.ux-act button{position:relative;overflow:hidden;border-radius:24px;padding:14px 12px 13px;text-align:right;color:#fff;border:1.5px solid rgba(255,255,255,.6);display:flex;flex-direction:column;gap:6px;min-height:128px;isolation:isolate;cursor:pointer;font-family:inherit}
+.ux-act .bb{width:46px;height:46px;border-radius:16px;background:rgba(255,255,255,.28);border:1.5px solid rgba(255,255,255,.75);box-shadow:inset 0 2px 1px rgba(255,255,255,.9),0 4px 10px rgba(0,0,0,.18)}
+.ux-act .bb svg{width:25px;height:25px;stroke:#fff}
+.ux-act b{font-size:16px;font-weight:800;line-height:1.3}.ux-act span{font-size:11.5px;opacity:.92;line-height:1.5}
+.ux-act .a1{background:linear-gradient(150deg,#4C97E8 0%,#2A6FC4 55%,#1E55A0 100%);box-shadow:0 12px 22px -8px rgba(42,111,196,.7),inset 0 2px 1px rgba(255,255,255,.7),inset 0 -12px 18px -8px rgba(10,40,100,.5)}
+.ux-act .a2{background:linear-gradient(150deg,#52C06A 0%,#2F9A44 55%,#1F7A33 100%);box-shadow:0 12px 22px -8px rgba(47,154,68,.7),inset 0 2px 1px rgba(255,255,255,.7),inset 0 -12px 18px -8px rgba(10,70,20,.5)}
+.ux-act button::before{content:"";position:absolute;z-index:0;left:4%;right:4%;top:2%;height:46%;border-radius:22px 22px 60% 60%/22px 22px 40% 40%;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,.02));pointer-events:none}
+.ux-act button::after{content:"";position:absolute;z-index:0;top:-20%;bottom:-20%;width:30%;left:-60%;transform:rotate(22deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:uxsheen 6s ease-in-out infinite;pointer-events:none}
+.ux-act button>*{position:relative;z-index:1}
+.ux-act .go2{font-style:normal;margin-top:auto;align-self:flex-start;background:rgba(255,255,255,.95);color:#1b3d36;font-weight:800;font-size:12px;padding:5px 13px;border-radius:99px}
+.ux-shh{display:flex;align-items:center;gap:12px;margin-bottom:2px}
+.ux-shh .ux-ic{width:50px;height:50px;border-radius:17px;flex:none}.ux-shh .ux-ic svg{width:26px;height:26px}
+.ux-shh b{display:block;font-size:19px;font-weight:800;color:var(--teal-d)}.ux-shh span{font-size:12.5px;color:var(--ink-2)}
+.ux-shh .cl{margin-inline-start:auto;width:34px;height:34px;border-radius:50%;background:rgba(22,94,80,.1);display:grid;place-items:center;flex:none;border:0;cursor:pointer;padding:0;color:var(--teal-d)}.ux-shh .cl svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.ux-lb~.field,#ux-sb .field{font-family:inherit}
+.ux-lb{font-size:13px;font-weight:800;color:var(--ink-2);margin:14px 2px 8px}
+.ux-opts{display:flex;flex-wrap:wrap;gap:8px}
+.ux-opt{padding:9px 15px;border-radius:99px;font-size:13.5px;font-weight:700;background:rgba(255,255,255,.8);border:1.5px solid rgba(22,94,80,.16);cursor:pointer;font-family:inherit;color:var(--ink)}
+.ux-opt.on{background:var(--teal-d);color:#fff;border-color:var(--teal-d)}.ux-opt.s.on{background:#2A6FC4;border-color:#2A6FC4}.ux-opt.t.on{background:#2F9A44;border-color:#2F9A44}.ux-opt.y.on{background:#C28A0E;border-color:#C28A0E}.ux-opt.r.on{background:#D63A2B;border-color:#D63A2B}
+.ux-rcpt{display:flex;align-items:center;gap:9px;margin-top:14px;padding:11px 14px;border-radius:18px;font-size:13.5px;font-weight:700;background:rgba(255,255,255,.7);border:1px solid var(--glass-border)}
+.ux-rcpt svg{width:22px;height:22px;color:var(--teal);flex:none}
+.ux-sendb{width:100%;margin-top:12px;height:54px;border-radius:99px;font-size:16.5px;font-weight:800;color:#fff;border:0;cursor:pointer;font-family:inherit;box-shadow:inset 0 2px 1px rgba(255,255,255,.55),0 10px 20px -6px rgba(0,0,0,.35)}
+.ux-sendb.s{background:linear-gradient(150deg,#4C97E8,#1E55A0)}.ux-sendb.t{background:linear-gradient(150deg,#52C06A,#1F7A33)}.ux-sendb[disabled]{opacity:.45;box-shadow:none;cursor:default}
+#a-tabs .tab.mid{flex:none;width:60px;height:60px;margin-top:-26px;border-radius:50%;background:linear-gradient(160deg,#2FA088,var(--teal-d));color:#fff;justify-content:center;box-shadow:0 8px 20px rgba(22,94,80,.45),inset 0 1px 0 rgba(255,255,255,.4);border:4px solid var(--cream);gap:0;padding:0}
+#a-tabs .tab.mid svg{width:26px;height:26px;stroke:#fff;fill:none}#a-tabs .tab.mid span{font-size:10px;line-height:1}
+#a-tabs .tab.mid.on{background:linear-gradient(160deg,#2FA088,var(--teal-d));box-shadow:0 8px 20px rgba(22,94,80,.45),inset 0 1px 0 rgba(255,255,255,.4);color:#fff}
+.tabbar .tab[data-atab=sections]{--d:#165E50;--f:rgba(22,94,80,.16)}
+
 .tabbar .tab[data-tab=curr]{--d:#1B7F9E;--f:#BDE6F2}
 .tabbar .tab[data-tab=roster]{--d:#2F8A3C;--f:#BFE6B5}
 .tabbar .tab[data-tab=msgs]{--d:#7A4FC2;--f:#D9C8F3}
@@ -942,13 +1036,10 @@ body.gm-on>*:not(#gm-ov){visibility:hidden!important}
     <div class="scroll" id="admin-body"></div>
     <div class="glass tabbar" id="a-tabs">
       <button class="tab on" data-atab="home"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>الرئيسية</button>
-      <button class="tab" data-atab="classes"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>الصفوف</button>
-      <button class="tab" data-atab="teachers"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>المعلمون</button>
-      <button class="tab" data-atab="reports"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>التقارير</button>
-      <button class="tab" data-atab="honor"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>التكريم</button>
+      <button class="tab" data-atab="sections"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>الأقسام</button>
+      <button class="tab mid" data-atab="search" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>بحث</span></button>
       <button class="tab" data-atab="pend"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>الرسائل<span class="badge" id="abadge" hidden></span></button>
-      <button class="tab" data-atab="game"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 11v4M6 13h4M15.5 12h.01M18 14h.01"/></svg>اللعبة</button>
-      <button class="tab" data-logout><svg viewBox="0 0 24 24"><path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg>خروج</button>
+      <button class="tab" data-atab="game"><svg viewBox="0 0 24 24"><path d="M12 3c1.5 2 2 3 2 4.2A2 2 0 0 1 12 9a2 2 0 0 1-2-1.8C10 6 10.5 5 12 3zM5 21V13a7 7 0 0 1 14 0v8M3 21h18M10 21v-4a2 2 0 0 1 4 0v4"/></svg>اللعبة</button>
     </div>
   </section>
 
@@ -3485,9 +3576,10 @@ function exportSheet(){
 /* ---------- غرفة التحكم ---------- */
 const AT=`<div class="glass top"><div class="logo inst"></div><div class="ttl">غرفة التحكم<small>المعهد الديني الابتدائي</small></div><div class="logo thabit"></div></div>`;
 const teacherOf=c=>({name:tNames(c)});
-const setATab=n=>document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.classList.toggle('on',b.dataset.atab===n));
+const ATABMAP={classes:'sections',teachers:'sections',reports:'sections',honor:'sections'};
+const setATab=n=>{n=ATABMAP[n]||n;document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.classList.toggle('on',b.dataset.atab===n));};
 function ago(view,p={}){$('student-body').innerHTML='';$('teacher-body').classList.remove('wstu');$('admin-body').classList.remove('wstu');Object.assign(T,p,{view,admin:true});if(view==='stu'&&p.sid){T.sub='hifz';T.gi=null;}if(view==='tcls'&&p.fm)T.csub='hifz';$('teacher-body').innerHTML='';
-  ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm,tact:aTAct,honor:aHonor,reports:aReports,act:aAct,game:aGame,gmset:aGmSet,gmstu:aGmStu,gmtalk:aGmTalk,gmtalkg:aGmTalkG,gmbag:aGmBag,gmisl:aGmIsl,gmprice:aGmPrice,gmpts:aGmPts,gmfeat:aGmFeat})[view]();
+  ({home:aHome,list:aList,stu:()=>{setATab('home');vStudent();},classes:aClasses,cls:aClass,teachers:aTeachers,tch:aTeacher,pend:aPend,yr:aYear,pool:aPool,plan:aPlan,term:aTerm,tact:aTAct,honor:aHonor,reports:aReports,act:aAct,sections:aSections,search:aSearch,game:aGame,gmset:aGmSet,gmstu:aGmStu,gmtalk:aGmTalk,gmtalkg:aGmTalkG,gmbag:aGmBag,gmisl:aGmIsl,gmprice:aGmPrice,gmpts:aGmPts,gmfeat:aGmFeat})[view]();
   $('admin-body').scrollTop=0;updABadge();}
 function openAStu(id,from,arg){T.ret=from==='cls'?`ago('cls',{cid:${arg}})`:from==='tch'?`ago('tch',{tid:${arg}})`:`ago('list')`;ago('stu',{sid:id});}
 const stuRow=(s,from,arg)=>{const st=statusOf(s);return `<button class="glass item" onclick="openAStu(${s.id},'${from}',${arg||0})">${avaHTML(s,'mini')}
@@ -3528,28 +3620,222 @@ function aAct(){
    (nevL.length?`<div class="sec" style="margin:16px 6px 8px"><div><b>لم يدخلوا أبداً</b><small>حسابات لم تُفتح ولا مرة</small></div><span class="pill p-red">${nevL.length}</span></div>`+nevL.map(s=>`<div class="glass item" style="cursor:default">${avaHTML(s,'mini')}<div class="grow"><div class="t">${esc(s.name)}</div><div class="mut">${clsName(s.c)}</div></div></div>`).join(''):'');
   $('af-c').onchange=()=>{AF.cid=+$('af-c').value;aAct();};
 }
-function aHome(){
-  setATab('home');const all=allStudents().filter(s=>!s.pending),n=all.length,r={green:0,gold:0,red:0,none:0};all.forEach(s=>r[statusOf(s).k]++);
-  const tile=(num,label,oc,col)=>`<button class="glass stat" onclick="${oc}"><b${col?` style="color:${col}"`:''}>${num}</b><span>${label}</span></button>`;
-  $('admin-body').innerHTML=AT+`<div class="sec" style="margin-top:2px"><b style="font-size:18px">غرفة التحكم</b></div>${pendCard()}
-  <div class="g3">${tile(n,'كل الطلبة',"openList('abc')")}${tile(CLASSES.length,'الصفوف',"ago('classes')")}${tile(TLIST.length,'المعلمون',"ago('teachers')")}</div>
-  <button class="glass item" onclick="AF.d=0;AF.cid=0;ACT=null;ago('act')" style="margin:10px 0"><div class="mini"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div><div class="grow"><div class="t">التفاعل</div><div class="mut">من فتح حسابه ومتى آخر دخول، ومن لم يدخل بعد</div></div>${CHEV}</button>
-  <div class="sec" style="margin:10px 6px 8px"><div><b>حالة الطلبة</b><small>اضغط على أي خانة لعرض طلبتها</small></div></div>
-  <div class="g3">${tile(r.green,'متقدمون',"openList('green')",'#145A31')}${tile(r.gold,'على الخطة',"openList('gold')",'#8A5A00')}${tile(r.red,'متأخرون',"openList('red')",'#7C1A10')}</div>
-  ${r.none?`<button class="glass item" onclick="openList('none')" style="margin-bottom:10px"><div class="grow"><div class="t">لم يبدأ تسجيلهم بعد</div><div class="mut">طلاب لم تُسجَّل لهم أي درجة</div></div><span class="pill p-gray">${r.none}</span>${CHEV}</button>`:''}
-  <div class="glass card" style="margin-top:2px">${bar(r,n)}${legend(r)}</div>
-  ${new Date().getDate()>=29?`<button class="glass item" onclick="T.am='';ago('tact')" style="margin-bottom:10px;background:rgba(224,162,27,.28)"><div class="grow"><div class="t">فائز شهر ${awMonth(TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStart(2,'0'))} جاهز للنشر</div><div class="mut">افتح نشاط المعلمين واضغط نشر الإعلان</div></div>${CHEV}</button>`:''}
-  <div class="sec" style="margin:14px 6px 8px"><b>المنهج والفصل الدراسي</b></div>
-  ${termDue()?`<button class="glass item" onclick="ago('term')" style="margin-bottom:10px;background:rgba(224,162,27,.28)"><div class="grow"><div class="t">انتهى الفصل الأول</div><div class="mut">اضغط للانتقال إلى الفصل الثاني</div></div>${CHEV}</button>`:''}
-  <button class="glass item" onclick="PE.term=TERM;ago('plan')" style="margin-bottom:10px"><div class="grow"><div class="t">خطة المقاطع</div><div class="mut">تعديل أسابيع الحفظ والسور والآيات لكل صف</div></div>${CHEV}</button>
-  <button class="glass item" onclick="ago('term')" style="margin-bottom:10px"><div class="grow"><div class="t">الفصل الدراسي: ${TERMN[TERM-1]}</div><div class="mut">${TERM2_READY?`الانتقال إلى الفصل ${TERMN[TERM===1?1:0]} وأرشفة الدرجات`:'الفصل الثاني · قريباً'}</div></div>${CHEV}</button>
-  <div class="sec" style="margin:14px 6px 8px"><b>نهاية السنة</b></div><button class="glass item" onclick="ago('yr')" style="margin-bottom:10px"><div class="grow"><div class="t">نقل السنة الدراسية</div><div class="mut">نقل الطلبة وأرشفة السادس ولصق الكشوف الجديدة</div></div>${CHEV}</button>
-  <div class="sec" style="margin:14px 6px 8px"><b>إضافة سريعة</b></div>
-  <div class="chips" style="margin:0 4px"><button class="btn-s" onclick="openAddStudent()">+ طالب</button><button class="btn-s" onclick="openAddClass(true)">+ صف</button><button class="btn-s" onclick="openAddTeacher()">+ معلم</button></div>
-  ${bkCard()}
-  <div class="sec" style="margin:16px 6px 8px"><b>الأكواد والتصدير</b></div>
-  <div class="chips" style="margin:0 4px"><button class="btn-s" onclick="codesAll()">تحميل أكواد كل الطلبة PDF</button><button class="btn-s" onclick="exportSheet()">تصدير البيانات</button></div>`;
+/* ===== غرفة التحكم: واجهة سريعة (أقسام ملوّنة زجاجية + بحث + اختصارات + إرسال الإشعارات) ===== */
+const UXI={
+ search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+ bell:'<path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15zM10 21h4"/>',
+ stu:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-5.5 6-5.5s6 2 6 5.5M16 5.2a3.2 3.2 0 0 1 0 5.8M18 14.8c2 .7 3 2.3 3 5.2"/>',
+ cls:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ tch:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/>',
+ rep:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ hon:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+ cur:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5zM4 5.5v16M9 8h7"/>',
+ mail:'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 7l9 6 9-6"/>',
+ mosque:'<path d="M12 3c1.5 2 2 3 2 4.2A2 2 0 0 1 12 9a2 2 0 0 1-2-1.8C10 6 10.5 5 12 3zM5 21V13a7 7 0 0 1 14 0v8M3 21h18M10 21v-4a2 2 0 0 1 4 0v4"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ act:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+ key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/>',
+ star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+ coin:'<circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9.5h4.5a1.8 1.8 0 0 1 0 3.5H10a1.8 1.8 0 0 0 0 3.5H15"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ cal:'<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+ swap:'<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+ bag:'<path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2"/>',
+ isl:'<path d="M3 17c3 0 3-2 6-2s3 2 6 2 3-2 6-2M12 13V5m0 0c-3 0-5 1-6 3m6-3c3 0 5 1 6 3"/>',
+ tag:'<path d="M3 12V4h8l10 10-8 8zM7.5 8.5h.01"/>',
+ chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+ sug:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+ pdf:'<path d="M6 3h8l5 5v13H6zM14 3v5h5M9 14h6M9 17h4"/>',
+ tool:'<path d="M12 3v12M7 10l5 5 5-5M5 20h14"/>',
+ out:'<path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/>',
+ pool:'<circle cx="12" cy="7" r="3"/><path d="M5 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5M18 3v4M16 5h4"/>',
+ send:'<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>',
+ x:'<path d="M6 6l12 12M18 6L6 18"/>',
+ chev:'<path d="M15 6l-6 6 6 6"/>',
+ grid:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+ home:'<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>',
+ ok:'<path d="M5 12.5l4.5 4.5L19 7.5"/>'
+};
+const uxIc=(k,st)=>`<svg viewBox="0 0 24 24"${st?` style="${st}"`:''}>${UXI[k]}</svg>`;
+const uxN=s=>String(s).replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').toLowerCase();
+const uxGame=()=>typeof aGame==='function';
+/* قائمة كل الأقسام: تُبنى من البيانات الحالية */
+function uxSecs(){
+  const n=allStudents().filter(s=>!s.pending).length,pt=pendTotal(),g=uxGame();
+  const L=[
+   {g:'الأشخاص',k:'stu',t:'الطلبة',d:'كل الطلبة · ابحث وصنّف',c:'stu',go:"openList('abc')",n:n},
+   {g:'الأشخاص',k:'cls',t:'الصفوف',d:CLASSES.length+' صفاً · الحلقتان الأولى والثانية',c:'cls',go:"ago('classes')",n:CLASSES.length},
+   {g:'الأشخاص',k:'tch',t:'المعلمون',d:TLIST.length+' معلماً وصفوفهم',c:'tch',go:"ago('teachers')",n:TLIST.length},
+   {g:'الأشخاص',k:'pool',t:'بانتظار التوزيع',d:'طلاب لم يُوزَّعوا على صف',c:'stu',go:"ago('pool')",n:POOL.length},
+   {g:'المتابعة',k:'rep',t:'التقارير',d:'أرقام ورسوم اليوم · حفظ PDF',c:'rep',go:"ago('reports')"},
+   {g:'المتابعة',k:'act',t:'التفاعل',d:'من فتح حسابه ومتى آخر دخول',c:'rep',go:"AF.d=0;AF.cid=0;ACT=null;ago('act')"},
+   {g:'المتابعة',k:'tch',t:'نشاط المعلمين',d:'ترتيب التفعيل الشهري',c:'tch',go:"T.am='';ago('tact')"},
+   {g:'المتابعة',k:'hon',t:'التكريم',d:'متميزو الشهر وإعلان الفائز',c:'hon',go:"ago('honor')"},
+   {g:'التواصل',k:'mail',t:'الرسائل والإشعارات',d:'الطلبات والإرسال للطلبة والمعلمين',c:'msg',go:"ago('pend',{pk:''})",n:pt,hot:1},
+   {g:'التواصل',k:'send',t:'إشعار للطلبة',d:'يظهر مرة واحدة عند دخولهم',c:'stu',go:"uxSend('students')"},
+   {g:'التواصل',k:'send',t:'إشعار للمعلمين',d:'يظهر مرة واحدة عند دخولهم',c:'tch',go:"uxSend('teachers')"},
+   {g:'التواصل',k:'key',t:'طلبات الكلمة السرية',d:STUDRESET.length+' طلاب · '+RESETREQ.length+' معلمين',c:'msg',go:"ago('pend',{pk:'pw'})",n:resetTotal(),hot:1},
+   {g:'التواصل',k:'sug',t:'المقترحات',d:SUGG.length+' مقترح من الطلبة والمعلمين',c:'msg',go:"ago('pend',{pk:'sg'})",n:suggNew().length,hot:1},
+   {g:'المنهج والسنة',k:'cur',t:'خطة المقاطع',d:'أسابيع الحفظ والسور لكل صف',c:'cur',go:"PE.term=TERM;ago('plan')"},
+   {g:'المنهج والسنة',k:'cal',t:'الفصل الدراسي',d:'الفصل '+TERMN[TERM-1]+(TERM2_READY?' · الانتقال للفصل الآخر':''),c:'cur',go:"ago('term')"},
+   {g:'المنهج والسنة',k:'swap',t:'نقل السنة الدراسية',d:'نقل الطلبة وأرشفة السادس',c:'cur',go:"ago('yr')"}
+  ];
+  if(g)L.push(
+   {g:'اللعبة',k:'coin',t:'منح نقاط',d:'لطالب أو صف أو حلقة أو كل المعهد',c:'gam',go:"ago('gmpts')"},
+   {g:'اللعبة',k:'star',t:'مساجد مميزة',d:'اختر مساجد الشهر للطلاب',c:'gam',go:"ago('gmfeat')"},
+   {g:'اللعبة',k:'clock',t:'وقت اللعب اليومي',d:'الحد اليومي لكل طالب',c:'gam',go:"ago('gmset')"},
+   {g:'اللعبة',k:'mosque',t:'مساجد الطلاب',d:'شاهد ما بناه كل طالب',c:'gam',go:"GMLST=null;ago('gmstu')"},
+   {g:'اللعبة',k:'chat',t:'المعلومات داخل اللعبة',d:'أسئلة وأجوبة لكل صف',c:'gam',go:"GMT=null;ago('gmtalk')"},
+   {g:'اللعبة',k:'bag',t:'إعدادات الحقيبة',d:'أقصى عدد من كل نوع',c:'gam',go:"ago('gmbag')"},
+   {g:'اللعبة',k:'isl',t:'الجزر ونهاية السنة',d:'افتح الجزر الجديدة للطلاب',c:'gam',go:"ago('gmisl')"},
+   {g:'اللعبة',k:'tag',t:'أسعار المتجر',d:'الأسعار والتخفيضات',c:'gam',go:"ago('gmprice')"});
+  L.push(
+   {g:'أدوات',k:'pdf',t:'أكواد الطلبة PDF',d:'تحميل أكواد الدخول لكل الطلبة',c:'tool',go:"codesAll()"},
+   {g:'أدوات',k:'tool',t:'تصدير البيانات',d:'ملف بالدرجات والمقاطع',c:'tool',go:"exportSheet()"},
+   {g:'أدوات',k:'plus',t:'إضافة طالب',d:'تسجيل طالب جديد في صف',c:'tool',go:"openAddStudent()"},
+   {g:'أدوات',k:'plus',t:'إضافة صف',d:'صف جديد وحلقته',c:'tool',go:"openAddClass(true)"},
+   {g:'أدوات',k:'plus',t:'إضافة معلم',d:'حساب معلم جديد',c:'tool',go:"openAddTeacher()"});
+  return L;
 }
+const uxTile=(t,sub)=>`<button class="ux-cat uxc-${t.c}" onclick="${t.go}"><div class="ux-ic">${uxIc(t.k)}</div><span>${t.t}</span>${sub?`<small>${sub}</small>`:''}${t.hot&&t.n?`<i class="ux-bd">${t.n}</i>`:''}</button>`;
+const uxRow=t=>`<button class="glass ux-row uxc-${t.c}" onclick="${t.go}"><div class="ux-mi">${uxIc(t.k)}</div><div class="g"><b>${t.t}</b><span>${t.d}</span></div>${t.hot&&t.n?`<em class="ux-pill">${t.n}</em>`:''}<span class="ch">${uxIc('chev')}</span></button>`;
+function uxHello(){
+  const d=new Date().toLocaleDateString('ar',{weekday:'long',day:'numeric',month:'long'}),pt=pendTotal();
+  return `<div class="ux-hello"><button class="ux-av" onclick="uxMenu()" aria-label="الحساب">م</button><div class="tx"><b>السلام عليكم، مدير المعهد</b><span>${d} · الفصل ${TERMN[TERM-1]}</span></div>
+   <button class="glass ux-ib" onclick="ago('pend',{pk:''})" aria-label="الطلبات">${uxIc('bell')}${pt?`<i class="dot">${pt}</i>`:''}</button></div>
+   <button class="glass ux-sbar" onclick="ago('search')">${uxIc('search')}ابحث عن طالب أو معلم أو صف أو قسم…</button>`;
+}
+function uxMenu(){
+  sheet(`<div class="t" style="font-size:17px">حساب الإدارة</div><div class="mut" style="margin:2px 0 12px">المعهد الديني الابتدائي</div>
+   <button class="btn-s" style="width:100%;padding:13px;color:#7C1A10" onclick="closeSheet();doLogout()">تسجيل الخروج</button>`);
+}
+function uxAlerts(){
+  const A=[],c=(cls,ic,t,p,go,b)=>A.push(`<button class="glass ux-al ${cls}" onclick="${go}"><div class="n"><div class="b">${uxIc(ic)}</div>${t}</div><p>${p}</p><span class="go">${b}</span></button>`);
+  if(resetTotal())c('r','key',resetTotal()+' طلبات كلمة سرية','طلاب ومعلمون ينتظرون ردك لاسترجاع الدخول',"ago('pend',{pk:'pw'})",'ردّ الآن');
+  if(pendList().length)c('m','stu',pendList().length+' طالب جديد','أضافهم معلمون وينتظرون اعتمادك',"ago('pend',{pk:'stu'})",'راجعهم');
+  if(creqPend().length)c('m','cls',creqPend().length+' طلب صف','معلمون يطلبون تدريس صفوف',"ago('pend',{pk:'cls'})",'راجعها');
+  if(suggNew().length)c('g','sug',suggNew().length+' مقترح جديد','من الطلبة والمعلمين للإدارة',"ago('pend',{pk:'sg'})",'اقرأها');
+  if(termDue())c('g','cal','انتهى الفصل الأول','اضغط للانتقال إلى الفصل الثاني',"ago('term')",'انتقل الآن');
+  if(new Date().getDate()>=29)c('g','hon','فائز الشهر جاهز للنشر','افتح نشاط المعلمين واضغط نشر الإعلان',"T.am='';ago('tact')",'انشر الإعلان');
+  if(!A.length)A.push(`<div class="glass ux-al ok"><div class="n"><div class="b">${uxIc('ok')}</div>كل شيء تمام</div><p>لا توجد طلبات تنتظر قرارك الآن</p></div>`);
+  return `<div class="ux-sec"><b>يحتاج انتباهك</b></div><div class="ux-als">${A.join('')}</div>`;
+}
+function aHome(){
+  setATab('home');
+  const all=allStudents().filter(s=>!s.pending),n=all.length,r={green:0,gold:0,red:0,none:0};all.forEach(s=>r[statusOf(s).k]++);
+  const S=uxSecs(),by=k=>S.find(x=>x.t===k),pt=pendTotal(),g=uxGame();
+  const grid=[
+   uxTile(by('الطلبة'),n),uxTile(by('الصفوف'),CLASSES.length),uxTile(by('المعلمون'),TLIST.length),uxTile(by('التقارير'),'اليوم'),
+   uxTile(by('التكريم'),''),
+   uxTile({c:'msg',k:'mail',t:'الرسائل',go:"ago('pend',{pk:''})",hot:1,n:pt},pt?pt+' جديد':''),
+   g?uxTile({c:'gam',k:'mosque',t:'اللعبة',go:"ago('game')"},'ابنِ مسجدك'):uxTile(by('التفاعل'),''),
+   uxTile({c:'cur',k:'cur',t:'المنهج',go:"PE.term=TERM;ago('plan')"},'الفصل '+TERMN[TERM-1])
+  ].join('');
+  const chip=(ic,t,go,cls)=>`<button class="glass ux-chip ${cls||''}" onclick="${go}">${uxIc(ic)}${t}</button>`;
+  const stat=(num,label,oc,col)=>`<button class="glass ux-stat" onclick="${oc}"><b style="color:${col}">${num}</b><span>${label}</span></button>`;
+  $('admin-body').innerHTML=uxHello()+uxAlerts()+
+  `<div class="ux-sec"><b>الأقسام</b><a onclick="ago('sections')">عرض الكل ‹</a></div><div class="ux-grid">${grid}</div>
+  <div class="ux-sec"><b>اختصارات سريعة</b></div>
+  <div class="ux-chips">${chip('send','إشعار للطلبة',"uxSend('students')",'cs')}${chip('send','إشعار للمعلمين',"uxSend('teachers')",'ct')}${chip('plus','طالب',"openAddStudent()")}${chip('plus','صف',"openAddClass(true)")}${chip('plus','معلم',"openAddTeacher()")}${g?chip('coin','منح نقاط',"ago('gmpts')")+chip('star','مساجد مميزة',"ago('gmfeat')"):''}${chip('pdf','أكواد الطلبة',"codesAll()")}${chip('tool','تصدير البيانات',"exportSheet()")}</div>
+  <div class="ux-sec"><b>حالة الطلبة</b><small>اضغط لعرض طلبتها</small></div>
+  <div class="ux-stat3">${stat(r.green,'متقدمون',"openList('green')",'#145A31')}${stat(r.gold,'على الخطة',"openList('gold')",'#8A5A00')}${stat(r.red,'متأخرون',"openList('red')",'#7C1A10')}</div>
+  <div class="glass card" style="margin-top:10px">${bar(r,n)}${legend(r)}</div>
+  ${r.none?`<button class="glass ux-row" onclick="openList('none')" style="margin-top:10px"><div class="g"><b>لم يبدأ تسجيلهم بعد</b><span>طلاب لم تُسجَّل لهم أي درجة</span></div><em class="ux-pill gray">${r.none}</em><span class="ch">${uxIc('chev')}</span></button>`:''}
+  <div class="ux-sec"><b>المتابعة والمنهج</b></div>
+  ${[by('التفاعل'),by('خطة المقاطع'),by('الفصل الدراسي'),by('نقل السنة الدراسية')].map(uxRow).join('')}
+  ${typeof bkCard==='function'?bkCard():''}`;
+}
+/* صفحة الأقسام: كل شيء بمجموعات */
+let UXG='الكل';
+function aSections(){
+  setATab('sections');
+  const S=uxSecs(),gs=['الكل',...new Set(S.map(x=>x.g)),'الحساب'],show=UXG==='الكل'?[...new Set(S.map(x=>x.g)),'الحساب']:[UXG];
+  const acc={g:'الحساب',k:'out',t:'تسجيل الخروج',d:'الخروج من حساب الإدارة',c:'tool',go:"doLogout()"};
+  $('admin-body').innerHTML=`<div class="ux-ttl">الأقسام<small>كل ما في غرفة التحكم، مرتب بمجموعات</small></div>
+  <div class="ux-fch">${gs.map(x=>`<button class="glass ux-chip${x===UXG?' on':''}" onclick="UXG='${x}';aSections()">${x}</button>`).join('')}</div>`+
+  show.map(x=>`<div class="ux-grp"><h4>${x}</h4>${(x==='الحساب'?[acc]:S.filter(t=>t.g===x)).map(uxRow).join('')}</div>`).join('');
+}
+/* البحث */
+const UXQ={q:'',f:'الكل',more:0};
+const uxRec=()=>{try{return JSON.parse(localStorage.getItem('adm_recent')||'[]');}catch(e){return[];}};
+const uxRecAdd=q=>{q=q.trim();if(q.length<2)return;try{const l=[q,...uxRec().filter(x=>x!==q)].slice(0,6);localStorage.setItem('adm_recent',JSON.stringify(l));}catch(e){}};
+function openAStuS(id){uxRecAdd(UXQ.q);T.ret="ago('search')";ago('stu',{sid:id});}
+function aSearch(){
+  setATab('search');
+  $('admin-body').innerHTML=`<div class="ux-sfw"><div class="glass ux-sfield">${uxIc('search')}<input id="ux-q" placeholder="اسم طالب أو معلم أو صف أو قسم" value="${esc(UXQ.q)}" autocomplete="off" enterkeyhint="search"><button class="x" id="ux-x" aria-label="مسح" ${UXQ.q?'':'hidden'}>${uxIc('x')}</button></div>
+   <div class="ux-fch" style="margin-top:10px">${['الكل','طلاب','معلمون','صفوف','أقسام'].map(f=>`<button class="glass ux-chip${f===UXQ.f?' on':''}" onclick="UXQ.f='${f}';UXQ.more=0;aSearch()">${f}</button>`).join('')}</div></div><div id="ux-res"></div>`;
+  const i=$('ux-q');i.addEventListener('input',()=>{UXQ.q=i.value;UXQ.more=0;$('ux-x').hidden=!i.value;uxRes();});
+  $('ux-x').onclick=()=>{UXQ.q='';i.value='';$('ux-x').hidden=true;uxRes();i.focus();};
+  uxRes();setTimeout(()=>{try{i.focus({preventScroll:true});}catch(e){}},60);
+}
+function uxRes(){
+  const q=UXQ.q.trim(),nq=uxN(q),f=UXQ.f,show=k=>f==='الكل'||f===k,box=$('ux-res');if(!box)return;
+  if(!q){
+    const rec=uxRec();
+    box.innerHTML=(rec.length?`<div class="ux-rh"><span>عمليات بحث سابقة</span></div><div class="ux-chips" style="flex-wrap:wrap;overflow:visible;margin:0">${rec.map(x=>`<button class="glass ux-chip" onclick="UXQ.q=this.dataset.q;aSearch()" data-q="${esc(x)}">${uxIc('search')}${esc(x)}</button>`).join('')}</div>`:'')+
+     `<div class="ux-rh"><span>اختصارات مقترحة</span></div>`+['الطلبة','الرسائل والإشعارات','التقارير'].map(t=>uxRow(uxSecs().find(x=>x.t===t))).join('');
+    return;
+  }
+  const stu=show('طلاب')?allStudents().filter(s=>!s.pending&&uxN(s.name).includes(nq)):[],
+   tch=show('معلمون')?TLIST.filter(t=>uxN(t.name).includes(nq)):[],
+   cls=show('صفوف')?CLASSES.filter(c=>uxN(clsName(c)).includes(nq)||uxN(clsName(c).replace(/[()]/g,'')).includes(nq)):[],
+   sc=show('أقسام')?uxSecs().filter(t=>uxN(t.t+' '+t.d).includes(nq)):[];
+  const hl=t=>{const n=uxN(t),i=n.indexOf(nq);return i<0?esc(t):esc(t.slice(0,i))+'<mark>'+esc(t.slice(i,i+q.length))+'</mark>'+esc(t.slice(i+q.length));};
+  const cap=30+UXQ.more*30,shown=stu.slice(0,cap);let h='';
+  if(stu.length)h+=`<div class="ux-rh"><span>الطلبة</span><span>${stu.length}</span></div>`+shown.map(s=>{const st=statusOf(s);return `<button class="glass ux-row" onclick="openAStuS(${s.id})">${avaHTML(s,'mini')}<div class="g"><b>${hl(s.name)}</b><span>${clsName(s.c)}</span></div><span class="pill ${st.p}">${stShort(st)}</span><span class="ch">${uxIc('chev')}</span></button>`;}).join('')+(stu.length>cap?`<button class="btn-s" style="width:100%;margin-top:8px;padding:10px" onclick="UXQ.more++;uxRes()">عرض المزيد (${stu.length-cap})</button>`:'');
+  if(tch.length)h+=`<div class="ux-rh"><span>المعلمون</span><span>${tch.length}</span></div>`+tch.map(t=>{const cs=CLASSES.filter(c=>c.tids.includes(t.id)).map(c=>clsName(c).replace('الصف ','')).join(' · ');return `<button class="glass ux-row uxc-tch" onclick="uxRecAdd(UXQ.q);ago('tch',{tid:${t.id}})"><div class="ux-mi">${uxIc('tch')}</div><div class="g"><b>${hl(t.name)}</b><span>${cs||'بدون صفوف'}</span></div><span class="ch">${uxIc('chev')}</span></button>`;}).join('');
+  if(cls.length)h+=`<div class="ux-rh"><span>الصفوف</span><span>${cls.length}</span></div>`+cls.map(c=>`<button class="glass ux-row uxc-cls" onclick="uxRecAdd(UXQ.q);ago('cls',{cid:${c.id}})"><div class="ux-mi">${uxIc('cls')}</div><div class="g"><b>${hl(clsName(c))}</b><span>${c.students.filter(s=>!s.pending).length} طالب · ${esc(tNames(c)||'بدون معلم')}</span></div><span class="ch">${uxIc('chev')}</span></button>`).join('');
+  if(sc.length)h+=`<div class="ux-rh"><span>الأقسام</span><span>${sc.length}</span></div>`+sc.map(uxRow).join('');
+  box.innerHTML=h||`<div class="glass card empty">ما لقيت «${esc(q)}»<br>جرّب جزءاً من الاسم، أو غيّر التصنيف</div>`;
+}
+/* إرسال إشعار (للطلبة أو للمعلمين) من أي مكان */
+const UXS={aud:'students',sc:'all',ref:0,lv:'info',title:'',text:''};
+const UXT={students:[['تذكير بموعد التسميع','غداً موعد التسميع، لا تنسوا مراجعة المقاطع'],['إجازة غداً','غداً إجازة بإذن الله، نراكم بعدها'],['اختبار الحفظ','اختبار الحفظ يوم الثلاثاء، وفقكم الله'],['أحسنتم','أحسنتم، بارك الله فيكم وفي جهودكم']],
+ teachers:[['اجتماع المعلمين','اجتماع المعلمين بعد الصلاة في قاعة المعهد'],['رفع الدرجات','رجاء رفع الدرجات اليوم قبل نهاية الدوام'],['تسجيل الحضور','تذكير بتسجيل الحضور والغياب'],['شكراً لكم','شكراً لجهودكم الطيبة مع الطلبة']]};
+function uxSend(aud){
+  Object.assign(UXS,{aud,sc:'all',ref:0,lv:'info',title:'',text:''});
+  sheet('<div id="ux-sb"></div>');uxSheetDraw();
+}
+function uxRcpt(){
+  const st=UXS.aud==='students',cls=amCls();
+  if(st){
+    if(UXS.sc==='all')return{n:amAllN(),label:'جميع الطلبة'};
+    if(UXS.sc==='halaqa'){const h=UXS.ref;return{n:CLASSES.filter(x=>halaqa(x.g)===h).reduce((a,x)=>a+amStu(x).length,0),label:'طلبة الحلقة '+(h===1?'الأولى':'الثانية')};}
+    const c=cls.find(x=>x.id===UXS.ref);return c?{n:amStu(c).length,label:'طلبة '+clsName(c)}:{n:0,label:''};
+  }
+  if(UXS.sc==='all')return{n:TLIST.length,label:'جميع المعلمين'};
+  const t=TLIST.find(x=>x.id===UXS.ref);return t?{n:1,label:t.name}:{n:0,label:''};
+}
+function uxSheetDraw(){
+  const st=UXS.aud==='students',cls=amCls(),rc=uxRcpt(),b=$('ux-sb');if(!b)return;
+  const opt=(on,fn,t,x)=>`<button type="button" class="ux-opt${on?' on':''}${x?' '+x:''}" onclick="${fn}">${t}</button>`;
+  const aud=st?[['all','جميع الطلبة'],['halaqa','حسب الحلقة'],['class','حسب الصف']]:[['all','جميع المعلمين'],['teacher','معلم محدد']];
+  let sub='';
+  if(UXS.sc==='halaqa')sub=opt(UXS.ref===1,"UXS.ref=1;uxSheetDraw()",'الحلقة الأولى')+opt(UXS.ref===2,"UXS.ref=2;uxSheetDraw()",'الحلقة الثانية');
+  else if(UXS.sc==='class')sub=cls.map(c=>opt(UXS.ref===c.id,`UXS.ref=${c.id};uxSheetDraw()`,clsName(c))).join('');
+  else if(UXS.sc==='teacher')sub=TLIST.slice().sort((a,b)=>a.name.localeCompare(b.name,'ar')).map(t=>opt(UXS.ref===t.id,`UXS.ref=${t.id};uxSheetDraw()`,esc(t.name))).join('');
+  const ok=UXS.title.trim().length>0&&UXS.text.trim().length>0&&rc.n>0;
+  b.innerHTML=`<div class="ux-shh"><div class="ux-ic uxc-${st?'stu':'tch'}">${uxIc(st?'stu':'tch')}</div><div><b>إشعار ${st?'للطلبة':'للمعلمين'}</b><span>يظهر مرة واحدة عند دخول المستلم</span></div><button class="cl" onclick="closeSheet()" aria-label="إغلاق">${uxIc('x')}</button></div>
+   <div class="ux-lb">إلى من؟</div><div class="ux-opts">${aud.map(a=>opt(UXS.sc===a[0],`UXS.sc='${a[0]}';UXS.ref=0;uxSheetDraw()`,a[1],st?'s':'t')).join('')}</div>
+   ${sub?`<div class="ux-opts" style="margin-top:9px">${sub}</div>`:''}
+   <div class="ux-lb">نوع الإشعار</div><div class="ux-opts">${opt(UXS.lv==='info',"UXS.lv='info';uxSheetDraw()",'إشعار عام (أصفر)','y')}${opt(UXS.lv==='remind',"UXS.lv='remind';uxSheetDraw()",'تذكير (أحمر متوهج)','r')}</div>
+   <div class="ux-lb">العنوان</div><input class="field" id="ux-st" maxlength="40" placeholder="مثلاً: تذكير، انتباه، اجتماع" value="${esc(UXS.title)}">
+   <div class="ux-lb">التفاصيل</div><textarea class="field" id="ux-sx" maxlength="600" placeholder="اكتب الإشعار هنا" style="min-height:96px">${esc(UXS.text)}</textarea>
+   <div class="ux-lb" style="margin-top:12px">قوالب سريعة</div><div class="ux-opts">${UXT[UXS.aud].map((x,i)=>opt(false,`UXS.title=UXT[UXS.aud][${i}][0];UXS.text=UXT[UXS.aud][${i}][1];uxSheetDraw()`,x[0])).join('')}</div>
+   <div class="ux-rcpt" id="ux-rc"></div><div class="fe" id="ux-er"></div>
+   <button class="ux-sendb ${st?'s':'t'}" id="ux-go">إرسال الإشعار</button>`;
+  const upd=()=>{const r=uxRcpt(),ok=UXS.title.trim()&&UXS.text.trim()&&r.n>0;$('ux-rc').innerHTML=`${uxIc(st?'stu':'tch')}<span>${r.n?`سيصل إلى <b>${r.label}</b> · ${r.n} ${st?'طالب':'معلم'}`:'اختر المستلمين أولاً'}</span>`;$('ux-go').disabled=!ok;$('ux-er').textContent='';};
+  const t=$('ux-st'),x=$('ux-sx');t.addEventListener('input',()=>{UXS.title=t.value;upd();});x.addEventListener('input',()=>{UXS.text=x.value;upd();});
+  upd();
+  $('ux-go').onclick=async()=>{const r=uxRcpt();if(!UXS.title.trim()||!UXS.text.trim()||!r.n)return;const g=$('ux-go');g.disabled=true;
+    const res=await srv('admin_send',{p_kind:'note',p_aud:UXS.aud,p_level:UXS.lv,p_title:UXS.title.trim(),p_body:UXS.text.trim(),p_scope:UXS.sc==='teacher'&&!UXS.ref?'all':UXS.sc,p_ref:UXS.sc==='all'?null:UXS.ref,p_label:r.label});
+    if(res.error){g.disabled=false;$('ux-er').textContent=res.error==='none'?'لا يوجد مستلمون لهذا الاختيار':res.error==='net'?'تعذّر الاتصال بالخادم':'تعذّر الإرسال، حاول مرة ثانية';return;}
+    await sync(true);closeSheet();toast('تم إرسال الإشعار إلى '+res.n+' '+(st?'طالب':'معلم'));UXS.title='';UXS.text='';
+    if(T.view==='pend'||T.view==='home')ago(T.view,T.view==='pend'?{pk:T.pk||''}:{});};
+}
+/* أزرار الإرسال الكبيرة أعلى صفحة الرسائل */
+const uxMsgAct=()=>`<div class="ux-act"><button class="a1" onclick="uxSend('students')"><div class="bb">${uxIc('stu')}</div><b>إرسال إشعار للطلبة</b><span>لكل الطلبة أو حلقة أو صف</span><i class="go2">إشعار جديد ›</i></button><button class="a2" onclick="uxSend('teachers')"><div class="bb">${uxIc('tch')}</div><b>إرسال إشعار للمعلمين</b><span>لكل المعلمين أو معلم محدد</span><i class="go2">إشعار جديد ›</i></button></div>`;
+
 function aList(){
   setATab('home');
   $('admin-body').innerHTML=AT+`<div class="hdr"><button class="glass iconbtn" onclick="ago('home')" aria-label="رجوع">${BACK}</button>
@@ -3929,7 +4215,7 @@ function aPend(){
   setATab('pend');const pk=T.pk||'';let html;
   if(['ms','mt','mn','sent'].includes(pk))return aSend(pk);
   if(!pk){
-    html=`<div class="sec" style="margin-top:2px"><b style="font-size:18px">الرسائل</b></div><div class="sec" style="margin-top:6px"><div><b>الطلبات</b><small>${pendTotal()?pendTotal()+' بانتظار قرارك':'لا توجد طلبات جديدة'}</small></div></div>`+
+    html=`<div class="sec" style="margin-top:2px"><b style="font-size:18px">الرسائل</b></div>${uxMsgAct()}<div class="sec" style="margin-top:6px"><div><b>الطلبات</b><small>${pendTotal()?pendTotal()+' بانتظار قرارك':'لا توجد طلبات جديدة'}</small></div></div>`+
       pendTile('طلبات الكلمات السرية',STUDRESET.length+' من طلاب · '+RESETREQ.length+' من معلمين',resetTotal(),'pw','rq-pw')+
       pendTile('أرشيف الطلبات','طلبات الكلمات السرية التي عالجتها · تقدر ترجع أي طلب',ARCHRES.length,'pwa','rq-pw')+
       pendTile('طلبات إضافة صفوف','معلمون يطلبون تدريس صفوف',creqPend().length,'cls','rq-c')+
@@ -4092,7 +4378,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='170289d4c6b9';
+const BUILD='5a3e5e73803b';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
