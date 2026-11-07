@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="398018697e81">
+<meta name="build" content="170289d4c6b9">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -255,6 +255,7 @@ textarea.field{min-height:92px;resize:none;line-height:1.7}
 .chat{display:flex;flex-direction:column;gap:10px;margin:6px 0 12px}
 .bub{max-width:80%;padding:10px 14px;border-radius:20px;font-size:14px;line-height:1.7}
 .bub small{display:block;font-size:10.5px;opacity:.75;margin-top:2px}
+.bub .mdel{border:0;background:rgba(255,255,255,.22);color:#fff;font:inherit;font-size:10.5px;font-weight:600;padding:2px 9px;border-radius:99px;margin-inline-start:8px;cursor:pointer}
 .bub.me{align-self:flex-start;background:linear-gradient(180deg,#2FA088,var(--teal));color:#fff;border-bottom-right-radius:6px}
 .bub.them{align-self:flex-end;background:rgba(255,255,255,.75);border:1px solid var(--glass-border);border-bottom-left-radius:6px}
 .sendrow{display:flex;gap:8px;align-items:center}
@@ -1087,11 +1088,11 @@ function hydrate(st){
   THREADS.length=0;SMSG.length=0;const tm={};
   if(ROLE==='teacher'){
     (st.msgs||[]).forEach(m=>{const k=m.kind+':'+m.ref;let th=tm[k];if(!th){th={id:k,tid:st.me,kind:m.kind,ref:m.ref,unread:0,msgs:[]};tm[k]=th;}
-      th.msgs.push({me:!m.fs,fs:!!m.fs,t:m.txt,w:msgWhen(m.at),at:m.at});if(m.fs&&!m.seen)th.unread++;});
+      th.msgs.push({id:m.id,me:!m.fs,fs:!!m.fs,t:m.txt,w:msgWhen(m.at),at:m.at});if(m.fs&&!m.seen)th.unread++;});
     Object.values(tm).sort((a,b)=>b.msgs[b.msgs.length-1].at.localeCompare(a.msgs[a.msgs.length-1].at)).forEach(x=>THREADS.push(x));
   }else if(ROLE==='student'){
     (st.msgs||[]).forEach(m=>{let th=tm[m.tid];if(!th){th={tid:m.tid,msgs:[],unread:0};tm[m.tid]=th;}
-      th.msgs.push({me:!!m.fs,t:m.txt,w:msgWhen(m.at),at:m.at,cls:m.kind==='class'});if(!m.fs&&!m.seen)th.unread++;});
+      th.msgs.push({id:m.id,me:!!m.fs,t:m.txt,w:msgWhen(m.at),at:m.at,cls:m.kind==='class'});if(!m.fs&&!m.seen)th.unread++;});
     Object.values(tm).sort((a,b)=>b.msgs[b.msgs.length-1].at.localeCompare(a.msgs[a.msgs.length-1].at)).forEach(x=>SMSG.push(x));
   }
   CREQ.length=0;(st.creq||[]).forEach(r=>CREQ.push({id:r.id,tid:r.tid,cid:r.cid,status:r.status,at:new Date(r.at)}));
@@ -2120,6 +2121,19 @@ const smReady=()=>smCnt()>=1&&SM.ts.length>=1&&(!SM.oth||SM.text.trim().length>=
 function updSBadge(){const n=SMSG.reduce((a,x)=>a+x.unread,0)+admUnread(),b=$('smsg-badge');if(b){b.hidden=!n;b.textContent=n;}}
 const smShort=n=>{const p=n.replace(/^الأستاذ\s+/,'').split(' ');return 'الأستاذ '+(p[0]==='د.'?p.slice(0,2):p.slice(0,2)).join(' ');};
 const smBody=m=>esc(m).replace(/\n/g,'<br>');
+const MSG_WIN=3600000;
+const msgDelBtn=m=>m.me&&m.id&&Date.now()-new Date(m.at).getTime()<MSG_WIN?`<button type="button" class="mdel" onclick="msgDel(${m.id})">حذف</button>`:'';
+function msgDel(id){
+  confirmBox('تحذف هذي الرسالة؟ تنحذف عند الطرف الثاني بعد.',async()=>{
+    const r=await srv('msg_delete',{p_id:id});
+    if(r.error==='late'){toast('مرّت أكثر من ساعة، ما تنحذف الرسالة',true);await sync(true);msgRefresh();return;}
+    if(r.error&&r.error!=='gone'){toast('تعذّر الحذف، حاول مرة ثانية',true);return false;}
+    await sync(true);toast('تم حذف الرسالة');msgRefresh();});
+}
+function msgRefresh(){
+  if(ROLE==='student'){renderSMsg();return;}
+  if(T.view==='thread'){if(THREADS.find(x=>x.id===T.tid))vThread();else go('msgs');}
+}
 const sugBlock=()=>`<div class="sec" style="margin:18px 6px 8px"><div><b>للمقترحات</b><small>التواصل مع الإدارة</small></div></div>
   <button class="glass item" onclick="openSuggest()"><div class="mini"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg></div><div class="grow"><div class="t">اقتراح للإدارة</div><div class="mut">اكتب مقترحك وما تتمناه، ويصل لإدارة المعهد</div></div>${CHEV}</button>`;
 function openSuggest(){
@@ -2153,7 +2167,7 @@ function smNewTo(tid){SM.view='new';SM.ts=tid?[tid]:(CURS.c.tids.length===1?[CUR
 function smChat(box,s){
   const th=SMSG.find(q=>q.tid===SM.tid)||{msgs:[]},x=tById(SM.tid);
   box.innerHTML=`<div class="hdr"><button class="glass iconbtn" onclick="smBack()" aria-label="رجوع">${BACK}</button><div class="ht"><b>${esc(x.name)}</b><span>معلم القرآن الكريم</span></div></div>
-   ${th.msgs.length?`<div class="chat">${th.msgs.map(m=>`<div class="bub ${m.me?'me':'them'}">${m.cls?'<span class="tag s">لكل الصف</span><br>':''}${smBody(m.t)}<small>${m.w}</small></div>`).join('')}</div>`:'<div class="glass card empty">ما فيه رسائل بعد</div>'}
+   ${th.msgs.length?`<div class="chat">${th.msgs.map(m=>`<div class="bub ${m.me?'me':'them'}">${m.cls?'<span class="tag s">لكل الصف</span><br>':''}${smBody(m.t)}<small>${m.w}${msgDelBtn(m)}</small></div>`).join('')}</div>`:'<div class="glass card empty">ما فيه رسائل بعد</div>'}
    <div class="glass card" style="padding:12px 14px"><div class="row sp"><span class="t" style="font-size:14px">تبي تسأل شيء؟</span><button class="btn-s" onclick="smNewTo(${SM.tid})">+ رسالة جديدة</button></div></div><div style="height:84px"></div>`;
 }
 function smNew(box,s){
@@ -3035,7 +3049,7 @@ function openThread(id){const t=THREADS.find(x=>x.id===id);if(t&&t.unread&&t.kin
 function vThread(){
   setTab('msgs');const t=THREADS.find(x=>x.id===T.tid);
   $('teacher-body').innerHTML=TOPT()+head(esc(tName(t)),tSub(t),"go('msgs')")+
-  `<div class="chat">${t.msgs.map(m=>`<div class="bub ${m.me?'me':'them'}">${m.fs?'<span class="tag s">من الطالب</span><br>':''}${esc(m.t).replace(/\n/g,'<br>')}<small>${m.w}</small></div>`).join('')}</div>
+  `<div class="chat">${t.msgs.map(m=>`<div class="bub ${m.me?'me':'them'}">${m.fs?'<span class="tag s">من الطالب</span><br>':''}${esc(m.t).replace(/\n/g,'<br>')}<small>${m.w}${msgDelBtn(m)}</small></div>`).join('')}</div>
    <div class="sendrow"><input class="field" id="reply" placeholder="اكتب رسالتك" maxlength="300"><button class="btn" id="send" style="padding:11px 18px">إرسال</button></div><div class="fe" id="re"></div>`;
   const send=async()=>{const v=$('reply').value.trim();if(!v){$('re').textContent='اكتب رسالة أولاً';return;}
     const r=await sop('send_msg',{kind:t.kind,ref:t.ref,text:v});if(r.error){$('re').textContent='تعذّر الإرسال';return;}
@@ -4078,7 +4092,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='398018697e81';
+const BUILD='170289d4c6b9';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
