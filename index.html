@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="278c55d32349">
+<meta name="build" content="7412873b7f95">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -448,9 +448,9 @@ svg.chr{shape-rendering:crispEdges;overflow:visible;display:block}
 .lvit.pos{background:rgba(46,170,94,.28);color:#145A31}
 .lvit.neg{background:rgba(214,58,43,.24);color:#7C1A10}
 .lvit.none{background:rgba(120,134,130,.15);color:var(--ink-2);font-weight:400}
-.lvchar svg{width:70px;height:140px;margin:0 auto}
+.lvchar{text-align:center}.lvchar svg{width:84px;height:168px;margin:0 auto}
 .lvname{text-align:center;font-weight:800;font-size:16px;color:var(--teal-d);margin-top:10px}
-.lvpts{text-align:center;font-size:12px;color:var(--ink-2);margin-top:2px}
+.lvpts{text-align:center;margin-top:6px}.ptc{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 28%,#FFE8A1,#E0A21B 70%);border:2px solid rgba(255,255,255,.85);box-shadow:0 4px 12px rgba(160,110,0,.28),inset 0 -6px 10px rgba(120,80,0,.18);color:#5A3B00;line-height:1.05}.ptc b{font-size:21px;font-weight:800}.ptc small{font-size:9.5px;font-weight:700}
 .lvnote{text-align:center;font-size:12px;color:var(--ink);margin-top:6px;line-height:1.7}
 .tr-char svg.chr{width:44px;height:88px}
 @keyframes ch_runbob{0%{transform:translateY(0)}50%{transform:translateY(-1.1px)}100%{transform:translateY(0)}}
@@ -1456,28 +1456,16 @@ const sprite=(lv,run)=>{
 };
 return sprite;})();
 const LV_NAMES=['قارئ مبتدئ','قارئ ناشئ','قارئ مجتهد','قارئ متقن','قارئ متميز','قارئ محترف'];
-const LV_NEED=[0,120,300,480,660,850];
+const LV_OUT=['قميص وبنطلون','ثوب','ثوب وطاقية','ثوب وغترة','ثوب وغترة وعقال','بشت'];
 const LV_START=new Date(2026,8,6),DAYMS=864e5;
 const wkStart=d=>{const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-x.getDay());return x;};
-const BPT={'التزام بالهدوء':6,'مساعدة زميل':5,'مشاركة فعّالة':6,'حسن الأدب':5,'مثابرة':6,'اجتهاد':6};   // إيجابي: يجمع
-const BNT={'تأخر عن الحلقة':10,'كثرة الكلام':8,'نسيان المذكرة':12,'عدم الانتباه':6,'إهمال':10,'كثرة حركة':8,'نسيان المصحف':12};      // سلبي: يطرح
-function lvCalc(beh,today){
-  let pos=0,neg=0;
-  beh.forEach(b=>{if(b[2]>today)return;if(b[0]==='+')pos+=BPT[b[1]]||5;else neg+=BNT[b[1]]||8;});
-  return{pos,neg,bonus:0,net:pos-neg};
-}
-function lvLevel(beh,today){
-  if(!beh.length)return 1;
-  const dates=[...new Set(beh.filter(b=>b[2]<=today).map(b=>+b[2]))].sort((a,b)=>a-b);let best=1;
-  dates.forEach(k=>{const n=lvCalc(beh,new Date(k)).net;let p=1;LV_NEED.forEach((v,i)=>{if(n>=v)p=i+1;});best=Math.max(best,p);});
-  return best;
-}
-const lvName=s=>LV_NAMES[lvLevel(s.beh,TODAY)-1];
-function ptsGuide(){
-  const li=(m,sg,cls)=>Object.keys(m).map(k=>`<div class="lvit ${cls}">${k}<small>${sg}${m[k]} نقطة</small></div>`).join('');
-  return `<div class="glass card"><div class="t" style="margin-bottom:10px">كيف أجمع النقاط؟</div><div class="bcols"><div class="lvcol"><div class="bhead pos">سلوك إيجابي يزيد نقاطك</div>${li(BPT,'+','pos')}</div><div class="lvcol"><div class="bhead neg">سلوك سلبي ينقصها</div>${li(BNT,'−','neg')}</div></div>
-   <div class="mut" style="margin-top:10px;text-align:center">تنتقل بين المستويات عند 120 و300 و480 و660 و850 نقطة.</div></div>`;
-}
+const BPT={'التزام بالهدوء':6,'مساعدة زميل':5,'مشاركة فعّالة':6,'حسن الأدب':5,'مثابرة':6,'اجتهاد':6};   // إيجابي: يزيد النقاط فقط، والسلبي لا يخصم
+/* ----- تطور الشخصية على حسب المقاطع: المقطع الذي يبدأ عنده كل مستوى (من خطة الصف) ----- */
+function segCuts(N){const c=[0,2];for(let k=3;k<=5;k++)c.push(Math.max(c[c.length-1]+1,Math.round(2+(N-2)*(k-2)/4)));c.push(Math.max(c[c.length-1]+1,N));return c}
+function segDone(s){const N=segsOf(s.c.g).length;return s.dix.filter(i=>i<N).length}
+function segLevel(s){const N=segsOf(s.c.g).length;if(!N)return 1;const c=segCuts(N),n=segDone(s);let L=1;c.forEach((v,i)=>{if(i>0&&n>=v)L=i+1});return L}
+const lvName=s=>LV_NAMES[segLevel(s)-1];
+function behPts(s){let p=0;s.beh.forEach(b=>{if(b[2]>TODAY)return;if(b[0]==='+')p+=BPT[b[1]]||5});return p}
 function donutHTML(s){
   const p=s.beh.filter(b=>b[0]==='+').length,n=s.beh.length-p,tot=p+n;
   if(!tot)return `<div class="dn"><div class="dnc"><svg viewBox="0 0 42 42"><circle cx="21" cy="21" r="15.9155" fill="none" stroke="rgba(120,134,130,.3)" stroke-width="6"/></svg><div class="dnt"><b>—</b></div></div><div class="dnl"><div class="mut">لا توجد سلوكيات مسجّلة بعد</div></div></div>`;
@@ -1486,21 +1474,18 @@ function donutHTML(s){
    <div class="dnl"><div class="dli"><i style="background:#2EAA5E"></i><span>إيجابي</span><b dir="ltr">${pp}%</b><small>${p} سلوك</small></div><div class="dli"><i style="background:#D63A2B"></i><span>سلبي</span><b dir="ltr">${np}%</b><small>${n} سلوك</small></div></div></div>`;
 }
 function lvInner(s){
-  const c=lvCalc(s.beh,TODAY),lv=lvLevel(s.beh,TODAY),sorted=s.beh.slice().sort((a,b)=>b[2]-a[2]);
-  const col=(sg,cls,title)=>{const l=sorted.filter(b=>sg==='+'?b[0]==='+':b[0]!=='+').slice(0,3);
-    return `<div class="lvcol"><div class="bhead ${cls}">${title}</div>${l.length?l.map(b=>`<div class="lvit ${cls}">${esc(b[1])}<small>${fmt(b[2])}</small></div>`).join(''):'<div class="lvit none">لا يوجد بعد</div>'}</div>`;};
-  let bar=100,barCol='var(--gold)',note='وصل إلى <b>أعلى مستوى</b>. ما شاء الله.';
-  if(lv<6){const lo=LV_NEED[lv-1],hi=LV_NEED[lv];
-    if(c.net<lo){bar=Math.min(100,(lo-c.net)/(hi-lo)*100);barCol='var(--red)';
-      note=lv===1?`رصيدك <b dir="ltr">${c.net}</b> نقطة (تحت الصفر). يلزمك <b>${hi-c.net}</b> نقطة للوصول إلى <b>${LV_NAMES[lv]}</b>.`
-        :`نقاطك أقل من حد مستواك بـ <b>${lo-c.net}</b> نقطة. حافظ على سلوكك لتبقى في مستواك.`;}
-    else{bar=Math.min(1,(c.net-lo)/(hi-lo))*100;note=`باقي <b>${hi-c.net}</b> نقطة للوصول إلى <b>${LV_NAMES[lv]}</b> (${c.net} / ${hi})`;}}
-  return `<div class="lvgrid">${col('+','pos','آخر الإيجابيات')}<div class="lvchar">${chrSprite(lv)}</div>${col('−','neg','آخر السلبيات')}</div>
+  const lv=segLevel(s),N=segsOf(s.c.g).length,cuts=segCuts(N||1),n=segDone(s);
+  let bar=100,note='أنهيت كل المقاطع، ووصلت <b>أعلى مستوى</b>. ما شاء الله.';
+  if(lv<6){const lo=cuts[lv-1],hi=cuts[lv];bar=Math.max(0,Math.min(1,(n-lo)/(hi-lo)))*100;note=`أنجزت <b>${n}</b> من <b>${N}</b> مقطع · باقي <b>${hi-n}</b> للوصول إلى <b>${LV_NAMES[lv]}</b> (${LV_OUT[lv]})`;}
+  return `<div class="lvchar">${chrSprite(lv)}</div>
    <div class="lvname">المستوى ${lv} · ${LV_NAMES[lv-1]}</div>
-   <div class="lvpts"><bdi dir="ltr">${c.net}</bdi> نقطة · إيجابي <bdi dir="ltr">+${c.pos}</bdi> · سلبي <bdi dir="ltr">−${c.neg}</bdi>${c.bonus?' · مكافأة <bdi dir="ltr">+'+c.bonus+'</bdi>':''}</div>
-   <div class="pl" style="height:10px;margin-top:10px"><i style="width:${bar.toFixed(1)}%;background:${barCol}"></i></div>
-   <div class="lvnote">${note}</div>`;
+   <div class="lvpts"><span class="ptc"><b dir="ltr">${behPts(s)}</b><small>نقطة</small></span></div>
+   <div class="pl" style="height:10px;margin-top:10px"><i style="width:${bar.toFixed(1)}%;background:var(--gold)"></i></div>
+   <div class="lvnote">${note}</div>
+   <div class="divider"></div><div class="t" style="font-size:13px;margin-bottom:10px">نسبة السلوكيات</div>${donutHTML(s)}`;
 }
+
+
 
 /* ---------- الطالب ---------- */
 const TI={wa:'<path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8z"/>',ml:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/>',ck:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
@@ -2380,7 +2365,7 @@ function renderStudent(s){
   $('student-body').innerHTML=TOP+kbarHTML()+`
   <div class="wcA"><div class="glass card ${st.k==='red'?'st-late':st.k==='green'?'st-ahead':st.k==='none'?'st-none':''}" id="s-prof">${st.k==='green'?ORBS:''}${st.k==='none'?CRACKS:''}${honorStrip()}<div class="row">${avaHTML(s,'avatar')}
     <div style="flex:1"><div class="title-big">${esc(s.name)}</div><div class="mut">${clsName(s.c)} · الفصل ${TERMN[TERM-1]}</div></div></div>
-    <div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap"><span class="pill ${st.p}">${st.t}</span><span class="pill p-gold">${lvName(s)}</span><span style="margin-inline-start:auto">${lvBadge(lvLevel(s.beh,TODAY),lvLevel(s.beh,TODAY),40)}</span></div>${st.k==='red'?`<div class="smsg late">انتبه، أنت بحاجة لتسميع ${st.d===-1?'المقطع المتأخر':'المقاطع المتأخرة'}</div>`:st.k==='green'?`<div class="smsg ahead">ما شاء الله، أنت متقدم على الخطة، استمر</div>`:''}</div>
+    <div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap"><span class="pill ${st.p}">${st.t}</span><span class="pill p-gold">${lvName(s)}</span><span style="margin-inline-start:auto">${lvBadge(segLevel(s),segLevel(s),40)}</span></div>${st.k==='red'?`<div class="smsg late">انتبه، أنت بحاجة لتسميع ${st.d===-1?'المقطع المتأخر':'المقاطع المتأخرة'}</div>`:st.k==='green'?`<div class="smsg ahead">ما شاء الله، أنت متقدم على الخطة، استمر</div>`:''}</div>
   <div class="glass seg2" id="s-seg" style="grid-template-columns:1fr 1fr"><button data-k="hifz" class="on" onclick="setSubS('hifz')">التسميع</button><button data-k="beh" onclick="setSubS('beh')">السلوك</button></div>
   <div id="ss-hifz">
    <div class="grid2">
@@ -2395,7 +2380,7 @@ function renderStudent(s){
   </div></div>
   <div id="ss-msg" hidden></div>
   <div id="ss-mosque" hidden></div>
-  <div id="ss-beh" hidden><div class="wonly">${trailHTML(s,st)}</div><div class="glass card" id="lvbox">${lvInner(s)}</div><div class="glass card"><div class="t" style="margin-bottom:12px">نسبة سلوكياتي</div>${donutHTML(s)}</div>${ptsGuide()}<div class="wonly">${tmBlock}</div></div>`;
+  <div id="ss-beh" hidden><div class="wonly">${trailHTML(s,st)}</div><div class="glass card" id="lvbox">${lvInner(s)}</div><div class="wonly">${tmBlock}</div></div>`;
   renderSMsg();updSBadge();
   $('student-body').scrollTop=0;setTimeout(trkGo,150);
 }
@@ -2771,9 +2756,9 @@ function drawBeh(){
   $('bl').innerHTML=l.map(s=>`<div class="glass item bstu" id="bs-${s.id}" style="display:block;cursor:default">
     <button class="rbody" style="width:100%;justify-content:space-between" onclick="toggleB(${s.id})"><span class="row" style="gap:10px">${sno(NM[s.id])}${avaHTML(s,'mini')}<span class="t" style="text-align:start">${esc(s.name)}</span></span><span class="row" style="gap:6px;flex:none" id="bb-${s.id}">${bBadge(s)}</span></button>
     <div class="bbody" id="bd-${s.id}" hidden style="margin-top:12px"><div class="bcols"><div><div class="bhead pos">سلوك إيجابي</div>${BPOS.map(x=>`<button class="bopt pos${behOn(s,'+',x)?' on':''}" onclick="tbeh(${s.id},'+','${x}',this)">${x}<small>+${BPT[x]}</small></button>`).join('')}</div>
-    <div><div class="bhead neg">سلوك سلبي</div>${BNEG.map(x=>`<button class="bopt neg${behOn(s,'−',x)?' on':''}" onclick="tbeh(${s.id},'−','${x}',this)">${x}<small>−${BNT[x]}</small></button>`).join('')}</div></div>
+    <div><div class="bhead neg">سلوك سلبي</div>${BNEG.map(x=>`<button class="bopt neg${behOn(s,'−',x)?' on':''}" onclick="tbeh(${s.id},'−','${x}',this)">${x}</button>`).join('')}</div></div>
     <div class="divider"></div><div id="lvm-${s.id}">${lvInner(s)}</div>
-    <div class="divider"></div><div class="t" style="font-size:13px;margin-bottom:10px">نسبة السلوكيات</div><div id="dn-${s.id}">${donutHTML(s)}</div></div></div>`).join('');
+    </div></div>`).join('');
 }
 function toggleB(id){document.querySelectorAll('#bl .bbody').forEach(e=>{if(e.id==='bd-'+id)e.hidden=!e.hidden;else e.hidden=true;});}
 async function tbeh(id,sg,tx,el){const s=byId(id);
@@ -2869,13 +2854,13 @@ function bindNote(root,get,set){
 document.addEventListener('click',e=>{if(!e.target.closest||e.target.closest('.nwrap'))return;document.querySelectorAll('.nmenu').forEach(x=>x.hidden=true);document.querySelectorAll('.nopen').forEach(x=>x.classList.remove('nopen'));});
 const stuBar4=(s,st,showPill)=>`<div class="glass stu4"><button class="phbtn sm" onclick="openPhoto(${s.id})" aria-label="التقاط صورة للطالب" style="${s.photo?`background-image:url('${s.photo}')`:''}">${s.photo?'':SIL}<span class="camb">${CAMI}</span></button><div class="grow"><div class="nm">${esc(s.name)}</div><div class="sb">${clsName(s.c)} · ${lvName(s)}</div></div>${s.cat?`<span class="catc c${s.cat} on lamp" aria-hidden="true">${CAT_SVG[s.cat]}</span>`:''}${showPill?`<span class="pill ${st.p}">${st.t}</span>`:''}</div>`;
 const behCnt=(s,sg)=>s.beh.filter(b=>(sg==='+'?b[0]==='+':b[0]!=='+')&&b[2].getTime()===TODAY.getTime()).length;
-const behOpts=(s,sg)=>(sg==='+'?BPOS:BNEG).map(x=>`<button class="bopt ${sg==='+'?'pos':'neg'}${behOn(s,sg,x)?' on':''}" data-b="${sg}|${x}">${x}<small>${sg}${(sg==='+'?BPT:BNT)[x]}</small></button>`).join('');
-const behStrip=s=>{const np=behCnt(s,'+'),nn=behCnt(s,'−'),lv=lvLevel(s.beh,TODAY),op=T.bop||'';
+const behOpts=(s,sg)=>(sg==='+'?BPOS:BNEG).map(x=>`<button class="bopt ${sg==='+'?'pos':'neg'}${behOn(s,sg,x)?' on':''}" data-b="${sg}|${x}">${x}${sg==='+'?'<small>+'+BPT[x]+'</small>':''}</button>`).join('');
+const behStrip=s=>{const np=behCnt(s,'+'),nn=behCnt(s,'−'),lv=segLevel(s),op=T.bop||'';
   return `<div class="glass bstrip" id="bstrip"><div class="bs-row"><button type="button" class="bs-sec" onclick="openBehSheet()"><span class="mchar">${chrSprite(lv)}</span><span>سلوك الطالب</span><svg class="car" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><button type="button" class="bs-b pos${op==='+'?' act':''}" onclick="setBop('+')">+ إيجابي<b>${np}</b></button><button type="button" class="bs-b neg${op==='−'?' act':''}" onclick="setBop('−')">− سلبي<b>${nn}</b></button></div>${op?`<div class="bpanel"><div class="bhnt">اضغط على السلوك لتسجيله اليوم، ومرة ثانية لإلغائه</div><div class="bg2">${behOpts(s,op)}</div></div>`:''}</div>`;};
 function setBop(v){T.bop=T.bop===v?'':v;redrawBeh(byId(T.sid));}
 function openBehSheet(){const s=byId(T.sid);
   sheet(`<div class="row sp" style="margin-bottom:10px"><div class="t" style="font-size:17px">سلوك الطالب</div><button type="button" class="btn-s" onclick="closeSheet()">إغلاق ✕</button></div>
-   <div class="glass card">${lvInner(s)}</div>${medalsCard(s)}<div class="glass card"><div class="t" style="font-size:13px;margin-bottom:10px">نسبة السلوكيات</div>${donutHTML(s)}</div>`);}
+   <div class="glass card">${lvInner(s)}</div>${medalsCard(s)}`);}
 function redrawBeh(s){
   const e=$('bstrip');if(e){const d=document.createElement('div');d.innerHTML=behStrip(s);e.replaceWith(d.firstElementChild);}
   document.querySelectorAll('[data-b]').forEach(b=>{const p=b.dataset.b.split('|');b.classList.toggle('on',behOn(s,p[0],p[1]));});
@@ -2907,8 +2892,8 @@ function vStudent(){
     <div id="sub-beh"${vis('beh')}><div class="glass card" id="tlvbox">${lvInner(s)}</div>${medalsCard(s)}<div class="glass card"><div class="t">تسجيل السلوك</div>
     <div class="mut" style="margin:2px 0 12px">اضغط على السلوك لتسجيله اليوم، واضغط مرة ثانية لإلغائه</div>
     <div class="bcols"><div><div class="bhead pos">سلوك إيجابي</div>${BPOS.map(x=>`<button class="bopt pos${behOn(s,'+',x)?' on':''}" data-b="+|${x}">${x}<small>+${BPT[x]}</small></button>`).join('')}</div>
-    <div><div class="bhead neg">سلوك سلبي</div>${BNEG.map(x=>`<button class="bopt neg${behOn(s,'−',x)?' on':''}" data-b="−|${x}">${x}<small>−${BNT[x]}</small></button>`).join('')}</div></div>
-    <div class="divider"></div><div class="t" style="font-size:13px;margin-bottom:10px">نسبة السلوكيات</div><div id="tbehdonut">${donutHTML(s)}</div></div></div>`+(T.admin?`<div id="sub-adm"${vis('adm')}>${transferCard(s)}</div>`:'')+'</div>';
+    <div><div class="bhead neg">سلوك سلبي</div>${BNEG.map(x=>`<button class="bopt neg${behOn(s,'−',x)?' on':''}" data-b="−|${x}">${x}</button>`).join('')}</div></div>
+    </div></div>`+(T.admin?`<div id="sub-adm"${vis('adm')}>${transferCard(s)}</div>`:'')+'</div>';
   (T.admin?$('admin-body'):$('teacher-body')).classList.add('wstu');
   bindBeh();
   if(!seg)return;
@@ -3037,7 +3022,7 @@ function repStats(list){
   const r={n:list.length,green:0,gold:0,red:0,none:0,done:0,seg:0,segT:0,sc:0,scN:0,rec:0,hif:0,rN:0,tj:[0,0,0],bp:0,bn:0,lv:[0,0,0,0,0,0]};
   list.forEach(s=>{const N=segsOf(s.c.g).length,n=s.done.length,h2=halaqa(s.c.g)===2;r[statusOf(s).k]++;if(N&&n>=N)r.done++;r.seg+=n;r.segT+=N;
     s.done.forEach(d=>{r.sc+=d[0]+(d[1]||0);r.scN++;if(h2){r.rec+=d[0];r.hif+=d[1]||0;r.rN++;}});
-    s.beh.forEach(b=>b[0]==='+'?r.bp++:r.bn++);r.lv[lvLevel(s.beh,TODAY)-1]++;});
+    s.beh.forEach(b=>b[0]==='+'?r.bp++:r.bn++);r.lv[segLevel(s)-1]++;});
   r.avg=r.scN?r1(r.sc/r.scN):null;r.prog=pct(r.seg,r.segT);r.ok=pct(r.green+r.gold,r.n);
   return r;
 }
@@ -3485,7 +3470,7 @@ function yrConfirm(){
      <button class="btn-s" style="width:100%;margin-top:10px" onclick="closeSheet();ago('yr')">فهمت</button>`);ago('yr');};
 }
 async function doYearEnd(label){
-  const total=allStudents().length,medals={};allStudents().forEach(s=>{medals[s.id]=lvLevel(s.beh,TODAY);});
+  const total=allStudents().length,medals={};allStudents().forEach(s=>{medals[s.id]=segLevel(s);});
   const r=await sop('year_end',{label,medals});if(r.error)return r;
   await sync(true);return{arch:r.arch,pool:r.pool,moved:total-r.arch-r.pool,archive_id:r.archive_id};
 }
@@ -4575,7 +4560,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='278c55d32349';
+const BUILD='7412873b7f95';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
