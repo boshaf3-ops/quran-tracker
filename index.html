@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="9bd5bfeac9bf">
+<meta name="build" content="5004fd80cd35">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -966,6 +966,11 @@ mark{background:rgba(224,162,27,.38);color:inherit;border-radius:4px;padding:0 1
 .trk-tag{position:absolute;top:20px;transform:translateX(50%);font-size:9.5px;font-weight:800;color:#fff;background:rgba(22,94,80,.85);border-radius:99px;padding:1px 7px;white-space:nowrap}
 .trk-char{position:absolute;top:58px;width:26px;transform:translate(50%,-100%);z-index:3;pointer-events:none;transition:right 1.8s cubic-bezier(.3,.6,.2,1)}
 .trk-char .px{width:26px;height:44px}
+
+/* ===== وضع الهدوء: توفير للبطارية والحرارة، يوقف الحركات التزيينية بعد 15 ثانية بلا لمس ===== */
+html.calm *,html.calm *::before,html.calm *::after{animation-play-state:paused!important}
+html.calm .trk-st.n{animation:none!important;box-shadow:0 0 0 2px #fff,0 0 12px 5px var(--bc)!important}
+html.calm .ux-ic::after,html.calm .ux-mi::after,html.calm .sm-mi::after,html.calm .ux-al .b::after,html.calm .ux-act button::after,html.calm .ux-act .bb::after{animation:none!important}
 .gmi{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#f6dc8a,#d9a93a);display:grid;place-items:center;font-size:26px}.gmc{margin-top:10px}.gmchips{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}.gmch{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid var(--glass-border);color:#3b4a48;white-space:nowrap}.gmch b{color:var(--teal-d);font-size:12.5px}.gmcd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.gmcdb{background:linear-gradient(160deg,#fff3c4,#f6dc8a);border-radius:14px;padding:10px 4px;text-align:center;color:#5a4200}.gmcdb b{display:block;font-size:24px;line-height:1.3}.gmcdb small{font-size:11.5px}
 body.gm-on>*:not(#gm-ov){visibility:hidden!important}
 </style>
@@ -1332,7 +1337,7 @@ async function poll(force){
   }catch(e){}
   POLLING=false;
 }
-setInterval(()=>poll(),3000);
+let POLLT=0;setInterval(()=>{if(document.documentElement.classList.contains('calm')&&(++POLLT%5))return;poll();},3000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){poll(true);checkUpdate();}});
 window.addEventListener('focus',()=>{poll(true);});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')poll(true);});
@@ -4466,7 +4471,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='9bd5bfeac9bf';
+const BUILD='5004fd80cd35';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
@@ -4480,6 +4485,10 @@ async function checkUpdate(){
     location.replace(location.pathname+'?v='+m[1]);
   }catch(e){}
 }
+/* وضع الهدوء */
+(function(){const H=document.documentElement;let t=null;const wake=()=>{if(H.classList.contains('calm'))H.classList.remove('calm');clearTimeout(t);if(document.visibilityState==='visible')t=setTimeout(()=>H.classList.add('calm'),15000);};
+['pointerdown','touchstart','touchmove','scroll','keydown','wheel','click'].forEach(e=>window.addEventListener(e,wake,{passive:true,capture:true}));
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){clearTimeout(t);H.classList.add('calm');}else wake();});wake();})();
 checkUpdate();setInterval(checkUpdate,60000);
 /* استعادة الجلسة عند إعادة تحميل الصفحة */
 kidsLoad();
