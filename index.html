@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="5a3e5e73803b">
+<meta name="build" content="9ffd36cdcbfc">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -949,6 +949,23 @@ mark{background:rgba(224,162,27,.38);color:inherit;border-radius:4px;padding:0 1
 .ccs.on i{outline:3px solid rgba(var(--rgb),.95);outline-offset:1px}
 .ccs i svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
 .ccs.on{color:var(--ink);font-weight:800}
+
+/* ===== خط المسير: خط واحد ثابت يضم كل المقاطع ===== */
+.trk{position:relative;height:150px;margin-top:6px}
+.trk-line{position:absolute;right:0;left:0;top:62px;height:9px;border-radius:99px;background:rgba(120,134,130,.3);box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
+.trk-fill{position:absolute;right:0;top:62px;height:9px;border-radius:99px;transition:width 1.8s cubic-bezier(.3,.6,.2,1)}
+.trk-st{position:absolute;top:66.5px;transform:translate(50%,-50%);border-radius:50%;display:grid;place-items:center;font-weight:800;color:#6c8a82;background:#E3EAE7;border:2px solid #fff;box-shadow:0 2px 5px rgba(22,94,80,.22);padding:0;cursor:pointer;font-family:inherit}
+.trk-st.d{color:#fff}
+.trk-st.n{color:#fff;background:var(--bc);animation:trkb 1.2s ease-in-out infinite}
+@keyframes trkb{0%,100%{box-shadow:0 0 0 2px #fff,0 0 3px 1px var(--bc);filter:brightness(.72);opacity:.5}50%{box-shadow:0 0 0 2px #fff,0 0 20px 9px var(--bc);filter:brightness(1.3);opacity:1}}
+@media (prefers-reduced-motion:reduce){.trk-st.n{animation:none}.trk-fill,.trk-char{transition:none}}
+.trk-nm{position:absolute;transform:translateX(50%);text-align:center;font-size:9.5px;font-weight:700;line-height:1.35;color:var(--ink-2)}
+.trk-nm b{display:block;font-size:10px;color:var(--ink);font-weight:800}
+.trk-nm.n b{color:var(--bc)}.trk-nm.n{color:var(--ink)}
+.trk-tk{position:absolute;width:1px;background:rgba(22,94,80,.28);transform:translateX(50%)}
+.trk-tag{position:absolute;top:20px;transform:translateX(50%);font-size:9.5px;font-weight:800;color:#fff;background:rgba(22,94,80,.85);border-radius:99px;padding:1px 7px;white-space:nowrap}
+.trk-char{position:absolute;top:58px;width:26px;transform:translate(50%,-100%);z-index:3;pointer-events:none;transition:right 1.8s cubic-bezier(.3,.6,.2,1)}
+.trk-char .px{width:26px;height:44px}
 .gmi{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#f6dc8a,#d9a93a);display:grid;place-items:center;font-size:26px}.gmc{margin-top:10px}.gmchips{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}.gmch{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid var(--glass-border);color:#3b4a48;white-space:nowrap}.gmch b{color:var(--teal-d);font-size:12.5px}.gmcd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.gmcdb{background:linear-gradient(160deg,#fff3c4,#f6dc8a);border-radius:14px;padding:10px 4px;text-align:center;color:#5a4200}.gmcdb b{display:block;font-size:24px;line-height:1.3}.gmcdb small{font-size:11.5px}
 body.gm-on>*:not(#gm-ov){visibility:hidden!important}
 </style>
@@ -1013,9 +1030,10 @@ body.gm-on>*:not(#gm-ov){visibility:hidden!important}
   <section class="screen" id="s-student">
     <div class="scroll" id="student-body"></div>
     <div class="glass tabbar">
-      <button class="tab on" data-jump="segs"><svg viewBox="0 0 24 24"><path d="M4 5h6a3 3 0 0 1 2 1 3 3 0 0 1 2-1h6v14h-6a3 3 0 0 0-2 1 3 3 0 0 0-2-1H4z"/><path d="M12 6v14"/></svg>مقاطعي</button>
+      <button class="tab on" data-jump="segs"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>الرئيسية</button>
       <button class="tab" data-jump="beh"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14c1 1.5 2.3 2 4 2s3-.5 4-2M9 9.5h.01M15 9.5h.01"/></svg>السلوك</button>
-      <button class="tab" data-jump="msg"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/></svg>رسالة<span class="badge" id="smsg-badge" hidden></span></button>
+      <button class="tab mid" data-jump="mosque"><svg viewBox="0 0 24 24"><path d="M12 3c1.5 2 2 3 2 4.2A2 2 0 0 1 12 9a2 2 0 0 1-2-1.8C10 6 10.5 5 12 3zM5 21V13a7 7 0 0 1 14 0v8M3 21h18M10 21v-4a2 2 0 0 1 4 0v4"/></svg><span>مسجدي</span></button>
+      <button class="tab" data-jump="msg"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/></svg>الرسائل<span class="badge" id="smsg-badge" hidden></span></button>
       <button class="tab" data-logout><svg viewBox="0 0 24 24"><path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg>خروج</button>
     </div>
   </section>
@@ -1478,27 +1496,30 @@ const STEVE=`<svg class="px" viewBox="0 0 16 27" shape-rendering="crispEdges" ar
  <rect class="shA" x="3" y="24" width="5" height="2.4" fill="#111"/><rect class="shB" x="8" y="24" width="5" height="2.4" fill="#111"/>
 </svg>`;
 function trailHTML(s,st){
-  const segs=segsOf(s.c.g),rows=PLAN[s.c.g],start=rows[0].d,end=segs[segs.length-1].e,span=end-start;
-  const fr=d=>Math.max(0,Math.min(1,(d-start)/span)),today=fr(TODAY),n=s.done.length;
-  let own=n?fr(segs[n-1].e):0;
-  if(n>=segs.length)own=1;
-  let pos=0,col='rgba(120,134,130,.55)',msg='لم يبدأ تسجيلك بعد. ابدأ بأول مقطع.';
-  if(st.k==='gold'){pos=today;col='#E0A21B';msg='أنت ماشٍ على الخطة. استمر.';}
-  else if(st.k==='red'){pos=Math.min(own,today);col='#D63A2B';msg='أنت متأخر عن الخطة، حاول تلحق بالتسميع.';}
-  else if(st.k==='green'){pos=Math.max(own,today);col='#2EAA5E';msg='ما شاء الله، أنت متقدم على الخطة.';}
+  const segs=segsOf(s.c.g),n=segs.length,rows=PLAN[s.c.g],start=rows[0].d,end=segs[n-1].e;
+  const bc=st.k==='red'?'#D63A2B':st.k==='green'?'#2EAA5E':'#E0A21B';
+  const msg=st.k==='none'?'لم يبدأ تسجيلك بعد. ابدأ بأول مقطع.':st.k==='gold'?'أنت ماشٍ على الخطة. استمر.':st.k==='red'?'أنت متأخر عن الخطة، حاول تلحق بالتسميع.':'ما شاء الله، أنت متقدم على الخطة.';
+  const nx=nxtIdx(s),curI=nx<0?n-1:nx,plan=Math.max(0,Math.min(n-1,expectedIdx(segs))),M=5,sp=n>1?(100-2*M)/(n-1):0,xp=i=>(M+i*sp).toFixed(3)+'%',px=316*sp/100,d=Math.max(15,Math.min(23,Math.floor(px)-4)),dn=d+6;
+  const dots=segs.map((g,i)=>{const done=!!gAt(s,i),now=i===curI&&nx>=0,z=now?dn:d;
+    return `<button class="trk-st${done?' d':''}${now?' n':''}" style="right:${xp(i)};width:${z}px;height:${z}px;font-size:${Math.max(8,z-12)}px;${done?`background:${bc}`:''}" onclick="toast('${rng(g)} · ${done?'تم التسميع':now?'وصلنا هنا':'لم يُسمَّع بعد'}')">${done?'✓':i+1}</button>`;}).join('');
+  const nm=segs.map((g,i)=>{const now=i===curI&&nx>=0,lo=i%2,top=lo?112:84,w=Math.max(40,Math.round(px*2-3));
+    return (lo?`<i class="trk-tk" style="right:${xp(i)};top:${71+d/2}px;height:${top-71-d/2}px"></i>`:'')+`<div class="trk-nm${now?' n':''}" style="right:${xp(i)};top:${top}px;width:${w}px"><b>${esc(g.n)}</b>${g.f===g.t?g.f:g.f+' – '+g.t}</div>`;}).join('');
   return `<div class="glass card trail"><div class="t">خط المسير</div><div class="mut">خطة الحفظ من ${fmt(start)} إلى ${fmt(end)}</div>
-   <div class="tr-wrap"><div class="tr-char" style="right:${(pos*100).toFixed(2)}%">${STEVE}</div>
-    <div class="tr-line"><i class="tr-fill" style="width:${(pos*100).toFixed(2)}%;background:${col}"></i>${segs.map(g=>`<i class="tr-dot" style="right:${(fr(g.e)*100).toFixed(2)}%"></i>`).join('')}</div>
-    <div class="tr-today" style="right:${(today*100).toFixed(2)}%"><span>اليوم</span></div></div>
+   <div class="trk" style="--bc:${bc}"><div class="trk-line"></div><div class="trk-fill" style="width:${M}%;background:${bc}" data-to="${xp(curI)}"></div>${dots}${nm}
+   ${plan!==curI?`<div class="trk-tag" style="right:${xp(plan)}">اليوم</div>`:''}
+   <div class="trk-char" style="right:${M}%" data-to="${xp(curI)}">${STEVE}</div></div>
    <div class="tr-ends"><span>${fmt(start)}</span><span>${fmt(end)}</span></div>
    <div class="mut" style="text-align:center;margin-top:8px;font-weight:600;color:var(--ink)">${msg}</div></div>`;
 }
+function trkGo(){document.querySelectorAll('.trk').forEach(b=>{if(!b.clientWidth||b.dataset.go)return;b.dataset.go=1;requestAnimationFrame(()=>{const f=b.querySelector('.trk-fill'),c=b.querySelector('.trk-char');if(f)f.style.width=f.dataset.to;if(c)c.style.right=c.dataset.to;});});}
 let SS='hifz';
-function setSubS(k){SS=k;$('student-body').classList.toggle('msgmode',k==='msg');['hifz','beh','msg'].forEach(x=>{const e=$('ss-'+x);if(e)e.hidden=x!==k;});
-  ['s-prof','s-seg'].forEach(i=>{const e=$(i);if(e)e.hidden=k==='msg';});
+function setSubS(k){SS=k;$('student-body').classList.toggle('msgmode',k==='msg');['hifz','beh','msg','mosque'].forEach(x=>{const e=$('ss-'+x);if(e)e.hidden=x!==k;});
+  ['s-prof','s-seg'].forEach(i=>{const e=$(i);if(e)e.hidden=k==='msg'||k==='mosque';});
   document.querySelectorAll('#student-body .seg2 button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
-  document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.classList.toggle('on',b.dataset.jump===(k==='beh'?'beh':k==='msg'?'msg':'segs')));
+  document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.classList.toggle('on',b.dataset.jump===(k==='beh'?'beh':k==='msg'?'msg':k==='mosque'?'mosque':'segs')));
   if(k==='msg')renderSMsg();
+  if(k==='mosque'&&typeof drawMosqueS==='function')drawMosqueS();
+  setTimeout(trkGo,40);
   $('student-body').scrollTop=0;}
 function toggleMoreS(){const c=$('j-segs'),o=c.classList.toggle('open');$('more-s').textContent=o?'أقل':'مزيد';}
 const CRACKS='<svg class="crk tl" viewBox="0 0 96 78"><path d="M96 0 L72 14 L66 34 L44 42"/><path d="M66 34 L74 58"/><path class="d" d="M96 5 L75 18 L70 38 L48 46"/></svg><svg class="crk bl" viewBox="0 0 84 70"><path d="M0 70 L18 52 L16 32 L38 22"/><path d="M16 32 L-2 26"/><path class="d" d="M0 64 L21 55 L19 35 L41 25"/></svg>';
@@ -2172,6 +2193,58 @@ function gmLockShow(){if($('gm-lock'))return;gmLockCss();const m=Math.round(gmT.
   <button id="gml-b">رجوع لصفحتي</button>`;
   document.body.appendChild(el);$('gml-b').onclick=()=>{el.remove();gmClose();};}
 
+/* صفحة «مسجدي» في واجهة الطالب: بطاقة السماء والمسجد والنقاط والإعجابات والمستوى */
+(function(){const st=document.createElement('style');st.textContent=`
+#s-student .tabbar .tab.mid{flex:none;width:60px;height:60px;margin-top:-26px;border-radius:50%;background:linear-gradient(160deg,#2FA088,#165E50);color:#fff;justify-content:center;box-shadow:0 8px 20px rgba(22,94,80,.45),inset 0 1px 0 rgba(255,255,255,.4);border:4px solid #FDF9EC;gap:0;padding:0}
+#s-student .tabbar .tab.mid svg,#s-student .tabbar .tab.mid.on svg{width:26px;height:26px;stroke:#fff;fill:none}
+#s-student .tabbar .tab.mid span:not(.badge){font-size:10px;line-height:1;font-weight:700}
+#s-student .tabbar .tab.mid.on{background:linear-gradient(160deg,#2FA088,#165E50);box-shadow:0 8px 20px rgba(22,94,80,.45),inset 0 1px 0 rgba(255,255,255,.4);color:#fff}
+.sm-msq{position:relative;overflow:hidden;border-radius:28px;padding:16px;background:linear-gradient(160deg,#FFF3C4,#fff 55%,#DDF3EC);border:1.5px solid rgba(255,255,255,.9);box-shadow:0 12px 26px -10px rgba(154,107,5,.45),inset 0 2px 1px #fff;margin-bottom:12px}
+.sm-msq .sk{position:absolute;inset:0 0 auto 0;height:130px;background:linear-gradient(180deg,#BFE3F5,rgba(191,227,245,0))}
+.sm-msq>*{position:relative}
+.sm-isl{text-align:center;font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.sm-tri{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.sm-tri div{border-radius:18px;padding:9px 4px;text-align:center;background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.82);box-shadow:inset 0 1px 0 #fff}
+.sm-tri b{display:block;font-size:21px;font-weight:800;color:var(--teal-d);line-height:1.15}.sm-tri span{font-size:11.5px;font-weight:700;color:var(--ink-2)}
+.sm-lvb{height:9px;border-radius:99px;background:rgba(22,94,80,.14);overflow:hidden;margin-top:10px}.sm-lvb i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#E0A21B,#F6D36B)}
+.sm-lvt{display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;color:var(--ink-2);margin-top:5px}
+.sm-go{width:100%;height:52px;border-radius:99px;margin-top:12px;font-size:16.5px;font-weight:800;color:#3b2a00;border:0;cursor:pointer;font-family:inherit;background:linear-gradient(180deg,#FFE08A,#E0A21B);box-shadow:inset 0 2px 1px rgba(255,255,255,.7),0 8px 16px -6px rgba(154,107,5,.55);display:flex;align-items:center;justify-content:center;gap:8px}
+.sm-sec{margin:16px 4px 9px;font-size:17px;font-weight:800;color:var(--teal-d)}
+.sm-row{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:20px;text-align:right;margin-bottom:9px;cursor:pointer;border:1px solid rgba(255,255,255,.82);font-family:inherit;color:inherit}
+.sm-row .g{flex:1;min-width:0}.sm-row .g b{display:block;font-size:14.5px;font-weight:800}.sm-row .g span{display:block;font-size:12px;color:var(--ink-2);margin-top:1px;line-height:1.5}
+.sm-mi{position:relative;overflow:hidden;isolation:isolate;display:grid;place-items:center;width:46px;height:46px;border-radius:16px;flex:none;background:linear-gradient(150deg,rgba(var(--rgb),.46),rgba(var(--rgb),.16) 55%,rgba(var(--rgb),.30));backdrop-filter:blur(10px) saturate(190%);border:1.5px solid rgba(255,255,255,.85);color:var(--c);box-shadow:0 10px 20px -6px rgba(var(--rgb),.55),inset 0 2px 1px rgba(255,255,255,.95),inset 0 -10px 16px -6px rgba(var(--rgb),.38)}
+.sm-mi::before{content:"";position:absolute;z-index:0;left:6%;right:6%;top:3%;height:48%;border-radius:50% 50% 60% 60%/70% 70% 40% 40%;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.12))}
+.sm-mi::after{content:"";position:absolute;z-index:0;top:-20%;bottom:-20%;width:34%;left:-60%;transform:rotate(22deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:smsheen 5.5s ease-in-out infinite}
+.sm-mi svg{position:relative;z-index:1;width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+@keyframes smsheen{0%,62%{left:-60%}100%{left:130%}}
+@media (prefers-reduced-motion:reduce){.sm-mi::after{animation:none}}
+.sm-y{--rgb:226,170,20;--c:#9A6B05}.sm-r{--rgb:214,58,43;--c:#B72E20}.sm-c{--rgb:14,140,176;--c:#0A6F8C}`;document.head.appendChild(st);})();
+const SM_I={mosque:'<path d="M12 3c1.5 2 2 3 2 4.2A2 2 0 0 1 12 9a2 2 0 0 1-2-1.8C10 6 10.5 5 12 3zM5 21V13a7 7 0 0 1 14 0v8M3 21h18M10 21v-4a2 2 0 0 1 4 0v4"/>',heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'};
+const smMosqueSvg=w=>`<svg viewBox="0 0 120 110" style="width:${w}px;height:${Math.round(w*.93)}px;filter:drop-shadow(0 8px 10px rgba(22,94,80,.3))"><ellipse cx="60" cy="103" rx="54" ry="6" fill="rgba(22,94,80,.2)"/><rect x="12" y="40" width="13" height="60" rx="2" fill="#F1E2B6"/><path d="M10 40h17l-8.5-15z" fill="#2FA088"/><circle cx="18.5" cy="21" r="2.6" fill="#E0A21B"/><rect x="27" y="62" width="88" height="38" rx="3" fill="#F7EBC8"/><path d="M44 62a26 26 0 0 1 52 0z" fill="#2FA088"/><path d="M52 55a19 19 0 0 1 13-14" stroke="rgba(255,255,255,.65)" fill="none" stroke-width="3.5" stroke-linecap="round"/><rect x="68.8" y="27" width="2.4" height="11" fill="#E0A21B"/><circle cx="70" cy="24.5" r="3.2" fill="#E0A21B"/><path d="M62 100V84a8 8 0 0 1 16 0v16z" fill="#165E50"/><path d="M34 90V80a5 5 0 0 1 10 0v10z" fill="#8FCBBE"/><path d="M96 90V80a5 5 0 0 1 10 0v10z" fill="#8FCBBE"/><rect x="12" y="70" width="13" height="3" fill="#E0A21B" opacity=".6"/></svg>`;
+/* مستوى المسجد الفعلي من نقاط البناء (نفس معادلة اللعبة) */
+const smLvOf=sc=>Math.min(100,1+Math.floor(99*Math.pow(Math.max(0,Math.min(sc,19000))/19000,1/1.3)+1e-9));
+const smPtsFor=L=>L<=1?0:19000*Math.pow((L-1)/99,1.3);
+function smScore(s){try{const isl=gmIsl(s).cur,loc=+localStorage.getItem('mq_gm_sc_'+s.id+'_'+isl)||0,srvp=(window.__gmSrv&&window.__gmSrv[isl])|0;return Math.max(loc,srvp);}catch(e){return 0;}}
+async function drawMosqueS(){
+  const s=CURS,box=$('ss-mosque');if(!s||!box)return;
+  const sc=smScore(s),lvS=+localStorage.getItem('mq_gm_lv_'+s.id)||0,lv=sc>0?smLvOf(sc):lvS,lk=+localStorage.getItem('mq_gm_lk_'+s.id)||0,pts=+gmBal(s)||0,isl=gmIslName(gmIsl(s).cur),first=s.name.split(' ')[0];
+  let bar=0,left='',right='';
+  if(sc>0&&lv<100){const lo=smPtsFor(lv),hi=smPtsFor(lv+1);bar=Math.max(0,Math.min(100,(sc-lo)/(hi-lo)*100));left=Math.floor(sc)+' نقطة بناء';right='باقي '+Math.max(1,Math.ceil(hi-sc))+' للمستوى التالي';}
+  else if(lv>=100){bar=100;left=Math.floor(sc)+' نقطة بناء';right='وصلت لأعلى مستوى';}
+  else{left='ابدأ البناء في مسجدك';right='';}
+  box.innerHTML=`<div class="sm-msq"><div class="sk"></div><div class="sm-isl">${isl} · مسجد ${esc(first)}</div><div style="margin:2px auto 0;width:170px">${smMosqueSvg(170)}</div>
+   <div class="sm-tri"><div><b>${pts}</b><span>🪙 نقطة</span></div><div><b>${lk}</b><span>❤️ إعجاب</span></div><div><b>${lv}</b><span>⭐ المستوى</span></div></div>
+   <div class="sm-lvb"><i style="width:${bar}%"></i></div><div class="sm-lvt"><span>${left}</span><span>${right}</span></div>
+   <button class="sm-go" onclick="gmOpen(${s.id})"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#3b2a00"><path d="M7 4l13 8-13 8z"/></svg>${gmIsl(s).unlocked?'اختر جزيرتك':'ادخل مسجدك'}</button></div>
+   <div class="sm-sec">ملخص مسجدك</div>
+   <div class="glass sm-row"><div class="sm-mi sm-y"><svg viewBox="0 0 24 24">${SM_I.mosque}</svg></div><div class="g"><b>مستوى المسجد ${lv}</b><span>كل ما تبني في مسجدك يرفع مستواك</span></div></div>
+   <div class="glass sm-row"><div class="sm-mi sm-r"><svg viewBox="0 0 24 24">${SM_I.heart}</svg></div><div class="g"><b>${lk} إعجابات من أصدقائك</b><span>كل لايك يزيدك نقاطاً</span></div></div>
+   <button class="glass sm-row" onclick="gmHow(${s.id})"><div class="sm-mi sm-c"><svg viewBox="0 0 24 24">${SM_I.info}</svg></div><div class="g"><b>كيف أكسب النقاط؟</b><span>اعرف مصادر نقاطك</span></div></button>`;
+  if(!s.__msync&&typeof gmSyncIsl==='function'){s.__msync=1;try{await gmSyncIsl(s);}catch(e){}if(typeof SS!=='undefined'&&SS==='mosque'&&CURS===s)drawMosqueS();}
+}
+window.addEventListener('message',e=>{const d=e.data;if(!d)return;if(d.type==='gm-state'&&typeof CURS!=='undefined'&&CURS){try{localStorage.setItem('mq_gm_sc_'+CURS.id+'_'+(d.isl||'sea'),String(d.pts|0));}catch(x){}}
+  if(d.type==='gm-close')setTimeout(()=>{if(typeof SS!=='undefined'&&SS==='mosque'&&typeof CURS!=='undefined'&&CURS)drawMosqueS();},500);});
+
 function renderStudent(s){
   SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
   const segs=segsOf(s.c.g),st=statusOf(s),nI=nxtIdx(s),cur=nI<0?null:segs[nI],nI2=nI<0?-1:nxtIdx(s,nI+1),nxt=nI2<0?null:segs[nI2];
@@ -2184,7 +2257,6 @@ function renderStudent(s){
   <div class="wcA"><div class="glass card ${st.k==='red'?'st-late':st.k==='green'?'st-ahead':st.k==='none'?'st-none':''}" id="s-prof">${st.k==='green'?ORBS:''}${st.k==='none'?CRACKS:''}${honorStrip()}<div class="row">${avaHTML(s,'avatar')}
     <div style="flex:1"><div class="title-big">${esc(s.name)}</div><div class="mut">${clsName(s.c)} · الفصل ${TERMN[TERM-1]}</div></div></div>
     <div style="margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:nowrap"><span class="pill ${st.p}">${st.t}</span><span class="pill p-gold">${lvName(s)}</span><span style="margin-inline-start:auto">${lvBadge(lvLevel(s.beh,TODAY),lvLevel(s.beh,TODAY),40)}</span></div>${st.k==='red'?`<div class="smsg late">انتبه، أنت بحاجة لتسميع ${st.d===-1?'المقطع المتأخر':'المقاطع المتأخرة'}</div>`:st.k==='green'?`<div class="smsg ahead">ما شاء الله، أنت متقدم على الخطة، استمر</div>`:''}</div>
-  ${gmCard(s)}
   <div class="glass seg2" id="s-seg" style="grid-template-columns:1fr 1fr"><button data-k="hifz" class="on" onclick="setSubS('hifz')">التسميع</button><button data-k="beh" onclick="setSubS('beh')">السلوك</button></div>
   <div id="ss-hifz">
    <div class="grid2">
@@ -2198,9 +2270,10 @@ function renderStudent(s){
    <div class="honly">${tmBlock}</div>
   </div></div>
   <div id="ss-msg" hidden></div>
+  <div id="ss-mosque" hidden></div>
   <div id="ss-beh" hidden><div class="wonly">${trailHTML(s,st)}</div><div class="glass card" id="lvbox">${lvInner(s)}</div><div class="glass card"><div class="t" style="margin-bottom:12px">نسبة سلوكياتي</div>${donutHTML(s)}</div>${ptsGuide()}<div class="wonly">${tmBlock}</div></div>`;
   renderSMsg();updSBadge();
-  $('student-body').scrollTop=0;
+  $('student-body').scrollTop=0;setTimeout(trkGo,150);
 }
 
 
@@ -4376,9 +4449,9 @@ $('back0').onclick=()=>show('s-student-login');
 document.querySelectorAll('#a-tabs [data-atab]').forEach(b=>b.onclick=()=>ago(b.dataset.atab,b.dataset.atab==='pend'?{pk:''}:{}));
 document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='student'&&KIDS.length>1)logoutSheet();else doLogout();});
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
-document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':'hifz'));
+document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='5a3e5e73803b';
+const BUILD='9ffd36cdcbfc';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
