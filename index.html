@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="c823ca1a44f7">
+<meta name="build" content="d418b19fbdd2">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1224,6 +1224,12 @@ async function srv(fn,args){
 const sop=(op,p)=>srv(ROLE==='admin'?'admin_op':'teacher_op',{p_op:op,p:p||{}});
 const dayDate=v=>{const [y,m,d]=String(v).slice(0,10).split('-').map(Number);return new Date(y,m-1,d);};
 const msgWhen=at=>{const d=new Date(at);return d.toDateString()===new Date().toDateString()?d.toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'}):fmt(d);};
+/* ===== وصول مكافأة التسميع للطالب: يُنبَّه بالزيادة، واللعبة المفتوحة تتحدّث برصيدها الجديد ===== */
+function rewardSync(){try{if(ROLE!=='student'||typeof gmParts!=='function')return;const s=allStudents()[0];if(!s||!s.c)return;
+  const p=gmParts(s),cur=p.seg+p.pl,key='mq_rw_'+s.id;let last=null;try{last=localStorage.getItem(key);}catch(e){}
+  try{localStorage.setItem(key,String(cur));}catch(e){}
+  if(last!==null&&cur>+last){const d=cur-(+last);setTimeout(function(){toast('🎉 زادت نقاطك +'+d+' من تسميعك');},700);}
+  const f=$('gm-fr');if(f&&f.contentWindow&&f.src)f.contentWindow.postMessage({type:'gm-earned',v:p.tot},'*');}catch(e){}}
 function hydrate(st){
   EX=st.role==='exec';ROLE=EX?'admin':st.role;TODAY.setTime(dayDate(st.today).getTime());applyPlans(st);
   TLIST.length=0;st.teachers.forEach(x=>TLIST.push({id:x.id,name:x.name,init:x.init,pin:x.pin||'',whatsapp:x.whatsapp||'',email:x.email||'',hours:x.hours||'',rs:x.rs||undefined}));
@@ -1263,6 +1269,7 @@ function hydrate(st){
   BKP=st.backup?{label:st.backup}:null;
   if(ROLE==='teacher')ME=tById(st.me);
   if(ROLE==='student')CURS=allStudents()[0]||CURS;
+  rewardSync();
 }
 let REV=null,LASTFULL=0;
 async function sync(force){
@@ -4712,7 +4719,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='c823ca1a44f7';
+const BUILD='d418b19fbdd2';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
