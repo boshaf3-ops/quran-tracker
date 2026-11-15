@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="11933c2d253d">
+<meta name="build" content="3a905a5a86b1">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3002,11 +3002,12 @@ function shsBind(root){SHS_ROOT=root;
  root.addEventListener('input',e=>{if(e.target.id==='ot'){const c=root.querySelector('#otc');if(c)c.firstChild.textContent=shAR(e.target.value.length)+' / ٢٠٠ حرف'}})}
 /* ---- النصفان والسحب ---- */
 function shsQuranInfo(){try{const s=allStudents()[0];if(!s||typeof segsOf!=='function')return null;const sg=segsOf(s.c.g),i=nxtIdx(s),st=statusOf(s);return {seg:i>=0?shAR(rng(sg[i])):'أتممت كل المقاطع',k:st.k,t:st.t}}catch(e){return null}}
+function shsQuranTeacher(){try{const s=allStudents()[0];if(!s||typeof tById!=='function')return '';let t=s.owner!=null?tById(s.owner):null;if(!t&&s.c&&s.c.tids&&s.c.tids.length)t=tById(s.c.tids[0]);return t&&t.name?'أ. '+(typeof shNm==='function'?shNm({name:t.name}):t.name):''}catch(e){return ''}}
 function shsHalves(m){
  const ls=m.week.lessons,ts=ls.slice(0,2).map(l=>esc(l.t)).join('<br>')+(ls.length>2?'<br>و'+shAR(ls.length-2)+' أخرى':'');
- const HS=`<div class="ci">${shsIc('star')}</div><h3>العلوم الشرعية</h3><div class="sum"><small>${m.pub?'درس هذا الأسبوع':'هذا الأسبوع'}</small>${ts||'لم تُنشر الدروس بعد'}${m.stop?`<div class="ln">وقفة: ${m.stop.date}</div>`:''}</div><div class="go">‹ اضغط للدخول</div>`;
+ const HS=`<div class="ci">${shsIc('star')}</div><h3>العلوم الشرعية</h3><div class="sum"><small>${m.pub?'درس هذا الأسبوع':'هذا الأسبوع'}</small>${ts||'لم تُنشر الدروس بعد'}${m.stop?`<div class="ln">وقفة: ${m.stop.date}</div>`:''}<div class="tch">${m.hasT?'الأستاذ: '+esc(m.teacher.replace(/^أ\.\s*/,'')):'لم يُسند معلم بعد'}</div></div><div class="go">‹ اضغط للدخول</div>`;
  const q=shsQuranInfo();
- const HQ=`<div class="ci">${shsIc('book')}</div><h3>القرآن الكريم</h3><div class="sum"><small>السورة المطلوبة</small>${q?esc(q.seg):'ادخل لترى مقطعك'}${q&&q.t?`<br><span class="stp ${q.k==='red'?'red':q.k==='green'?'green':q.k==='gold'?'gold':''}">${esc(q.t)}</span>`:''}</div><div class="go">اضغط للدخول ›</div>`;
+ const HQ=`<div class="ci">${shsIc('book')}</div><h3>القرآن الكريم</h3><div class="sum"><small>السورة المطلوبة</small>${q?esc(q.seg):'ادخل لترى مقطعك'}${q&&q.t?`<br><span class="stp ${q.k==='red'?'red':q.k==='green'?'green':q.k==='gold'?'gold':''}">${esc(q.t)}</span>`:''}${(()=>{const t=shsQuranTeacher();return t?`<div class="tch">الأستاذ: ${esc(t.replace(/^أ\.\s*/,''))}</div>`:''})()}</div><div class="go">اضغط للدخول ›</div>`;
  return [HS,HQ]}
 function shsMount(){const o=shsHostEl(),sr=o.shadowRoot,stage=sr.getElementById('stage'),m=shsModel(),[HS,HQ]=shsHalves(m);
  const R=()=>stage.getBoundingClientRect();
@@ -3057,6 +3058,12 @@ const SHS_CSS=`*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-
 .half.s .sum{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35)}
 .half .sum small{display:block;font-size:10px;font-weight:700;opacity:.75;margin-bottom:2px}
 .half .go{margin-top:8px;font-size:12px;font-weight:900;opacity:.85}
+.half .sum .tch{margin-top:7px;padding-top:6px;border-top:1px solid rgba(255,255,255,.22);font-size:10.5px;font-weight:600;opacity:.88;letter-spacing:.1px}.half.q .sum .tch{border-color:rgba(22,94,80,.22)}
+@keyframes hup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}@keyframes hpop{0%{transform:scale(.55);opacity:0}65%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:1}}@keyframes hflt{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}@keyframes hring{0%{box-shadow:0 0 0 0 var(--rg)}70%,100%{box-shadow:0 0 0 17px transparent}}@keyframes hnud{0%,100%{transform:translateX(0)}50%{transform:translateX(var(--nx))}}@keyframes hbeat{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.half.s{--rg:rgba(255,255,255,.4);--nx:-5px}.half.q{--rg:rgba(35,130,111,.35);--nx:5px}
+.half .ci{animation:hpop .7s .05s both,hflt 3.4s 1s ease-in-out infinite,hring 2.8s 1.2s ease-out infinite}
+.half h3{animation:hup .6s .25s both}.half .sum{animation:hup .6s .4s both}.half .go{animation:hup .6s .62s both,hnud 1.8s 1.5s ease-in-out infinite}.stp.red{animation:hbeat 1.9s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.half *{animation:none!important}}
 .stp{display:inline-block;margin-top:6px;padding:2px 11px;border-radius:99px;font-size:10.5px;font-weight:900;color:#fff;background:rgba(120,134,130,.7)}.stp.red{background:rgba(205,76,66,.92)}.stp.green{background:rgba(46,170,94,.92)}.stp.gold{background:rgba(224,162,27,.95);color:#3b2a00}
 .half .sum .ln{margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.28);font-size:11px;font-weight:800}.half.q .sum .ln{border-color:rgba(22,94,80,.28)}
 .wlc{position:absolute;left:50%;top:calc(var(--st) + 68px);transform:translateX(-50%);z-index:59;pointer-events:none;text-align:center;padding:7px 22px 8px;border-radius:22px;background:rgba(9,48,40,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.35);box-shadow:0 6px 18px rgba(0,0,0,.2);width:max-content;max-width:92%;color:#fff}
@@ -6015,7 +6022,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='11933c2d253d';
+const BUILD='3a905a5a86b1';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
