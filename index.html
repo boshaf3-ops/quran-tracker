@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="093fed32f321">
+<meta name="build" content="a1058770c7a7">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3578,7 +3578,7 @@ function shxDoc(s,D,R){const c=s.c||shCls(s.class_id),g=shSig(),teacher=D.teache
  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>تقرير ${esc(s.name)}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet"><style>${SH_RB}${SH_R3}${SHX_RDOC_EXTRA}@page{size:A4;margin:0}@media print{html{background:none}body{padding:0}.page{margin:0;box-shadow:none}}html{background:#cfdcd8}body{font-family:Cairo,system-ui,sans-serif;padding:14px 0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{margin:0 auto 14px}<\/style></head><body>${page}<script>(document.fonts?document.fonts.ready:Promise.resolve()).then(function(){var W=Math.max.apply(null,[].map.call(document.querySelectorAll('.page'),function(p){return p.offsetWidth}));var z=Math.min(1,(innerWidth-16)/W);document.body.style.zoom=z;addEventListener('beforeprint',function(){document.body.style.zoom=1});addEventListener('afterprint',function(){document.body.style.zoom=z})})<\/script></body></html>`}
 
 /* ===== صفحة الصف في غرفة الإدارة: الدرجات الحقيقية (ما رصده المعلم) + الكشف العام PDF + إكسل ===== */
-const SHK_CSS='.dbar{display:flex;height:12px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.18);margin:9px 0}.dbar i{display:block;height:100%}.dbar i.h{background:#2EAA5E}.dbar i.m{background:#E0A21B}.dbar i.l{background:#D63A2B}.leg{display:flex;flex-wrap:wrap;gap:6px}';
+const SHK_CSS='.dbar{display:flex;height:12px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.18);margin:9px 0}.dbar i{display:block;height:100%}.dbar i.h{background:#2EAA5E}.dbar i.m{background:#E0A21B}.dbar i.l{background:#D63A2B}.leg{display:flex;flex-wrap:wrap;gap:6px}.sbar{display:flex;height:4px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.12)}.sbar i{display:block}.slg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:11px;font-weight:700}.slg span:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;background:var(--c)}.slg b{font-weight:900;margin-right:3px;color:#fff}';
 const SHK={open:{h1:false,h2:false},d:{},busy:{},stop:1,rep:{stops:{1:'final',2:'final',3:'final'},ex:true,b:false}};
 const shkFC=c=>!!c&&c.g<=3;
 const shkStops=c=>shkFC(c)?[1,2]:[1,2,3];
@@ -3591,8 +3591,10 @@ async function shkLoad(cid,force){const c=shCls(cid);if(!c)return;if(SHK.busy[ci
  if((SHA.v==='class'&&+SHA.a===+cid)||SHA.v==='classes'){SHA.tkeep=true;shRender()}}
 function shkMx(c,D,w){const a=D.mx&&D.mx[w];return (a&&a.length===4)?a:(shkFC(c)?[20,0,0,0]:[5,5,5,5])}
 function shkTot(r,w){const a=r&&r.sc&&r.sc[w];return (Array.isArray(a)&&a.some(v=>v!=null))?Math.round(a.reduce((x,v)=>x+(v||0),0)*10)/10:null}
-function shkDist(c,D,w){const m=shkMx(c,D,w).reduce((a,b)=>a+b,0),o={hi:0,mid:0,low:0,none:0,tot:0,n:0};
- D.rows.forEach(x=>{const t=shkTot(x.r,w);if(t==null){o.none++;return}o.n++;o.tot+=t/m*20;const a=t/m*20;if(a>=18-1e-9)o.hi++;else if(a>=11-1e-9)o.mid++;else o.low++});o.avg=o.n?Math.round(o.tot/o.n*10)/10:null;return o}
+function shkAvgOf(c,D,x,upTo){const a=[];shkStops(c).forEach(w=>{if(upTo&&w>upTo)return;const t=shkTot(x.r,w);if(t!=null)a.push(t/shkMx(c,D,w).reduce((p,q)=>p+q,0)*20)});return a.length?a.reduce((p,q)=>p+q,0)/a.length:null}
+function shkDist(c,D,w){const o={hi:0,mid:0,low:0,none:0,tot:0,n:0};D.rows.forEach(x=>{const v=shkAvgOf(c,D,x,w);if(v==null){o.none++;return}o.n++;o.tot+=v;if(v>=18-1e-9)o.hi++;else if(v>=11-1e-9)o.mid++;else o.low++});o.avg=o.n?Math.round(o.tot/o.n*10)/10:null;return o}
+function shkBar(o){const n=o.hi+o.mid+o.low+o.none;if(!n)return '';const K=[['hi','#35C07A','متفوق'],['mid','#E7B13A','متوسط'],['low','#E5544A','متدنٍّ'],['none','rgba(255,255,255,.4)','لم يُرصد']];return `<div class="sbar">${K.map(([k,c])=>o[k]?`<i style="flex:${o[k]} 1 0;background:${c}"></i>`:'').join('')}</div><div class="slg">${K.map(([k,c,nm])=>o[k]?`<span style="--c:${c}">${nm}<b>${shAR(o[k])}</b></span>`:'').join('')}</div>`}
+const shkLegend='';
 function shVClass(){const c=shCls(SHA.a);if(!c)return shVClasses();const D=SHK.d[c.id],n=shStu(c).length,stops=shkStops(c);let w=+SHK.stop||1;if(!stops.includes(w))w=1;
  if(!D&&!SHK.busy[c.id])setTimeout(()=>shkLoad(c.id),0);
  const head=`<div class="glass card"><div class="rowsp"><div><div class="t" style="font-size:17px">تقرير ${shCn(c)}</div><div class="mut">${shAR(n)} طالباً${D&&D.teacher?' · المعلم: أ. '+esc(shNm({name:D.teacher})):''}${shkFC(c)?' · الحلقة الأولى: وقفتان بدرجة نهائية':''}</div></div><button class="mini" data-sh="cRefresh">⟳ تحديث</button></div></div>`;
@@ -3600,9 +3602,8 @@ function shVClass(){const c=shCls(SHA.a);if(!c)return shVClasses();const D=SHK.d
  const tabs=`<div class="tabs glass">${stops.map(x=>`<div class="${w===x?'on':''}" data-cst="${x}">الوقفة ${shAR(x)}</div>`).join('')}</div>`;
  const ds=shkDist(c,D,w),pub=D.gpub&&D.gpub[w],mxT=shkMx(c,D,w).reduce((a,b)=>a+b,0),seg=(k,cl)=>ds.n+ds.none?`<i class="${cl}" style="width:${ds[k]*100/(ds.n+ds.none)}%"></i>`:'';
  const sum=`<div class="glass card"><div class="rowsp"><div class="t" style="font-size:14px">الوقفة ${shAR(w)}${shkFC(c)?'':''} · من ${shAR(mxT)}</div>${ds.n?(pub?'<span class="pill pg">منشورة للطلاب ✓</span>':'<span class="pill py">غير منشورة للطلاب</span>'):'<span class="pill pn">لم تُعقد</span>'}</div>
-  <div class="dbar">${seg('hi','h')}${seg('mid','m')}${seg('low','l')}</div>
-  <div class="leg"><span class="pill pg">متفوقون ${shAR(ds.hi)}</span><span class="pill py">متوسطون ${shAR(ds.mid)}</span><span class="pill pr">متدنون ${shAR(ds.low)}</span><span class="pill pn">لم يُرصد ${shAR(ds.none)}</span></div>
-  ${ds.avg!=null?`<div class="mut" style="margin-top:7px">معدّل الصف (من ٢٠): <b style="color:#fff">${shAR(ds.avg)}</b></div>`:''}</div>`;
+  <div style="margin-top:9px">${shkBar(ds)}${shkLegend}</div>
+  ${ds.avg!=null?`<div class="mut" style="margin-top:7px">معدّل الصف (من ٢٠): <b style="color:#fff">${shAR(ds.avg)}</b>${w>1?' · محسوب من معدّل الوقفات ١ إلى '+shAR(w):''}</div>`:''}</div>`;
  const list=`<div class="glass card"><div class="t" style="font-size:14px;margin-bottom:6px">درجات الطلبة</div>`+D.rows.map((x,i)=>{const t=shkTot(x.r,w);return `<div class="rowsp" style="padding:6px 0;border-top:1px solid rgba(255,255,255,.14)"><span style="font-weight:700">${shAR(i+1)}. ${esc(x.s.name)}</span>${x.r?(t==null?'<span class="pill pn">لم تُرصد</span>':`<span class="pg2 ${shkClsT(t,mxT)}">${shAR(t)} / ${shAR(mxT)}</span>`):'<span class="pill pr">تعذّر</span>'}</div>`}).join('')+`</div>`;
  const warn=D.bad?`<div class="note" style="color:#FFB3AA">تعذّر تحميل ${shAR(D.bad)} من الطلبة، اضغط «تحديث».</div>`:'';
  return shHdr()+`<div class="body">${shBack('classes','الصفوف')}${head}${tabs}${sum}${warn}
@@ -3646,17 +3647,16 @@ function shkClick(e){const t=e.target,q=s=>t.closest(s);let d;
  return false}
 
 /* ---- قائمة الصفوف: مجلدان (الحلقة الأولى ١–٣، الحلقة الثانية ٤–٦) مع توزيع الطلبة لكل صف ---- */
-function shkAvgDist(c,D){const o={hi:0,mid:0,low:0,none:0},st=shkStops(c);
- D.rows.forEach(x=>{const a=[];st.forEach(w=>{const t=shkTot(x.r,w);if(t!=null){const m=shkMx(c,D,w).reduce((p,q)=>p+q,0);a.push(t/m*20)}});if(!a.length){o.none++;return}const v=a.reduce((p,q)=>p+q,0)/a.length;if(v>=18-1e-9)o.hi++;else if(v>=11-1e-9)o.mid++;else o.low++});return o}
-function shkPills(o){return `<span class="pill pg">متفوقون ${shAR(o.hi)}</span><span class="pill py">متوسطون ${shAR(o.mid)}</span><span class="pill pr">متدنون ${shAR(o.low)}</span><span class="pill pn">لم يُرصد ${shAR(o.none)}</span>`}
+function shkAvgDist(c,D){return shkDist(c,D,0)}
+function shkPills(o){return shkBar(o)}
 function shVClasses(){const H=[['h1','الحلقة الأولى','١ – ٣',c=>c.g<=3],['h2','الحلقة الثانية','٤ – ٦',c=>c.g>=4]];let load=[];
  const fold=H.map(([k,nm,rg,f])=>{const L=CLASSES.filter(f).slice().sort((a,b)=>a.g-b.g||String(a.sec).localeCompare(String(b.sec),'ar')),open=SHK.open[k],n=L.reduce((a,c)=>a+shStu(c).length,0);
   let tot=null;if(L.length&&L.every(c=>SHK.d[c.id])){tot={hi:0,mid:0,low:0,none:0};L.forEach(c=>{const o=shkAvgDist(c,SHK.d[c.id]);['hi','mid','low','none'].forEach(q=>tot[q]+=o[q])})}
   const body=open?L.map(c=>{const o=shOwner(c.id),D=SHK.d[c.id];if(!D)load.push(c.id);
-   return `<div class="glass card cl" data-cls="${c.id}" style="padding:10px 14px"><div class="rowsp"><div><div class="t" style="font-size:14.5px">${shCn(c)}</div><div class="mut" style="font-size:11px">${shAR(shStu(c).length)} طالباً · ${o?'أ. '+esc(shNm(o)):'لم يُحدَّد معلم العلوم الشرعية'}</div></div><span style="opacity:.6">‹</span></div><div class="leg" style="margin-top:7px">${D?shkPills(shkAvgDist(c,D)):'<span class="mut" style="font-size:11px">جارٍ تحميل الدرجات…</span>'}</div></div>`}).join('')||'<div class="mut" style="padding:8px">لا توجد صفوف في هذه الحلقة.</div>':'';
-  return `<div class="glass card" style="padding:12px 14px"><div class="rowsp" data-fold="${k}" style="cursor:pointer"><div style="display:flex;gap:10px;align-items:center"><span style="display:inline-block;transition:transform .2s;transform:rotate(${open?'90':'0'}deg);font-size:18px;opacity:.85">◂</span><div><div class="t" style="font-size:16px">${nm}</div><div class="mut" style="font-size:11px">الصفوف ${rg} · ${shAR(L.length)} صفاً · ${shAR(n)} طالباً</div></div></div></div>${tot?`<div class="leg" style="margin-top:8px">${shkPills(tot)}</div>`:''}${open?`<div class="g2" style="margin-top:10px">${body}</div>`:''}</div>`}).join('');
+   return `<div class="glass card cl" data-cls="${c.id}" style="padding:10px 14px"><div class="rowsp"><div><div class="t" style="font-size:14.5px">${shCn(c)}</div><div class="mut" style="font-size:11px">${shAR(shStu(c).length)} طالباً · ${o?'أ. '+esc(shNm(o)):'لم يُحدَّد معلم العلوم الشرعية'}</div></div><span style="opacity:.6">‹</span></div><div style="margin-top:8px">${D?shkPills(shkAvgDist(c,D)):'<span class="mut" style="font-size:11px">جارٍ تحميل الدرجات…</span>'}</div></div>`}).join('')||'<div class="mut" style="padding:8px">لا توجد صفوف في هذه الحلقة.</div>':'';
+  return `<div class="glass card" style="padding:12px 14px"><div class="rowsp" data-fold="${k}" style="cursor:pointer"><div style="display:flex;gap:10px;align-items:center"><span style="display:inline-block;transition:transform .2s;transform:rotate(${open?'90':'0'}deg);font-size:18px;opacity:.85">◂</span><div><div class="t" style="font-size:16px">${nm}</div><div class="mut" style="font-size:11px">الصفوف ${rg} · ${shAR(L.length)} صفاً · ${shAR(n)} طالباً</div></div></div></div>${tot?`<div style="margin-top:9px">${shkPills(tot)}</div>`:''}${open?`<div class="g2" style="margin-top:10px">${body}</div>`:''}</div>`}).join('');
  load.forEach(id=>setTimeout(()=>shkLoad(id),0));
- return shHdr()+`<div class="body wide">${shBack('sections','الأقسام')}<div class="sec" style="margin-top:0"><b>الصفوف</b><span style="color:#fff">${shAR(CLASSES.length)} صفاً</span></div>${fold}<div class="mut" style="margin:4px 4px 8px">التصنيف حسب معدّل الوقفات من ٢٠: متفوق ١٨–٢٠ · متوسط ١١–١٧ · متدنٍّ ١٠ فأقل. افتح الحلقة لتظهر صفوفها.</div></div>`+shNav()}
+ return shHdr()+`<div class="body wide">${shBack('sections','الأقسام')}<div class="sec" style="margin-top:0"><b>الصفوف</b><span style="color:#fff">${shAR(CLASSES.length)} صفاً</span></div>${fold}<div class="mut" style="margin:4px 4px 8px">${shkLegend}<div class="mut" style="margin-top:6px">الخط يتوزع بحسب عدد الطلبة وتحته عدد كل فئة. التصنيف من معدّل درجات الوقفات المرصودة حتى الآن (من ٢٠): متفوق ١٨–٢٠ · متوسط ١١–١٧ · متدنٍّ ١٠ فأقل، ويتغير مع كل وقفة جديدة. افتح الحلقة لتظهر صفوفها.</div></div>`+shNav()}
 
 function renderStudent(s){
   SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
@@ -5997,7 +5997,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='093fed32f321';
+const BUILD='a1058770c7a7';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
