@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="3942318348c5">
+<meta name="build" content="356bb1353e14">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2896,7 +2896,7 @@ function shsModel(){const s=SHS.st,m={};
  m.prev=Object.keys(byW).filter(k=>k).sort().reverse().map(k=>{const d=shsD(k);return {no:shsWeekNo(k),range:shAR(d.getDate())+' – '+shsFmt(shsAdd(d,4)),items:byW[k]}});
  const undated=byW['']||[];if(undated.length)m.prev.push({no:0,range:'',items:undated});
  /* السلوك والماء */
- const rfw=s.rfw||{},cur=rfw[s.ws]||{p:0,n:0,pr:{},nr:{}},CAP=150;
+ const rfw=s.rfw||{},cur=rfw[s.ws]||{p:0,n:0,pr:{},nr:{}},CAP=300;
  const top=(map,L)=>Object.keys(map||{}).map(i=>[L[+i],map[i]]).filter(x=>x[0]&&x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,3);
  const net=w=>Math.min(CAP,Math.max(0,(w.p||0)-(w.n||0)));
  m.beh={pos:cur.p||0,neg:cur.n||0,net:net(cur),wasted:Math.min(cur.n||0,cur.p||0),max:CAP,tp:top(cur.pr,SHS_BPOS),tn:top(cur.nr,SHS_BNEG),note:''};
@@ -3504,7 +3504,7 @@ const shxClsC=(v,m)=>{const p=v/m;return p>=.8-1e-9?'g':(p>=.6-1e-9?'y':'r')};
 async function shxLoad(sid){const r=await srv('sharia_admin_student',{p_sid:sid});if(+SHA.a!==sid)return;SHX.d=(r&&!r.error)?r:{error:true,sid};if(SHX.d&&!SHX.d.error){const s0=shxCur(),c0=s0&&(s0.c||shCls(s0.class_id));SHX.d.fc=!!(c0&&c0.g<=3)}if(SHA.v==='student'){SHA.tkeep=true;shRender()}}
 function shxOpen(sid){SHA.a=sid;SHA.v='student';SHA.sheet=null;SHX.t='g';SHX.d=null;SHX.rep=null;SHX.pin=false;SHX.nm='';SHX.tr=0;shRender();shxLoad(sid)}
 function shxWeek(){const n=new Date(),d=n.getDay(),b=new Date(n.getFullYear(),n.getMonth(),n.getDate()+(d<=4?-d:7-d));return b.getFullYear()+'-'+String(b.getMonth()+1).padStart(2,'0')+'-'+String(b.getDate()).padStart(2,'0')}
-function shxBeh(D){const ws=shxWeek(),rf=D.rfw||{},cur=rf[ws]||{p:0,n:0},net=w=>Math.min(150,Math.max(0,(w.p||0)-(w.n||0)));let farm=0;Object.keys(rf).forEach(k=>{if(k<ws)farm+=net(rf[k])});return {p:cur.p||0,n:cur.n||0,net:net(cur),farm}}
+function shxBeh(D){const ws=shxWeek(),rf=D.rfw||{},cur=rf[ws]||{p:0,n:0},net=w=>Math.min(300,Math.max(0,(w.p||0)-(w.n||0)));let farm=0;Object.keys(rf).forEach(k=>{if(k<ws)farm+=net(rf[k])});return {p:cur.p||0,n:cur.n||0,net:net(cur),farm}}
 function shxGrades(s){const D=SHX.d;
  if(!D||D.sid!==s.id)return '<div class="glass card"><div class="mut">جارٍ تحميل درجات الطالب…</div></div>';
  if(D.error)return '<div class="glass card"><div class="t">تعذّر تحميل الدرجات</div><div class="mut">تأكد من الإنترنت وحاول مرة ثانية.</div></div>';
@@ -3516,7 +3516,7 @@ function shxGrades(s){const D=SHX.d;
  const B=D.beh||{},bp=(B.p||[]).map(i=>(typeof SHS_BPOS!=='undefined'?SHS_BPOS[i]:'')).filter(Boolean),bn=(B.n||[]).map(i=>(typeof SHS_BNEG!=='undefined'?SHS_BNEG[i]:'')).filter(Boolean),bw=shxBeh(D);
  const beh=`<div class="glass card"><div class="t" style="font-size:15px;margin-bottom:6px">السلوك والنقاط</div>
   <div class="rowsp"><span>نقاط هذا الأسبوع</span><span><b style="color:#9CF0C0">+${shAR(bw.p)}</b> &nbsp; <b style="color:#FFB3AA">−${shAR(bw.n)}</b></span></div>
-  <div class="rowsp" style="margin-top:6px"><span>إبريق الماء (من ١٥٠)</span><b>${shAR(bw.net)} لتراً</b></div><div class="rowsp" style="margin-top:6px"><span>في المزرعة</span><b>${shAR(bw.farm)} لتراً</b></div>
+  <div class="rowsp" style="margin-top:6px"><span>إبريق الماء (من ٣٠٠)</span><b>${shAR(bw.net)} لتراً</b></div><div class="rowsp" style="margin-top:6px"><span>في المزرعة</span><b>${shAR(bw.farm)} لتراً</b></div>
   <div style="margin-top:8px">${bp.map(x=>`<span class="bchip p">+ ${esc(x)}</span>`).join('')}${bn.map(x=>`<span class="bchip n">− ${esc(x)}</span>`).join('')||''}${(!bp.length&&!bn.length)?'<div class="mut">لا توجد عبارات سلوكية مختارة من المعلم.</div>':''}</div></div>`;
  return `<div class="glass card" style="text-align:center"><div class="btn" data-sh="xrep" style="margin-top:0">تقرير الطالب (حفظ PDF)</div><div class="mut" style="margin-top:6px">تختار ما يظهر فيه: الوقفات والأعمدة الإضافية والسلوك.</div></div>${stops}${ex}${beh}`}
 function shxNote(s,c,d){let n='';if(!d)return '';
@@ -6034,7 +6034,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='3942318348c5';
+const BUILD='356bb1353e14';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
