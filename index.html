@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="a1058770c7a7">
+<meta name="build" content="656e947ddce3">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3579,7 +3579,7 @@ function shxDoc(s,D,R){const c=s.c||shCls(s.class_id),g=shSig(),teacher=D.teache
 
 /* ===== صفحة الصف في غرفة الإدارة: الدرجات الحقيقية (ما رصده المعلم) + الكشف العام PDF + إكسل ===== */
 const SHK_CSS='.dbar{display:flex;height:12px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.18);margin:9px 0}.dbar i{display:block;height:100%}.dbar i.h{background:#2EAA5E}.dbar i.m{background:#E0A21B}.dbar i.l{background:#D63A2B}.leg{display:flex;flex-wrap:wrap;gap:6px}.sbar{display:flex;height:4px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.12)}.sbar i{display:block}.slg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:11px;font-weight:700}.slg span:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;background:var(--c)}.slg b{font-weight:900;margin-right:3px;color:#fff}';
-const SHK={open:{h1:false,h2:false},d:{},busy:{},stop:1,rep:{stops:{1:'final',2:'final',3:'final'},ex:true,b:false}};
+const SHK={open:{h1:false,h2:false},q:{},d:{},busy:{},stop:1,rep:{stops:{1:'final',2:'final',3:'final'},ex:true,b:false}};
 const shkFC=c=>!!c&&c.g<=3;
 const shkStops=c=>shkFC(c)?[1,2]:[1,2,3];
 const shkClsT=(t,m)=>{const p=t/m;return p>=.95-1e-9?'g':(p>.5+1e-9?'y':'r')};
@@ -3588,7 +3588,7 @@ async function shkLoad(cid,force){const c=shCls(cid);if(!c)return;if(SHK.busy[ci
  try{for(let i=0;i<stu.length;i+=6){const ch=stu.slice(i,i+6),rs=await Promise.all(ch.map(s=>srv('sharia_admin_student',{p_sid:s.id})));rs.forEach((r,k)=>{if(r&&!r.error)rows.push({s:ch[k],r});else{bad++;rows.push({s:ch[k],r:null})}})}}catch(e){bad=stu.length}
  SHK.busy[cid]=false;const ok=rows.find(x=>x.r);
  SHK.d[cid]={at:Date.now(),rows,bad,teacher:ok?ok.r.teacher:null,mx:ok?(ok.r.mx||{}):{},ex:ok?(ok.r.ex||[]):[],gpub:ok?(ok.r.gpub||{}):{}};
- if((SHA.v==='class'&&+SHA.a===+cid)||SHA.v==='classes'){SHA.tkeep=true;shRender()}}
+ if(SHA.v==='class'&&+SHA.a===+cid){SHA.tkeep=true;shRender()}else if(SHA.v==='classes')shkPatch(cid)}
 function shkMx(c,D,w){const a=D.mx&&D.mx[w];return (a&&a.length===4)?a:(shkFC(c)?[20,0,0,0]:[5,5,5,5])}
 function shkTot(r,w){const a=r&&r.sc&&r.sc[w];return (Array.isArray(a)&&a.some(v=>v!=null))?Math.round(a.reduce((x,v)=>x+(v||0),0)*10)/10:null}
 function shkAvgOf(c,D,x,upTo){const a=[];shkStops(c).forEach(w=>{if(upTo&&w>upTo)return;const t=shkTot(x.r,w);if(t!=null)a.push(t/shkMx(c,D,w).reduce((p,q)=>p+q,0)*20)});return a.length?a.reduce((p,q)=>p+q,0)/a.length:null}
@@ -3653,10 +3653,20 @@ function shVClasses(){const H=[['h1','الحلقة الأولى','١ – ٣',c=>
  const fold=H.map(([k,nm,rg,f])=>{const L=CLASSES.filter(f).slice().sort((a,b)=>a.g-b.g||String(a.sec).localeCompare(String(b.sec),'ar')),open=SHK.open[k],n=L.reduce((a,c)=>a+shStu(c).length,0);
   let tot=null;if(L.length&&L.every(c=>SHK.d[c.id])){tot={hi:0,mid:0,low:0,none:0};L.forEach(c=>{const o=shkAvgDist(c,SHK.d[c.id]);['hi','mid','low','none'].forEach(q=>tot[q]+=o[q])})}
   const body=open?L.map(c=>{const o=shOwner(c.id),D=SHK.d[c.id];if(!D)load.push(c.id);
-   return `<div class="glass card cl" data-cls="${c.id}" style="padding:10px 14px"><div class="rowsp"><div><div class="t" style="font-size:14.5px">${shCn(c)}</div><div class="mut" style="font-size:11px">${shAR(shStu(c).length)} طالباً · ${o?'أ. '+esc(shNm(o)):'لم يُحدَّد معلم العلوم الشرعية'}</div></div><span style="opacity:.6">‹</span></div><div style="margin-top:8px">${D?shkPills(shkAvgDist(c,D)):'<span class="mut" style="font-size:11px">جارٍ تحميل الدرجات…</span>'}</div></div>`}).join('')||'<div class="mut" style="padding:8px">لا توجد صفوف في هذه الحلقة.</div>':'';
-  return `<div class="glass card" style="padding:12px 14px"><div class="rowsp" data-fold="${k}" style="cursor:pointer"><div style="display:flex;gap:10px;align-items:center"><span style="display:inline-block;transition:transform .2s;transform:rotate(${open?'90':'0'}deg);font-size:18px;opacity:.85">◂</span><div><div class="t" style="font-size:16px">${nm}</div><div class="mut" style="font-size:11px">الصفوف ${rg} · ${shAR(L.length)} صفاً · ${shAR(n)} طالباً</div></div></div></div>${tot?`<div style="margin-top:9px">${shkPills(tot)}</div>`:''}${open?`<div class="g2" style="margin-top:10px">${body}</div>`:''}</div>`}).join('');
- load.forEach(id=>setTimeout(()=>shkLoad(id),0));
+   return `<div class="glass card cl" data-cls="${c.id}" style="padding:10px 14px"><div class="rowsp"><div><div class="t" style="font-size:14.5px">${shCn(c)}</div><div class="mut" style="font-size:11px">${shAR(shStu(c).length)} طالباً · ${o?'أ. '+esc(shNm(o)):'لم يُحدَّد معلم العلوم الشرعية'}</div></div><span style="opacity:.6">‹</span></div><div id="shk-st-${c.id}" style="margin-top:8px;min-height:30px">${D?shkPills(shkAvgDist(c,D)):'<span class="mut" style="font-size:11px">جارٍ تحميل الدرجات…</span>'}</div></div>`}).join('')||'<div class="mut" style="padding:8px">لا توجد صفوف في هذه الحلقة.</div>':'';
+  return `<div class="glass card" style="padding:12px 14px"><div class="rowsp" data-fold="${k}" style="cursor:pointer"><div style="display:flex;gap:10px;align-items:center"><span style="display:inline-block;transition:transform .2s;transform:rotate(${open?'90':'0'}deg);font-size:18px;opacity:.85">◂</span><div><div class="t" style="font-size:16px">${nm}</div><div class="mut" style="font-size:11px">الصفوف ${rg} · ${shAR(L.length)} صفاً · ${shAR(n)} طالباً</div></div></div></div><div id="shk-tot-${k}" style="margin-top:9px;min-height:30px">${tot?shkPills(tot):'<span class="mut" style="font-size:11px">جارٍ حساب المجموع…</span>'}</div>${open?`<div class="g2" style="margin-top:10px">${body}</div>`:''}</div>`}).join('');
+ load.forEach(id=>shkQueue(id));
  return shHdr()+`<div class="body wide">${shBack('sections','الأقسام')}<div class="sec" style="margin-top:0"><b>الصفوف</b><span style="color:#fff">${shAR(CLASSES.length)} صفاً</span></div>${fold}<div class="mut" style="margin:4px 4px 8px">${shkLegend}<div class="mut" style="margin-top:6px">الخط يتوزع بحسب عدد الطلبة وتحته عدد كل فئة. التصنيف من معدّل درجات الوقفات المرصودة حتى الآن (من ٢٠): متفوق ١٨–٢٠ · متوسط ١١–١٧ · متدنٍّ ١٠ فأقل، ويتغير مع كل وقفة جديدة. افتح الحلقة لتظهر صفوفها.</div></div>`+shNav()}
+
+/* تحديث موضعي بدون إعادة رسم الصفحة كلها (يمنع اهتزاز الشريط السفلي والقفز أثناء التحميل) */
+function shkFoldOf(c){return c.g<=3?'h1':'h2'}
+function shkPatch(cid){const o=document.getElementById('sh-ov');if(!o||!o.shadowRoot)return;const r=o.shadowRoot,c=shCls(cid),D=SHK.d[cid];if(!c||!D)return;
+ const st=r.getElementById('shk-st-'+cid);if(st)st.innerHTML=shkPills(shkAvgDist(c,D));
+ const k=shkFoldOf(c),L=CLASSES.filter(x=>shkFoldOf(x)===k),el=r.getElementById('shk-tot-'+k);
+ if(el&&L.length&&L.every(x=>SHK.d[x.id])){const t={hi:0,mid:0,low:0,none:0};L.forEach(x=>{const q=shkAvgDist(x,SHK.d[x.id]);['hi','mid','low','none'].forEach(z=>t[z]+=q[z])});el.innerHTML=shkPills(t)}}
+
+let SHK_Q=Promise.resolve();
+function shkQueue(id){if(SHK.busy[id]||SHK.d[id]||SHK.q[id])return;SHK.q[id]=1;SHK_Q=SHK_Q.then(()=>shkLoad(id)).catch(()=>{}).then(()=>{SHK.q[id]=0})}
 
 function renderStudent(s){
   SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
@@ -5997,7 +6007,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='a1058770c7a7';
+const BUILD='656e947ddce3';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
