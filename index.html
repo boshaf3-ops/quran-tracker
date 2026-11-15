@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="3a905a5a86b1">
+<meta name="build" content="c00d92f10166">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3009,6 +3009,9 @@ function shsHalves(m){
  const q=shsQuranInfo();
  const HQ=`<div class="ci">${shsIc('book')}</div><h3>القرآن الكريم</h3><div class="sum"><small>السورة المطلوبة</small>${q?esc(q.seg):'ادخل لترى مقطعك'}${q&&q.t?`<br><span class="stp ${q.k==='red'?'red':q.k==='green'?'green':q.k==='gold'?'gold':''}">${esc(q.t)}</span>`:''}${(()=>{const t=shsQuranTeacher();return t?`<div class="tch">الأستاذ: ${esc(t.replace(/^أ\.\s*/,''))}</div>`:''})()}</div><div class="go">اضغط للدخول ›</div>`;
  return [HS,HQ]}
+function shsHeroHTML(m,lg){const n=new Date(),h=n.getHours(),gr=h<12?'صباح الخير':h<18?'مساء الخير':'مساء النور';let d=null;try{d=shsD(SHS.st.today)}catch(e){}if(!d||isNaN(d))d=n;
+ const date=SHS_DN[d.getDay()]+' '+shAR(d.getDate())+' '+SH_M[d.getMonth()]+' '+shAR(d.getFullYear()),two=String(m.name||'').trim().split(/\s+/).slice(0,2).join(' '),wk=m.week&&m.week.no>=1?m.week.no:0;
+ return `<div class="wlc"><div class="hx"><small>منصة العلوم الشرعية والقرآن الكريم</small><h1>${gr}، <span class="gold">${esc(two)}</span> <i class="wv">👋</i></h1><div class="chs"><span>📅 ${date}</span>${wk?`<span>الأسبوع ${shAR(wk)}</span>`:''}</div></div><div class="cap"><i ${lg('b')}></i><hr><i ${lg('a')}></i></div></div>`}
 function shsMount(){const o=shsHostEl(),sr=o.shadowRoot,stage=sr.getElementById('stage'),m=shsModel(),[HS,HQ]=shsHalves(m);
  const R=()=>stage.getBoundingClientRect();
  stage.innerHTML=`<div class="pnl s" style="position:absolute;top:0;bottom:0;left:0;overflow:hidden"><div class="half s" style="position:absolute;inset:0;display:flex;justify-content:center"><div class="hc" style="position:relative">${HS}</div></div><div class="pgw" style="left:0"><div id="spw" style="position:absolute;inset:0"></div></div></div><div class="pnl q" style="position:absolute;top:0;bottom:0;right:0;overflow:hidden"><div class="half q" style="position:absolute;inset:0;display:flex;justify-content:center"><div class="hc" style="position:relative">${HQ}</div></div><div class="pgw" style="right:0"><div class="qpg"></div></div></div><div class="hd" id="hd"></div>`;
@@ -3017,7 +3020,7 @@ function shsMount(){const o=shsHostEl(),sr=o.shadowRoot,stage=sr.getElementById(
  const d=new ShsSp(.5,190,22);SHS.d=d;SHS.state='home';let W=R().width,down=null,lastX=0,lastT=0,vel=0;
  const draw=()=>{const WL=stage.offsetWidth;W=R().width;const x=d.x;pS.style.width=Math.max(0,x*WL)+'px';pQ.style.width=Math.max(0,(1-x)*WL)+'px';hd.style.left=x*WL+'px';wS.style.width=WL+'px';wQ.style.width=WL+'px';
   const eS=shsC((x-.5)/.5,0,1),eQ=shsC((.5-x)/.5,0,1);wS.style.opacity=shsSm(.74,.95,eS);wQ.style.opacity=shsSm(.74,.95,eQ);wS.style.pointerEvents=eS>.9?'auto':'none';wQ.style.pointerEvents='none';
-  cS.style.opacity=1-shsSm(.45,.75,eS);cQ.style.opacity=1-shsSm(.45,.75,eQ);{const wl=stage.querySelector('.wlc');if(wl)wl.style.opacity=1-shsSm(.4,.7,Math.max(eS,eQ))}hd.style.opacity=1-shsSm(.4,.7,Math.max(eS,eQ))};
+  cS.style.opacity=1-shsSm(.45,.75,eS);cQ.style.opacity=1-shsSm(.45,.75,eQ);{const wl=stage.querySelector('.wlc');if(wl)wl.style.opacity=1-shsSm(.4,.7,Math.max(eS,eQ))}{const tp=stage.querySelector('.top');if(tp)tp.style.opacity=shsSm(.4,.7,Math.max(eS,eQ))}hd.style.opacity=1-shsSm(.4,.7,Math.max(eS,eQ))};
  const L=shsLoop(dt=>{d.step(dt);draw();const go=!d.rest;if(!go&&SHS.state==='q')shsToHost();return go});SHS.L=L;draw();
  const rel=e=>{const r=R();return {x:e.clientX-r.left,y:e.clientY-r.top}};
  const sideOf=e=>rel(e).x<R().width/2?'s':'q';
@@ -3034,7 +3037,7 @@ function shsMount(){const o=shsHostEl(),sr=o.shadowRoot,stage=sr.getElementById(
  stage.addEventListener('pointerleave',()=>{if(!down&&SHS.state==='home'){d.t=.5;L.kick()}});
  stage.addEventListener('click',e=>{if(e.target.closest('[data-back]')){SHS.state='home';d.set(70,12);d.t=.5;L.kick()}});
  const lg=(c)=>{const u=shLogo(c);return u?`style="background-image:url(${u})"`:''};
- stage.insertAdjacentHTML('beforeend',`<div class="wlc"><small>منصة الطالب</small><span>أهلاً بك يا <b>${esc(m.name)}</b></span></div><div class="top"><div class="lg" ${lg('b')}></div><div class="tt">منصة العلوم الشرعية والقرآن الكريم</div><div class="lg" ${lg('a')}></div></div>`);
+ stage.insertAdjacentHTML('beforeend',shsHeroHTML(m,lg)+`<div class="top" style="opacity:0"><div class="lg" ${lg('b')}></div><div class="tt">منصة العلوم الشرعية والقرآن الكريم</div><div class="lg" ${lg('a')}></div></div>`);
  SHS.mounted=true}
 function shsFit(){const st=shsStage();if(!st)return;const W=innerWidth,H=innerHeight,k=shsC(Math.min(W/400,H/740),.9,Math.min(screen.width||9999,screen.height||9999)<700?3:1.5),w=W/k,h=H/k;
  st.style.width=w+'px';st.style.height=h+'px';st.style.setProperty('--h',h+'px');st.style.transform='scale('+k+')';st.classList.toggle('wide',w>=700);st.classList.toggle('short',h<540);SHS.s=k;
@@ -3066,8 +3069,14 @@ const SHS_CSS=`*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-
 @media (prefers-reduced-motion:reduce){.half *{animation:none!important}}
 .stp{display:inline-block;margin-top:6px;padding:2px 11px;border-radius:99px;font-size:10.5px;font-weight:900;color:#fff;background:rgba(120,134,130,.7)}.stp.red{background:rgba(205,76,66,.92)}.stp.green{background:rgba(46,170,94,.92)}.stp.gold{background:rgba(224,162,27,.95);color:#3b2a00}
 .half .sum .ln{margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.28);font-size:11px;font-weight:800}.half.q .sum .ln{border-color:rgba(22,94,80,.28)}
-.wlc{position:absolute;left:50%;top:calc(var(--st) + 68px);transform:translateX(-50%);z-index:59;pointer-events:none;text-align:center;padding:7px 22px 8px;border-radius:22px;background:rgba(9,48,40,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.35);box-shadow:0 6px 18px rgba(0,0,0,.2);width:max-content;max-width:92%;color:#fff}
-.wlc small{display:block;font-size:11.5px;font-weight:800;color:#FFD35A}.wlc span{display:block;font-size:12.5px;font-weight:700;margin-top:1px}.wlc b{font-size:16px;font-weight:900}
+.wlc{position:absolute;left:12px;right:12px;top:calc(var(--st) + 12px);z-index:59;pointer-events:none;display:flex;align-items:center;gap:10px;padding:13px 12px 12px 12px;border-radius:26px;color:#fff;background:linear-gradient(120deg,rgba(35,130,111,.96),rgba(22,94,80,.96) 50%,rgba(35,130,111,.96));background-size:200% 100%;animation:wshim 8s linear infinite,wpop .6s;border:1px solid rgba(255,255,255,.35);box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.wlc .hx{flex:1;min-width:0}.wlc small{display:block;font-size:11px;font-weight:700;opacity:.85}.wlc h1{margin:1px 0 8px;font-size:20px;line-height:1.3;font-weight:900}.wlc .gold{color:#FFD35A}
+.wlc .chs{display:flex;gap:6px;flex-wrap:wrap}.wlc .chs span{font-size:10.5px;font-weight:800;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28)}
+.wlc .cap{display:flex;flex-direction:column;align-items:center;background:#fff;border-radius:26px;padding:7px 6px;box-shadow:0 3px 10px rgba(0,0,0,.25);flex:none}.wlc .cap i{display:block;width:38px;height:38px;background:center/contain no-repeat}.wlc .cap hr{width:26px;border:0;border-top:1px solid #d5e3df;margin:5px 0}
+@keyframes wshim{0%{background-position:200% 0}100%{background-position:-200% 0}}@keyframes wpop{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:none}}@keyframes wwave{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+.wlc .wv{display:inline-block;font-style:normal;transform-origin:70% 70%;animation:wwave 2.6s .8s ease-in-out 1}
+#stage.wide .wlc{left:0;right:0;margin:0 auto;width:min(560px,calc(100% - 24px))}
+@media (prefers-reduced-motion:reduce){.wlc,.wlc .wv{animation:none!important}}
 .hd{position:absolute;top:50%;width:7px;height:64px;margin:-32px 0 0 -3.5px;border-radius:99px;background:rgba(255,255,255,.85);box-shadow:0 0 14px rgba(255,255,255,.7);z-index:20;pointer-events:none}
 .top{position:absolute;top:calc(var(--st) + 12px);left:10px;right:10px;height:46px;border-radius:23px;display:flex;align-items:center;gap:8px;padding:0 6px;z-index:60;pointer-events:none;background:rgba(9,48,40,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.35);box-shadow:0 6px 18px rgba(0,0,0,.25);direction:rtl}
 .top .lg{width:36px;height:36px;border-radius:50%;background:#fff center/78% no-repeat;flex:none;border:1px solid rgba(255,255,255,.8)}
@@ -3204,7 +3213,7 @@ textarea.fld{width:100%;height:90px;border-radius:16px;padding:10px 12px;font-fa
 #stage.wide .half h3{font-size:30px}#stage.wide .half .sum{font-size:15px;padding:16px 14px;border-radius:22px}#stage.wide .half .sum small{font-size:12px}#stage.wide .half .go{font-size:15px}
 #stage.wide .can svg{width:110px;height:100px}#stage.wide .ct b{font-size:16.5px}
 #stage.short .half .hc{padding:calc(var(--st) + 104px) 8px 8px;gap:5px}
-#stage.short .wlc{top:calc(var(--st) + 54px);padding:4px 16px;border-radius:16px;white-space:nowrap}#stage.short .wlc small{display:inline;margin-inline-end:8px}#stage.short .wlc span{display:inline}
+#stage.short .wlc{top:calc(var(--st) + 8px);padding:7px 10px;border-radius:20px}#stage.short .wlc h1{font-size:15px;margin-bottom:4px}#stage.short .wlc small{display:none}#stage.short .wlc .cap i{width:26px;height:26px}
 #stage.short .half .ci{width:60px;height:60px;margin-top:0}#stage.short .half .ci svg{width:30px;height:30px}
 #stage.short .half h3{font-size:22px}#stage.short .half .sum{margin-top:2px;padding:7px}#stage.short .half .go{display:none}
 #stage.short .snav{height:50px;bottom:calc(var(--sb) + 6px);padding:3px}#stage.short .snav div{padding:3px 2px;font-size:9.5px}#stage.short .snav svg{width:18px;height:18px;margin-bottom:0}
@@ -6022,7 +6031,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='3a905a5a86b1';
+const BUILD='c00d92f10166';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
