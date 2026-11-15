@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="90e34715305d">
+<meta name="build" content="67f7ab84cd50">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1124,6 +1124,9 @@ body.gm-on>*:not(#gm-ov){visibility:hidden!important}
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* ترتيب هجائي عربي موحّد: الهمزات (أ إ آ) كالألف، والتاء المربوطة كالهاء، والألف المقصورة كالياء، فيأتي «إبراهيم» قبل «أحمد» */
+const arKey=t=>String(t||'').replace(/[\u064B-\u065F\u0670\u0640]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim();
+const arCmp=(a,b)=>{const x=arKey(a),y=arKey(b);return x<y?-1:x>y?1:(String(a)<String(b)?-1:String(a)>String(b)?1:0)};
 const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const fmt=d=>d.getDate()+' '+MONTHS[d.getMonth()];
 const D=(m,d)=>new Date(2026,m,d);
@@ -1271,7 +1274,7 @@ function hydrate(st){
       beh:x.beh.map(b=>[b[0]==='-'?'−':'+',b[1],dayDate(b[2])]),owner:x.owner||0,pin:x.pin||'',photo:x.photo||undefined,medals:x.medals||{},pending:!!x.pending,cat:x.cat||0,
       by:x.by||0,at:x.at?new Date(x.at):undefined,prev:x.prev||undefined,nextG:x.nextG||undefined,c:null};
     const c=cm[x.c];if(c){s.c=c;c.students.push(s);}else if(ROLE==='admin')POOL.push(s);});
-  CLASSES.forEach(c=>c.students.sort((p,q)=>p.name.localeCompare(q.name,'ar')));POOL.sort((p,q)=>p.name.localeCompare(q.name,'ar'));
+  CLASSES.forEach(c=>c.students.sort((p,q)=>arCmp(p.name,q.name)));POOL.sort((p,q)=>arCmp(p.name,q.name));
   /* حماية اختيارات المعلم الأخيرة من تحديث قديم يصل قبل ما تنحفظ على الخادم */
   OWNPEND.forEach((v,id)=>{if(!v.busy&&Date.now()-v.t>10000){OWNPEND.delete(id);return;}const s0=CLASSES.reduce((a,c)=>a||c.students.find(q=>q.id===id),null);if(s0)s0.owner=v.want;});
   CATPEND.forEach((v,id)=>{if(Date.now()-v.t>10000){CATPEND.delete(id);return;}const s0=CLASSES.reduce((a,c)=>a||c.students.find(q=>q.id===id),null);if(s0)s0.cat=v.want;});
@@ -1419,7 +1422,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 window.addEventListener('focus',()=>{poll(true);});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')poll(true);});
 const FM=[['abc','الترتيب الأبجدي'],['green','المتقدمون'],['gold','على الخطة'],['red','المتأخرون'],['none','لم يبدأ التسجيل']];
-const filtList=(list,mode)=>list.filter(s=>mode==='abc'||statusOf(s).k===mode).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+const filtList=(list,mode)=>list.filter(s=>mode==='abc'||statusOf(s).k===mode).sort((a,b)=>arCmp(a.name,b.name));
 function filterUI(draw){T.fdraw=draw;const lab=FM.find(m=>m[0]===T.fm)[1];
   return `<div class="fbar"><span class="pill p-gray" id="fl-label" style="font-size:12.5px">${lab}</span>
   <div class="menuwrap"><button class="glass iconbtn" onclick="toggleFM(event)" aria-label="تصفية الطلبة">${FUNNEL}</button>
@@ -2816,7 +2819,7 @@ async function shTcToggle(k){let t=shTch(SH_TQ.tid);if(!t){await shLoad();t=shTc
   const r=await srv('sharia_admin_op',{p_op:'set_sections',p:{id:t.id,quran:k==='q'?false:t.quran,sharia:k==='s'?false:t.sharia}});if(r&&r.ok){await shLoad();if(k==='q'){await sync(true);SH_TQ.tv='s'}shTcDraw();toast('أُلغي القسم، وسجلاته القديمة تبقى محفوظة')}else toast('تعذّر التنفيذ',true)}}
 /* ---- بوابة المعلم بعد الدخول: معلم القسمين يختار، ومعلم الشرعية فقط يدخل مباشرة ---- */
 let SH_TCH=null;
-async function shTeacherGate(){if(ROLE!=='teacher'||!TOK)return;const r=await srv('sharia_teacher_state',{});if(!r||r.error||!r.sharia){shTvClose();shChClose(true);return}SH_TCH=r;shCss();SH_DUAL=false;
+async function shTeacherGate(){if(ROLE!=='teacher'||!TOK)return;const r=await srv('sharia_teacher_state',{});if(!r||r.error||!r.sharia){shTvClose();shChClose(true);return}SH_TCH=r;(SH_TCH.classes||[]).forEach(c=>(c.students||[]).sort((x,y)=>arCmp(x.name,y.name)));shCss();SH_DUAL=false;
  if(r.quran){const w=await srv('sharia_teacher_switch',{});SH_DUAL=!!(w&&w.dual);if(SH_DUAL){await shcInbox();shcStartPoll();shChoose()}else{shTvClose();shChClose(true)}}
  else{shChClose(true);shTeacherOpen()}}
 function shTvEl(){return shHost('sh-tv',shTvClick)}
@@ -3800,7 +3803,7 @@ const curMonthKey=()=>TODAY.getFullYear()+'-'+String(TODAY.getMonth()+1).padStar
 const stuAvg=s=>{const n=s.done.length;return n?Math.round(s.done.reduce((a,d)=>a+d[0]+(d[1]||0),0)/n*10)/10:null;};
 const avTxt=s=>{const a=stuAvg(s);return a===null?'لا درجات بعد':'المتوسط '+a+' / '+mxOf(s.c.g);};
 const avKey=s=>{const a=stuAvg(s);return a===null?-1:a;};
-const byAvg=(a,b)=>avKey(b)-avKey(a)||a.name.localeCompare(b.name,'ar');
+const byAvg=(a,b)=>avKey(b)-avKey(a)||arCmp(a.name,b.name);
 const shortN=n=>String(n).split(' ').slice(0,2).join(' ');
 const myNomCls=()=>myCls().filter(c=>myIn(c).length).sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar'));
 const nomOf=c=>{const n=NOMS.find(x=>x.c===c.id);return n?myIn(c).find(x=>x.id===n.sid)||null:null;};
@@ -4110,12 +4113,12 @@ function subTabs(){if(!T.admin)return '';const tabs=[['hifz','التسميع'],[
   return `<div class="glass seg2" style="grid-template-columns:repeat(${tabs.length},1fr)">${tabs.map(x=>`<button data-k="${x[0]}" class="${T.sub===x[0]?'on':''}" onclick="setSub('${x[0]}')">${x[1]}</button>`).join('')}</div>`;}
 function setSub(k){T.sub=k;['hifz','beh','adm'].forEach(x=>{const e=$('sub-'+x);if(e)e.hidden=x!==k;});
   document.querySelectorAll('.seg2 button').forEach(b=>b.classList.toggle('on',b.dataset.k===k));}
-const nums=list=>{const m={};list.slice().sort((a,b)=>a.name.localeCompare(b.name,'ar')).forEach((s,i)=>m[s.id]=i+1);return m;};
+const nums=list=>{const m={};list.slice().sort((a,b)=>arCmp(a.name,b.name)).forEach((s,i)=>m[s.id]=i+1);return m;};
 const sno=n=>`<span class="sno">${n}</span>`;
 function navList(s){let l=null;
   if(T.admin){if(/ago\('cls'/.test(T.ret||''))l=s.c.students;}
   else if(T.from==='tas')l=myIn(s.c);else if(T.from==='cls')l=s.c.students;
-  return l&&l.length>1?l.slice().sort((a,b)=>a.name.localeCompare(b.name,'ar')):null;}
+  return l&&l.length>1?l.slice().sort((a,b)=>arCmp(a.name,b.name)):null;}
 function navStrip(s){const l=navList(s);if(!l)return '';const i=l.findIndex(x=>x.id===s.id);if(i<0)return '';
   const pv=l[i-1],nx=l[i+1],fn=x=>esc(x.name.trim().split(/\s+/)[0]);
   return `<div class="snav sm"><button class="btn-s" ${pv?`onclick="navStu(${pv.id})"`:'disabled'}><span class="sl">${BACK}الطالب السابق</span><small>${pv?(i)+' · '+fn(pv):'أول الكشف'}</small></button><button class="btn-s" ${nx?`onclick="navStu(${nx.id})"`:'disabled'}><span class="sl">الطالب التالي${CHEV}</span><small>${nx?(i+2)+' · '+fn(nx):'آخر الكشف'}</small></button></div>`;}
@@ -4355,7 +4358,7 @@ function aggPage(kind,id){
     const byT=c.tids.map(t=>({n:shortT(t),r:repStats(list.filter(s=>s.owner===t))})).concat([{n:'غير مختار',r:repStats(list.filter(s=>!s.owner||!c.tids.includes(s.owner)))}]).filter(x=>x.r.n);
     const tchCard=cardH('حسب المعلم','حالة طلاب كل معلم',`<div class="rows" style="margin-top:2mm;flex:none">${byT.map(x=>hrowS(esc(abbrT(x.n)),x.r)).join('')||'<div class="emp">لا يوجد</div>'}</div>`);
     const withAvg=s=>{const n=s.done.length;return n?s.done.reduce((a,d)=>a+d[0]+(d[1]||0),0)/n:0;};
-    const top=list.filter(s=>s.done.length).sort((a,b)=>b.done.length-a.done.length||withAvg(b)-withAvg(a)||a.name.localeCompare(b.name,'ar')).slice(0,5);
+    const top=list.filter(s=>s.done.length).sort((a,b)=>b.done.length-a.done.length||withAvg(b)-withAvg(a)||arCmp(a.name,b.name)).slice(0,5);
     const low=list.filter(s=>statusOf(s).k==='red').sort((a,b)=>statusOf(a).d-statusOf(b).d||a.done.length-b.done.length).slice(0,5);
     const lst=(a,col)=>a.length?`<div style="margin-top:1mm">${a.map(s=>hrow(esc(sNm(s.name)),pct(s.done.length,N),s.done.length+'/'+N,col)).join('')}</div>`:'<div class="emp">لا يوجد</div>';
     body=kp+`<div class="g2">${stCard(r,'توزيع حالة الطلبة')}${ind}</div>`+
@@ -4453,7 +4456,7 @@ function xlStyles(){
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="${fonts.length}">${fonts.map(font).join('')}</fonts><fills count="${fills.length}">${fills.join('')}</fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>${bd}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length}">${xfs.join('')}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;}
 function xlsxClassBlob(c){
   const MX=mxOf(c.g),segs=segsOf(c.g),N=segs.length,last=xlCol(N),tc=rptTeacher(c);
-  const list=c.students.filter(s=>!s.pending).slice().sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+  const list=c.students.filter(s=>!s.pending).slice().sort((a,b)=>arCmp(a.name,b.name));
   const due=segs.filter(x=>x.e<TODAY).length;let fin=0,onp=0,late=0,none=0;
   list.forEach(s=>{const k=statusOf(s).k;if(segs.every((g,j)=>gAt(s,j)))fin++;else if(k==='red'||(k==='none'&&due>0)){late++;if(k==='none')none++;}else onp++;});
   const rows=[],merges=[];const S=(v,s)=>({v,s}),E=s=>({s});
@@ -4628,7 +4631,7 @@ function openCompose(kind){
    :`<div class="glass card" style="margin:6px 0 0;padding:12px 14px;font-size:13.5px;font-weight:600;color:var(--teal-d);line-height:1.8">ستصل الرسالة إلى جميع طلاب صفوفك: ${cls.length} ${cls.length===1?'صف':'صفوف'} · ${nAll} طالب<div class="mut" style="margin-top:2px">${cls.map(c=>clsName(c).replace('الصف ','')).join(' · ')}</div></div>`}
    <label class="fl" for="c-txt">نص الرسالة</label><textarea class="field" id="c-txt" maxlength="300" placeholder="اكتب رسالتك هنا"></textarea>
    <div class="fe" id="c-e"></div><button class="btn" id="c-send">إرسال</button>`);
-  const fillTo=()=>{const c=CLASSES.find(x=>x.id===+$('c-cls').value),l=c.students.filter(s=>!s.pending).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+  const fillTo=()=>{const c=CLASSES.find(x=>x.id===+$('c-cls').value),l=c.students.filter(s=>!s.pending).sort((a,b)=>arCmp(a.name,b.name));
     $('c-to').innerHTML=`<option value="0">جميع طلاب الصف (${l.length})</option>`+l.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');};
   if(CK==='class'){fillTo();$('c-cls').onchange=fillTo;}
   $('c-send').onclick=async()=>{const v=$('c-txt').value.trim();if(!v){$('c-e').textContent='اكتب نص الرسالة أولاً';return;}
@@ -5011,7 +5014,7 @@ function codesOpen(list,title){
   if(!list.length){toast('لا يوجد طلبة',true);return;}
   rptOpen(codeDoc(list.map(cardPage).join('')),title);
 }
-const sortedStu=l=>l.filter(s=>!s.pending).slice().sort((a,b)=>a.c.g-b.c.g||a.c.sec.localeCompare(b.c.sec,'ar')||a.name.localeCompare(b.name,'ar'));
+const sortedStu=l=>l.filter(s=>!s.pending).slice().sort((a,b)=>a.c.g-b.c.g||a.c.sec.localeCompare(b.c.sec,'ar')||arCmp(a.name,b.name));
 function codesAll(){codesOpen(sortedStu(allStudents()),'أكواد كل الطلبة');}
 function codesClass(cid){const c=CLASSES.find(x=>x.id===cid);codesOpen(sortedStu(c.students),'أكواد '+clsName(c));}
 function codesTeachers(){
@@ -5072,7 +5075,7 @@ function aAct(){
   const ent=all.filter(s=>ACT.has(s.id)),nev=all.filter(s=>!ACT.has(s.id));
   const cidOk=s=>!AF.cid||s.c.id===AF.cid;
   const list=ent.filter(s=>cidOk(s)&&inF(s,AF.d)).sort((a,b)=>ACT.get(b.id).last-ACT.get(a.id).last);
-  const nevL=nev.filter(cidOk).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+  const nevL=nev.filter(cidOk).sort((a,b)=>arCmp(a.name,b.name));
   const when=d=>{const t0=new Date();t0.setHours(0,0,0,0);const df=Math.floor((t0-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/864e5),tm=d.toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});
     return df<=0?'اليوم '+tm:df===1?'أمس '+tm:fmt(d)+' · '+tm;};
   const rel=d=>{const t0=new Date();t0.setHours(0,0,0,0);const df=Math.floor((t0-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);return df<=0?'اليوم':df===1?'أمس':df===2?'قبل يومين':'قبل '+df+' أيام';};
@@ -5350,7 +5353,7 @@ function uxSheetDraw(){
   let sub='';
   if(UXS.sc==='halaqa')sub=opt(UXS.ref===1,"UXS.ref=1;uxSheetDraw()",'الحلقة الأولى')+opt(UXS.ref===2,"UXS.ref=2;uxSheetDraw()",'الحلقة الثانية');
   else if(UXS.sc==='class')sub=cls.map(c=>opt(UXS.ref===c.id,`UXS.ref=${c.id};uxSheetDraw()`,clsName(c))).join('');
-  else if(UXS.sc==='teacher')sub=TLIST.slice().sort((a,b)=>a.name.localeCompare(b.name,'ar')).map(t=>opt(UXS.ref===t.id,`UXS.ref=${t.id};uxSheetDraw()`,esc(t.name))).join('');
+  else if(UXS.sc==='teacher')sub=TLIST.slice().sort((a,b)=>arCmp(a.name,b.name)).map(t=>opt(UXS.ref===t.id,`UXS.ref=${t.id};uxSheetDraw()`,esc(t.name))).join('');
   const ok=UXS.title.trim().length>0&&UXS.text.trim().length>0&&rc.n>0;
   b.innerHTML=`<div class="ux-shh"><div class="ux-ic uxc-${st?'stu':'tch'}">${uxIc(st?'stu':'tch')}</div><div><b>إشعار ${st?'للطلبة':'للمعلمين'}</b><span>يظهر مرة واحدة عند دخول المستلم</span></div><button class="cl" onclick="closeSheet()" aria-label="إغلاق">${uxIc('x')}</button></div>
    <div class="ux-lb">إلى من؟</div><div class="ux-opts">${aud.map(a=>opt(UXS.sc===a[0],`UXS.sc='${a[0]}';UXS.ref=0;uxSheetDraw()`,a[1],st?'s':'t')).join('')}</div>
@@ -5671,7 +5674,7 @@ const rqNew=s=>{const cand=similar(s.name,s),by=s.by?tById(s.by):null;
 const sendTile=(title,sub,key,svg)=>`<button class="glass item" onclick="ago('pend',{pk:'${key}'})"><div class="mini"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${svg}</svg></div><div class="grow"><div class="t">${title}</div><div class="mut">${sub}</div></div>${CHEV}</button>`;
 const AMS={sc:'all',cid:0,sid:0,text:''},AMT={sc:'all',tid:0,text:''},AMN={aud:'students',lv:'remind',title:'',text:''};
 const amCls=()=>CLASSES.slice().sort((a,b)=>a.g-b.g||a.sec.localeCompare(b.sec,'ar'));
-const amStu=c=>c.students.filter(s=>!s.pending).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+const amStu=c=>c.students.filter(s=>!s.pending).sort((a,b)=>arCmp(a.name,b.name));
 const amAllN=()=>CLASSES.reduce((a,c)=>a+amStu(c).length,0);
 function amSend(o){
   const unit=o.aud==='students'?'طالب':'معلم',what=o.kind==='note'?'الإشعار':'الرسالة';
@@ -5709,7 +5712,7 @@ function aSend(pk){
       if(sc==='all'){o.scope='all';o.ref=null;}else if(sc==='h1'||sc==='h2'){o.scope='halaqa';o.ref=sc==='h1'?1:2;}else if(AMS.sid){o.scope='student';o.ref=AMS.sid;}else{o.scope='class';o.ref=c.id;}
       amSend(o);};
   }else if(pk==='mt'){
-    const tl=TLIST.slice().sort((a,b)=>a.name.localeCompare(b.name,'ar'));if(!AMT.tid&&tl.length)AMT.tid=tl[0].id;
+    const tl=TLIST.slice().sort((a,b)=>arCmp(a.name,b.name));if(!AMT.tid&&tl.length)AMT.tid=tl[0].id;
     const one=AMT.sc==='one',n=one?1:tl.length,tt=tl.find(x=>x.id===AMT.tid),label=one&&tt?tt.name:'جميع المعلمين';
     html=reqHead('رسائل للمعلمين','معلم معين أو جميع المعلمين')+`<div class="glass card"><div class="t" style="font-size:14.5px;margin-bottom:8px">إلى من؟</div>
      <div class="chips2">${chip(!one,"amSet('mt','sc','all')",'جميع المعلمين')}${chip(one,"amSet('mt','sc','one')",'معلم محدد')}</div>
@@ -5915,7 +5918,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='90e34715305d';
+const BUILD='67f7ab84cd50';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
