@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="c0a65e98400c">
+<meta name="build" content="fc4ab1edb0f2">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2512,7 +2512,7 @@ const shHdr=()=>{const d=new Date(),M=['يناير','فبراير','مارس','�
 const shBack=(v,l)=>`<div class="back" data-v="${v}">‹ ${l}</div>`;
 const SH_NAV=[['home','الرئيسية','home'],['list','الأقسام','sections'],['search','بحث','search'],['mail','الرسائل','messages'],['leaf','الشجرة','tree']];
 const SH_SECV=['sections','students','student','classes','class','teachers','teacher','codes','reports','honor','activity','notices','cur','stuui'];
-const shNavOn=v=>v==='sections'?SH_SECV.includes(SHA.v):SHA.v===v;
+const shNavOn=v=>{const tr=SHA.v==='tree'||(typeof SHQ!=='undefined'&&SHQ.from==='tree'&&(SHA.v==='qbank'||SHA.v==='pts'));return v==='tree'?tr:v==='sections'?(!tr&&SH_SECV.includes(SHA.v)):SHA.v===v};
 const shNav=()=>`<div class="nav">`+SH_NAV.map(([k,l,v],i)=>`<div class="${i===2?'mid ':''}${shNavOn(v)?'on':''}" data-v="${v}">${shIc(k)}${l}${v==='messages'&&SHA.mu&&SHA.v!=='messages'?'<i class="nbd">'+shAR(SHA.mu)+'</i>':''}</div>`).join('')+`</div>`;
 const shTile=(c,k,t,s,v,n)=>`<div class="tl ${c}" data-v="${v}">${n?'<i class="nbd">'+shAR(n)+'</i>':''}<div class="ic">${shIc(k)}</div><b>${t}</b><span>${s}</span></div>`;
 function shNeeds(){const n=[];const noc=shST().filter(t=>!shClsOf(t.id).length).length;if(noc)n.push([shAR(noc),'معلمين بدون صفوف في العلوم الشرعية','teachers']);
@@ -3848,10 +3848,11 @@ async function shqImport(){const todo=shqAll().filter(id=>!SHQ.lessons[id]&&SHQ_
  for(const id of todo){const i=shqInfo(id),b=SHQ_BANK[id],r=await srv('sharia_qb_save',{p:{id,title:i.t,page:i.p,min:b.m||3,qs:b.q,new_only:true}});
   if(r&&r.ok)SHQ.imp.n++;else SHQ.imp.bad++;if(SHQ.imp.n%4===0&&SHA.v==='qbank'){SHA.tkeep=true;shRender()}}
  const bad=SHQ.imp.bad;SHQ.imp=null;await shqLoad(true);shToast(bad?'تم الاستيراد مع '+shAR(bad)+' دروس تعذّر استيرادها':'تم استيراد أسئلة الكتب ✓');SHA.tkeep=true;shRender()}
+const shqTop=()=>SHQ.from==='tree'?shBack('tree','الشجرة'):shBack('sections','الأقسام');
 const shqB=(k,l)=>`<div class="back" data-qbk="${k}">${l}</div>`;
 function shVQbank(){if(!SHQ.loaded&&!SHQ.busy&&!SHQ.err)shqLoad();
  const hd=shHdr(),ttl=t=>`<div class="sec" style="margin-top:0"><b>${t}</b><span style="color:#fff">أسئلة تحدّي الدرس</span></div>`;
- if(!SHQ.loaded)return hd+`<div class="body wide">${shBack('sections','الأقسام')}${ttl('بنك الأسئلة')}<div class="glass card"><div class="mut" style="text-align:center">${SHQ.err?'تعذّر تحميل البنك.<div class="btn sm" data-qrl="1" style="margin-top:8px">إعادة المحاولة</div>':'جارٍ التحميل…'}</div></div></div>`+shNav();
+ if(!SHQ.loaded)return hd+`<div class="body wide">${shqTop()}${ttl('بنك الأسئلة')}<div class="glass card"><div class="mut" style="text-align:center">${SHQ.err?'تعذّر تحميل البنك.<div class="btn sm" data-qrl="1" style="margin-top:8px">إعادة المحاولة</div>':'جارٍ التحميل…'}</div></div></div>`+shNav();
  if(SHQ.lid){const i=shqInfo(SHQ.lid),L=SHQ.les;if(!i)return hd+`<div class="body wide">${shqB('l','‹ رجوع')}</div>`+shNav();
   if(!L)return hd+`<div class="body wide">${shqB('l','‹ '+esc(i.unit))}${ttl(esc(i.t))}<div class="glass card"><div class="mut" style="text-align:center">جارٍ التحميل…</div></div></div>`+shNav();
   const rows=L.qs.map((q,k)=>`<div class="qq" data-qq="${k}"><div class="qt">${shAR(k+1)}. ${esc(q.q)}</div><div class="qa"><span class="qp">${q.t==='c'?'خيارات':'صح وخطأ'}</span> الصحيح: <b>${q.t==='c'?esc(q.o[q.a]):(q.a?'صح':'خطأ')}</b></div></div>`).join('');
@@ -3866,7 +3867,7 @@ function shVQbank(){if(!SHQ.loaded&&!SHQ.busy&&!SHQ.err)shqLoad();
  const imp=SHQ.imp?`<div class="glass card"><div class="t" style="font-weight:900">جارٍ استيراد أسئلة الكتب…</div><div class="mut">${shAR(SHQ.imp.n)} من ${shAR(SHQ.imp.t)} درساً — لا تغلق الصفحة</div></div>`:miss?`<div class="glass card"><div class="t" style="font-weight:900">أسئلة الكتب جاهزة للاستيراد</div><div class="mut" style="margin:3px 0 4px">${shAR(miss)} درساً بأسئلته من كتب الطالب (٢٠ سؤالاً لكل درس). لا يغيّر أي درس عدّلته أو استوردته من قبل.</div><div class="btn sm" data-qimp="1" style="margin:4px 0 0">استيراد الأسئلة</div></div>`:'';
  const cards=[1,2,3,4,5,6].map(g=>{const ids=shqAll().filter(id=>+id.split(':')[0]===g),n=ids.reduce((a,id)=>a+(SHQ.lessons[id]?SHQ.lessons[id].n:0),0);
   return `<div class="glass card qcl" data-qg="${g}"><div><div class="t">الصف ${SH_G[g-1]}</div><div class="mut">${shAR(ids.length)} درساً · ${shAR(n)} سؤالاً</div></div><span class="qp ${g<=3?'g':''}">${g<=3?'الحلقة الأولى':'الحلقة الثانية'}</span></div>`}).join('');
- return hd+`<div class="body wide">${shBack('sections','الأقسام')}${ttl('بنك الأسئلة')}<div class="mut" style="margin:-2px 2px 8px;color:#fff">${shAR(tot)} سؤالاً في البنك. اختر الصف ثم الدرس لتعدّل أسئلته ووقت التحدي.</div>${imp}${cards}</div>`+shNav()}
+ return hd+`<div class="body wide">${shqTop()}${ttl('بنك الأسئلة')}<div class="mut" style="margin:-2px 2px 8px;color:#fff">${shAR(tot)} سؤالاً في البنك. اختر الصف ثم الدرس لتعدّل أسئلته ووقت التحدي.</div>${imp}${cards}</div>`+shNav()}
 function shqSheetQ(){const q=SHQ.draft;if(!q)return '';
  return `<div class="dim" data-sh="closeSheet"></div><div class="shx" style="max-height:92%;overflow:auto"><div class="gr"></div><h3>${SHQ.qi==='new'?'سؤال جديد':'تعديل السؤال'}</h3><div class="shl">
  <label class="fl2">نوع السؤال</label><div class="tg3" style="grid-template-columns:repeat(2,1fr)"><div class="${q.t==='c'?'on':''}" data-qt="c">خيارات (٣)</div><div class="${q.t==='tf'?'on':''}" data-qt="tf">صح وخطأ</div></div>
@@ -3901,7 +3902,7 @@ function shVPts(){if(!SHQ.pl&&!SHQ.plb)shqPList();const P=SHQ.pts;if(P.n==null&&
   :P.k==='cls'?`<label class="fl2">اختر الفصل</label><div class="chips" style="flex-wrap:wrap;overflow:visible">${clsL.map(c=>`<button class="chip ${P.cls===c.id?'on':''}" data-qpc="${c.id}">${shCn(c)}</button>`).join('')}</div>`
   :P.k==='stu'?`<label class="fl2">الطالب</label>${st?`<div class="qst" data-qpclr="1"><span>${esc(st.name)} · ${shCn(st.c)}</span><span>✕</span></div>`:`<input class="fld" id="shq-sn" placeholder="ابحث باسم الطالب" value="${esc(P.sn||'')}"><div id="shq-sr">${shqSearch(q)}</div>`}`:'';
  const hist=(SHQ.pl||[]).map(b=>`<div class="qh"><div><b>${shAR(b.amt)} لتراً · ${esc(b.label||'')}</b><div class="mut">${esc(b.why)} · ${shAR(b.n)} ${shqStW(b.n)} · ${shDt(b.at)}${b.undone?' · <span style="color:#FFB0A8">تم التراجع</span>':''}</div></div>${b.undone?'':`<div class="btn gh sm" data-qpun="${b.id}">تراجع</div>`}</div>`).join('');
- return shHdr()+`<div class="body wide">${shBack('sections','الأقسام')}<div class="sec" style="margin-top:0"><b>نقاط المزرعة</b><span style="color:#fff">إضافة لترات ماء</span></div>
+ return shHdr()+`<div class="body wide">${shqTop()}<div class="sec" style="margin-top:0"><b>نقاط المزرعة</b><span style="color:#fff">إضافة لترات ماء</span></div>
  <div class="mut" style="margin:-2px 2px 8px;color:#fff">تُضاف اللترات مباشرة إلى مزرعة الطلبة، وتظهر في سجل الطالب مع السبب.</div>
  <div class="glass card"><label class="fl2" style="margin-top:0">لمن؟</label><div class="chips" style="flex-wrap:wrap;overflow:visible">${tg.map(([k,n])=>`<button class="chip ${P.k===k?'on':''}" data-qpk="${k}">${n}</button>`).join('')}</div>${extra}
  <label class="fl2">عدد اللترات لكل طالب</label><div class="chips" style="flex-wrap:wrap;overflow:visible">${[5,10,20,50,100].map(a=>`<button class="chip ${P.amt===a?'on':''}" data-qpa="${a}">${shAR(a)}</button>`).join('')}</div>
@@ -3921,6 +3922,8 @@ async function shqPtsUndo(){const r=await srv('sharia_pts_undo',{p_batch:SHQ.pun
 /* ---- النقرات ---- */
 function shqClick(e){const t=e.target,q=s=>t.closest(s);let d;
  const rr=()=>{SHA.tkeep=true;shRender()};
+ if(d=q('[data-qtr]')){SHQ.from='tree';SHQ.g=null;SHQ.lid=null;SHQ.les=null;SHA.sheet=null;SHA.v=d.dataset.qtr;SHA.tkeep=false;shRender();return true}
+ if(q('[data-v]'))SHQ.from=null;
  if(SHA.v==='qbank'){
   if(d=q('[data-qrl]')){SHQ.err=false;shqLoad(true);rr();return true}
   if(d=q('[data-qbk]')){if(d.dataset.qbk==='l'){SHQ.lid=null;SHQ.les=null}else SHQ.g=null;SHA.tkeep=false;shRender();return true}
@@ -3959,7 +3962,11 @@ function shqInput(e){const t=e.target,id=t.id;
  if(id==='shq-why'){SHQ.pts.why=t.value;return}
  if(id==='shq-amt'){const v=parseInt(String(t.value).replace(/[٠-٩]/g,c=>'٠١٢٣٤٥٦٧٨٩'.indexOf(c)),10);SHQ.pts.amt=isNaN(v)?0:v;document.querySelectorAll('#sh-ov').forEach(h=>h.shadowRoot&&h.shadowRoot.querySelectorAll('[data-qpa].on').forEach(x=>x.classList.remove('on')));shqCount()}}
 /* ---- ربط الوحدة بالغرفة ---- */
-SH_VW.qbank=shVQbank;SH_VW.pts=shVPts;
+function shVTree(){const row=([ic,ti,d,v,rgb])=>`<button class="glass row2" data-qtr="${v}" style="--rgb:${rgb}"><div class="mi">${shIc(ic)}</div><div class="g"><b>${ti}</b><span>${d}</span></div><span class="ch">‹</span></button>`;
+ return shHdr()+`<div class="body wide"><div class="sec" style="margin-top:0"><b>الشجرة</b><span style="color:#fff">لعبة المزرعة</span></div>
+ <div class="grp"><h4>إدارة اللعبة</h4><div class="col2">${row(['quiz','بنك الأسئلة','أسئلة تحدّي الدرس ووقت كل درس','qbank','14,140,176'])}${row(['drop','نقاط المزرعة','إضافة لترات ماء لطلاب أو صفوف','pts','47,160,70'])}</div></div>
+ <div class="note">شجرة الطالب وبقية اللعبة تأتي في مرحلة قادمة.</div></div>`+shNav()}
+SH_VW.qbank=shVQbank;SH_VW.pts=shVPts;SH_VW.tree=shVTree;
 {const px=shXClick;shXClick=async function(e){if(shqClick(e))return true;return px(e)}}
 {const pi=shXInput;shXInput=function(e){shqInput(e);return pi(e)}}
 {const ps=shXSheet;shXSheet=function(k){if(k==='qedit')return shqSheetQ();if(k==='ptsgo'||k==='ptsun')return shqSheetP(k);return ps(k)}}
@@ -6303,7 +6310,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='c0a65e98400c';
+const BUILD='fc4ab1edb0f2';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
