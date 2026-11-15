@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="c00d92f10166">
+<meta name="build" content="3942318348c5">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3026,14 +3026,16 @@ function shsMount(){const o=shsHostEl(),sr=o.shadowRoot,stage=sr.getElementById(
  const sideOf=e=>rel(e).x<R().width/2?'s':'q';
  const fx=(x,y)=>{const a=document.createElement('div');a.className='pud';const k=SHS.s||1;x/=k;y/=k;a.style.left=x+'px';a.style.top=y+'px';const b=document.createElement('div');b.className='rip';b.style.left=x+'px';b.style.top=y+'px';stage.appendChild(a);stage.appendChild(b);setTimeout(()=>{a.remove();b.remove()},1150);try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}};
  stage.addEventListener('pointermove',e=>{if(SHS.state!=='home')return;W=R().width;
-  if(down){const dx=e.clientX-down.x;if(!down.drag&&Math.abs(dx)>6){down.drag=true;try{stage.setPointerCapture(e.pointerId)}catch(_){}}
+  if(down){const dx=e.clientX-down.x;if(!down.drag&&Math.abs(dx)>14){down.drag=true;try{stage.setPointerCapture(e.pointerId)}catch(_){}}
    if(down.drag){const now=performance.now();vel=(e.clientX-lastX)/Math.max(8,now-lastT)*1000/W;lastX=e.clientX;lastT=now;d.x=shsC(.5+dx/W,-.02,1.02);d.v=0;d.t=d.x;draw();L.kick()}return}
   d.t=sideOf(e)==='q'?.435:.565;L.kick()});
- stage.addEventListener('pointerdown',e=>{if(SHS.state!=='home'||e.target.closest('[data-back]'))return;W=R().width;down={x:e.clientX,drag:false,side:sideOf(e)};lastX=e.clientX;lastT=performance.now();vel=0;{const p=rel(e);fx(p.x,p.y)}d.set(240,24);d.t=down.side==='q'?.4:.6;L.kick()});
+ const heal=()=>{if(SHS.state!=='home'&&d.rest&&Math.abs(d.x-.5)<.1)SHS.state='home'};
+ stage.addEventListener('pointerdown',e=>{heal();if(SHS.state!=='home'||e.target.closest('[data-back]'))return;W=R().width;down={x:e.clientX,drag:false,side:sideOf(e)};lastX=e.clientX;lastT=performance.now();vel=0;{const p=rel(e);fx(p.x,p.y)}d.set(240,24);d.t=down.side==='q'?.4:.6;L.kick()});
  const open=s=>{SHS.state=s;d.set(55,10.5);d.t=s==='q'?0:1;L.kick();if(s==='s'){shsLoadMsgs()}};
  const up=()=>{if(!down)return;const dn=down;down=null;d.set(150,19);
-  if(dn.drag){const x=d.x;if(x<.3||vel<-1.5)open('q');else if(x>.7||vel>1.5)open('s');else d.t=.5}else open(dn.side);L.kick()};
- stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',()=>{down=null;d.t=.5;L.kick()});
+  if(dn.drag&&Math.abs(d.x-.5)*W<34){open(dn.side)}
+  else if(dn.drag){const x=d.x,far=Math.abs(x-.5)*W>46;if(x<.3||(far&&vel<-1.5))open('q');else if(x>.7||(far&&vel>1.5))open('s');else d.t=.5}else open(dn.side);L.kick()};
+ stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',()=>{down=null;if(SHS.state!=='home')return;d.t=.5;L.kick()});
  stage.addEventListener('pointerleave',()=>{if(!down&&SHS.state==='home'){d.t=.5;L.kick()}});
  stage.addEventListener('click',e=>{if(e.target.closest('[data-back]')){SHS.state='home';d.set(70,12);d.t=.5;L.kick()}});
  const lg=(c)=>{const u=shLogo(c);return u?`style="background-image:url(${u})"`:''};
@@ -3230,7 +3232,8 @@ function shsClose(){if(SHS.rz){removeEventListener('resize',SHS.rz);removeEventL
 async function shStudentGate(){if(ROLE!=='student'||!TOK)return;const my=TOK,r=await shsRpc('sharia_student_state',{});
  if(TOK!==my||ROLE!=='student')return;
  if(!r||r.error||!r.open){shsClose();return}
- shsClose();SHS.st=r;try{SHS.seen=+localStorage.getItem(shsSeenKey())||0}catch(e){SHS.seen=0}
+ if(SHS.mounted&&SHS.tokKey===my&&shsHostEl()){SHS.st=r;const ae=shsHostEl().shadowRoot.activeElement,typing=ae&&(ae.tagName==='TEXTAREA'||ae.tagName==='INPUT');if(SHS.state==='s'&&SHS_ROOT&&!typing&&!SHS.pend&&!SHS.other&&!SHS.sheet)shsRender(true);return}
+ shsClose();SHS.tokKey=my;SHS.st=r;try{SHS.seen=+localStorage.getItem(shsSeenKey())||0}catch(e){SHS.seen=0}
  const o=shsMakeHost();SHS.bodyOv=document.body.style.overflow;document.body.style.overflow='hidden';o.classList.add('on');shsFit();shsMount();shsFit();if(!SHS.rz){SHS.rz=()=>{shsFit();setTimeout(shsFit,250)};addEventListener('resize',SHS.rz);addEventListener('orientationchange',SHS.rz)}
  shsLoadMsgs();SHS.timer=setInterval(()=>{if(document.visibilityState==='visible')shsLoadMsgs()},45000)}
 
@@ -6031,7 +6034,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='c00d92f10166';
+const BUILD='3942318348c5';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
