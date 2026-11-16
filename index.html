@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="7f2fd1b89c72">
+<meta name="build" content="328bcdc11966">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2555,7 +2555,7 @@ function shVTeacher(){const t=shTch(SHA.a);if(!t)return shVTeachers();const tv=S
  if(tv==='q')area=t.quran?`<div class="glass card"><div class="t" style="font-size:14.5px">صفوفه في القرآن الكريم</div><div class="mut">اضغط الصف لإضافته أو إزالته. التعديل هنا يظهر في صفحة القرآن. في القرآن يقدر الصف يكون مع أكثر من معلم.</div>${shPickQ(t)}</div>`:`<div class="note">لا يدرّس القرآن حالياً. اضغط «القرآن الكريم» فوق لتفعيله ثم اختر صفوفه.</div>`;
  else area=t.sharia?`<div class="tg2"><div class="glass card"><div class="t" style="font-size:14.5px">صفوفه في العلوم الشرعية</div><div class="mut">اضغط الصف لإضافته أو إزالته. معلم واحد للصف: الصف اللي مع معلم ثاني ما ينفع.</div>${shPickS(t)}</div><div>${typeof shImpBox==='function'?shImpBox(t):''}${shCodeBox(t)}
  <div class="glass card"><div class="t" style="font-size:14.5px">حالة الرصد</div>${shClsOf(t.id).map(shCls).filter(Boolean).map(c=>`<div class="rowsp" style="padding:6px 0;border-top:1px solid rgba(255,255,255,.18)"><span style="font-weight:800">${shCn(c)}</span><span class="pill pn">لم يرصد أي وقفة</span></div>`).join('')||'<div class="mut">ما عنده صفوف بعد</div>'}</div></div></div>`:`<div class="note">لا يدرّس العلوم الشرعية حالياً. اضغط «العلوم الشرعية» فوق لتفعيله. سجل درجاته وتقاريره السابقة تبقى محفوظة.</div>`;
- return shHdr()+`<div class="body wide">${shBack('teachers','المعلمون')}<div class="glass card"><div class="t" style="font-size:17px">أ. ${esc(shNm(t))}</div><div class="mut">${t.quran&&t.sharia?'يدرّس القسمين':t.sharia?'علوم شرعية فقط':t.quran?'قرآن فقط':'بدون قسم'}</div></div><div class="sec" style="margin-top:2px"><b style="font-size:15px">يدرّس في</b><span style="color:#fff;font-weight:700">اضغط لتفعيل القسم أو إلغائه</span></div>${pills}${area}</div>`+shNav()}
+ return shHdr()+`<div class="body wide">${shBack('teachers','المعلمون')}<div class="glass card"><div class="t" style="font-size:17px">أ. ${esc(shNm(t))}</div><div class="mut">${t.quran&&t.sharia?'يدرّس القسمين':t.sharia?'علوم شرعية فقط':t.quran?'قرآن فقط':'بدون قسم'}</div></div>${typeof shTnBox==='function'?shTnBox(t):''}<div class="sec" style="margin-top:2px"><b style="font-size:15px">يدرّس في</b><span style="color:#fff;font-weight:700">اضغط لتفعيل القسم أو إلغائه</span></div>${pills}${area}</div>`+shNav()}
 function shCodeRow(t){const cs=shClsOf(t.id).map(shCls).filter(Boolean);return `<div class="glass card"><div class="rowsp"><div><div class="t" style="font-size:14px">أ. ${esc(shNm(t))}</div><div class="mut" style="font-size:11px">${cs.length?cs.map(shCn).join(' · '):'ما عنده صفوف'}</div></div><div class="code">${SHA.shown[t.id]?esc(t.pin):'••••••'}</div></div><div class="chips" style="margin-top:8px;flex-wrap:wrap;overflow:visible"><button class="mini" data-eye="${t.id}">${SHA.shown[t.id]?'إخفاء':'إظهار'}</button><button class="mini" data-newcode="${t.id}">⟳ كود جديد</button><button class="mini" data-copy="${t.id}">نسخ</button><button class="mini" data-tcard="${t.id}">بطاقة PDF</button></div></div>`}
 function shVCodes(){const so=shST().filter(t=>!t.quran),du=shST().filter(t=>t.quran);return shHdr()+`<div class="body wide">${shBack('sections','الأقسام')}<div class="sec" style="margin-top:0"><b>أكواد المعلمين</b><span style="color:#fff">العلوم الشرعية</span></div>
  <div class="note">معلم يدرّس القسمين يدخل بكوده الحالي (اللي عنده من القرآن)، وصفحته تنقسم نصفين تلقائياً. أما معلم العلوم الشرعية فقط فيحتاج كوداً من هنا.</div>
@@ -4476,6 +4476,14 @@ function shiCards(list,fname,title){if(!list.length){shToast('لا يوجد مع
  return px(e)}}
 /* زر «خروج» داخل صفحة المعلم يُنهي وضع الإدارة فقط، ولا يخرج الإدارة من حسابها */
 if(typeof doLogout==='function'){const dl0=doLogout;doLogout=function(){if(SH_IMP.on){shiExit();return}return dl0.apply(this,arguments)}}
+
+/* ---- تعديل اسم المعلم: صف واحد في قاعدة البيانات فيتغيّر في القرآن والعلوم الشرعية معاً ---- */
+function shTnBox(t){return `<div class="glass card"><div class="t" style="font-size:14.5px">اسم المعلم</div><div class="mut">الاسم نفسه في القرآن الكريم والعلوم الشرعية: إذا عدّلته هنا يتغيّر في القسمين${t.quran&&t.sharia?' (وهو يدرّس القسمين)':''}.</div><input class="fld" id="sh-tnm" maxlength="60" value="${esc(t.name)}" style="margin-top:8px"><div class="btn sm" data-tnsave="${t.id}" style="margin-top:8px">حفظ الاسم</div></div>`}
+async function shTnSave(id){const el=shById('sh-tnm'),n=(el&&el.value||'').replace(/\s+/g,' ').trim();if(n.length<3||n.length>60){shToast('الاسم لا يقل عن ٣ أحرف');return}
+ let r;try{r=await srv('admin_op',{p_op:'edit_tname',p:{id,name:n}})}catch(e){r=null}
+ if(r&&r.ok){await shLoad();try{if(typeof sync==='function')await sync(true)}catch(e){}SHA.tkeep=true;shRender();shToast('تم تعديل الاسم في القسمين')}
+ else shToast(r&&r.error==='dup'?'يوجد معلم بنفس هذا الاسم':r&&r.error==='name'?'الاسم غير صالح':'تعذّر الحفظ، حاول مرة ثانية')}
+{const px2=shXClick;shXClick=async function(e){const d=e.target.closest&&e.target.closest('[data-tnsave]');if(d){shTnSave(+d.dataset.tnsave);return true}return px2(e)}}
 
 function renderStudent(s){
   SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
@@ -6816,7 +6824,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='7f2fd1b89c72';
+const BUILD='328bcdc11966';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
