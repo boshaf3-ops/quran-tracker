@@ -760,7 +760,7 @@ addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p||J_.drag|
  p.x=e.clientX;p.y=e.clientY});
 let wrongC=null;const endP=e=>{ptrs.delete(e.pointerId);pinch=0;if(wrongC&&wrongC.id===e.pointerId){if(Math.hypot(e.clientX-wrongC.x,e.clientY-wrongC.y)<8){const n=performance.now();wrongT=wrongT.filter(t=>n-t<6000);wrongT.push(n);if(wrongT.length>=3){wrongT=[];hint()}}wrongC=null}};addEventListener('pointerup',endP);addEventListener('pointercancel',endP);
 addEventListener('resize',resize);
-{const QP=new URLSearchParams(location.search);if(QP.has('lt')){const v=Math.max(0,Math.round(+QP.get('lt')||0));ME.lt=v;S.store=v}if(QP.get('name'))FM.name=QP.get('name').slice(0,30)}
+{const QP=new URLSearchParams(location.search);if(QP.has('lt')){const v=Math.max(0,Math.round(+QP.get('lt')||0));ME.lt=v;S.store=v;FM.demo=false}if(QP.get('name'))FM.name=QP.get('name').slice(0,30)}
 if(/[?&]test/.test(location.search))document.body.classList.add('test');
 buildTile(0);jugRefill();tray();ownTabs('month');hud();resize();placeCam();setTimeout(()=>hint(),700);if(/gallery/.test(location.search))gallery();requestAnimationFrame(loop);
 window.__F={S,tiles,J_,TYPES,makePlant,stageOf,price,ME,LV,lvUp,FS,FM,farmCfgApply,refreshFarm,setEdit,fitTree,toScr};
