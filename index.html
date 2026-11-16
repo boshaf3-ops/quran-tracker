@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="e84ab145643c">
+<meta name="build" content="a37867fae687">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2957,7 +2957,8 @@ function shsChatView(m){const k=SHS.chat,CH=shsChats(m),c=CH[k],ms=SHS.msgs.filt
  else low='<div class="mut" style="text-align:center">لم يُربط صفك بأستاذ للعلوم الشرعية بعد.</div>';
  return `<div class="chat"><div class="chh"><button class="cb" data-cb="1">›</button>${shsAv(c)}<div class="cm"><b>${esc(c.name)}</b><small>${esc(c.sub)}</small></div></div><div class="chm" id="chm"><div class="sysb">${c.hello}</div>${bub}</div><div class="chlow">${low}</div></div>`}
 function shsGameClick(e){const d=e.target.closest&&e.target.closest('[data-game]');if(!d)return false;shsGameOpen();return true}
-function shsGameOpen(){if(document.getElementById('shs-game'))return;const m=shsModel(),o=document.createElement('div');o.id='shs-game';o.style.cssText='position:fixed;inset:0;z-index:2147483000;background:#9fd7ff';
+async function shsFreshState(){const my=TOK,r=await shsRpc('sharia_student_state',{});if(TOK===my&&r&&!r.error&&r.open)SHS.st=r}
+async function shsGameOpen(){if(document.getElementById('shs-game'))return;try{await shsFreshState()}catch(e){}if(document.getElementById('shs-game'))return;const m=shsModel(),o=document.createElement('div');o.id='shs-game';o.style.cssText='position:fixed;inset:0;z-index:2147483000;background:#9fd7ff';
  o.innerHTML='<iframe title="مزرعتي" src="farm.html?lt='+(m.farm||0)+'&name='+encodeURIComponent(m.first||'')+'" style="width:100%;height:100%;border:0;display:block" allow="fullscreen"></iframe>';document.body.appendChild(o)}
 function shsGameClose(){const o=document.getElementById('shs-game');if(o)o.remove()}
 addEventListener('message',e=>{if(e.origin===location.origin&&e.data&&e.data.type==='farm-home')shsGameClose()});
@@ -2995,7 +2996,7 @@ function shsBind(root){SHS_ROOT=root;
  root.addEventListener('click',e=>{const t=e.target,q=s=>t.closest(s);let d;
   if(shsGameClick(e))return;
   if(shsChalClick(e))return;
-  if(d=q('[data-tab]')){SHS.tab=d.dataset.tab;SHS.sheet=null;SHS.chat=null;SHS.pend=null;SHS.other=false;shsRender(false);if(SHS.tab==='msg')shsLoadMsgs();if(SHS.tab==='chal')shsChalLoad();return}
+  if(d=q('[data-tab]')){SHS.tab=d.dataset.tab;SHS.sheet=null;SHS.chat=null;SHS.pend=null;SHS.other=false;shsRender(false);if(SHS.tab==='msg')shsLoadMsgs();if(SHS.tab==='chal')shsChalLoad();if(SHS.tab==='farm')shsFreshState().then(()=>{if(SHS.tab==='farm')shsRender(true)});return}
   if(d=q('[data-pw]')){const n=d.dataset.pw;SHS.open[n]=!SHS.open[n];shsRender(true);return}
   if(d=q('[data-pl]')){SHS.sheet={t:'lesson',k:d.dataset.pl};shsRender(true);return}
   if(d=q('[data-chat]')){SHS.chat=d.dataset.chat;SHS.pend=null;SHS.other=false;if(SHS.chat==='t'||SHS.chat==='a'){const mx=Math.max(SHS.seen,...SHS.msgs.filter(x=>!x.me).map(x=>x.id));SHS.seen=mx;try{localStorage.setItem(shsSeenKey(),String(mx))}catch(e){}shsFabBadge()}shsRender(false);shsToEnd();shsLoadMsgs();return}
@@ -6464,7 +6465,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='e84ab145643c';
+const BUILD='a37867fae687';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
