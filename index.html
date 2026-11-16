@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="745d0c6f6c91">
+<meta name="build" content="42ac52d6f4c4">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3082,7 +3082,7 @@ async function shsSend(txt){if(SHS.busy)return;const k=SHS.chat,CH=shsChats(shsM
 function shsBind(root){SHS_ROOT=root;
  root.addEventListener('click',e=>{const t=e.target,q=s=>t.closest(s);let d;
   if(shsGameClick(e))return;
-  if(q('[data-toq]')){if(SHS.goSide)SHS.goSide('q');return}
+  if(q('[data-toq]')){if(SHS.goHome)SHS.goHome();return}
   if(shsChalClick(e))return;
   if(d=q('[data-tab]')){const tb=d.dataset.tab;SHS.tab=tb;SHS.sheet=null;SHS.chat=null;SHS.pend=null;SHS.other=false;shsRender(false);shsPulse(tb);if(SHS.tab==='msg')shsLoadMsgs();if(SHS.tab==='chal')shsChalLoad();if(SHS.tab==='farm'){shsFreshState().then(()=>{if(SHS.tab==='farm')shsRender(true)});if(SHS.st&&SHS.st.game&&!document.getElementById('shs-pf')){const l=document.createElement('link');l.id='shs-pf';l.rel='prefetch';l.href='farm.html';document.head.appendChild(l)}}return}
   if(d=q('[data-pw]')){const n=d.dataset.pw;SHS.open[n]=!SHS.open[n];shsRender(true);return}
@@ -3127,7 +3127,7 @@ function shsMount(){const o=shsHostEl(),sr=o.shadowRoot,stage=sr.getElementById(
   d.t=sideOf(e)==='q'?.435:.565;L.kick()});
  const heal=()=>{if(SHS.state!=='home'&&d.rest&&Math.abs(d.x-.5)<.1)SHS.state='home'};
  stage.addEventListener('pointerdown',e=>{heal();if(SHS.state!=='home'||e.target.closest('[data-back]'))return;W=R().width;down={x:e.clientX,drag:false,side:sideOf(e)};lastX=e.clientX;lastT=performance.now();vel=0;{const p=rel(e);fx(p.x,p.y)}d.set(240,24);d.t=down.side==='q'?.4:.6;L.kick()});
- const open=s=>{SHS.state=s;d.set(55,10.5);d.t=s==='q'?0:1;L.kick();if(s==='s'){shsLoadMsgs();shsOnEnter()}};SHS.goSide=open;
+ const open=s=>{SHS.state=s;d.set(55,10.5);d.t=s==='q'?0:1;L.kick();if(s==='s'){shsLoadMsgs();shsOnEnter()}};SHS.goSide=open;SHS.goHome=()=>{SHS.state='home';d.set(70,12);d.t=.5;L.kick()};
  const up=()=>{if(!down)return;const dn=down;down=null;d.set(150,19);
   if(dn.drag&&Math.abs(d.x-.5)*W<34){open(dn.side)}
   else if(dn.drag){const x=d.x,far=Math.abs(x-.5)*W>46;if(x<.3||(far&&vel<-1.5))open('q');else if(x>.7||(far&&vel>1.5))open('s');else d.t=.5}else open(dn.side);L.kick()};
@@ -3337,7 +3337,7 @@ function shsCss(){if(document.getElementById('shs-css'))return;const st=document
  +'#shs-fab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}#shs-fab span{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:900;color:#165E50;white-space:nowrap;background:rgba(255,255,255,.92);border-radius:9px;padding:0 6px}'
  +'#shs-fab .fb{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:#FF6B5B;color:#fff;font-size:10px;font-weight:900;display:grid;place-items:center;font-style:normal;padding:0 4px;border:1.5px solid #fff}';document.head.appendChild(st)}
 function shsMakeHost(){let o=shsHostEl();if(o)return o;shsCss();o=document.createElement('div');o.id='shs-ov';document.body.appendChild(o);const sr=o.attachShadow({mode:'open'});const sty=document.createElement('style');sty.textContent=SHS_CSS+(typeof SHSC_CSS==='string'?SHSC_CSS:'');sr.appendChild(sty);const stg=document.createElement('div');stg.id='stage';sr.appendChild(stg);
- let f=document.getElementById('shs-fab');if(!f){f=document.createElement('div');f.id='shs-fab';f.title='العلوم الشرعية';f.innerHTML='<svg viewBox="0 0 24 24">'+SHS_IC.star+'</svg><span>الشرعية</span>';f.addEventListener('click',shsGoSharia);document.body.appendChild(f)}return o}
+ let f=document.getElementById('shs-fab');if(!f){f=document.createElement('div');f.id='shs-fab';f.title='العلوم الشرعية';f.innerHTML='<svg viewBox="0 0 24 24">'+SHS_IC.star+'</svg><span>الشرعية</span>';f.addEventListener('click',shsBackToSplit);document.body.appendChild(f)}return o}
 function shsClose(){shsGameClose();{const n=document.getElementById('shs-ntc');if(n)n.remove();SHS_NTQ=[];SHS_NTB=false;SHS_NTCHK=0}{const h=document.getElementById('shs-heart');if(h)h.remove()}if(SHS.rz){removeEventListener('resize',SHS.rz);removeEventListener('orientationchange',SHS.rz);SHS.rz=null}const o=shsHostEl();if(SHS.L)SHS.L.stop();clearInterval(SHS.timer);SHS.timer=0;if(o){if(o.classList.contains('on'))document.body.style.overflow=SHS.bodyOv||'';o.remove()}const f=document.getElementById('shs-fab');if(f)f.remove();SHS.st=null;SHS.mounted=false;SHS.d=null;SHS.L=null;SHS_ROOT=null;SHS.msgs=[];SHS.tab='home';SHS.chat=null;SHS.pend=null;SHS.other=false;SHS.sheet=null}
 async function shStudentGate(){if(ROLE!=='student'||!TOK)return;const my=TOK,r=await shsRpc('sharia_student_state',{});
  if(TOK!==my||ROLE!=='student')return;
@@ -6773,7 +6773,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='745d0c6f6c91';
+const BUILD='42ac52d6f4c4';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
