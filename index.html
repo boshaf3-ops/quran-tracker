@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="ff74fb1c0374">
+<meta name="build" content="8d65a1574d1f">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2900,7 +2900,7 @@ function shsModel(){const s=SHS.st,m={};
  const top=(map,L)=>Object.keys(map||{}).map(i=>[L[+i],map[i]]).filter(x=>x[0]&&x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,3);
  const net=w=>Math.min(CAP,Math.max(0,(w.p||0)-(w.n||0)));
  m.beh={pos:cur.p||0,neg:cur.n||0,net:net(cur),wasted:Math.min(cur.n||0,cur.p||0),max:CAP,tp:top(cur.pr,SHS_BPOS),tn:top(cur.nr,SHS_BNEG),note:''};
- let farm=0;Object.keys(rfw).forEach(k=>{if(k<s.ws)farm+=net(rfw[k])});m.farm=farm+(s.farm_adj||0);m.adj=s.adj||[];
+ let farm=0;Object.keys(rfw).forEach(k=>{if(k<s.ws)farm+=net(rfw[k])});m.farm=farm+(s.farm_adj||0);m.adj=s.adj||[];if(s.gearn!=null){m.earn=s.gearn;m.spent=s.gspent||0;m.farm=Math.max(0,m.earn-m.spent);m.starter=s.starter||0}
  m.moved=0;if(dow>=5){const pk=shsKey(shsAdd(ws,-7)),pw=rfw[pk];if(pw)m.moved=net(pw)}
  /* الكشف */
  const g=s.grades||{},sc=g.sc||{},pub=g.pub||{},mx=g.mx||{};
@@ -2971,15 +2971,18 @@ function shsChatView(m){const k=SHS.chat,CH=shsChats(m),c=CH[k],ms=SHS.msgs.filt
  return `<div class="chat"><div class="chh"><button class="cb" data-cb="1">›</button>${shsAv(c)}<div class="cm"><b>${esc(c.name)}</b><small>${esc(c.sub)}</small></div></div><div class="chm" id="chm"><div class="sysb">${c.hello}</div>${bub}</div><div class="chlow">${low}</div></div>`}
 function shsGameClick(e){const d=e.target.closest&&e.target.closest('[data-game]');if(!d)return false;shsGameOpen();return true}
 async function shsFreshState(){const my=TOK,r=await shsRpc('sharia_student_state',{});if(TOK===my&&r&&!r.error&&r.open)SHS.st=r}
-async function shsGameOpen(){if(document.getElementById('shs-game'))return;try{await shsFreshState()}catch(e){}if(document.getElementById('shs-game'))return;const m=shsModel(),o=document.createElement('div');o.id='shs-game';o.style.cssText='position:fixed;inset:0;z-index:2147483000;background:#9fd7ff';
- o.innerHTML='<iframe title="مزرعتي" src="farm.html?lt='+(m.farm||0)+'&name='+encodeURIComponent(m.first||'')+'" style="width:100%;height:100%;border:0;display:block" allow="fullscreen"></iframe>';document.body.appendChild(o)}
+async function shsGameOpen(){if(document.getElementById('shs-game'))return;try{await SHS_GQ}catch(e){}try{await shsFreshState()}catch(e){}if(document.getElementById('shs-game'))return;const m=shsModel(),o=document.createElement('div');o.id='shs-game';o.style.cssText='position:fixed;inset:0;z-index:2147483000;background:#9fd7ff';
+ const gs=SHS.st&&SHS.st.gst&&typeof SHS.st.gst==='object'?SHS.st.gst:{},real=m.earn!=null,src=real?'farm.html?bal='+(m.farm||0)+'&sp='+(m.spent||0)+'&name='+encodeURIComponent(m.first||'')+'&s='+encodeURIComponent(JSON.stringify(gs)):'farm.html?lt='+(m.farm||0)+'&name='+encodeURIComponent(m.first||'');
+ o.innerHTML='<iframe title="مزرعتي" src="'+src+'" style="width:100%;height:100%;border:0;display:block" allow="fullscreen"></iframe>';document.body.appendChild(o)}
 function shsGameClose(){const o=document.getElementById('shs-game');if(o)o.remove()}
-addEventListener('message',e=>{if(e.origin===location.origin&&e.data&&e.data.type==='farm-home')shsGameClose()});
+let SHS_GQ=Promise.resolve();
+async function shsGameSave(d){const sp=Math.max(0,Math.round(+d.spent||0)),st=d.st;if(!st||typeof st!=='object')return;const r=await shsRpc('sharia_game_save',{p:{spent:sp,st}});if(r&&r.ok&&SHS.st){SHS.st.gspent=r.spent;SHS.st.gst=st}}
+addEventListener('message',e=>{if(e.origin!==location.origin||!e.data)return;if(e.data.type==='farm-home'){shsGameClose();SHS_GQ.then(()=>{if(SHS.tab==='farm'&&!document.getElementById('shs-game'))shsRender(false)}).catch(()=>{})}else if(e.data.type==='farm-save'&&document.getElementById('shs-game')){const d=e.data;SHS_GQ=SHS_GQ.then(()=>shsGameSave(d)).catch(()=>{})}});
 function shsFarmTab(m){const L=m.farm,cans=Math.floor(L/100),rem=L%100;
  return `<div class="glass farm"><svg class="pl" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">${SHS_IC.leaf}<path d="M12 20v-9"/></svg><b>مزرعة الشرعيات</b><div class="mut" style="margin-top:6px">هنا تسقي زرعك بلترات الماء التي جمعتها، وتكبر شجرتك أسبوعاً بعد أسبوع.</div>${SHS.st&&SHS.st.game?'<button class="btn" data-game="1" style="margin:12px auto 0;max-width:260px">ادخل مزرعتي 🌱</button>':'<span class="soon">السقي قريباً</span>'}</div>
- <div class="glass card"><div class="ct"><b>مخزن مائي</b><small>ينتقل إليه إبريقك كل خميس</small></div><div class="stock"><b>${shAR(L)}</b><span>لتر مجموع</span></div>
+ <div class="glass card"><div class="ct"><b>مخزن مائي</b><small>ينتقل إليه إبريقك كل خميس</small></div><div class="stock"><b>${shAR(L)}</b><span>لتر في مخزنك</span></div>
  <div class="cans">${Array.from({length:cans},()=>`<div class="mc">${shsCan(100)}</div>`).join('')}${rem?`<div class="mc part">${shsCan(rem)}</div>`:''}</div>
- <div class="mut" style="margin-top:6px">${L?`كل إبريق = ١٠٠ لتر. ${cans?('عندك '+(cans===1?'إبريق واحد':cans===2?'إبريقان':shAR(cans)+' أباريق')+(rem?' و':'')):'عندك '}${rem?shAR(rem)+' لتراً في الإبريق التالي':''}. تحتفظ بها لتسقي مزرعتك متى شئت، وحتى نهاية الفصل.`:'سيمتلئ مخزنك بإبريقك الأسبوعي كل خميس.'}</div></div>${shsAdjCard(m)}`}
+ <div class="mut" style="margin-top:6px">${L?`كل إبريق = ١٠٠ لتر. ${cans?('عندك '+(cans===1?'إبريق واحد':cans===2?'إبريقان':shAR(cans)+' أباريق')+(rem?' و':'')):'عندك '}${rem?shAR(rem)+' لتراً في الإبريق التالي':''}. تحتفظ بها لتسقي مزرعتك متى شئت، وحتى نهاية الفصل.`:(m.starter!=null?'نفد ماؤك. استمر في حصصك وأسئلتك وسلوكك الحسن لتحصل على لترات جديدة 💧':'سيمتلئ مخزنك بإبريقك الأسبوعي كل خميس.')}${m.spent?`<div style="margin-top:6px;font-weight:800">سقيتَ حتى الآن ${shAR(m.spent)} لتراً من مزرعتك 🌱</div>`:''}</div></div>${shsAdjCard(m)}`}
 function shsSheet(m){const s=SHS.sheet;if(!s)return '';
  if(s.t==='lesson'){const [w,i]=s.k.split(':'),p=m.prev.find(x=>String(x.no)===w),it=p&&p.items[+i];if(!it)return '';
   return `<div class="dim" data-x="1"></div><div class="shx"><div class="gr"></div><h3>${esc(it.t)}</h3><div class="dd">${p.no?'الأسبوع '+shAR(p.no)+' · '+p.range:''}${it.u?' · '+esc(it.u):''}</div>${it.p?`<div class="gnote" style="margin:0 0 6px"><b>في الكتاب:</b> صفحة ${shAR(it.p)}</div>`:'<div class="mut">لا توجد معلومات إضافية على هذا الدرس.</div>'}<button class="btn gh2" data-x="1">إغلاق</button></div>`}
@@ -4136,10 +4139,10 @@ function shVFarm(){const s=SHF.rows.find(x=>x.id===SHF.cur);if(!s)return shHdr()
  return shHdr()+`<div class="body wide">${shBack(SHF.from==='b'?'best':'farms',SHF.from==='b'?'المزارع المتميزة':'مزارع الطلاب')}
  <div class="glass fvw"><div class="big">${SHF_L.badge(r,SHF_L.sb(n))}<div><h2>${esc(s.n)}</h2>${shCn({g:s.g,sec:s.s})}<br><b>${SHF_L.RW[r]}</b><br>المستوى ${shAR(n)} من ٥٠ · النجمة ${shAR(SHF_L.sb(n))} من ٥</div></div>
  <div class="pbar"><i style="width:${pc}%"></i></div><div class="mut" style="font-size:12px">${n<50?'باقي '+shAR(nx)+' لتر للمستوى '+shAR(n+1):'وصل إلى أعلى مستوى'}</div>
- <div class="st3"><div><b>${shAR(s.l)}</b>لتر مجموع</div><div><b>${shAR(rank)}</b>ترتيبه في المدرسة</div><div><b>${shAR(crank)}</b>ترتيبه في فصله</div></div>
+ <div class="st3"><div><b>${shAR(s.l)}</b>لتراً سقاها</div><div><b>${shAR(rank)}</b>ترتيبه في المدرسة</div><div><b>${shAR(crank)}</b>ترتيبه في فصله</div></div>
  <div class="st3"><div><b>${SHF_HOUSE[r]}</b>بيته الحالي</div><div><b>${shAR(n)}</b>عناصر فتحها (١ لكل مستوى)</div></div>
  <div class="mut" style="font-size:12px;line-height:1.8">${SHF_L.MN[r]} — ${SHF_L.DL[r]}</div></div>
- <div class="note">عرض أشجاره وبيته وأماكنها في المزرعة نفسها يأتي حين تُربط اللعبة بالطلبة. المعروض هنا مستواه ولتراته الفعلية.</div></div>`+shNav()}
+ <div class="note">المستوى يُحسب من اللترات التي سقاها الطالب فعلاً في مزرعته. عرض مزرعته نفسها (أشجاره وبيته) يأتي لاحقاً.</div></div>`+shNav()}
 SH_VW.farms=shVFarms;SH_VW.farm=shVFarm;SH_VW.best=shVBest;
 function shfClick(e){const t=e.target,q=s=>t.closest(s);let d;
  if(d=q('[data-qtr]')){const v=d.dataset.qtr;if(v==='farms'||v==='best'){SHQ.from='tree';SHA.sheet=null;SHA.v=v;SHA.tkeep=false;SHF.lim=40;SHF.limb=50;shRender();shfLoad();return true}}
@@ -6491,7 +6494,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='ff74fb1c0374';
+const BUILD='8d65a1574d1f';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
