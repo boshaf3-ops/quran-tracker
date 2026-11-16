@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="a37867fae687">
+<meta name="build" content="86e4249da43b">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2996,7 +2996,7 @@ function shsBind(root){SHS_ROOT=root;
  root.addEventListener('click',e=>{const t=e.target,q=s=>t.closest(s);let d;
   if(shsGameClick(e))return;
   if(shsChalClick(e))return;
-  if(d=q('[data-tab]')){SHS.tab=d.dataset.tab;SHS.sheet=null;SHS.chat=null;SHS.pend=null;SHS.other=false;shsRender(false);if(SHS.tab==='msg')shsLoadMsgs();if(SHS.tab==='chal')shsChalLoad();if(SHS.tab==='farm')shsFreshState().then(()=>{if(SHS.tab==='farm')shsRender(true)});return}
+  if(d=q('[data-tab]')){SHS.tab=d.dataset.tab;SHS.sheet=null;SHS.chat=null;SHS.pend=null;SHS.other=false;shsRender(false);if(SHS.tab==='msg')shsLoadMsgs();if(SHS.tab==='chal')shsChalLoad();if(SHS.tab==='farm'){shsFreshState().then(()=>{if(SHS.tab==='farm')shsRender(true)});if(SHS.st&&SHS.st.game&&!document.getElementById('shs-pf')){const l=document.createElement('link');l.id='shs-pf';l.rel='prefetch';l.href='farm.html';document.head.appendChild(l)}}return}
   if(d=q('[data-pw]')){const n=d.dataset.pw;SHS.open[n]=!SHS.open[n];shsRender(true);return}
   if(d=q('[data-pl]')){SHS.sheet={t:'lesson',k:d.dataset.pl};shsRender(true);return}
   if(d=q('[data-chat]')){SHS.chat=d.dataset.chat;SHS.pend=null;SHS.other=false;if(SHS.chat==='t'||SHS.chat==='a'){const mx=Math.max(SHS.seen,...SHS.msgs.filter(x=>!x.me).map(x=>x.id));SHS.seen=mx;try{localStorage.setItem(shsSeenKey(),String(mx))}catch(e){}shsFabBadge()}shsRender(false);shsToEnd();shsLoadMsgs();return}
@@ -6465,7 +6465,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='a37867fae687';
+const BUILD='86e4249da43b';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
