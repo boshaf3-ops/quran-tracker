@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="328bcdc11966">
+<meta name="build" content="071efb9615eb">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3346,6 +3346,17 @@ async function shStudentGate(){if(ROLE!=='student'||!TOK)return;const my=TOK,r=a
  shsClose();SHS.tokKey=my;SHS.st=r;try{shsHeartCheck()}catch(e){}try{SHS.seen=+localStorage.getItem(shsSeenKey())||0}catch(e){SHS.seen=0}
  const o=shsMakeHost();SHS.bodyOv=document.body.style.overflow;document.body.style.overflow='hidden';o.classList.add('on');shsFit();shsMount();shsFit();if(!SHS.rz){SHS.rz=()=>{shsFit();setTimeout(shsFit,250)};addEventListener('resize',SHS.rz);addEventListener('orientationchange',SHS.rz)}
  shsLoadMsgs();shsChalLoad(true);SHS.timer=setInterval(()=>{if(document.visibilityState==='visible'){shsLoadMsgs();shsChalLoad(true)}},45000)}
+
+/* فحص دوري لمفتاح التفعيل: التفعيل/الإخفاء من غرفة التحكم يظهر عند الطالب خلال ثوانٍ بلا إغلاق البرنامج */
+let SHS_FLAG_BUSY=false;
+async function shsFlagTick(){if(SHS_FLAG_BUSY||ROLE!=='student'||!TOK||document.visibilityState!=='visible')return;SHS_FLAG_BUSY=true;const my=TOK;
+ try{const r=await shsRpc('sharia_student_flag',{});if(TOK!==my||ROLE!=='student'||!r||r.error)return;
+  const mounted=!!(SHS.mounted&&shsHostEl());
+  if(r.open&&!mounted){await shStudentGate();const o=shsHostEl();if(o&&TOK===my){o.style.opacity='0';o.style.transition='opacity .7s ease';requestAnimationFrame(()=>requestAnimationFrame(()=>{o.style.opacity='1'}))}}
+  else if(!r.open&&mounted){shsClose()}
+ }finally{SHS_FLAG_BUSY=false}}
+setInterval(shsFlagTick,8000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(shsFlagTick,300)});
 
 window.__shsSteps=ms=>{const n=Math.round(ms/16);for(let i=0;i<n;i++)SHS.L&&SHS.L.tick(.016)};
 
@@ -6824,7 +6835,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='328bcdc11966';
+const BUILD='071efb9615eb';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
