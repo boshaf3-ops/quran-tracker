@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="42ac52d6f4c4">
+<meta name="build" content="7f2fd1b89c72">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2553,15 +2553,15 @@ function shVTeacher(){const t=shTch(SHA.a);if(!t)return shVTeachers();const tv=S
  const pills=`<div class="tsrow"><button class="tsb q ${t.quran?'on':''} ${tv==='q'?'sel':''}" data-ts="q">القرآن الكريم<small>${t.quran?'يدرّس':'لا يدرّس'}</small></button><button class="tsb s ${t.sharia?'on':''} ${tv==='s'?'sel':''}" data-ts="s">العلوم الشرعية<small>${t.sharia?'يدرّس':'لا يدرّس'}</small></button></div>`;
  let area;
  if(tv==='q')area=t.quran?`<div class="glass card"><div class="t" style="font-size:14.5px">صفوفه في القرآن الكريم</div><div class="mut">اضغط الصف لإضافته أو إزالته. التعديل هنا يظهر في صفحة القرآن. في القرآن يقدر الصف يكون مع أكثر من معلم.</div>${shPickQ(t)}</div>`:`<div class="note">لا يدرّس القرآن حالياً. اضغط «القرآن الكريم» فوق لتفعيله ثم اختر صفوفه.</div>`;
- else area=t.sharia?`<div class="tg2"><div class="glass card"><div class="t" style="font-size:14.5px">صفوفه في العلوم الشرعية</div><div class="mut">اضغط الصف لإضافته أو إزالته. معلم واحد للصف: الصف اللي مع معلم ثاني ما ينفع.</div>${shPickS(t)}</div><div>${shCodeBox(t)}
+ else area=t.sharia?`<div class="tg2"><div class="glass card"><div class="t" style="font-size:14.5px">صفوفه في العلوم الشرعية</div><div class="mut">اضغط الصف لإضافته أو إزالته. معلم واحد للصف: الصف اللي مع معلم ثاني ما ينفع.</div>${shPickS(t)}</div><div>${typeof shImpBox==='function'?shImpBox(t):''}${shCodeBox(t)}
  <div class="glass card"><div class="t" style="font-size:14.5px">حالة الرصد</div>${shClsOf(t.id).map(shCls).filter(Boolean).map(c=>`<div class="rowsp" style="padding:6px 0;border-top:1px solid rgba(255,255,255,.18)"><span style="font-weight:800">${shCn(c)}</span><span class="pill pn">لم يرصد أي وقفة</span></div>`).join('')||'<div class="mut">ما عنده صفوف بعد</div>'}</div></div></div>`:`<div class="note">لا يدرّس العلوم الشرعية حالياً. اضغط «العلوم الشرعية» فوق لتفعيله. سجل درجاته وتقاريره السابقة تبقى محفوظة.</div>`;
  return shHdr()+`<div class="body wide">${shBack('teachers','المعلمون')}<div class="glass card"><div class="t" style="font-size:17px">أ. ${esc(shNm(t))}</div><div class="mut">${t.quran&&t.sharia?'يدرّس القسمين':t.sharia?'علوم شرعية فقط':t.quran?'قرآن فقط':'بدون قسم'}</div></div><div class="sec" style="margin-top:2px"><b style="font-size:15px">يدرّس في</b><span style="color:#fff;font-weight:700">اضغط لتفعيل القسم أو إلغائه</span></div>${pills}${area}</div>`+shNav()}
-function shCodeRow(t){const cs=shClsOf(t.id).map(shCls).filter(Boolean);return `<div class="glass card"><div class="rowsp"><div><div class="t" style="font-size:14px">أ. ${esc(shNm(t))}</div><div class="mut" style="font-size:11px">${cs.length?cs.map(shCn).join(' · '):'ما عنده صفوف'}</div></div><div class="code">${SHA.shown[t.id]?esc(t.pin):'••••••'}</div></div><div class="chips" style="margin-top:8px;flex-wrap:wrap;overflow:visible"><button class="mini" data-eye="${t.id}">${SHA.shown[t.id]?'إخفاء':'إظهار'}</button><button class="mini" data-newcode="${t.id}">⟳ كود جديد</button><button class="mini" data-copy="${t.id}">نسخ</button></div></div>`}
+function shCodeRow(t){const cs=shClsOf(t.id).map(shCls).filter(Boolean);return `<div class="glass card"><div class="rowsp"><div><div class="t" style="font-size:14px">أ. ${esc(shNm(t))}</div><div class="mut" style="font-size:11px">${cs.length?cs.map(shCn).join(' · '):'ما عنده صفوف'}</div></div><div class="code">${SHA.shown[t.id]?esc(t.pin):'••••••'}</div></div><div class="chips" style="margin-top:8px;flex-wrap:wrap;overflow:visible"><button class="mini" data-eye="${t.id}">${SHA.shown[t.id]?'إخفاء':'إظهار'}</button><button class="mini" data-newcode="${t.id}">⟳ كود جديد</button><button class="mini" data-copy="${t.id}">نسخ</button><button class="mini" data-tcard="${t.id}">بطاقة PDF</button></div></div>`}
 function shVCodes(){const so=shST().filter(t=>!t.quran),du=shST().filter(t=>t.quran);return shHdr()+`<div class="body wide">${shBack('sections','الأقسام')}<div class="sec" style="margin-top:0"><b>أكواد المعلمين</b><span style="color:#fff">العلوم الشرعية</span></div>
  <div class="note">معلم يدرّس القسمين يدخل بكوده الحالي (اللي عنده من القرآن)، وصفحته تنقسم نصفين تلقائياً. أما معلم العلوم الشرعية فقط فيحتاج كوداً من هنا.</div>
  <div class="sec"><b style="font-size:15px">علوم شرعية فقط</b><span style="color:#fff">${shAR(so.length)}</span></div><div class="g2">${so.map(shCodeRow).join('')||'<div class="mut">ما فيه معلمين بعد</div>'}</div>
- ${so.length?'<div class="btn sm" data-sh="print" style="margin:2px 0 8px">حفظ كشف الأكواد (PDF)</div>':''}
- <div class="sec"><b style="font-size:15px">يدرّسون القسمين</b><span style="color:#fff">${shAR(du.length)}</span></div><div class="g2">${du.map(t=>`<div class="glass card"><div class="rowsp"><div><div class="t" style="font-size:14px">أ. ${esc(shNm(t))}</div><div class="mut" style="font-size:11px">يدخل بكوده الحالي · الصفحة تنقسم نصفين</div></div><span class="pill pg">لا يحتاج كوداً جديداً</span></div></div>`).join('')||'<div class="mut">لا أحد بعد</div>'}</div></div>`+shNav()}
+ ${so.length?'<div class="btn sm" data-sh="print" style="margin:2px 0 8px">حفظ كشف الأكواد (PDF)</div>':''}${shST().length?'<div class="btn sm" data-tcard="all" style="margin:2px 0 8px;background:linear-gradient(135deg,#E0A21B,#c4880a);color:#3b2a00">حفظ بطاقات المعلمين (صفحة لكل معلم)</div>':''}
+ <div class="sec"><b style="font-size:15px">يدرّسون القسمين</b><span style="color:#fff">${shAR(du.length)}</span></div><div class="g2">${du.map(t=>`<div class="glass card"><div class="rowsp"><div><div class="t" style="font-size:14px">أ. ${esc(shNm(t))}</div><div class="mut" style="font-size:11px">يدخل بكوده الحالي · الصفحة تنقسم نصفين</div></div><div class="code">${SHA.shown[t.id]?esc(t.pin):'••••••'}</div></div><div class="chips" style="margin-top:8px;flex-wrap:wrap;overflow:visible"><span class="pill pg">لا يحتاج كوداً جديداً</span><button class="mini" data-eye="${t.id}">${SHA.shown[t.id]?'إخفاء':'إظهار'}</button><button class="mini" data-copy="${t.id}">نسخ</button><button class="mini" data-tcard="${t.id}">بطاقة PDF</button></div></div>`).join('')||'<div class="mut">لا أحد بعد</div>'}</div></div>`+shNav()}
 function shVReports(){const g=shSig();return shHdr()+`<div class="body">${shBack('sections','الأقسام')}<div class="sec" style="margin-top:0"><b>التقارير</b><span style="color:#fff">العلوم الشرعية</span></div>
  <div class="glass card" style="border-color:#FFD35A"><div class="t">تقرير مخصص (PDF)</div><div class="mut">اختر لمن التقرير (طالب، صف، مرحلة، حلقة، المعهد) وما يتضمنه من درجات وأسئلة وسلوك وتفاعل ومتفوقين، ثم أنشئه بتصميم تقرير المعلم.</div><div class="btn" data-v="repb" style="margin-top:8px">إعداد تقرير جديد</div></div>
  <div class="glass card"><div class="t">ملف الإكسل: كشف الدرجات</div><div class="mut">أسماء الطلبة ودرجاتهم لصف أو لكل الصفوف، مع قوائم المتفوقين والمتوسطين والمتدنين.</div><div class="btn" data-sh="xlOpen" style="margin-top:8px">تنزيل ملف الإكسل</div></div>
@@ -4433,6 +4433,49 @@ async function shrGo(){const S=SHR;if(S.busy)return;if(S.out==='xls'){SHA.sheet=
  if(d=q('[data-rgo]')){shrGo();return true}
  return px(e)}}
 {const pi=shXInput;shXInput=function(e){const t=e.target;if(t&&t.id==='shr-cid'){SHR.cid=+t.value;SHR.sid=0;shrFix();SHA.tkeep=true;shRender();return true}if(t&&t.id==='shr-sid'){SHR.sid=+t.value;return true}if(t&&t.id==='shr-grade'){SHR.grade=+t.value;return true}if(t&&t.id==='shr-hal'){SHR.hal=+t.value;return true}return pi(e)}}
+
+/* ===== غرفة الإدارة ← الدخول إلى صفحة المعلم كمعلم + بطاقات أكواد المعلمين PDF ===== */
+const SH_IMP={on:false,tok:null,tid:0,name:'',busy:false};
+const SHI_RE=/^sharia_(data_get|put|profile_get|profile_save|msg_send|msg_list|msg_inbox|msg_del|msg_admin|teacher_state)$/;
+{const s0=srv;srv=async function(fn,args){
+ if(!SH_IMP.on||!document.getElementById('sh-tv'))return s0(fn,args);
+ if(fn==='sharia_visit')return {ok:true,imp:true};
+ if(fn==='sharia_notice_pending')return {ok:true,notices:[]};
+ if(fn==='sharia_notice_ack')return {ok:true};
+ if(SHI_RE.test(fn)){try{const r=await rpc(fn,Object.assign({p_tok:SH_IMP.tok},args));if(r&&r.error==='auth')shToast('انتهت جلسة الدخول كمعلم، ادخل صفحته مرة ثانية');return r}catch(e){return {error:'net'}}}
+ return s0(fn,args)}}
+function shImpBox(t){if(!t||!t.sharia)return '';return `<div class="glass card" style="border-color:#FFD35A"><div class="t" style="font-size:14.5px">الدخول إلى صفحته</div><div class="mut">تفتح صفحة أ. ${esc(shNm(t))} في العلوم الشرعية كما يراها هو: ترصد الدرجات وتعدّل وتكتب عنه. كل ما تسجله يُحفظ باسمه، ولا يُحسب له دخول.</div><div class="btn" data-imp="${t.id}" style="margin-top:8px">دخول صفحة المعلم</div></div>`}
+async function shiEnter(id){if(SH_IMP.busy)return;SH_IMP.busy=true;shToast('جارٍ فتح صفحة المعلم…');let r;try{r=await srv('sharia_admin_as_teacher',{p_tid:id})}catch(e){r=null}SH_IMP.busy=false;
+ if(!r||!r.ok||!r.state||r.state.error){shToast('تعذّر فتح صفحة المعلم');return}
+ const st=r.state;(st.classes||[]).forEach(c=>(c.students||[]).sort((x,y)=>arCmp(x.name,y.name)));
+ SH_IMP.on=true;SH_IMP.tok=r.tok;SH_IMP.tid=id;SH_IMP.name=st.name;SH_TCH=st;SH_DUAL=false;
+ await shTeacherOpen();shiBanner()}
+function shiBanner(){const o=document.getElementById('sh-tv');if(!o||!o.shadowRoot)return;const sr=o.shadowRoot;let b=sr.getElementById?sr.getElementById('shi-b'):sr.querySelector('#shi-b');if(b)b.remove();
+ b=document.createElement('div');b.id='shi-b';b.style.cssText='position:absolute;left:0;right:0;top:0;z-index:60;display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;background:#E0A21B;color:#3b2a00;font:900 11px Cairo,system-ui,sans-serif;direction:rtl;white-space:nowrap;overflow:hidden';
+ b.innerHTML='<span style="flex:1;overflow:hidden;text-overflow:ellipsis">وضع الإدارة · أ. '+esc(shNm({name:SH_IMP.name}))+' · يُحفظ باسمه</span><button data-shi="exit" style="font:inherit;border:0;border-radius:99px;padding:3px 12px;background:#3b2a00;color:#fff;cursor:pointer">رجوع للإدارة</button>';
+ const rt=sr.querySelector('#sh-in');if(rt)rt.style.paddingTop='30px';
+ sr.appendChild(b);
+ if(!sr.__shi){sr.__shi=1;sr.addEventListener('click',e=>{const x=e.target.closest&&e.target.closest('[data-shi],[data-tv="out"]');if(!x||!SH_IMP.on)return;e.stopPropagation();e.preventDefault();shiExit()},true)}}
+function shiExit(){SH_IMP.on=false;SH_IMP.tok=null;SH_TCH=null;shTvClose();SHA.tkeep=true;shRender()}
+/* ---- بطاقات أكواد المعلمين (صفحة PDF لكل معلم) ---- */
+const SHI_X='.cd2{display:flex;gap:3mm;justify-content:center;direction:ltr;margin:3mm 0}.cd2 i{display:grid;place-items:center;width:17mm;height:22mm;border-radius:3mm;background:#fff;border:.5mm solid var(--p);box-shadow:inset 0 0 0 .6mm #fff,inset 0 0 0 1mm var(--gold);font-style:normal;font-size:24pt;font-weight:900;color:var(--pd)}.stp{display:grid;grid-template-columns:8mm 1fr;gap:2mm 3mm;align-items:start;font-size:10.5pt;font-weight:700;line-height:1.9}.stp b.n{width:7mm;height:7mm;border-radius:50%;background:var(--p);color:#fff;display:grid;place-items:center;font-size:9pt}.url{direction:ltr;text-align:center;font-weight:900;color:var(--pd);font-size:11pt;margin-top:2mm}';
+function shiCardPage(t){const g=shSig(),d=new Date(),ds=shAR(d.getDate())+' '+SH_M[d.getMonth()]+' '+shAR(d.getFullYear()),cs=shClsOf(t.id).map(shCls).filter(Boolean).map(shCn),both=!!t.quran,lg=k=>`<i style="background-image:url(${shLogo(k)})"></i>`,url=(typeof SITE_URL!=='undefined'&&SITE_URL)||location.origin+location.pathname;
+ return `<section class="page d3"><div class="dots"></div><div class="band"></div><div class="logo r">${lg('b')}</div><div class="logo l">${lg('a')}</div><div class="vt">قسم العلوم الشرعية</div><div class="hd"><h1>بطاقة دخول معلم العلوم الشرعية</h1><h2>المعهد الديني الابتدائي · قسم العلوم الشرعية</h2><p>الفصل الدراسي الأول 2026 – 2027 · بتاريخ ${ds}</p></div><div class="ribbon">بطاقة الدخول</div>
+ <div class="body"><div class="card stu"><div><small>اسم المعلم</small><b>أ. ${esc(shNm(t))}</b><div class="chips">${cs.length?cs.map(c=>`<span class="chip">${esc(c)}</span>`).join(''):'<span class="chip o">لم تُسند له صفوف بعد</span>'}</div></div></div>
+ <div class="card" style="text-align:center"><div class="h3"><span>كود الدخول</span><small>سرّي</small></div><div class="cd2">${String(t.pin).split('').map(x=>`<i>${esc(x)}</i>`).join('')}</div></div>
+ <div class="card"><div class="h3"><span>طريقة الدخول</span></div><div class="stp"><b class="n">١</b><span>افتح رابط المنصة من جوالك أو حاسوبك.</span><b class="n">٢</b><span>اضغط أيقونة القفل «دخول المعلمين» ثم «دخول المعلم».</span><b class="n">٣</b><span>اكتب الكود أعلاه مرة واحدة، وبعدها يدخلك مباشرة.</span><b class="n">٤</b><span>${both?'تنقسم صفحتك نصفين: القرآن الكريم والعلوم الشرعية، اختر ما تريد.':'تفتح لك صفحة العلوم الشرعية: صفوفك، الوقفات، الدرجات، والرسائل.'}</span></div><div class="url">${esc(url)}</div></div>
+ <div class="note2"><b>تنبيه:</b> هذا الكود سرّي ولا يُعطى لأحد. ${both?'كودك هو نفسه كود القرآن الكريم، ولا تحتاج كوداً جديداً.':''} وإن نسيته فتواصل مع منسق القسم.</div>
+ <div class="sig" style="margin-top:auto;grid-template-columns:repeat(3,1fr)"><div>مدير المعهد<b>${esc(g.dir)}</b></div><div>المدير المساعد<b>${esc(g.asst)}</b></div><div>منسق القسم<b>${esc(g.coord)}</b></div></div></div><div class="ft">هذه البطاقة خاصة بالمعلم المذكور</div></section>`}
+function shiCards(list,fname,title){if(!list.length){shToast('لا يوجد معلمون');return}
+ const css='*{box-sizing:border-box;margin:0}html{background:#cfdcd8}body{font-family:Cairo,system-ui,sans-serif;padding:14px 0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{margin:0 auto 14px}@page{size:A4;margin:0}@media print{html{background:none}body{padding:0}.page{margin:0;box-shadow:none;break-after:page}.page:last-child{break-after:auto}}';
+ const html=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet"><style>${SH_RB}${SH_R3}${typeof SHR_DOCX==='string'?SHR_DOCX:''}${SHI_X}${css}<\/style></head><body>${list.map(shiCardPage).join('')}<script>(document.fonts?document.fonts.ready:Promise.resolve()).then(function(){var W=Math.max.apply(null,[].map.call(document.querySelectorAll('.page'),function(p){return p.offsetWidth}));var z=Math.min(1,(innerWidth-16)/W);document.body.style.zoom=z;addEventListener('beforeprint',function(){document.body.style.zoom=1});addEventListener('afterprint',function(){document.body.style.zoom=z})})<\/script></body></html>`;
+ docOverlay('sh-doc',html,title,fname)}
+{const px=shXClick;shXClick=async function(e){const t=e.target,q=s=>t.closest(s);let d;
+ if(d=q('[data-imp]')){shiEnter(+d.dataset.imp);return true}
+ if(d=q('[data-tcard]')){const v=d.dataset.tcard;if(v==='all')shiCards(shST(),'بطاقات-أكواد-معلمي-العلوم-الشرعية.pdf','معاينة بطاقات المعلمين');else{const tc=shTch(v);if(tc)shiCards([tc],'بطاقة-كود-'+String(shNm(tc)).replace(/\s+/g,'-')+'.pdf','معاينة: بطاقة '+shNm(tc))}return true}
+ return px(e)}}
+/* زر «خروج» داخل صفحة المعلم يُنهي وضع الإدارة فقط، ولا يخرج الإدارة من حسابها */
+if(typeof doLogout==='function'){const dl0=doLogout;doLogout=function(){if(SH_IMP.on){shiExit();return}return dl0.apply(this,arguments)}}
 
 function renderStudent(s){
   SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
@@ -6773,7 +6816,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='42ac52d6f4c4';
+const BUILD='7f2fd1b89c72';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
