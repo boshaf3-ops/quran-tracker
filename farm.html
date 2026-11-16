@@ -130,6 +130,11 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:
 .addl.glow{animation:sdglow 1.3s ease-in-out infinite}#panel .nt.gln{color:#fff3b0;font-size:13px}
 #tour{position:fixed;left:50%;top:calc(max(10px,env(safe-area-inset-top)) + 62px);transform:translate(-50%,-10px);z-index:70;display:none;width:min(88vw,360px);padding:11px 16px;background:#fff6df;border:2.5px dashed #c98a43;border-radius:18px 14px 19px 13px;box-shadow:0 5px 0 rgba(120,70,20,.3);color:#5a3300;text-align:center;opacity:0;transition:opacity .3s,transform .3s}#tour.on{display:block;opacity:1;transform:translate(-50%,0)}#tour b{display:block;font-size:14.5px;font-weight:900}#tour span{display:block;font-size:12.5px;font-weight:800;line-height:1.7;margin-top:2px}#tour i{display:inline-block;margin-top:5px;font-style:normal;font-size:11px;font-weight:900;opacity:.6;cursor:pointer;text-decoration:underline}
 #tg{position:fixed;z-index:60;display:none;border-radius:50%;border:4px solid #ffd45a;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 18px 4px rgba(255,214,90,.85);animation:tgp 1.1s ease-in-out infinite}@keyframes tgp{0%,100%{transform:translate(-50%,-50%) scale(.9);opacity:.95}50%{transform:translate(-50%,-50%) scale(1.15);opacity:.55}}
+
+body.vis #pr,body.vis #pl,body.vis #chest,body.vis #cgear,body.vis #fbx,body.vis #fedb{display:none!important}
+#tabs .fb[data-mode=best]{background:#ffeaa0}#tabs .fb[data-mode=best] .ic{color:#b8860b}
+#fleg .hb[data-al]{filter:drop-shadow(0 0 8px rgba(255,255,255,.9))}
+#fleg .hb.adm{background:#fff!important;border-color:#e8e8f0!important;box-shadow:0 0 18px rgba(255,255,255,.95),0 3px 0 rgba(0,0,0,.25)}#fleg .hb.adm.done{opacity:.75}
 body:not(.test) #cgear{display:none!important}
 </style></head><body><div id="ld"><i></i>جارٍ تحضير المزرعة…</div>
 <div id="bg"></div><canvas id="c"></canvas><div id="ctl"></div>
@@ -144,7 +149,7 @@ body:not(.test) #cgear{display:none!important}
 <script>
 const T=THREE,AR=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]),$=id=>document.getElementById(id);
 /* وضع الطالب الحقيقي (?bal=&sp=&s=): الحالة تأتي من السيرفر وتُحفظ عبر الصفحة الأم، ولا يُستخدم localStorage لأن الجهاز قد يتشاركه أكثر من طالب */
-const QP0=new URLSearchParams(location.search),RMODE=QP0.has('bal'),GST=(()=>{try{const o=JSON.parse(QP0.get('s')||'{}');return o&&typeof o==='object'&&!Array.isArray(o)?o:{}}catch(e){return {}}})(),GH=(GST.h&&typeof GST.h==='object'&&!Array.isArray(GST.h))?GST.h:{};
+const QP0=new URLSearchParams(location.search),RMODE=QP0.has('bal'),VIS=(()=>{if(!QP0.has('vis'))return null;try{const o=JSON.parse(QP0.get('vis'));return o&&typeof o==='object'?o:null}catch(e){return null}})(),GST=(()=>{try{const o=JSON.parse(QP0.get('s')||'{}');return o&&typeof o==='object'&&!Array.isArray(o)?o:{}}catch(e){return {}}})(),GH=(GST.h&&typeof GST.h==='object'&&!Array.isArray(GST.h))?GST.h:{};
 const MK=(()=>{let m=9;try{m=+new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Bahrain',month:'numeric'}).format(new Date())}catch(e){m=new Date().getMonth()+1}return [9,10,11,12,2,3,4,5].includes(m)?m:(m===1?12:5)})();
 const col=h=>new T.Color(h).convertSRGBToLinear(),cl=(v,a,b)=>Math.min(b,Math.max(a,v)),clamp=cl,lerp=(a,b,t)=>a+(b-a)*t;
 const mulb=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296},RN=mulb(7),rnd=(a=0,b=1)=>a+(b-a)*RN();
@@ -583,7 +588,7 @@ const fsSave=()=>{if(RMODE)return;try{localStorage.setItem('qt_farm_cfg',JSON.st
 const myLv=()=>LV.lvOf(ME.lt);
 const isUnl=(c,i)=>myLv()>=UL(c,i);
 function fsAuto(){const n=myLv();if(FS.auto||FS.house==null||!isUnl('house',FS.house))FS.house=LV.rk(n);if(!isUnl('roof',FS.roof))FS.roof=0;if(!isUnl('wall',FS.wall))FS.wall=0;FS.decor=FS.decor.filter(i=>isUnl('decor',i));FS.spec=FS.spec.filter(i=>isUnl('spec',i))}
-function friendCfg(f){const n=LV.lvOf(f.lt),r=LV.rk(n),mr=n>=2?Math.floor((n-2)/5)+1:0,mw=n>=3?Math.floor((n-3)/5)+1:0,dec=[],sp=[];for(let i=0;i<=r;i++){if((i+f.i)%2===0&&5*i+4<=n)dec.push(i);if((i+f.i)%3===0&&5*i+5<=n)sp.push(i)}return{house:r,roof:f.i%(mr+1),wall:(f.i*2)%(mw+1),decor:dec,spec:sp}}
+function friendCfg(f){if(f.fs&&typeof f.fs==='object'&&f.fs.house!=null){const a=x=>Array.isArray(x)?x.filter(v=>Number.isInteger(v)&&v>=0&&v<60):[];return{house:Math.max(0,Math.min(9,+f.fs.house||0)),roof:Math.max(0,+f.fs.roof||0),wall:Math.max(0,+f.fs.wall||0),decor:a(f.fs.decor),spec:a(f.fs.spec)}}const n=LV.lvOf(f.lt),r=LV.rk(n),mr=n>=2?Math.floor((n-2)/5)+1:0,mw=n>=3?Math.floor((n-3)/5)+1:0,dec=[],sp=[];for(let i=0;i<=r;i++){if((i+f.i)%2===0&&5*i+4<=n)dec.push(i);if((i+f.i)%3===0&&5*i+5<=n)sp.push(i)}return{house:r,roof:f.i%(mr+1),wall:(f.i*2)%(mw+1),decor:dec,spec:sp}}
 function farmCfgApply(){const hp=FM.hp;if(!hp)return;if(FM.hs)hp.remove(FM.hs);if(FM.ad)hp.remove(FM.ad);FM.spin=null;let c;if(FM.friend)c=friendCfg(FM.friend);else{fsAuto();c=FS}
  const hs=mkHouseR(c.house,WC[c.wall],RC[c.roof]);hs.position.set(0,0,-.4);hp.add(hs);FM.hs=hs;FM.hk=c.house;
  const ad=new T.Group();hp.add(ad);FM.ad=ad;(c.decor||[]).forEach(i=>AD.decor[i]&&AD.decor[i](ad,hs));(c.spec||[]).forEach(i=>AD.spec[i]&&AD.spec[i](ad,hs))}
@@ -625,23 +630,37 @@ addEventListener('pointerup',e=>{if(!FM.drag)return;const t=FM.drag.t;FM.drag=nu
 
 const FRN=['خالد','أحمد','يوسف','عبدالله','سلمان','فهد','راشد','حمد','ناصر','مبارك'];
 function friendYear(i){const r=mulb(100+i*17),rr=()=>r(),yr={};[9,10,12,2,3,4,5].forEach(m=>{const n=Math.floor(rr()*3.3);yr[m]=Array.from({length:Math.min(3,n)},()=>[Math.floor(rr()*8),1+Math.floor(rr()*7)])});const k=1+Math.floor(rr()*2);yr[11]=Array.from({length:k},()=>[Math.floor(rr()*8),Math.floor(rr()*6)]);return yr}
-const FRL=FRN.map((n,i)=>({i,n,lt:FLT[i],yr:friendYear(i)})),FR={liked:new Set(),n:0,recv:3,ro:false,backup:null,cur:null,back:'month'};
-const nowOf=fr=>(fr.yr[11]||[]).map(([t,st])=>TYPES[t].n+' · '+SN[st]).join('، ')||'لا شيء الآن';
+const FRL=FRN.map((n,i)=>({i,n,lt:FLT[i],yr:friendYear(i)})),FR={liked:new Set(),n:0,recv:3,ro:false,backup:null,cur:null,back:'month',mode:'friends',busy:false,meId:0};
+if(RMODE||VIS){FRL.length=0;FR.recv=0}
+/* ===== جسر الاتصال بالصفحة الأم (الطالب أو الإدارة): كل نداءات السيرفر تمرّ منها ===== */
+const RPCQ={};let _rid=0;
+function brpc(fn,arg){return new Promise(res=>{if(parent===window){res(null);return}const id=++_rid;RPCQ[id]=res;setTimeout(()=>{if(RPCQ[id]){delete RPCQ[id];res(null)}},15000);try{parent.postMessage({type:'farm-rpc',id,fn,arg},location.origin)}catch(e){delete RPCQ[id];res(null)}})}
+addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent)return;const d=e.data;if(d&&d.type==='farm-rpc-res'&&RPCQ[d.id]){RPCQ[d.id](d.res);delete RPCQ[d.id]}});
+const stYr=st=>{const yr={};if(!st||typeof st!=='object')return yr;const h=st.h&&typeof st.h==='object'?st.h:{};Object.keys(h).forEach(k=>{if(Array.isArray(h[k]))yr[k]=h[k].filter(a=>Array.isArray(a)&&TYPES[a[0]]).map(a=>[a[0],Math.max(0,Math.min(7,+a[1]||0))]).slice(0,3)});
+ const tl=(Array.isArray(st.t)?st.t:[]).filter(a=>Array.isArray(a)&&a[0]>=0&&TYPES[a[0]]).map(a=>[a[0],Math.max(0,Math.min(7,+a[2]||0))]),mk=+st.m||MK;yr[mk]=(yr[mk]||[]).concat(tl).slice(0,3);return yr};
+const realFr=r=>({i:r.id,id:r.id,n:String(r.n||'').slice(0,30),lt:Math.max(0,+r.lt||0),cm:r.cm!==false,cl:r.g?AR(r.g)+' '+(r.s||''):'',yr:{},fs:null,loaded:false});
+async function loadFriends(){if(!RMODE||VIS)return;const r=await brpc('friends');if(!r||!r.ok)return false;FR.liked=new Set((r.given||[]).map(Number));FR.n=FR.liked.size;FR.recv=+r.recv||0;FR.meLt=+r.me||0;FR.list=(r.rows||[]).map(realFr);refreshBd();return true}
+async function loadTop(){const r=await brpc('top');if(!r||!r.ok)return false;FR.meId=+r.me||0;FR.top=(r.rows||[]).map(realFr);return true}
+const refreshBd=()=>{document.querySelectorAll('#tabs .fb .bd').forEach(b=>b.lastChild.textContent=AR(FR.recv))};
+const nowOf=fr=>(fr.yr[MK]||[]).map(([t,st])=>TYPES[t].n+' · '+SN[st]).join('، ')||'لا شيء الآن';
 const tabHL=m=>{$('tabs').querySelectorAll('.so,.fb').forEach(d=>d.classList.toggle('on',d.dataset.mode===m||d.dataset.fk===m));if(m==='month'||m==='farm')swSet(m==='farm'?1:0)};
 function clearTile(q){if(q.plant){q.pg.remove(q.plant);q.plant=null}Object.assign(q,{type:-1,w:0,stage:-1});syncLife(q)}
+const likeCnt=n=>'سبقت '+AR(n)+' إعجاب';
 const likeTxt=n=>n===2?'إعجابان':n===1?'إعجاب واحد':'';
-function heartHTML(i){const rem=2-FR.n,liked=FR.liked.has(i);
+function heartHTML(i){if(VIS){const a=VIS;return a.today?`<div class="hb adm done">🤍</div><span>أعجبتَ اليوم ✓</span>`:`<div class="hb adm" data-al="1">🤍</div><span>إعجاب +٥ لترات</span>`}
+ if(RMODE){const f=FM.friend||FR.cur;if(!f||!f.cm)return ''}
+ const rem=2-FR.n,liked=FR.liked.has(i);
  if(liked)return `<div class="hb done">❤</div><span>${rem>0?'باقي لك '+likeTxt(rem):'انتهت إعجاباتك لهذا اليوم'}</span>`;
  if(rem>0)return `<div class="hb" data-fl="${i}">🤍</div><span>${FR.n===0?'لك ':'باقي لك '}${likeTxt(rem)}</span>`;
  return ''}
 function fcard(){const lg=$('fleg'),fr=FM.friend||(FR.ro?FR.cur:null);
  if(fr){const h=heartHTML(fr.i);lg.className='gh';lg.innerHTML=h;lg.style.display=h?'flex':'none'}
  else{lg.className='nm';lg.innerHTML=`🏡 مزرعة ${FM.name}`;lg.style.display='block'}}
-const IC={drop:'<path d="M12 3S5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/>',sprout:'<path d="M12 21V11"/><path d="M12 11c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/>',house:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',friends:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14c2.8 0 4.5 2 4.5 5"/>',heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M13.5 13l-3 3 3 3"/><path d="M10.5 16H16"/>',back:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',tree:'<path d="M12 21v-6"/><circle cx="12" cy="9" r="5"/>'};
+const IC={drop:'<path d="M12 3S5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/>',sprout:'<path d="M12 21V11"/><path d="M12 11c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/>',house:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',friends:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14c2.8 0 4.5 2 4.5 5"/>',heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M13.5 13l-3 3 3 3"/><path d="M10.5 16H16"/>',back:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',tree:'<path d="M12 21v-6"/><circle cx="12" cy="9" r="5"/>',crown:'<path d="M4 18l-1-10 5 4 4-7 4 7 5-4-1 10z"/><path d="M5 21h14"/>'};
 const I=n=>`<svg class="ic" viewBox="0 0 24 24">${IC[n]}</svg>`;
 const BD=()=>`<i class="bd">${I('heart')}${AR(FR.recv)}</i>`;
 let SWS=0;function swSet(v){SWS=v;const e=$('tabs').querySelector('.s1');if(e)requestAnimationFrame(()=>requestAnimationFrame(()=>{e.dataset.s=v}))}
-const FB=()=>`<div class="fb" data-mode="friends">${I('friends')}<span class="fl">أصدقائي</span>${BD()}</div>`;
+const FB=()=>VIS?'':`<div class="fb" data-mode="friends">${I('friends')}<span class="fl">أصدقائي</span>${BD()}</div>`+(RMODE?`<div class="fb" data-mode="best">${I('crown')}<span class="fl">المزرعة المتميزة</span></div>`:'');
 let _lv=null,_lvt=-1;
 function lvWatch(){const n=LV.lvOf(ME.lt);if(_lv===null){_lv=n;return}if(n!==_lv){const up=n>_lv;_lv=n;lvUI();fsAuto();if(FM.on&&!FM.friend)farmCfgApply();if(up)lvUp(n)}if(ME.lt!==_lvt){_lvt=ME.lt;if($('lvc').classList.contains('on')&&!FR.cur)lvCard()}}
 let _evoTk=0;
@@ -683,25 +702,37 @@ let _fq=0;function fitQ(){cancelAnimationFrame(_fq);_fq=requestAnimationFrame(fi
 addEventListener('resize',fitQ);addEventListener('orientationchange',()=>setTimeout(fitQ,250));if(document.fonts)document.fonts.ready.then(fitQ);
 function lvCard(){const f=FR.cur,lt=f?f.lt:ME.lt,n=LV.lvOf(lt),r=LV.rk(n),s=LV.sb(n);let nx='';if(!f&&n<50){const a=LV.T[n-1],b=LV.T[n];nx=`<div class="lvbar"><i style="width:${Math.round((lt-a)/(b-a)*100)}%"></i></div><small>باقي ${AR(b-lt)} لتر للمستوى ${AR(n+1)}</small>`}
  $('lvc').innerHTML=`<div class="lb">${LV.badge(r,s)}</div><div class="lt"><b>${LV.RW[r]}</b><span>${f?f.n+' · ':''}المستوى ${AR(n)} من ٥٠ · النجمة ${AR(s)} من ٥</span><em>${LV.MN[r]}</em><em>${LV.DL[r]}</em>${nx}</div>`;$('lvc').classList.add('on')}
-function friendTabs(){const fr=FR.cur,v=FR.kind==='farm'?1:0;$('tabs').innerHTML=`<div class="s1" data-s="${SWS}"><div class="sth"></div><div class="so ${v?'':'on'}" data-fk="month">${I('sprout')}الشهر</div><div class="so ${v?'on':''}" data-fk="farm">${I('house')}<span class="lg">مزرعة </span>${fr.n}</div></div><div class="fg">${FB()}<div class="bk" data-mode="farm">${I('back')}<span class="lb2">العودة إلى </span>مزرعتي</div></div>`;swSet(v);lvUI()}
+function friendTabs(){const fr=FR.cur,v=FR.kind==='farm'?1:0;$('tabs').innerHTML=`<div class="s1" data-s="${SWS}"><div class="sth"></div><div class="so ${v?'':'on'}" data-fk="month">${I('sprout')}الشهر</div><div class="so ${v?'on':''}" data-fk="farm">${I('house')}<span class="lg">مزرعة </span>${fr.n}</div></div><div class="fg">${FB()}${VIS?'':`<div class="bk" data-mode="farm">${I('back')}<span class="lb2">العودة إلى </span>مزرعتي</div>`}</div>`;swSet(v);lvUI()}
 function ownTabs(m){const v=m==='farm'?1:0;$('tabs').innerHTML=`<div class="s1" data-s="${SWS}"><div class="sth"></div><div class="so ${v?'':'on'}" data-mode="month">${I('sprout')}الشهر</div><div class="so ${v?'on':''}" data-mode="farm">${I('house')}مزرعتي</div></div>${FB()}`;swSet(v);lvUI()}
-function fpanelUI(){const p=$('fpanel');const rk=FRL.map(f=>({f,lt:f.lt,me:0})).concat([{f:{n:'أنت',i:-1},lt:ME.lt,me:1}]).sort((x,y)=>LV.lvOf(y.lt)-LV.lvOf(x.lt)||y.lt-x.lt);
+function fpanelReal(){const p=$('fpanel'),top=FR.mode==='best',L=top?(FR.top||[]):(FR.list||[]);FRL.length=0;L.forEach(x=>FRL.push(x));
+ let rk=L.map((f,k)=>({f,k,lt:f.lt,me:top&&f.id===FR.meId?1:0}));if(!top)rk=rk.concat([{f:{n:'أنت',id:-1},k:-1,lt:ME.lt,me:1}]);rk.sort((x,y)=>y.lt-x.lt||(x.me?-1:y.me?1:0));
+ const hd=top?'المزرعة المتميزة':'أصدقائي',nt=top?'أفضل ١٠ مزارع في المدرسة، حسب المستوى ثم اللترات ثم الأسبق وصولاً.':'زملاء صفّك فقط، مرتّبون حسب المستوى. اختر زميلاً وادخل مزرعته.';
+ const empty=top?'لم يسقِ أحد مزرعته بعد، كن أول من يظهر هنا 🌱':'لا يوجد زملاء في صفّك بعد.';
+ p.innerHTML=`<div class="ph o"><span>${hd}</span><div class="x" data-fx="1">✕</div></div><div class="nt">${nt}</div><div class="lst">${FR.busy?'<div class="nt" style="text-align:center">جارٍ التحميل…</div>':(rk.length?rk.map((x,j)=>{const n=LV.lvOf(x.lt),r=LV.rk(n);return `<div class="fr ${x.me?'me':''}"><div class="rn">${AR(j+1)}</div><div class="bgs">${LV.badge(r,LV.sb(n))}</div><div class="tx"><b>${x.f.n}${x.f.cl&&top?' · '+x.f.cl:''}</b><small>${LV.RW[r]}<br>المستوى ${AR(n)}</small></div>${x.me?'':`<div class="bt"><span data-fv="${x.k},farm">👁 شاهد مزرعته</span></div>`}</div>`}).join(''):`<div class="nt" style="text-align:center">${empty}</div>`)}</div>`}
+async function openReal(mode){FR.mode=mode;FR.busy=true;FRL.length=0;fpanelReal();$('fpanel').classList.add('on');$('tabs').querySelectorAll('.fb').forEach(d=>d.classList.toggle('on',d.dataset.mode===mode));
+ const ok=await (mode==='best'?loadTop():loadFriends());FR.busy=false;if(ok===false){FR.mode===mode&&($('fpanel').querySelector('.lst').innerHTML='<div class="nt" style="text-align:center">تعذّر التحميل، تأكد من الاتصال وحاول مجدداً.</div>');return}if(FR.mode===mode&&$('fpanel').classList.contains('on'))fpanelReal()}
+function fpanelUI(){if(RMODE)return fpanelReal();const p=$('fpanel');const rk=FRL.map(f=>({f,lt:f.lt,me:0})).concat([{f:{n:'أنت',i:-1},lt:ME.lt,me:1}]).sort((x,y)=>LV.lvOf(y.lt)-LV.lvOf(x.lt)||y.lt-x.lt);
  p.innerHTML=`<div class="ph o"><span>أصدقائي</span><div class="x" data-fx="1">✕</div></div><div class="nt">مرتّبون حسب الوسام ثم النجوم. اختر صديقاً وادخل مزرعته.</div><div class="lst">${rk.map((x,k)=>{const n=LV.lvOf(x.lt),r=LV.rk(n);return `<div class="fr ${x.me?'me':''}"><div class="rn">${AR(k+1)}</div><div class="bgs">${LV.badge(r,LV.sb(n))}</div><div class="tx"><b>${x.f.n}</b><small>${LV.RW[r]}<br>المستوى ${AR(n)}</small></div>${x.me?'':`<div class="bt"><span data-fv="${x.f.i},farm">👁 شاهد مزرعته</span></div>`}</div>`}).join('')}</div>`}
-function openFriends(){fpanelUI();$('fpanel').classList.add('on');$('tabs').querySelectorAll('.fb').forEach(d=>d.classList.add('on'))}
+function openFriends(){if(RMODE){openReal('friends');return}fpanelUI();$('fpanel').classList.add('on');$('tabs').querySelectorAll('.fb').forEach(d=>d.classList.add('on'))}
 function closeFriends(){$('fpanel').classList.remove('on');if(FR.cur)friendTabs();else tabHL(FR.back)}
 function leaveRO(){const b=FR.backup;if(!b)return;while(tiles.length>Math.max(1,b.length))world.remove(tiles.pop().g);while(tiles.length<b.length)buildTile(tiles.length);tiles.forEach((q,i)=>{clearTile(q);const d=b[i];if(d&&d.type>=0){q.type=d.type;q.stage=d.stage;q.w=d.w;makePlant(q)}});FR.ro=false;FR.backup=null;camT.x=(tiles.length-1)*TW/2;resize()}
-function roMonth(fr){if(!FR.backup)FR.backup=tiles.map(q=>({type:q.type,w:q.w,stage:q.stage}));const pl=fr.yr[11]||[],n=Math.max(1,pl.length);while(tiles.length>n)world.remove(tiles.pop().g);while(tiles.length<n)buildTile(tiles.length);tiles.forEach((q,i)=>{clearTile(q);const d=pl[i];if(d){q.type=d[0];q.stage=d[1];q.w=price(q)*SF[d[1]];makePlant(q)}});FR.ro=true;jugRoot.visible=false;$('chest').style.display='none';camT.x=(tiles.length-1)*TW/2;resize();hud()}
+function roMonth(fr){if(!FR.backup)FR.backup=tiles.map(q=>({type:q.type,w:q.w,stage:q.stage}));const pl=fr.yr[MK]||[],n=Math.max(1,pl.length);while(tiles.length>n)world.remove(tiles.pop().g);while(tiles.length<n)buildTile(tiles.length);tiles.forEach((q,i)=>{clearTile(q);const d=pl[i];if(d){q.type=d[0];q.stage=d[1];q.w=price(q)*SF[d[1]];makePlant(q)}});FR.ro=true;jugRoot.visible=false;$('chest').style.display='none';camT.x=(tiles.length-1)*TW/2;resize();hud()}
 function showScene(m){const farm=m==='farm';
  if(farm){if(!FM.on){FM.saved={x:camT.x,d:camT.d,gz:GZT};FM.on=true;FM.g||buildFarm();FM.g.visible=true;tiles.forEach(q=>q.g.visible=false);jugRoot.visible=false;$('chest').style.display='none';$('panel').className='';hintHide();$('mini').classList.remove('on');$('flab').style.display='none';camT.x=0;GZT=1;camT.d=Math.max(44,(PW*3*1.12+3)/(.425*camera.aspect));ELT=.72;AZT=AZ0}refreshFarm()}
  else{if(FM.on){FM.on=false;FM.g.visible=false;tiles.forEach(q=>q.g.visible=true);if(FM.saved){camT.x=FM.saved.x;camT.d=FM.saved.d;GZT=FM.saved.gz}}jugRoot.visible=true;$('chest').style.display='';$('fleg').style.display='none';chestUI()}
  if(!farm&&FM.edit)setEdit(false);hud();fbxUI()}
 function leaveFriend(){if(FR.ro)leaveRO();FM.friend=null;FR.cur=null}
 function refreshTabs(){if(FR.cur)friendTabs();else ownTabs(FR.back)}
-function setMode(m){if(m==='friends'){openFriends();return}leaveFriend();FR.back=m;ownTabs(m);showScene(m)}
-function viewFriend(i,kind){const fr=FRL[i];$('fpanel').classList.remove('on');FR.idx=i;FR.kind=kind;FR.cur=fr;FM.friend=fr;friendTabs();
+function setMode(m){if(m==='friends'){openFriends();return}if(m==='best'){openReal('best');return}leaveFriend();FR.back=m;ownTabs(m);showScene(m)}
+async function viewFriend(i,kind){const fr=FRL[i];if(!fr)return;
+ if(RMODE&&!fr.loaded){const r=await brpc('visit',{sid:fr.id});if(!r||!r.ok){toast(r&&r.error==='denied'?'لا يمكنك مشاهدة هذه المزرعة':'تعذّر تحميل المزرعة، حاول مجدداً');return}fr.lt=Math.max(0,+r.lt||0);fr.cm=!!r.cm;fr.fs=r.st&&r.st.fs;fr.yr=stYr(r.st);fr.loaded=true}
+ $('fpanel').classList.remove('on');FR.idx=i;FR.kind=kind;FR.cur=fr;FM.friend=fr;friendTabs();
  if(kind==='farm'){if(FR.ro)leaveRO();showScene('farm')}else{showScene('month');roMonth(fr);fcard();hud()}}
-function likeFriend(i){if(FR.n>=2||FR.liked.has(i))return;FR.liked.add(i);FR.n++;if(RMODE){toast('💚 وصلت إعجابك')}else{S.store+=1;toast('💚 +١ لتر في إبريقك')}hud();fcard()}
-document.addEventListener('pointerdown',e=>{const t=e.target;let d;if(t.closest('[data-fx]')){closeFriends();return}if(d=t.closest('[data-fv]')){const[i,k]=d.dataset.fv.split(',');viewFriend(+i,k);return}if(d=t.closest('[data-fk]')){viewFriend(FR.idx,d.dataset.fk);return}if(d=t.closest('[data-fl]')){likeFriend(+d.dataset.fl)}});
+async function likeFriend(i){if(FR.n>=2||FR.liked.has(i))return;
+ if(RMODE){const r=await brpc('like',{to:i});if(r&&r.ok){FR.liked.add(i);FR.n++;S.store+=1;toast('💚 +١ لتر في إبريقك');hud();fcard()}else if(r&&r.error==='limit'){FR.n=2;toast('انتهت إعجاباتك لهذا اليوم');fcard()}else if(r&&r.error==='dup'){FR.liked.add(i);fcard()}else toast('تعذّر إرسال الإعجاب، حاول مجدداً');return}
+ FR.liked.add(i);FR.n++;S.store+=1;toast('💚 +١ لتر في إبريقك');hud();fcard()}
+async function admLike(){if(!VIS||VIS.today)return;const r=await brpc('adm-like',{sid:VIS.id});if(r&&r.ok){VIS.today=true;VIS.likes=+r.likes||VIS.likes+1;toast('❤ أعجبتَ بالمزرعة (+٥ لترات للطالب)');fcard();try{burst(new T.Vector3(0,3,0),30)}catch(e){}}else if(r&&r.error==='dup'){VIS.today=true;fcard();toast('سبق أن أعجبتَ بهذه المزرعة اليوم')}else toast('تعذّر الإرسال، حاول مجدداً')}
+document.addEventListener('pointerdown',e=>{const t=e.target;let d;if(t.closest('[data-fx]')){closeFriends();return}if(d=t.closest('[data-fv]')){const[i,k]=d.dataset.fv.split(',');viewFriend(+i,k);return}if(d=t.closest('[data-fk]')){viewFriend(FR.idx,d.dataset.fk);return}if(d=t.closest('[data-fl]')){likeFriend(+d.dataset.fl)}if(t.closest('[data-al]'))admLike()});
 $('cgear').addEventListener('click',()=>$('ctl').classList.toggle('on'));
 $('home').innerHTML=I('home');$('home').addEventListener('pointerdown',()=>gSend(true),true);$('home').addEventListener('pointerdown',()=>{if(parent!==window){try{parent.postMessage({type:'farm-home'},location.origin)}catch(e){}return}toast('↩ رجوع');setTimeout(()=>{if(history.length>1)history.back();else location.href='./'},350)});
 document.addEventListener('pointerdown',e=>{if(e.target.closest('[data-tskip]')){tourEnd();return}if(e.target.closest('#lvupX')){const u=$('lvup');u.classList.remove('on','evo','show');u.querySelectorAll('.fx').forEach(x=>x.remove());_evoTk++;return}if(e.target.closest('#lvb')){lvCard();return}if($('lvc').classList.contains('on'))$('lvc').classList.remove('on')});
@@ -805,6 +836,8 @@ let wrongC=null;const endP=e=>{ptrs.delete(e.pointerId);pinch=0;if(wrongC&&wrong
 addEventListener('resize',resize);
 {const QP=new URLSearchParams(location.search);if(RMODE){ME.lt=Math.max(0,Math.round(+QP.get('sp')||0));S.store=Math.max(0,Math.round(+QP.get('bal')||0));FM.demo=false}else if(QP.has('lt')){const v=Math.max(0,Math.round(+QP.get('lt')||0));ME.lt=v;S.store=v;FM.demo=false}if(QP.get('name'))FM.name=QP.get('name').slice(0,30)}
 if(/[?&]test/.test(location.search)&&!RMODE)document.body.classList.add('test');
-buildTile(0);gRestore();jugRefill();tray();ownTabs('month');hud();resize();placeCam();if((!tourDone()||QPT.get('tour')==='1')&&!tiles.some(q=>q.type>=0)){TOUR.on=true;setTimeout(()=>tourGo(0),600)}else{if(!tourDone()&&tiles.some(q=>q.type>=0)){if(RMODE)GST.tour=1;else try{localStorage.setItem('qt_tour_done','1')}catch(e){}}setTimeout(()=>hint(),700)}if(/gallery/.test(location.search))gallery();requestAnimationFrame(loop);requestAnimationFrame(()=>requestAnimationFrame(()=>{const l=$('ld');if(l){l.style.opacity=0;setTimeout(()=>l.remove(),400)}}));
+buildTile(0);gRestore();jugRefill();tray();ownTabs('month');hud();resize();placeCam();if(VIS){document.body.classList.add('vis');const fr=realFr({id:VIS.id,n:VIS.n,lt:VIS.lt,g:VIS.g,s:VIS.s,cm:true});fr.fs=VIS.st&&VIS.st.fs;fr.yr=stYr(VIS.st);fr.loaded=true;FRL.length=0;FRL.push(fr);viewFriend(0,'farm');setTimeout(()=>{try{hint('أنت تشاهد مزرعة '+fr.n,5000)}catch(e){}},900)}
+else if(RMODE)setTimeout(loadFriends,1200);
+if(!VIS&&(!tourDone()||QPT.get('tour')==='1')&&!tiles.some(q=>q.type>=0)){TOUR.on=true;setTimeout(()=>tourGo(0),600)}else{if(!tourDone()&&tiles.some(q=>q.type>=0)){if(RMODE)GST.tour=1;else try{localStorage.setItem('qt_tour_done','1')}catch(e){}}setTimeout(()=>hint(),700)}if(/gallery/.test(location.search))gallery();requestAnimationFrame(loop);requestAnimationFrame(()=>requestAnimationFrame(()=>{const l=$('ld');if(l){l.style.opacity=0;setTimeout(()=>l.remove(),400)}}));
 window.__F={S,tiles,J_,TYPES,makePlant,stageOf,price,ME,LV,lvUp,FS,FM,farmCfgApply,refreshFarm,setEdit,fitTree,toScr};
 </script></body></html>
