@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="932ba5f7514a">
+<meta name="build" content="94e9b88a265f">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2500,7 +2500,7 @@ async function shLoad(){const r=await srv('sharia_admin_state',{});if(r&&!r.erro
 const SH_GCSS='#sh-doc .rbody{flex:1;position:relative;overflow:auto;-webkit-overflow-scrolling:touch}#sh-doc iframe{display:block;width:100%;border:0;background:#cfdcd8;flex:none}#sh-doc .rb button[disabled]{opacity:.6}#sh-go .nb{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;border-radius:10px;background:#FF4B3E;color:#fff;font-size:11px;font-weight:900;display:grid;place-items:center;font-style:normal;padding:0 5px;border:1.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);animation:nbp 1.8s ease-in-out infinite}@keyframes nbp{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}';
 const SH_XCSS='.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.st4{text-align:center;padding:12px 4px;border-radius:20px;cursor:pointer}.st4 b{display:block;font-size:22px;font-weight:900}.st4 span{display:block;font-size:10.5px;font-weight:700;opacity:.85;margin-top:2px}.st4.hot{border-color:#FFD35A;background:rgba(255,211,90,.2)}.grp h4{font-size:13px;font-weight:900;color:rgba(255,255,255,.85);margin:16px 4px 8px}.col2{display:block}.row2{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:20px;text-align:right;margin-bottom:9px;cursor:pointer;font-family:inherit;color:#fff;position:relative}.row2 .g{flex:1;min-width:0}.row2 .g b{display:block;font-size:14.5px;font-weight:800}.row2 .g span{display:block;font-size:12px;opacity:.8;margin-top:1px;line-height:1.5}.row2 .ch{opacity:.7;font-size:18px}.mi{position:relative;overflow:hidden;isolation:isolate;display:grid;place-items:center;width:48px;height:48px;border-radius:17px;flex:none;color:#fff;background:linear-gradient(150deg,rgba(var(--rgb),.62) 0%,rgba(var(--rgb),.2) 55%,rgba(var(--rgb),.4) 100%);backdrop-filter:blur(10px) saturate(190%);-webkit-backdrop-filter:blur(10px) saturate(190%);border:1.5px solid rgba(255,255,255,.85);box-shadow:0 10px 20px -6px rgba(var(--rgb),.6),0 2px 4px rgba(var(--rgb),.2),inset 0 2px 1px rgba(255,255,255,.9),inset 0 -10px 16px -6px rgba(var(--rgb),.45)}.mi::before{content:"";position:absolute;z-index:0;left:6%;right:6%;top:3%;height:48%;border-radius:50% 50% 60% 60%/70% 70% 40% 40%;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.1));pointer-events:none}.mi::after{content:"";position:absolute;z-index:0;top:-20%;bottom:-20%;width:34%;left:-60%;transform:rotate(22deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);animation:mish 5.5s ease-in-out infinite;pointer-events:none}.row2:nth-child(2n) .mi::after{animation-delay:1.3s}.row2:nth-child(3n) .mi::after{animation-delay:2.6s}@keyframes mish{0%,60%{left:-60%}100%{left:130%}}.mi svg{position:relative;z-index:1;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}@media (min-width:700px){.col2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.g4{gap:12px}}@media (prefers-reduced-motion:reduce){.mi::after{animation:none}}.nbd{position:absolute;top:-4px;left:50%;margin-left:10px;min-width:20px;height:20px;border-radius:10px;background:#FF4B3E;color:#fff;font-size:11.5px;font-weight:900;display:grid;place-items:center;font-style:normal;padding:0 5px;border:1.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35)}.tl,.nav div{position:relative}.new{border-color:#FFD35A!important;background:rgba(255,211,90,.16)!important}.newtag{font-size:10px;font-weight:900;color:#FFD35A;margin-right:6px}';
 function shCss(){if(document.getElementById('sh-css'))return;const st=document.createElement('style');st.id='sh-css';st.textContent=SH_CSS+SH_GCSS;document.head.appendChild(st)}
-function shHost(id,clk,inp){let o=document.getElementById(id);if(!o){shCss();o=document.createElement('div');o.id=id;document.body.appendChild(o);const sr=o.attachShadow({mode:'open'});sr.innerHTML='<style>'+SH_SCSS+SH_XCSS+(typeof SHX_CSS==='string'?SHX_CSS:'')+(typeof SHK_CSS==='string'?SHK_CSS:'')+(typeof SHQ_CSS==='string'?SHQ_CSS:'')+(typeof SHCT_CSS==='string'?SHCT_CSS:'')+'<\/style><div id="sh-in"></div>';if(clk)sr.addEventListener('click',clk);if(inp)sr.addEventListener('input',inp)}return o}
+function shHost(id,clk,inp){let o=document.getElementById(id);if(!o){shCss();o=document.createElement('div');o.id=id;document.body.appendChild(o);const sr=o.attachShadow({mode:'open'});sr.innerHTML='<style>'+SH_SCSS+SH_XCSS+(typeof SHX_CSS==='string'?SHX_CSS:'')+(typeof SHK_CSS==='string'?SHK_CSS:'')+(typeof SHQ_CSS==='string'?SHQ_CSS:'')+(typeof SHCT_CSS==='string'?SHCT_CSS:'')+(typeof SHF_CSS==='string'?SHF_CSS:'')+'<\/style><div id="sh-in"></div>';if(clk)sr.addEventListener('click',clk);if(inp)sr.addEventListener('input',inp)}return o}
 const shIn=o=>o.shadowRoot.getElementById('sh-in');
 function shById(id){for(const h of ['sh-ov','sh-tv']){const o=document.getElementById(h);if(o&&o.shadowRoot){const e=o.shadowRoot.getElementById(id);if(e)return e}}return null}
 function shEl(){return shHost('sh-ov',shClick,shInput)}
@@ -2512,7 +2512,7 @@ const shHdr=()=>{const d=new Date(),M=['يناير','فبراير','مارس','�
 const shBack=(v,l)=>`<div class="back" data-v="${v}">‹ ${l}</div>`;
 const SH_NAV=[['home','الرئيسية','home'],['list','الأقسام','sections'],['search','بحث','search'],['mail','الرسائل','messages'],['leaf','الشجرة','tree']];
 const SH_SECV=['sections','students','student','classes','class','teachers','teacher','codes','reports','honor','activity','notices','cur','stuui'];
-const shNavOn=v=>{const tr=SHA.v==='tree'||(typeof SHQ!=='undefined'&&SHQ.from==='tree'&&(SHA.v==='qbank'||SHA.v==='pts'));return v==='tree'?tr:v==='sections'?(!tr&&SH_SECV.includes(SHA.v)):SHA.v===v};
+const shNavOn=v=>{const tr=SHA.v==='tree'||(typeof SHQ!=='undefined'&&SHQ.from==='tree'&&['qbank','pts','farms','farm','best'].includes(SHA.v));return v==='tree'?tr:v==='sections'?(!tr&&SH_SECV.includes(SHA.v)):SHA.v===v};
 const shNav=()=>`<div class="nav">`+SH_NAV.map(([k,l,v],i)=>`<div class="${i===2?'mid ':''}${shNavOn(v)?'on':''}" data-v="${v}">${shIc(k)}${l}${v==='messages'&&SHA.mu&&SHA.v!=='messages'?'<i class="nbd">'+shAR(SHA.mu)+'</i>':''}</div>`).join('')+`</div>`;
 const shTile=(c,k,t,s,v,n)=>`<div class="tl ${c}" data-v="${v}">${n?'<i class="nbd">'+shAR(n)+'</i>':''}<div class="ic">${shIc(k)}</div><b>${t}</b><span>${s}</span></div>`;
 function shNeeds(){const n=[];const noc=shST().filter(t=>!shClsOf(t.id).length).length;if(noc)n.push([shAR(noc),'معلمين بدون صفوف في العلوم الشرعية','teachers']);
@@ -3965,6 +3965,7 @@ function shqInput(e){const t=e.target,id=t.id;
 function shVTree(){const row=([ic,ti,d,v,rgb])=>`<button class="glass row2" data-qtr="${v}" style="--rgb:${rgb}"><div class="mi">${shIc(ic)}</div><div class="g"><b>${ti}</b><span>${d}</span></div><span class="ch">‹</span></button>`;
  return shHdr()+`<div class="body wide"><div class="sec" style="margin-top:0"><b>الشجرة</b><span style="color:#fff">لعبة المزرعة</span></div>
  <div class="grp"><h4>إدارة اللعبة</h4><div class="col2">${row(['quiz','بنك الأسئلة','أسئلة تحدّي الدرس ووقت كل درس','qbank','14,140,176'])}${row(['drop','نقاط المزرعة','إضافة لترات ماء لطلاب أو صفوف','pts','47,160,70'])}</div></div>
+ <div class="grp"><h4>المزارع</h4><div class="col2">${row(['users','مزارع الطلاب','ادخل مزرعة أي طالب، وافرز بالحلقة والصف والفصل والاسم','farms','88,120,200'])}${row(['trophy','المزارع المتميزة','ترتيب الطلبة من الأفضل إلى الأقل','best','224,162,27'])}</div></div>
  <div class="note">شجرة الطالب وبقية اللعبة تأتي في مرحلة قادمة.</div></div>`+shNav()}
 SH_VW.qbank=shVQbank;SH_VW.pts=shVPts;SH_VW.tree=shVTree;
 {const px=shXClick;shXClick=async function(e){if(shqClick(e))return true;return px(e)}}
@@ -4040,6 +4041,83 @@ function shctSheet(k){if(k!=='cdel')return '';return `<div class="dim" data-sh="
 {const px=shXClick;shXClick=async function(e){if(shctClick(e))return true;return px(e)}}
 {const pi=shXInput;shXInput=function(e){shctInput(e);return pi(e)}}
 {const ps=shXSheet;shXSheet=function(k){const s=shctSheet(k);return s||ps(k)}}
+
+/* ===== غرفة الإدارة ← الشجرة: مزارع الطلاب + المزارع المتميزة (مستوى كل طالب من لتراته الفعلية) ===== */
+const SHF_L=(()=>{
+const RN=['المُخلِص','المُتفقِّه','المُصغي','الواعي','العامل','الصابر','كريم الخُلُق','الصادق','عالي الهمّة','الثابت'];
+const RW=RN.map(n=>'وسام الطالب '+n);
+const MN=['يبدأ طلب العلم بنيّة صادقة','يطلب الفهم لا الحفظ فقط','حسن الإنصات وأدب المجلس','يفهم ويحفظ ما يتعلّمه','يعمل بما علم','صبر على الطلب والمراجعة','حسن الخلق مع معلّمه وزملائه','صدق في القول والعمل وطلب العلم','طموح لا يقف عند حدّ، يسابق في الخير والعلم','ثبات على الحق والعلم حتى النهاية'];
+const DL=['«إنما الأعمال بالنيات» (متفق عليه)','«من يرد الله به خيراً يفقهه في الدين» (متفق عليه)','«فاستمعوا له وأنصتوا» (الأعراف ٢٠٤)','«نضّر الله امرأً سمع مقالتي فوعاها فأدّاها كما سمعها» (الترمذي)','«يا أيها الذين آمنوا لم تقولون ما لا تفعلون» (الصف ٢)','«إنما يوفّى الصابرون أجرهم بغير حساب» (الزمر ١٠)','«إن من أحبكم إليّ وأقربكم مني مجلساً يوم القيامة أحاسنكم أخلاقاً» (الترمذي)','«يا أيها الذين آمنوا اتقوا الله وكونوا مع الصادقين» (التوبة ١١٩)','«فاستبقوا الخيرات» (البقرة ١٤٨)','«يثبّت الله الذين آمنوا بالقول الثابت» (إبراهيم ٢٧)'];
+const MET=['برونزي','فضي','ذهبي','زمردي','ياقوتي','لعلي','جمشتي','بلاتيني','شمسي','أسطوري'];
+const COL=[['#f0b886','#c98a43','#7a4a1c'],['#f7f9fb','#bcc6d0','#76828f'],['#fff0a0','#f3b81f','#b57a0a'],['#9ff2c8','#2fbf7a','#127a4a'],['#a9d6ff','#3a86e0','#1b4f9a'],['#ffa6b4','#e0405a','#92182e'],['#e1bcff','#9a57e0','#5e2a9a'],['#eefcff','#8fd3e6','#3a8aa0'],['#ffd59a','#ff8a2a','#b84a08'],['#fff0a0','#ff6fb5','#6a2fb5']];
+const GL=['<ellipse cx="12" cy="13" rx="4" ry="6.5" transform="rotate(30 12 13)"/>','<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>','<path d="M8 10a4 4 0 0 1 8 0c0 3-2 3.5-2 6a2.5 2.5 0 0 1-5 0"/><path d="M11 10a1.2 1.2 0 0 1 2.4 0c0 1.2-1.2 1.4-1.2 2.4"/>','<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4z"/><path d="M20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>','<path d="M12 21V11"/><path d="M12 11c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/>','<path d="M12 3S5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/>','<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>','<circle cx="12" cy="12" r="8"/><path d="M8 12.5l2.7 2.7L16 9.5"/>','<path d="M3 20l6-10 4 6 3-4 5 8z"/><path d="M9 10V4"/><path d="M9 4h5l-1.5 2L14 8H9"/>','<path d="M12 21V10"/><path d="M12 10c-3-4-6-4-8-3 3 0 6 1 8 3z"/><path d="M12 10c3-4 6-4 8-3-3 0-6 1-8 3z"/><path d="M12 10V3"/><path d="M9 21h6"/>'];
+const star=(n,ro,ri)=>{let p=[];for(let i=0;i<n*2;i++){const a=Math.PI*i/n-Math.PI/2,r=i%2?ri:ro;p.push((50+r*Math.cos(a)).toFixed(1)+','+(50+r*Math.sin(a)).toFixed(1))}return p.join(' ')};
+const flower=()=>{let s='<circle cx="50" cy="50" r="31"/>';for(let i=0;i<8;i++){const a=Math.PI*2*i/8;s+=`<circle cx="${(50+29*Math.cos(a)).toFixed(1)}" cy="${(50+29*Math.sin(a)).toFixed(1)}" r="13"/>`}return s};
+const SH=[()=>'<circle cx="50" cy="50" r="40"/>',()=>'<path d="M50 8L88 20V52C88 76 70 90 50 98 30 90 12 76 12 52V20Z"/>',()=>'<polygon points="50,8 88,29 88,71 50,92 12,71 12,29"/>',()=>'<polygon points="50,5 95,50 50,95 5,50"/>',()=>'<polygon points="34,8 66,8 92,34 92,66 66,92 34,92 8,66 8,34"/>',()=>`<polygon points="${star(8,45,32)}"/>`,flower,()=>'<path d="M50 4L90 16V52C90 76 72 92 50 100 28 92 10 76 10 52V16Z"/>',()=>`<polygon points="${star(12,46,36)}"/>`,()=>`<polygon points="${star(10,47,34)}"/><circle cx="50" cy="50" r="33"/>`];
+let uid=0;
+function badge(r,sub,all){const id='g'+(uid++),[l,m,d]=COL[r],fill=r===9?`<linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset=".35" stop-color="#ff8fc8"/><stop offset=".7" stop-color="#7fd0ff"/><stop offset="1" stop-color="#a77bff"/></linearGradient>`:`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${l}"/><stop offset=".55" stop-color="${m}"/><stop offset="1" stop-color="${d}"/></linearGradient>`;
+ const sh=SH[r](),gl=r===9?'#5a2a8a':d;let st='';for(let i=0;i<5;i++){const on=all||i<sub;st+=`<polygon transform="translate(${50+(i-2)*15-7} 100) scale(.28)" points="${star(5,24,10).replace(/(\d+\.?\d*),(\d+\.?\d*)/g,(a,x,y)=>(x-26)+','+(y-26))}" fill="${on?'#ffd23a':'#c9bfa8'}" stroke="#7a4a1c" stroke-width="3" stroke-linejoin="round" transform-origin="0 0"/>`}
+ return `<svg viewBox="0 0 100 114"><defs>${fill}</defs><g>
+  <g fill="#2b1a0a" stroke="#2b1a0a" stroke-width="6" stroke-linejoin="round">${sh}</g>
+  <g fill="url(#${id})">${sh}</g>
+  <g transform="translate(50 50) scale(.78) translate(-50 -50)" fill="#fff" fill-opacity=".28" stroke="${d}" stroke-opacity=".55" stroke-width="2">${r===6?'<circle cx="50" cy="50" r="40"/>':sh}</g>
+  <g transform="translate(25.5 25.5) scale(2.04)" fill="none" stroke="${gl}" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">${GL[r]}</g></g>
+  <g>${st}</g></svg>`}
+const T=[0];for(let n=2;n<=50;n++){let v=Math.round(4300*Math.pow((n-1)/49,1.5)/5)*5;if(v<=T[n-2])v=T[n-2]+5;T.push(v)}
+const lvOf=L=>{let n=1;for(let i=0;i<50;i++)if(L>=T[i])n=i+1;return n};
+
+const rk=n=>Math.floor((n-1)/5),sb=n=>(n-1)%5+1;
+return {badge,lvOf,rk,sb,RN,RW,MN,DL,MET,T}})();
+const SHF_HOUSE=['الكوخ الأحمر','بيت الشرفة','بيت الطابقين','البيت الحجري','بيت الجراج','بيت البرج','القصر الصغير','قصر الأعمدة','القصر الكبير','الفيلا بالمسبح'];
+const SHF_CSS='.fft{padding:10px 12px;margin-bottom:12px}.fft input,.fft select{font:inherit;font-size:13.5px;font-weight:700;border:0;border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.95);color:#16443B;outline:0;width:100%}.fft .f3{display:flex;gap:6px;margin-top:6px}.fft .f3>div{flex:1;min-width:0}.fft .lb{font-size:11px;opacity:.8;font-weight:800;margin:6px 4px 2px}'
++'.fbg{flex:none;width:46px}.fbg svg{width:46px;height:auto;display:block}.frk{flex:none;width:30px;text-align:center;font-weight:900;font-size:16px}.fcnt{font-size:12px;opacity:.8;margin:0 4px 8px;font-weight:700}'
++'.fpod{display:flex;gap:8px;align-items:flex-end;margin-bottom:12px}.fpod .p{flex:1;text-align:center;padding:10px 4px;border-radius:22px;cursor:pointer;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4)}.fpod .p svg{width:64px;height:auto;display:block;margin:0 auto}.fpod .p b{display:block;font-size:13px;margin-top:2px}.fpod .p small{display:block;font-size:10.5px;opacity:.85;font-weight:700;line-height:1.5}.fpod .p1{padding-bottom:24px;background:linear-gradient(rgba(255,224,138,.45),rgba(255,255,255,.12))}.fpod .p2{background:linear-gradient(rgba(220,228,235,.4),rgba(255,255,255,.12))}.fpod .p3{background:linear-gradient(rgba(224,162,107,.4),rgba(255,255,255,.12))}'
++'.fvw{padding:16px}.fvw .big{display:flex;gap:16px;align-items:center}.fvw .big svg{width:112px;height:auto;flex:none}.fvw h2{font-size:19px;font-weight:900}.fvw .big div{font-size:13px;font-weight:700;line-height:1.9}.fvw .st3{display:flex;gap:8px;margin:12px 0}.fvw .st3 div{flex:1;text-align:center;padding:9px 4px;border-radius:16px;background:rgba(255,255,255,.14);font-size:11px;font-weight:800}.fvw .st3 b{display:block;font-size:16px;line-height:1.5}'
++'.fvw .pbar{height:12px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden;margin:8px 0 3px}.fvw .pbar i{display:block;height:100%;background:linear-gradient(#ffe08a,#e0a21b);border-radius:99px}.fmore{display:block;text-align:center;padding:11px;margin:4px 0 10px;cursor:pointer;font-weight:900;font-size:13px}';
+const SHF={rows:[],loaded:false,busy:false,err:false,q:'',st:'',g:'',sec:'',sort:'ab',bg:'',bs:'',cur:0,from:'farms',lim:40,limb:50};
+const shfLv=l=>SHF_L.lvOf(l);
+const shfStage=g=>g<=3?'1':'2';
+const shfSecs=g=>[...new Set(SHF.rows.filter(r=>!g||r.g===+g).map(r=>r.s))].sort((a,b)=>String(a).localeCompare(String(b),'ar'));
+async function shfLoad(){SHF.busy=true;const r=await srv('sharia_admin_farms',{});SHF.busy=false;if(r&&r.rows){SHF.rows=r.rows.map(x=>({id:x.id,n:x.n,g:x.g,s:x.s,l:x.l||0,lv:shfLv(x.l||0)}));SHF.loaded=true;SHF.err=false}else SHF.err=true;if(['farms','best','farm'].includes(SHA.v)){SHA.tkeep=true;shRender()}}
+function shfRow(s,k,i){const r=SHF_L.rk(s.lv);return `<div class="glass crow" data-fv="${s.id}:${k}"><div class="fbg">${SHF_L.badge(r,SHF_L.sb(s.lv))}</div>${k==='b'?`<div class="frk">${i<3?['🥇','🥈','🥉'][i]:shAR(i+1)}</div>`:''}<div class="crt"><b>${esc(s.n)}<span>م${shAR(s.lv)}</span></b><p><span>${SHF_L.RW[r]} · ${shCn({g:s.g,sec:s.s})}</span><span>${shAR(s.l)} لتر</span></p></div></div>`}
+function shfFiltered(){let L=SHF.rows.filter(s=>(!SHF.q||s.n.includes(SHF.q))&&(!SHF.st||shfStage(s.g)===SHF.st)&&(!SHF.g||s.g===+SHF.g)&&(!SHF.sec||s.s===SHF.sec));
+ L.sort(SHF.sort==='ab'?(a,b)=>a.n.localeCompare(b.n,'ar'):SHF.sort==='hi'?(a,b)=>b.lv-a.lv||b.l-a.l||a.n.localeCompare(b.n,'ar'):(a,b)=>a.lv-b.lv||a.l-b.l||a.n.localeCompare(b.n,'ar'));return L}
+const shfOpt=(v,t,c)=>`<option value="${v}" ${String(c)===String(v)?'selected':''}>${t}</option>`;
+function shfListHtml(){const L=shfFiltered(),sh=L.slice(0,SHF.lim);return `<div class="fcnt">${shAR(L.length)} طالباً</div>`+(sh.length?sh.map(s=>shfRow(s,'f')).join('')+(L.length>sh.length?`<div class="glass fmore" data-f="more">عرض المزيد (${shAR(L.length-sh.length)})</div>`:''):'<div class="glass card" style="text-align:center"><div class="mut">لا يوجد طالب بهذه المواصفات</div></div>')}
+function shfState(){return !SHF.loaded?`<div class="glass card" style="text-align:center"><div class="mut">${SHF.err?'تعذّر التحميل، حاول مرة ثانية':'جارٍ التحميل…'}</div></div>`:''}
+function shVFarms(){return shHdr()+`<div class="body wide">${shBack('tree','الشجرة')}<div class="sec" style="margin-top:0"><b>مزارع الطلاب</b><span style="color:#fff">اضغط على أي طالب لتدخل مزرعته</span></div>
+ <div class="glass fft"><input id="sh-fq" placeholder="ابحث باسم الطالب…" value="${esc(SHF.q)}"><div class="f3"><div><div class="lb">الحلقة</div><select data-ff="st">${shfOpt('','الكل',SHF.st)}${shfOpt('1','الأولى (١–٣)',SHF.st)}${shfOpt('2','الثانية (٤–٦)',SHF.st)}</select></div><div><div class="lb">الصف</div><select data-ff="g">${shfOpt('','الكل',SHF.g)}${SH_G.map((g,i)=>shfOpt(i+1,g,SHF.g)).join('')}</select></div><div><div class="lb">الفصل</div><select data-ff="sec">${shfOpt('','الكل',SHF.sec)}${shfSecs(SHF.g).map(x=>shfOpt(x,x,SHF.sec)).join('')}</select></div></div>
+ <div class="lb">الترتيب</div><select data-ff="sort">${shfOpt('ab','هجائي (أ ← ي)',SHF.sort)}${shfOpt('hi','الأعلى مستوى أولاً',SHF.sort)}${shfOpt('lo','الأقل مستوى أولاً',SHF.sort)}</select></div>
+ <div id="sh-flist">${shfState()||shfListHtml()}</div></div>`+shNav()}
+function shfBest(){let L=SHF.rows.filter(s=>(!SHF.bg||s.g===+SHF.bg)&&(!SHF.bs||s.s===SHF.bs));L.sort((a,b)=>b.lv-a.lv||b.l-a.l||a.n.localeCompare(b.n,'ar'));return L}
+function shVBest(){const L=shfBest(),sh=L.slice(0,SHF.limb);
+ const p=(s,i)=>s?`<div class="p p${i+1}" data-fv="${s.id}:b"><div style="font-size:20px">${['🥇','🥈','🥉'][i]}</div>${SHF_L.badge(SHF_L.rk(s.lv),SHF_L.sb(s.lv))}<b>${esc(s.n)}</b><small>م${shAR(s.lv)} · ${shAR(s.l)} لتر<br>${shCn({g:s.g,sec:s.s})}</small></div>`:'';
+ return shHdr()+`<div class="body wide">${shBack('tree','الشجرة')}<div class="sec" style="margin-top:0"><b>المزارع المتميزة</b><span style="color:#fff">من الأفضل إلى الأقل</span></div>
+ <div class="glass fft"><div class="f3"><div><div class="lb">النطاق: الصف</div><select data-ff="bg">${shfOpt('','كل المدرسة',SHF.bg)}${SH_G.map((g,i)=>shfOpt(i+1,'الصف '+g,SHF.bg)).join('')}</select></div><div><div class="lb">الفصل</div><select data-ff="bs">${shfOpt('','كل الفصول',SHF.bs)}${shfSecs(SHF.bg).map(x=>shfOpt(x,x,SHF.bs)).join('')}</select></div></div></div>
+ ${shfState()||(L.length>=3?`<div class="fpod">${p(L[1],1)}${p(L[0],0)}${p(L[2],2)}</div>`:'')+sh.map((s,i)=>shfRow(s,'b',i)).join('')+(L.length>sh.length?`<div class="glass fmore" data-f="moreb">عرض المزيد (${shAR(L.length-sh.length)})</div>`:'')+(L.length?'':'<div class="glass card" style="text-align:center"><div class="mut">لا توجد مزارع</div></div>')}
+ <div class="note">الترتيب بالوسام ثم النجوم، وعند التعادل بعدد اللترات بالضبط.</div></div>`+shNav()}
+function shVFarm(){const s=SHF.rows.find(x=>x.id===SHF.cur);if(!s)return shHdr()+`<div class="body wide">${shBack(SHF.from==='b'?'best':'farms',SHF.from==='b'?'المزارع المتميزة':'مزارع الطلاب')}<div class="glass card" style="text-align:center"><div class="mut">لم يُعثر على الطالب</div></div></div>`+shNav();
+ const n=s.lv,r=SHF_L.rk(n),T=SHF_L.T,all=SHF.rows.slice().sort((a,b)=>b.lv-a.lv||b.l-a.l||a.n.localeCompare(b.n,'ar')),rank=all.findIndex(x=>x.id===s.id)+1;
+ const cls=all.filter(x=>x.g===s.g&&x.s===s.s),crank=cls.findIndex(x=>x.id===s.id)+1;
+ const nx=n<50?T[n]-s.l:0,pc=n<50?Math.round((s.l-T[n-1])*100/(T[n]-T[n-1])):100;
+ return shHdr()+`<div class="body wide">${shBack(SHF.from==='b'?'best':'farms',SHF.from==='b'?'المزارع المتميزة':'مزارع الطلاب')}
+ <div class="glass fvw"><div class="big">${SHF_L.badge(r,SHF_L.sb(n))}<div><h2>${esc(s.n)}</h2>${shCn({g:s.g,sec:s.s})}<br><b>${SHF_L.RW[r]}</b><br>المستوى ${shAR(n)} من ٥٠ · النجمة ${shAR(SHF_L.sb(n))} من ٥</div></div>
+ <div class="pbar"><i style="width:${pc}%"></i></div><div class="mut" style="font-size:12px">${n<50?'باقي '+shAR(nx)+' لتر للمستوى '+shAR(n+1):'وصل إلى أعلى مستوى'}</div>
+ <div class="st3"><div><b>${shAR(s.l)}</b>لتر مجموع</div><div><b>${shAR(rank)}</b>ترتيبه في المدرسة</div><div><b>${shAR(crank)}</b>ترتيبه في فصله</div></div>
+ <div class="st3"><div><b>${SHF_HOUSE[r]}</b>بيته الحالي</div><div><b>${shAR(n)}</b>عناصر فتحها (١ لكل مستوى)</div></div>
+ <div class="mut" style="font-size:12px;line-height:1.8">${SHF_L.MN[r]} — ${SHF_L.DL[r]}</div></div>
+ <div class="note">عرض أشجاره وبيته وأماكنها في المزرعة نفسها يأتي حين تُربط اللعبة بالطلبة. المعروض هنا مستواه ولتراته الفعلية.</div></div>`+shNav()}
+SH_VW.farms=shVFarms;SH_VW.farm=shVFarm;SH_VW.best=shVBest;
+function shfClick(e){const t=e.target,q=s=>t.closest(s);let d;
+ if(d=q('[data-qtr]')){const v=d.dataset.qtr;if(v==='farms'||v==='best'){SHQ.from='tree';SHA.sheet=null;SHA.v=v;SHA.tkeep=false;SHF.lim=40;SHF.limb=50;shRender();shfLoad();return true}}
+ if(d=q('[data-fv]')){const [id,k]=d.dataset.fv.split(':');SHF.cur=+id;SHF.from=k;SHA.v='farm';SHA.tkeep=false;shRender();return true}
+ if(d=q('[data-f]')){if(d.dataset.f==='more')SHF.lim+=40;else SHF.limb+=50;SHA.tkeep=true;shRender();return true}
+ return false}
+function shfInput(e){const t=e.target;if(!t)return;
+ if(t.id==='sh-fq'){SHF.q=t.value.trim();SHF.lim=40;const l=shById('sh-flist');if(l)l.innerHTML=shfState()||shfListHtml();return}
+ if(t.dataset&&t.dataset.ff){const k=t.dataset.ff;SHF[k]=t.value;if(k==='g')SHF.sec='';if(k==='bg')SHF.bs='';SHF.lim=40;SHF.limb=50;SHA.tkeep=true;shRender()}}
+{const px=shXClick;shXClick=async function(e){if(shfClick(e))return true;return px(e)}}
+{const pi=shXInput;shXInput=function(e){shfInput(e);return pi(e)}}
 
 function renderStudent(s){
   SS='hifz';CURS=s;$('student-body').classList.remove('msgmode');$('teacher-body').innerHTML='';$('admin-body').innerHTML='';
@@ -6380,7 +6458,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='932ba5f7514a';
+const BUILD='94e9b88a265f';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
