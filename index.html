@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="8d65a1574d1f">
+<meta name="build" content="565e59940398">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2970,14 +2970,30 @@ function shsChatView(m){const k=SHS.chat,CH=shsChats(m),c=CH[k],ms=SHS.msgs.filt
  else low='<div class="mut" style="text-align:center">لم يُربط صفك بأستاذ للعلوم الشرعية بعد.</div>';
  return `<div class="chat"><div class="chh"><button class="cb" data-cb="1">›</button>${shsAv(c)}<div class="cm"><b>${esc(c.name)}</b><small>${esc(c.sub)}</small></div></div><div class="chm" id="chm"><div class="sysb">${c.hello}</div>${bub}</div><div class="chlow">${low}</div></div>`}
 function shsGameClick(e){const d=e.target.closest&&e.target.closest('[data-game]');if(!d)return false;shsGameOpen();return true}
-async function shsFreshState(){const my=TOK,r=await shsRpc('sharia_student_state',{});if(TOK===my&&r&&!r.error&&r.open)SHS.st=r}
+async function shsFreshState(){const my=TOK,r=await shsRpc('sharia_student_state',{});if(TOK===my&&r&&!r.error&&r.open){SHS.st=r;shsHeartCheck()}}
 async function shsGameOpen(){if(document.getElementById('shs-game'))return;try{await SHS_GQ}catch(e){}try{await shsFreshState()}catch(e){}if(document.getElementById('shs-game'))return;const m=shsModel(),o=document.createElement('div');o.id='shs-game';o.style.cssText='position:fixed;inset:0;z-index:2147483000;background:#9fd7ff';
  const gs=SHS.st&&SHS.st.gst&&typeof SHS.st.gst==='object'?SHS.st.gst:{},real=m.earn!=null,src=real?'farm.html?bal='+(m.farm||0)+'&sp='+(m.spent||0)+'&name='+encodeURIComponent(m.first||'')+'&s='+encodeURIComponent(JSON.stringify(gs)):'farm.html?lt='+(m.farm||0)+'&name='+encodeURIComponent(m.first||'');
  o.innerHTML='<iframe title="مزرعتي" src="'+src+'" style="width:100%;height:100%;border:0;display:block" allow="fullscreen"></iframe>';document.body.appendChild(o)}
 function shsGameClose(){const o=document.getElementById('shs-game');if(o)o.remove()}
 let SHS_GQ=Promise.resolve();
 async function shsGameSave(d){const sp=Math.max(0,Math.round(+d.spent||0)),st=d.st;if(!st||typeof st!=='object')return;const r=await shsRpc('sharia_game_save',{p:{spent:sp,st}});if(r&&r.ok&&SHS.st){SHS.st.gspent=r.spent;SHS.st.gst=st}}
-addEventListener('message',e=>{if(e.origin!==location.origin||!e.data)return;if(e.data.type==='farm-home'){shsGameClose();SHS_GQ.then(()=>{if(SHS.tab==='farm'&&!document.getElementById('shs-game'))shsRender(false)}).catch(()=>{})}else if(e.data.type==='farm-save'&&document.getElementById('shs-game')){const d=e.data;SHS_GQ=SHS_GQ.then(()=>shsGameSave(d)).catch(()=>{})}});
+const SHS_RPCMAP={friends:['sharia_game_friends',a=>({})],top:['sharia_game_top',a=>({})],visit:['sharia_game_visit',a=>({p_sid:+a.sid||0})],like:['sharia_game_like',a=>({p_to:+a.to||0})]};
+async function shsGameRpc(d,src){const m=SHS_RPCMAP[d.fn];let res=null;if(m){try{res=await shsRpc(m[0],m[1](d.arg||{}))}catch(e){res=null}}
+ const f=document.querySelector('#shs-game iframe');if(f&&f.contentWindow===src){try{src.postMessage({type:'farm-rpc-res',id:d.id,res},location.origin)}catch(e){}}}
+/* القلب الأبيض: إشعار إعجاب الإدارة، ينفجر انفجاراً لطيفاً عند الضغط */
+function shsHeartCheck(){const n=SHS.st&&+SHS.st.adm_new||0;if(!n||document.getElementById('shs-heart'))return;const o=document.createElement('div');o.id='shs-heart';
+ o.style.cssText='position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;justify-content:center;background:rgba(10,20,30,.45);-webkit-tap-highlight-color:transparent;cursor:pointer;font-family:inherit';
+ o.innerHTML='<style>@keyframes shsHp{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}@keyframes shsHf{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}#shs-heart .hh{width:120px;height:120px;filter:drop-shadow(0 0 22px rgba(255,255,255,.95));animation:shsHp 1.2s ease-in-out infinite}#shs-heart .tt{position:absolute;top:calc(50% + 86px);left:0;right:0;text-align:center;color:#fff;font-weight:900;font-size:15px;line-height:1.8;text-shadow:0 2px 8px rgba(0,0,0,.5);animation:shsHf .5s .2s both}#shs-heart i{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px;pointer-events:none;transition:transform .9s cubic-bezier(.15,.7,.3,1),opacity .9s}<\/style>'
+  +'<svg class="hh" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 6-8 11-8 11z" fill="#fff" stroke="#e9eef5" stroke-width=".6"/></svg>'
+  +'<div class="tt">'+(n>1?'أعجبت الإدارة بمزرعتك '+(n===2?'مرتين':shAR(n)+' مرات'):'أعجبت الإدارة بمزرعتك')+' 🤍<br><span style="font-size:12px;font-weight:800;opacity:.9">اضغط على القلب</span></div>';
+ let done=false;o.addEventListener('pointerdown',async()=>{if(done)return;done=true;const hh=o.querySelector('.hh'),t=o.querySelector('.tt');hh.style.animation='none';hh.style.transition='transform .25s,opacity .25s';hh.style.transform='scale(1.5)';hh.style.opacity='0';
+  const cs=['#ffffff','#ffd6e8','#fff3b0','#cfe9ff','#ffb3d1'];for(let k=0;k<34;k++){const i=document.createElement('i'),a=Math.random()*Math.PI*2,d=70+Math.random()*150;i.style.background=cs[k%cs.length];i.style.borderRadius=k%3===0?'50%':'3px';i.style.transform='scale(.4)';o.appendChild(i);requestAnimationFrame(()=>requestAnimationFrame(()=>{i.style.transform='translate('+Math.cos(a)*d+'px,'+Math.sin(a)*d+'px) rotate('+(Math.random()*360)+'deg) scale('+(.6+Math.random()*.8)+')';i.style.opacity='0'}))}
+  try{if(navigator.vibrate)navigator.vibrate(30)}catch(e){}
+  t.innerHTML='جزاك الله خيراً 💧<br><span style="font-size:13px">أُضيفت '+shAR(n*5)+' لترات إلى مخزنك</span>';
+  try{await shsRpc('sharia_game_seen',{})}catch(e){}if(SHS.st)SHS.st.adm_new=0;if(SHS.tab==='farm')shsRender(true);
+  setTimeout(()=>{o.style.transition='opacity .4s';o.style.opacity='0';setTimeout(()=>o.remove(),450)},1700)});
+ document.body.appendChild(o)}
+addEventListener('message',e=>{if(e.origin!==location.origin||!e.data)return;if(e.data.type==='farm-rpc'){shsGameRpc(e.data,e.source);return}if(e.data.type==='farm-home'){shsGameClose();SHS_GQ.then(()=>{if(SHS.tab==='farm'&&!document.getElementById('shs-game'))shsRender(false)}).catch(()=>{})}else if(e.data.type==='farm-save'&&document.getElementById('shs-game')){const d=e.data;SHS_GQ=SHS_GQ.then(()=>shsGameSave(d)).catch(()=>{})}});
 function shsFarmTab(m){const L=m.farm,cans=Math.floor(L/100),rem=L%100;
  return `<div class="glass farm"><svg class="pl" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">${SHS_IC.leaf}<path d="M12 20v-9"/></svg><b>مزرعة الشرعيات</b><div class="mut" style="margin-top:6px">هنا تسقي زرعك بلترات الماء التي جمعتها، وتكبر شجرتك أسبوعاً بعد أسبوع.</div>${SHS.st&&SHS.st.game?'<button class="btn" data-game="1" style="margin:12px auto 0;max-width:260px">ادخل مزرعتي 🌱</button>':'<span class="soon">السقي قريباً</span>'}</div>
  <div class="glass card"><div class="ct"><b>مخزن مائي</b><small>ينتقل إليه إبريقك كل خميس</small></div><div class="stock"><b>${shAR(L)}</b><span>لتر في مخزنك</span></div>
@@ -3265,12 +3281,12 @@ function shsCss(){if(document.getElementById('shs-css'))return;const st=document
  +'#shs-fab .fb{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:#FF6B5B;color:#fff;font-size:10px;font-weight:900;display:grid;place-items:center;font-style:normal;padding:0 4px;border:1.5px solid #fff}';document.head.appendChild(st)}
 function shsMakeHost(){let o=shsHostEl();if(o)return o;shsCss();o=document.createElement('div');o.id='shs-ov';document.body.appendChild(o);const sr=o.attachShadow({mode:'open'});const sty=document.createElement('style');sty.textContent=SHS_CSS+(typeof SHSC_CSS==='string'?SHSC_CSS:'');sr.appendChild(sty);const stg=document.createElement('div');stg.id='stage';sr.appendChild(stg);
  let f=document.getElementById('shs-fab');if(!f){f=document.createElement('div');f.id='shs-fab';f.title='العلوم الشرعية';f.innerHTML='<svg viewBox="0 0 24 24">'+SHS_IC.star+'</svg><span>الشرعية</span>';f.addEventListener('click',shsBackToSplit);document.body.appendChild(f)}return o}
-function shsClose(){shsGameClose();if(SHS.rz){removeEventListener('resize',SHS.rz);removeEventListener('orientationchange',SHS.rz);SHS.rz=null}const o=shsHostEl();if(SHS.L)SHS.L.stop();clearInterval(SHS.timer);SHS.timer=0;if(o){if(o.classList.contains('on'))document.body.style.overflow=SHS.bodyOv||'';o.remove()}const f=document.getElementById('shs-fab');if(f)f.remove();SHS.st=null;SHS.mounted=false;SHS.d=null;SHS.L=null;SHS_ROOT=null;SHS.msgs=[];SHS.tab='home';SHS.chat=null;SHS.pend=null;SHS.other=false;SHS.sheet=null}
+function shsClose(){shsGameClose();{const h=document.getElementById('shs-heart');if(h)h.remove()}if(SHS.rz){removeEventListener('resize',SHS.rz);removeEventListener('orientationchange',SHS.rz);SHS.rz=null}const o=shsHostEl();if(SHS.L)SHS.L.stop();clearInterval(SHS.timer);SHS.timer=0;if(o){if(o.classList.contains('on'))document.body.style.overflow=SHS.bodyOv||'';o.remove()}const f=document.getElementById('shs-fab');if(f)f.remove();SHS.st=null;SHS.mounted=false;SHS.d=null;SHS.L=null;SHS_ROOT=null;SHS.msgs=[];SHS.tab='home';SHS.chat=null;SHS.pend=null;SHS.other=false;SHS.sheet=null}
 async function shStudentGate(){if(ROLE!=='student'||!TOK)return;const my=TOK,r=await shsRpc('sharia_student_state',{});
  if(TOK!==my||ROLE!=='student')return;
  if(!r||r.error||!r.open){shsClose();return}
- if(SHS.mounted&&SHS.tokKey===my&&shsHostEl()){SHS.st=r;const ae=shsHostEl().shadowRoot.activeElement,typing=ae&&(ae.tagName==='TEXTAREA'||ae.tagName==='INPUT');if(SHS.state==='s'&&SHS_ROOT&&!typing&&!SHS.pend&&!SHS.other&&!SHS.sheet&&!SHS.ch.stage)shsRender(true);shsChalLoad(true);return}
- shsClose();SHS.tokKey=my;SHS.st=r;try{SHS.seen=+localStorage.getItem(shsSeenKey())||0}catch(e){SHS.seen=0}
+ if(SHS.mounted&&SHS.tokKey===my&&shsHostEl()){SHS.st=r;try{shsHeartCheck()}catch(e){}const ae=shsHostEl().shadowRoot.activeElement,typing=ae&&(ae.tagName==='TEXTAREA'||ae.tagName==='INPUT');if(SHS.state==='s'&&SHS_ROOT&&!typing&&!SHS.pend&&!SHS.other&&!SHS.sheet&&!SHS.ch.stage)shsRender(true);shsChalLoad(true);return}
+ shsClose();SHS.tokKey=my;SHS.st=r;try{shsHeartCheck()}catch(e){}try{SHS.seen=+localStorage.getItem(shsSeenKey())||0}catch(e){SHS.seen=0}
  const o=shsMakeHost();SHS.bodyOv=document.body.style.overflow;document.body.style.overflow='hidden';o.classList.add('on');shsFit();shsMount();shsFit();if(!SHS.rz){SHS.rz=()=>{shsFit();setTimeout(shsFit,250)};addEventListener('resize',SHS.rz);addEventListener('orientationchange',SHS.rz)}
  shsLoadMsgs();shsChalLoad(true);SHS.timer=setInterval(()=>{if(document.visibilityState==='visible'){shsLoadMsgs();shsChalLoad(true)}},45000)}
 
@@ -4142,9 +4158,20 @@ function shVFarm(){const s=SHF.rows.find(x=>x.id===SHF.cur);if(!s)return shHdr()
  <div class="st3"><div><b>${shAR(s.l)}</b>لتراً سقاها</div><div><b>${shAR(rank)}</b>ترتيبه في المدرسة</div><div><b>${shAR(crank)}</b>ترتيبه في فصله</div></div>
  <div class="st3"><div><b>${SHF_HOUSE[r]}</b>بيته الحالي</div><div><b>${shAR(n)}</b>عناصر فتحها (١ لكل مستوى)</div></div>
  <div class="mut" style="font-size:12px;line-height:1.8">${SHF_L.MN[r]} — ${SHF_L.DL[r]}</div></div>
- <div class="note">المستوى يُحسب من اللترات التي سقاها الطالب فعلاً في مزرعته. عرض مزرعته نفسها (أشجاره وبيته) يأتي لاحقاً.</div></div>`+shNav()}
+ <button class="btn" data-fenter="${s.id}" style="margin:10px auto;max-width:320px">ادخل مزرعته 🌱</button>
+ <div class="note">المستوى يُحسب من اللترات التي سقاها الطالب فعلاً. عند دخول مزرعته تستطيع أن تعطيه إعجاباً (قلب أبيض) مرة واحدة يومياً، وكل إعجاب يمنحه ٥ لترات.</div></div>`+shNav()}
 SH_VW.farms=shVFarms;SH_VW.farm=shVFarm;SH_VW.best=shVBest;
+let SHF_VIS=0;
+async function shfEnter(id){if(SHF_VIS||document.getElementById('shf-game'))return;SHF_VIS=1;let r;try{r=await srv('sharia_game_adm_visit',{p_sid:id})}catch(e){r=null}SHF_VIS=0;
+ if(!r||!r.ok){if(typeof shToast==='function')shToast('تعذّر فتح المزرعة');return}
+ const v={id:r.id,n:r.n,lt:r.lt,g:r.g,s:r.s,likes:r.likes,today:!!r.today,st:r.st},o=document.createElement('div');o.id='shf-game';o.style.cssText='position:fixed;inset:0;z-index:2147483000;background:#9fd7ff';
+ o.innerHTML='<iframe title="مزرعة الطالب" src="farm.html?vis='+encodeURIComponent(JSON.stringify(v))+'" style="width:100%;height:100%;border:0;display:block" allow="fullscreen"></iframe>';document.body.appendChild(o)}
+addEventListener('message',async e=>{if(e.origin!==location.origin||!e.data)return;const o=document.getElementById('shf-game'),f=o&&o.querySelector('iframe');if(!f||e.source!==f.contentWindow)return;const d=e.data;
+ if(d.type==='farm-home'){o.remove();return}
+ if(d.type==='farm-rpc'){let res=null;if(d.fn==='adm-like'){try{res=await srv('sharia_game_adm_like',{p_sid:+(d.arg&&d.arg.sid)||0})}catch(x){res=null}}
+  try{e.source.postMessage({type:'farm-rpc-res',id:d.id,res},location.origin)}catch(x){}}});
 function shfClick(e){const t=e.target,q=s=>t.closest(s);let d;
+ if(d=q('[data-fenter]')){shfEnter(+d.dataset.fenter);return true}
  if(d=q('[data-qtr]')){const v=d.dataset.qtr;if(v==='farms'||v==='best'){SHQ.from='tree';SHA.sheet=null;SHA.v=v;SHA.tkeep=false;SHF.lim=40;SHF.limb=50;shRender();shfLoad();return true}}
  if(d=q('[data-fv]')){const [id,k]=d.dataset.fv.split(':');SHF.cur=+id;SHF.from=k;SHA.v='farm';SHA.tkeep=false;shRender();return true}
  if(d=q('[data-f]')){if(d.dataset.f==='more')SHF.lim+=40;else SHF.limb+=50;SHA.tkeep=true;shRender();return true}
@@ -6494,7 +6521,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='8d65a1574d1f';
+const BUILD='565e59940398';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
