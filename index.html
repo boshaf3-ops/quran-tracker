@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="86e4249da43b">
+<meta name="build" content="ff74fb1c0374">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2917,11 +2917,24 @@ function shsBehHome(m){const B=m.beh,pct=Math.round(B.net*100/B.max);
  return `<div class="glass card"><div class="ct"><b>سلوكي هذا الأسبوع</b><small>${esc(m.first)}</small></div>`+
  (B.tp.length?`<div class="chips">${B.tp.map(p=>`<span class="pill">${esc(p[0])}<i>×${shAR(p[1])}</i></span>`).join('')}</div>`:`<div class="mut">لا توجد سلوكيات بعد هذا الأسبوع.</div>`)+
  `<div class="can">${shsCan(pct)}<div class="tx"><b>إبريق الماء: ${shAR(B.net)} لتراً</b><div class="bar"><i style="width:${pct}%"></i></div><div class="mut">من ${shAR(B.max)} لتراً. كل خميس ينتقل إلى المزرعة.</div></div></div><button class="more" data-tab="beh">تفاصيل سلوكي والماء المهدور ‹</button></div>`}
+const SHS_RD='M32 3c3 4 5 6 5 9a5 5 0 0 1-10 0c0-3 2-5 5-9z';
+const shsBBTube=(d,w)=>`<path d="${d}" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="${w+1.8}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="rgba(190,230,255,.32)" stroke-width="${w}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="${Math.max(.7,w*.18)}" stroke-linecap="round" transform="translate(-.5 -.7)"/>`;
+const shsBBCan=pct=>{const p=Math.min(100,Math.max(0,pct))/100,B='M14 30h46l4 38a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6z';
+ return `<div class="cw" style="--p:${p}"><svg viewBox="-4 6 100 86"><defs><clipPath id="bbc"><path d="${B}"/></clipPath><linearGradient id="bbg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(255,255,255,.4)"/><stop offset=".22" stop-color="rgba(255,255,255,.06)"/><stop offset=".78" stop-color="rgba(255,255,255,.1)"/><stop offset="1" stop-color="rgba(255,255,255,.36)"/></linearGradient><linearGradient id="bbw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fb6f5"/><stop offset="1" stop-color="#1f78d0"/></linearGradient><linearGradient id="bbs" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(0,30,60,.35)"/><stop offset=".18" stop-color="rgba(0,30,60,0)"/><stop offset=".82" stop-color="rgba(0,30,60,0)"/><stop offset="1" stop-color="rgba(0,30,60,.35)"/></linearGradient><radialGradient id="bbh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="rgba(0,0,0,.45)"/><stop offset="1" stop-color="rgba(0,0,0,0)"/></radialGradient></defs>
+ <ellipse cx="37" cy="79" rx="30" ry="4" fill="url(#bbh)"/>${shsBBTube('M12 36C-1 36 -1 58 12 58',3.6)}${shsBBTube('M22 30C22 18 52 18 52 30',3.2)}${shsBBTube('M62 40C74 38 83 30 85 22',4.6)}
+ <g transform="translate(85 21) rotate(40)"><path d="M-3.6 1L3.6 1 8 -7-8 -7Z" fill="rgba(190,230,255,.32)" stroke="rgba(255,255,255,.95)" stroke-width=".9" stroke-linejoin="round"/><ellipse cx="0" cy="-7" rx="8" ry="2.4" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.95)" stroke-width=".9"/><g fill="rgba(0,40,80,.55)"><circle cx="-4.5" cy="-7" r=".55"/><circle cx="-1.5" cy="-7.3" r=".55"/><circle cx="1.5" cy="-7.3" r=".55"/><circle cx="4.5" cy="-7" r=".55"/></g></g>
+ <g clip-path="url(#bbc)"><g transform="translate(0,33)"><g class="wg" style="transform:translateY(calc((1 - var(--p,.4)) * 40px))"><path d="M-10 4V60H80V4Z" fill="url(#bbw)"/><ellipse cx="37" cy="4" rx="25" ry="4.6" fill="#9ad8ff"/><path class="w2" d="M-10 4q4-3 8 0t8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0V9H-10Z" fill="#4fb6f5"/><path class="w1" d="M-10 3q4 2.5 8 0t8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0 8 0V8H-10Z" fill="#9ad8ff" opacity=".6"/></g></g><rect x="6" y="30" width="62" height="46" fill="url(#bbs)"/><g class="bub" fill="rgba(255,255,255,.8)"><circle cx="28" cy="70" r=".9"/><circle cx="38" cy="71" r=".7"/><circle cx="48" cy="69" r="1"/></g></g>
+ <path d="${B}" fill="url(#bbg)" stroke="rgba(255,255,255,.95)" stroke-width="1.6" stroke-linejoin="round"/><path d="M17.5 33h39l3 34.5a3.4 3.4 0 0 1-3.4 3.8H17.9a3.4 3.4 0 0 1-3.4-3.8z" fill="none" stroke="#fff" stroke-width=".8" opacity=".75"/><path d="M16 36L13.4 66" stroke="rgba(255,255,255,.85)" stroke-width="2" stroke-linecap="round"/><path d="M20 36L18.4 62" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/><path d="M58 38L60.6 64" stroke="rgba(255,255,255,.4)" stroke-width="1.1" stroke-linecap="round"/><path d="M14 72Q37 78 60 72" stroke="rgba(255,255,255,.35)" stroke-width="1.1" fill="none"/>
+ <ellipse cx="37" cy="30" rx="23" ry="4.6" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.95)" stroke-width="1.5"/><ellipse cx="37" cy="30.4" rx="19" ry="3" fill="rgba(0,30,70,.32)"/><path d="M20 29.6Q37 26.2 54 29.6" stroke="rgba(255,255,255,.7)" stroke-width=".9" fill="none"/></svg><div class="pc"><b>${shAR(Math.round(pct))}٪</b><small>ممتلئة</small></div></div>`};
+const shsRoadIc=`<svg viewBox="0 0 64 56" class="rdi"><path d="M4 36H60V50a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3Z" fill="#4a4f58"/><rect x="4" y="34" width="56" height="4.5" rx="1.5" fill="#7a808c"/><path d="M11 45h9M27 45h9M43 45h9" stroke="rgba(255,255,255,.5)" stroke-width="1.6" stroke-linecap="round"/><polyline points="32,37 29.5,42 33.5,46 30.5,50 33,53" fill="none" stroke="#ff4638" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" opacity=".55" style="filter:blur(1.2px)"/><polyline points="32,37 29.5,42 33.5,46 30.5,50 33,53" fill="none" stroke="#14141a" stroke-width="2.1" stroke-linejoin="round" stroke-linecap="round"/><polyline class="rdf" points="32,37 29.5,42 33.5,46 30.5,50 33,53" fill="none" stroke="#6cc4ff" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" pathLength="30"/><ellipse class="rdr" cx="32" cy="36.2" rx="3" ry="1" fill="none" stroke="#9ad8ff" stroke-width="1.2"/><path class="rdd" d="${SHS_RD}" fill="#5bbcf5" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
 function shsBehTab(m){const B=m.beh,pct=Math.round(B.net*100/B.max);
- return `<div class="cols"><div class="c"><div class="glass card"><div class="ct"><b>تفاصيل سلوكي</b><small>هذا الأسبوع</small></div><div class="mut">في إبريقك الآن <b>${shAR(B.net)}</b> لتراً من ${shAR(B.max)}. ماؤك هو الإيجابيات ناقص السلبيات، وكل خميس ينتقل إلى المزرعة ويفرغ الإبريق.</div><div class="bar" style="margin-top:8px"><i style="width:${pct}%"></i></div>
+ return `<div class="cols"><div class="c"><div class="ct" style="margin:2px 4px 6px"><b style="font-size:15.5px">تفاصيل سلوكي</b><small>هذا الأسبوع</small></div>
+ <div class="bbg"><div class="glass bbcan">${shsBBCan(pct)}</div>
+ <div class="glass bbt g"><span class="ar">↑</span><b>${shAR(B.pos)}</b><small>نقاط إيجابية</small></div>
+ <div class="glass bbt r"><span class="ar">↓</span><b>${shAR(B.neg)}</b><small>نقاط سلبية</small></div>
+ <div class="glass bbw">${shsRoadIc}<b>${shAR(B.wasted)}</b><small>ماء مهدور هذا الأسبوع</small></div></div>
+ <div class="glass card" style="margin-top:10px"><div class="mut">في إبريقك الآن <b>${shAR(B.net)}</b> لتراً من ${shAR(B.max)}. ماؤك هو الإيجابيات ناقص السلبيات، وكل خميس ينتقل إلى المزرعة ويفرغ الإبريق.${B.wasted?' وما ذهب هدراً بسبب السلوكيات السلبية لا يعود.':' ولم يذهب منك ماء هذا الأسبوع، أحسنت!'}</div></div>
  ${m.moved?`<div class="moved">${shsSpill}<div><b>انتقلت ${shAR(m.moved)} لتراً إلى المزرعة</b><div class="mut">انتهى الأسبوع، وفرغ إبريقك وبدأ أسبوع جديد.</div></div></div>`:''}
- <div class="two"><div class="st g"><small>نقاط إيجابية</small><b>${shAR(B.pos)}</b><i>↑</i></div><div class="st r"><small>نقاط سلبية</small><b>${shAR(B.neg)}</b><i>↓</i></div></div>
- <div class="wst">${shsSpill}<div><b>الماء المهدور هذا الأسبوع: ${shAR(B.wasted)} لتراً</b><div class="mut">${B.wasted?'ذهب هذا الماء بسبب السلوكيات السلبية.':'لم تُهدر ماءً. أحسنت!'}</div></div></div></div>
  </div><div class="c"><div class="glass card"><div class="rh" style="margin-top:0">أبرز سلوكياتي الإيجابية المتكررة</div>${shsRank(B.tp,'p')}</div>
  <div class="glass card"><div class="rh" style="margin-top:0">أبرز سلوكياتي السلبية المتكررة</div>${shsRank(B.tn,'n')}</div></div></div>`}
 function shsHomeTab(m){const w=m.week;let h='',hb='';
@@ -3206,6 +3219,19 @@ textarea.fld{width:100%;height:90px;border-radius:16px;padding:10px 12px;font-fa
 .btn.gh2{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.5);box-shadow:none}
 .toast{position:absolute;left:50%;transform:translateX(-50%);top:calc(var(--st) + 70px);z-index:70;padding:7px 16px;border-radius:99px;font-size:12px;font-weight:900;background:#fff;color:#165E50;box-shadow:0 8px 20px rgba(0,0,0,.35);animation:tin .25s}
 @keyframes tin{from{opacity:0;transform:translate(-50%,-8px)}}
+.bbg{display:grid;grid-template-columns:1.2fr 1fr;grid-auto-rows:auto;gap:9px}.bbcan{grid-row:span 3;padding:10px 4px 6px;display:grid;place-items:center}.bbcan .cw{position:relative;width:100%;max-width:230px}.bbcan svg{width:100%;height:auto;display:block;overflow:visible}
+.bbcan .pc{position:absolute;left:0;right:0;top:46%;text-align:center;pointer-events:none}.bbcan .pc b{display:block;font-size:30px;font-weight:900;line-height:1;text-shadow:0 2px 10px rgba(0,30,60,.5)}.bbcan .pc small{font-size:10.5px;font-weight:800;opacity:.92}
+.bbcan .wg{transition:transform 1.2s cubic-bezier(.3,1.1,.4,1);animation:bbfill 1.5s cubic-bezier(.3,1.1,.4,1)}@keyframes bbfill{from{transform:translateY(40px)}}
+.bbcan .w1{animation:bbwv 3.2s linear infinite}.bbcan .w2{animation:bbwv 5s linear infinite reverse;opacity:.6}@keyframes bbwv{to{transform:translateX(-16px)}}
+.bbcan .bub circle{animation:bbb 3s ease-in infinite}.bbcan .bub circle:nth-child(2){animation-delay:1s}.bbcan .bub circle:nth-child(3){animation-delay:2s}@keyframes bbb{0%{transform:translateY(0);opacity:0}20%{opacity:.9}100%{transform:translateY(-14px);opacity:0}}
+.bbt{padding:9px 12px;position:relative;overflow:hidden;border-radius:22px}.bbt b{display:block;font-size:24px;font-weight:900;line-height:1.1}.bbt small{font-size:11px;font-weight:800;opacity:.9}.bbt .ar{position:absolute;top:8px;left:10px;font-size:15px;font-weight:900}
+.bbt.g{background:rgba(88,190,130,.28);border-color:rgba(150,230,180,.7);color:#E9FFF1}.bbt.r{background:rgba(200,84,76,.3);border-color:rgba(235,140,130,.7);color:#FFE6E3}
+.bbt::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.22),transparent);transform:skewX(-18deg);animation:bbsh 6s ease-in-out infinite}@keyframes bbsh{0%,62%{left:-60%}100%{left:130%}}
+.bbw{padding:8px 8px 10px;text-align:center;border-radius:22px;border-color:rgba(255,100,90,.6);background:linear-gradient(135deg,rgba(255,70,56,.18),rgba(255,255,255,.12))}.bbw b{display:block;font-size:22px;font-weight:900;line-height:1.1}.bbw small{font-size:10.5px;font-weight:800;opacity:.9}.bbw .rdi{width:100%;max-width:104px;height:auto;display:block;margin:0 auto 2px;overflow:visible}
+.rdi .rdd{animation:rdd 2.6s ease-in infinite;transform-box:fill-box}@keyframes rdd{0%{transform:translateY(0);opacity:1}30%{transform:translateY(17px);opacity:1}34%{transform:translateY(18px);opacity:0}100%{transform:translateY(18px);opacity:0}}
+.rdi .rdr{animation:rdr 2.6s ease-out infinite;transform-box:fill-box;transform-origin:center;opacity:0}@keyframes rdr{0%,30%{transform:scale(.4);opacity:0}34%{opacity:.95}62%{transform:scale(3.6);opacity:0}100%{opacity:0}}
+.rdi .rdf{stroke-dasharray:30;animation:rdf 2.6s linear infinite;opacity:0}@keyframes rdf{0%,33%{stroke-dashoffset:30;opacity:0}38%{opacity:1}78%{stroke-dashoffset:0;opacity:1}92%{stroke-dashoffset:-14;opacity:0}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.bbcan .w1,.bbcan .w2,.bbcan .bub circle,.bbt::after,.rdi *{animation:none!important}}
 /* ===== تكيّف الأجهزة: يُضاف .wide للشاشات العريضة (آيباد أفقي/كمبيوتر) و.short للارتفاع القصير (جوال أفقي) ===== */
 .cols,.gcols{display:block}.cols>.c{min-width:0}
 #stage.wide .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:start}
@@ -6465,7 +6491,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='86e4249da43b';
+const BUILD='ff74fb1c0374';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
