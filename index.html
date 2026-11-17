@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="b5010d3b8dcb">
+<meta name="build" content="2958f27ac40f">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2529,8 +2529,8 @@ function shVHome(){const needs=shNeeds(),stu=allStudents().filter(s=>!s.pending)
  <div class="sec"><b>التفعيل</b><span style="color:rgba(255,255,255,.75);font-weight:700">اضغط للتحكم</span></div>
  <div class="glass card cl" data-v="stuui"><div class="rowsp"><span>المعلمون المشتركون (شاشة الاختيار)</span><span class="pill ${w.dual?'ps':'o'}">${w.dual?'مفعّلة':'مخفية'}</span></div><div class="rowsp" style="margin-top:8px"><span>واجهة الطالب</span><span class="pill ${w.open?'ps':'o'}">${w.open?'مفعّلة':(w.test&&w.test.length?'للتجربة فقط':'مخفية')}</span></div></div>
  <div class="sec"><b>حالة الطلبة</b><span style="color:rgba(255,255,255,.75);font-weight:700">حسب درجات الوقفات</span></div>
- <div class="stats3"><div class="glass"><b>٠</b><span>متفوقون</span></div><div class="glass"><b>٠</b><span>متوسطون</span></div><div class="glass"><b>٠</b><span>متدنون</span></div></div>
- <div class="mut" style="margin:6px 4px">لا توجد درجات مرصودة بعد (الدرجات تبدأ في المرحلة القادمة).</div></div>`+shNav()}
+ ${typeof shkHome==='function'?shkHome():` <div class="stats3"><div class="glass"><b>٠</b><span>متفوقون</span></div><div class="glass"><b>٠</b><span>متوسطون</span></div><div class="glass"><b>٠</b><span>متدنون</span></div></div>
+ <div class="mut" style="margin:6px 4px">لا توجد درجات مرصودة بعد (الدرجات تبدأ في المرحلة القادمة).</div>`}</div>`+shNav()}
 /* ---- صفحة الأقسام: مقسّمة ومرتبة كالقرآن ---- */
 function shSecG(){const stu=allStudents().filter(s=>!s.pending).length;
  return [['الأشخاص',[['users','الطلبة',shAR(stu)+' طالباً · درجاتهم وإدارتهم','students','42,111,196'],['home','الصفوف',shAR(CLASSES.length)+' صفاً ومعلم كل صف','classes','224,138,12'],['user','المعلمون',shAR(shST().length)+' معلماً وصفوفهم','teachers','47,160,70'],['key','الأكواد','أكواد دخول معلمي الشرعية','codes','91,107,115']]],
@@ -3850,7 +3850,7 @@ function shxDoc(s,D,R){const c=s.c||shCls(s.class_id),g=shSig(),teacher=D.teache
  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>تقرير ${esc(s.name)}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet"><style>${SH_RB}${SH_R3}${SHX_RDOC_EXTRA}@page{size:A4;margin:0}@media print{html{background:none}body{padding:0}.page{margin:0;box-shadow:none}}html{background:#cfdcd8}body{font-family:Cairo,system-ui,sans-serif;padding:14px 0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{margin:0 auto 14px}<\/style></head><body>${page}<script>(document.fonts?document.fonts.ready:Promise.resolve()).then(function(){var W=Math.max.apply(null,[].map.call(document.querySelectorAll('.page'),function(p){return p.offsetWidth}));var z=Math.min(1,(innerWidth-16)/W);document.body.style.zoom=z;addEventListener('beforeprint',function(){document.body.style.zoom=1});addEventListener('afterprint',function(){document.body.style.zoom=z})})<\/script></body></html>`}
 
 /* ===== صفحة الصف في غرفة الإدارة: الدرجات الحقيقية (ما رصده المعلم) + الكشف العام PDF + إكسل ===== */
-const SHK_CSS='.dbar{display:flex;height:12px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.18);margin:9px 0}.dbar i{display:block;height:100%}.dbar i.h{background:#2EAA5E}.dbar i.m{background:#E0A21B}.dbar i.l{background:#D63A2B}.leg{display:flex;flex-wrap:wrap;gap:6px}.mch{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}.mch span{font-size:11px;font-weight:800;padding:2px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);cursor:pointer}.mch span.on{background:#FFD35A;color:#3b2a00;border-color:#fff}.sbar{display:flex;height:4px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.12)}.sbar i{display:block}.slg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:11px;font-weight:700}.slg span:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;background:var(--c)}.slg b{font-weight:900;margin-right:3px;color:#fff}';
+const SHK_CSS='.dbar{display:flex;height:12px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.18);margin:9px 0}.dbar i{display:block;height:100%}.dbar i.h{background:#2EAA5E}.dbar i.m{background:#E0A21B}.dbar i.l{background:#D63A2B}.leg{display:flex;flex-wrap:wrap;gap:6px}.mch{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}.mch span{font-size:11px;font-weight:800;padding:2px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);cursor:pointer}.mch span.on{background:#FFD35A;color:#3b2a00;border-color:#fff}.sbar{display:flex;height:4px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.12)}.sbar i{display:block}.slg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:11px;font-weight:700}.slg span:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-left:5px;background:var(--c)}.slg b{font-weight:900;margin-right:3px;color:#fff}.hs3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.hs{text-align:center;padding:12px 4px 11px;border-radius:20px;border:1.5px solid var(--c);background:var(--bg)}.hs b{display:block;font-size:26px;font-weight:900;color:var(--n);line-height:1.15}.hs span{display:block;font-size:11px;font-weight:800;margin-top:3px}.hs small{display:block;font-size:10.5px;font-weight:800;opacity:.8;margin-top:1px}.hs.h{--c:#35C07A;--bg:rgba(53,192,122,.2);--n:#8DF0B8}.hs.m{--c:#E7B13A;--bg:rgba(231,177,58,.2);--n:#FFD66E}.hs.l{--c:#E5544A;--bg:rgba(229,84,74,.22);--n:#FF9A91}.hbar{display:flex;height:14px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.16);margin:10px 2px 0}.hbar i{display:block;height:100%}.hbar i.h{background:#35C07A}.hbar i.m{background:#E7B13A}.hbar i.l{background:#E5544A}.hnote{margin:7px 4px 0}';
 const SHK={open:{h1:false,h2:false},q:{},d:{},busy:{},stop:1,rep:{stops:{1:'final',2:'final',3:'final'},ex:true,b:false,bm:[(typeof shxMon==='function'?shxMon():10)]}};
 const shkFC=c=>!!c&&c.g<=3;
 const shkStops=c=>shkFC(c)?[1,2]:[1,2,3];
@@ -3860,7 +3860,7 @@ async function shkLoad(cid,force){const c=shCls(cid);if(!c)return;if(SHK.busy[ci
  try{for(let i=0;i<stu.length;i+=6){const ch=stu.slice(i,i+6),rs=await Promise.all(ch.map(s=>srv('sharia_admin_student',{p_sid:s.id})));rs.forEach((r,k)=>{if(r&&!r.error)rows.push({s:ch[k],r});else{bad++;rows.push({s:ch[k],r:null})}})}}catch(e){bad=stu.length}
  SHK.busy[cid]=false;const ok=rows.find(x=>x.r);
  SHK.d[cid]={at:Date.now(),rows,bad,teacher:ok?ok.r.teacher:null,mx:ok?(ok.r.mx||{}):{},ex:ok?(ok.r.ex||[]):[],gpub:ok?(ok.r.gpub||{}):{}};
- if(SHA.v==='class'&&+SHA.a===+cid){SHA.tkeep=true;shRender()}else if(SHA.v==='classes')shkPatch(cid)}
+ if(SHA.v==='class'&&+SHA.a===+cid){SHA.tkeep=true;shRender()}else if(SHA.v==='classes')shkPatch(cid);else if(SHA.v==='home')shkHomePatch()}
 function shkMx(c,D,w){const a=D.mx&&D.mx[w];return (a&&a.length===4)?a:(shkFC(c)?[20,0,0,0]:[5,5,5,5])}
 function shkTot(r,w){const a=r&&r.sc&&r.sc[w];return (Array.isArray(a)&&a.some(v=>v!=null))?Math.round(a.reduce((x,v)=>x+(v||0),0)*10)/10:null}
 function shkAvgOf(c,D,x,upTo){const a=[];shkStops(c).forEach(w=>{if(upTo&&w>upTo)return;const t=shkTot(x.r,w);if(t!=null)a.push(t/shkMx(c,D,w).reduce((p,q)=>p+q,0)*20)});return a.length?a.reduce((p,q)=>p+q,0)/a.length:null}
@@ -3937,6 +3937,15 @@ function shkPatch(cid){const o=document.getElementById('sh-ov');if(!o||!o.shadow
  const st=r.getElementById('shk-st-'+cid);if(st)st.innerHTML=shkPills(shkAvgDist(c,D));
  const k=shkFoldOf(c),L=CLASSES.filter(x=>shkFoldOf(x)===k),el=r.getElementById('shk-tot-'+k);
  if(el&&L.length&&L.every(x=>SHK.d[x.id])){const t={hi:0,mid:0,low:0,none:0};L.forEach(x=>{const q=shkAvgDist(x,SHK.d[x.id]);['hi','mid','low','none'].forEach(z=>t[z]+=q[z])});el.innerHTML=shkPills(t)}}
+
+/* ===== إحصائية «حالة الطلبة» في رئيسية غرفة العلوم الشرعية: من نفس حساب الصفوف (متفوق ١٨–٢٠ · متوسط ١١–١٧ · متدنٍّ ١٠ فأقل) ===== */
+function shkHomeAgg(){const L=CLASSES.filter(c=>shStu(c).length),t={hi:0,mid:0,low:0,none:0};let done=0;L.forEach(c=>{const D=SHK.d[c.id];if(!D)return;done++;const o=shkAvgDist(c,D);['hi','mid','low','none'].forEach(q=>t[q]+=o[q])});return {t,done,n:L.length,L}}
+function shkHomeHTML(){const a=shkHomeAgg(),t=a.t,rec=t.hi+t.mid+t.low,K=[['hi','متفوقون','h'],['mid','متوسطون','m'],['low','متدنون','l']];
+ const pc=k=>rec?`<small>${shAR(Math.round(t[k]/rec*100))}٪</small>`:'';
+ return `<div class="hs3">${K.map(([k,nm,c])=>`<div class="hs ${c}"><b>${shAR(t[k])}</b><span>${nm}</span>${pc(k)}</div>`).join('')}</div>`+(rec?`<div class="hbar">${K.map(([k,,c])=>t[k]?`<i class="${c}" style="flex:${t[k]} 1 0"></i>`:'').join('')}</div>`:'')
+  +`<div class="mut hnote">${a.done<a.n?'جارٍ حساب الدرجات… ('+shAR(a.done)+' من '+shAR(a.n)+' صفاً)':(rec?'المرصودون: '+shAR(rec)+(t.none?' · لم يُرصدوا بعد: '+shAR(t.none):''):'لا توجد درجات مرصودة بعد')}</div>`}
+function shkHome(){const a=shkHomeAgg();a.L.forEach(c=>{const D=SHK.d[c.id];if(!D)shkQueue(c.id);else if(Date.now()-D.at>120000&&!SHK.busy[c.id]&&!SHK.q[c.id]){SHK.q[c.id]=1;SHK_Q=SHK_Q.then(()=>shkLoad(c.id,true)).catch(()=>{}).then(()=>{SHK.q[c.id]=0})}});return `<div id="shk-home">${shkHomeHTML()}</div>`}
+function shkHomePatch(){const o=document.getElementById('sh-ov');if(!o||!o.shadowRoot)return;const el=o.shadowRoot.getElementById('shk-home');if(el)el.innerHTML=shkHomeHTML()}
 
 let SHK_Q=Promise.resolve();
 function shkQueue(id){if(SHK.busy[id]||SHK.d[id]||SHK.q[id])return;SHK.q[id]=1;SHK_Q=SHK_Q.then(()=>shkLoad(id)).catch(()=>{}).then(()=>{SHK.q[id]=0})}
@@ -6946,7 +6955,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='b5010d3b8dcb';
+const BUILD='2958f27ac40f';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
