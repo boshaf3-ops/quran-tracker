@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="90a4dbd32aa3">
+<meta name="build" content="40ebb244e589">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1290,8 +1290,8 @@ function hydrate(st){
   }
   CREQ.length=0;(st.creq||[]).forEach(r=>CREQ.push({id:r.id,tid:r.tid,cid:r.cid,status:r.status,at:new Date(r.at)}));
   RESETREQ.length=0;STUDRESET.length=0;ARCHRES.length=0;
-  (st.resets_arch||[]).forEach(r=>{ARCHRES.push({id:r.id,kind:r.kind,tid:r.tid,name:r.name,cid:r.cid||0,at:new Date(r.at),st:r.st,hat:r.hat?new Date(r.hat):null});});
-  (st.resets||[]).forEach(r=>{if(r.kind==='teacher')RESETREQ.push({id:r.id,tid:r.tid,at:new Date(r.at)});else STUDRESET.push({id:r.id,name:r.name,phone:r.phone,email:r.email,cid:r.cid||0,at:new Date(r.at)});});
+  (st.resets_arch||[]).forEach(r=>{ARCHRES.push({id:r.id,kind:r.kind,tid:r.tid,tn:r.tname||'',name:r.name,cid:r.cid||0,at:new Date(r.at),st:r.st,hat:r.hat?new Date(r.hat):null});});
+  (st.resets||[]).forEach(r=>{if(r.kind==='teacher')RESETREQ.push({id:r.id,tid:r.tid,tn:r.tname||'',at:new Date(r.at)});else STUDRESET.push({id:r.id,name:r.name,phone:r.phone,email:r.email,cid:r.cid||0,at:new Date(r.at)});});
   AWARD=st.award?{id:st.award.id,tid:st.award.tid,month:st.award.month,exp:new Date(st.award.exp)}:null;AWARDS=(st.awards||[]).map(a=>({id:a.id,tid:a.tid,month:a.month,at:new Date(a.at),exp:new Date(a.exp)}));
   INBOX=(st.inbox||[]).map(m=>({id:+m.id,kind:m.kind,level:m.level||'',title:m.title||'',body:m.body||'',at:new Date(m.at),seen:!!m.seen}));
   SENT=(st.sent||[]).map(m=>({id:+m.id,kind:m.kind,level:m.level||'',aud:m.aud,title:m.title||'',body:m.body||'',label:m.label||'',n:+m.n||0,seen:+m.seen||0,at:new Date(m.at)}));
@@ -2977,7 +2977,7 @@ function shsBehTab(m){const B=m.beh,pct=Math.round(B.net*100/B.max);
  <div class="glass bbt g"><span class="ar">↑</span><b>${shAR(B.pos)}</b><small>نقاط إيجابية</small></div>
  <div class="glass bbt r"><span class="ar">↓</span><b>${shAR(B.neg)}</b><small>نقاط سلبية</small></div>
  <div class="glass bbw">${shsRoadIc}<b>${shAR(B.wasted)}</b><small>ماء مهدور هذا الأسبوع</small></div></div>
- <div class="glass card" style="margin-top:10px"><div class="mut">في إبريقك الآن <b>${shAR(B.net)}</b> لتراً من ${shAR(B.max)}. ماؤك هو الإيجابيات ناقص السلبيات، وكل خميس ينتقل إلى المزرعة ويفرغ الإبريق.${B.wasted?' وما ذهب هدراً بسبب السلوكيات السلبية لا يعود.':' ولم يذهب منك ماء هذا الأسبوع، أحسنت!'}</div></div>
+ <div class="glass card" style="margin-top:10px"><div class="mut">في إبريقك الآن <b class="jl">${shAR(B.net)}</b> لتراً من ${shAR(B.max)}. ماؤك هو الإيجابيات ناقص السلبيات، وكل خميس ينتقل إلى المزرعة ويفرغ الإبريق.${B.wasted?' وما ذهب هدراً بسبب السلوكيات السلبية لا يعود.':' ولم يذهب منك ماء هذا الأسبوع، أحسنت!'}</div></div>
  ${m.moved?`<div class="moved">${shsSpill}<div><b>انتقلت ${shAR(m.moved)} لتراً إلى المزرعة</b><div class="mut">انتهى الأسبوع، وفرغ إبريقك وبدأ أسبوع جديد.</div></div></div>`:''}
  </div><div class="c"><div class="glass card"><div class="rh" style="margin-top:0">أبرز سلوكياتي الإيجابية المتكررة</div>${shsRank(B.tp,'p')}</div>
  <div class="glass card"><div class="rh" style="margin-top:0">أبرز سلوكياتي السلبية المتكررة</div>${shsRank(B.tn,'n')}</div></div></div>`}
@@ -3072,7 +3072,22 @@ function shsShell(){const m=shsModel(),t=SHS.tab,u=shsUnread();
 let SHS_ROOT=null;
 function shsPulse(tb){SHS.ppTab=tb;SHS.ppT=Date.now();shsPulseApply()}
 function shsPulseApply(){try{if(!SHS.ppTab||Date.now()-SHS.ppT>700)return;const e=SHS_ROOT&&SHS_ROOT.querySelector('.snav [data-tab="'+SHS.ppTab+'"]');if(e&&!e.classList.contains('hot')){e.classList.remove('pp');void e.offsetWidth;e.classList.add('pp')}}catch(x){}}
-function shsRender(keep){if(!SHS_ROOT)return;const b=SHS_ROOT.querySelector('#sbody'),sc=b?b.scrollTop:0;SHS_ROOT.innerHTML=shsShell();shsPulseApply();const b2=SHS_ROOT.querySelector('#sbody');if(keep&&b2)b2.scrollTop=sc}
+/* ===== حركة إبريق السلوك: عند كل دخول لتبويب «سلوكي» يبدأ فارغاً والنسبة تعدّ من ٠ والماء يرتفع معها ===== */
+function shsJugRun(){if(!SHS_ROOT)return;if(SHS.tab!=='beh'){SHS.jugOk=false;return}
+ if(SHS.jugOk)return;SHS.jugOk=true;
+ if(typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ let B;try{B=shsModel().beh}catch(e){return}if(!B||!B.max)return;
+ const pct=Math.min(100,Math.max(0,Math.round(B.net*100/B.max)));if(pct<=0)return;
+ const dur=(1.1+1.5*pct/100)*1000,t0=performance.now(),tok=TOK;
+ const set=f=>{const r=SHS_ROOT;if(!r||SHS.tab!=='beh')return false;const cw=r.querySelector('.bbcan .cw');if(!cw)return false;
+  const p=pct/100*f,wg=cw.querySelector('.wg');if(wg)wg.style.transform='translateY('+((1-p)*40)+'px)';
+  const pb=cw.querySelector('.pc b');if(pb)pb.textContent=shAR(Math.round(pct*f))+'٪';
+  const g=r.querySelector('.bbt.g b'),n=r.querySelector('.bbt.r b'),l=r.querySelector('b.jl');
+  if(g)g.textContent=shAR(Math.round(B.pos*f));if(n)n.textContent=shAR(Math.round(B.neg*f));if(l)l.textContent=shAR(Math.round(B.net*f));return true};
+ if(!set(0))return;
+ const step=now=>{if(TOK!==tok||!SHS.mounted)return;const t=Math.min(1,(now-t0)/dur),f=1-Math.pow(1-t,3);if(!set(f))return;if(t<1)requestAnimationFrame(step)};
+ requestAnimationFrame(step)}
+function shsRender(keep){if(!SHS_ROOT)return;const b=SHS_ROOT.querySelector('#sbody'),sc=b?b.scrollTop:0;SHS_ROOT.innerHTML=shsShell();shsPulseApply();const b2=SHS_ROOT.querySelector('#sbody');if(keep&&b2)b2.scrollTop=sc;try{shsJugRun()}catch(e){}}
 function shsToast(t){const st=shsStage();if(!st)return;const e=document.createElement('div');e.className='toast';e.textContent=t;st.appendChild(e);setTimeout(()=>e.remove(),2000)}
 function shsToEnd(){const m=SHS_ROOT&&SHS_ROOT.querySelector('#chm');if(m)setTimeout(()=>{m.scrollTop=m.scrollHeight},30)}
 const shsHostEl=()=>document.getElementById('shs-ov');
@@ -3401,7 +3416,7 @@ textarea.fld{width:100%;height:90px;border-radius:16px;padding:10px 12px;font-fa
 @keyframes tin{from{opacity:0;transform:translate(-50%,-8px)}}
 .bbg{display:grid;grid-template-columns:1.2fr 1fr;grid-auto-rows:auto;gap:9px}.bbcan{grid-row:span 3;padding:10px 4px 6px;display:grid;place-items:center}.bbcan .cw{position:relative;width:100%;max-width:230px}.bbcan svg{width:100%;height:auto;display:block;overflow:visible}
 .bbcan .pc{position:absolute;left:0;right:0;top:46%;text-align:center;pointer-events:none}.bbcan .pc b{display:block;font-size:30px;font-weight:900;line-height:1;text-shadow:0 2px 10px rgba(0,30,60,.5)}.bbcan .pc small{font-size:10.5px;font-weight:800;opacity:.92}
-.bbcan .wg{transition:transform 1.2s cubic-bezier(.3,1.1,.4,1);animation:bbfill 1.5s cubic-bezier(.3,1.1,.4,1)}@keyframes bbfill{from{transform:translateY(40px)}}
+.bbcan .wg{transition:none;animation:none}
 .bbcan .w1{animation:bbwv 3.2s linear infinite}.bbcan .w2{animation:bbwv 5s linear infinite reverse;opacity:.6}@keyframes bbwv{to{transform:translateX(-16px)}}
 .bbcan .bub circle{animation:bbb 3s ease-in infinite}.bbcan .bub circle:nth-child(2){animation-delay:1s}.bbcan .bub circle:nth-child(3){animation-delay:2s}@keyframes bbb{0%{transform:translateY(0);opacity:0}20%{opacity:.9}100%{transform:translateY(-14px);opacity:0}}
 .bbt{padding:9px 12px;position:relative;overflow:hidden;border-radius:22px}.bbt b{display:block;font-size:24px;font-weight:900;line-height:1.1}.bbt small{font-size:11px;font-weight:800;opacity:.9}.bbt .ar{position:absolute;top:8px;left:10px;font-size:15px;font-weight:900}
@@ -6857,12 +6872,12 @@ const rqStud=r=>{const rc=CLASSES.find(c=>c.id===r.cid),m0=similar(r.name,undefi
    ${m.length?`<div class="mut" style="font-weight:600;margin-bottom:6px">الطلاب المطابقون للاسم، تحقق ثم اختر:</div>`+m.map(x=>`<div class="row sp" style="gap:8px;margin-bottom:8px"><div style="min-width:0"><div class="t" style="font-size:13.5px">${esc(x.name)}</div><div class="mut">${clsName(x.c)}${x.c&&x.c.id===r.cid?' <span class="pill p-green" style="font-size:10.5px">نفس الصف</span>':' <span class="pill p-gold" style="font-size:10.5px">صف مختلف</span>'}</div></div><div style="flex:none;display:flex;flex-direction:column;gap:6px;align-items:stretch"><button class="btn-s" onclick="emailPin(${r.id},${x.id},'current')">إرسال الكلمة الحالية</button><button class="btn-s" onclick="emailPin(${r.id},${x.id},'reset')">إعادة تعيين وإرسال</button><button class="btn-s" style="opacity:.75;font-size:11.5px" onclick="resetStudentPw(${r.id},${x.id})">تعيين يدوي بدون بريد</button></div></div>`).join('')
      :'<div class="mut" style="color:#7C1A10;font-weight:600">لا يوجد طالب بهذا الاسم في الكشوف.</div>'}
    <div class="row" style="gap:8px;margin-top:6px"><button class="btn" style="flex:1;padding:10px" onclick="doneReset(${r.id})">✓ تم الطلب</button><button class="btn-s" style="flex:1;padding:10px" onclick="ignoreStudReset(${r.id})">تجاهل</button></div></div>`;};
-const rqTeach=r=>{const x=tById(r.tid);
+const rqTeach=r=>{const x=tById(r.tid)||{id:r.tid,name:r.tn||'معلم'};
   return `<div class="glass card rq-t"><div class="row sp"><div class="t">${esc(x.name)}</div><span class="pill p-purple">معلم</span></div>
    <div class="mut" style="margin:2px 0 8px">نسي كلمة السر ويطلب إعادة تعيينها · ${fmt(r.at)}</div>
    <div class="row" style="gap:8px"><button class="btn" style="flex:1;padding:11px" onclick="resetPw(${r.id})">إعادة تعيين الكلمة</button><button class="btn-s" style="padding:11px 14px" onclick="doneReset(${r.id})">✓ تم</button><button class="btn-s" style="padding:11px 14px" onclick="ignoreReset(${r.id})">تجاهل</button></div></div>`;};
 /* شريط صغير باهت للطلب المؤرشف: اسم فقط، والضغط عليه يرجعه للطلبات */
-const rqBar=r=>{const nm=r.kind==='teacher'?(tById(r.tid)||{}).name||'معلم':r.name,d=r.hat||r.at;
+const rqBar=r=>{const nm=r.kind==='teacher'?(tById(r.tid)||{}).name||r.tn||'معلم':r.name,d=r.hat||r.at;
   return `<button class="rq-bar ${r.st==='done'?'dn':'ig'}" onclick="restoreReset(${r.id})" title="اضغط لإرجاع الطلب"><span class="nm">${esc(nm)}</span><small>${r.st==='done'?'تم':'تجاهل'} · ${fmt(d)}</small><i>↩</i></button>`;};
 let PWA_F='all';
 const archList=()=>ARCHRES.filter(r=>PWA_F==='all'||r.st===PWA_F);
@@ -7001,7 +7016,7 @@ async function approveReq(id){const r0=CREQ.find(x=>x.id===id),c=CLASSES.find(x=
   await sync(true);aPend();updABadge();toast('وُوفق على طلب '+shortT(r0.tid)+' لتدريس '+clsName(c));}
 async function rejectReq(id){const r=await sop('reject_creq',{id});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);aPend();updABadge();toast('رُفض الطلب',true);}
-async function resetPw(id){const q=RESETREQ.find(r=>r.id===id),x=tById(q.tid);
+async function resetPw(id){const q=RESETREQ.find(r=>r.id===id),x=tById(q.tid)||{id:q.tid,name:q.tn||'المعلم'};
   const r=await sop('teacher_pin',{id:x.id});if(r.error){toast('تعذّر التنفيذ',true);return;}
   await sync(true);aPend();updABadge();pinSheet('كلمة سر جديدة لـ '+esc(x.name),'سلّمها للمعلم، وتعمل الآن بدل القديمة',r.pin);}
 async function ignoreReset(id){const r=await sop('ignore_reset',{id});if(r.error){toast('تعذّر التنفيذ',true);return;}await sync(true);aPend();updABadge();toast('نُقل الطلب لأرشيف الطلبات (تجاهل)');}
@@ -7123,7 +7138,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='90a4dbd32aa3';
+const BUILD='40ebb244e589';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
