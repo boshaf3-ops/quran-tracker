@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="2958f27ac40f">
+<meta name="build" content="12c1e584946d">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2797,7 +2797,7 @@ const SH_TQ={tv:'q',tid:null};
 function shBell(){if(ROLE!=='admin')return;const bell=document.querySelector('#admin-body .ux-ib');if(!bell||document.getElementById('sh-go'))return;
  const b=document.createElement('button');b.id='sh-go';b.className=bell.className;b.title='العلوم الشرعية';b.setAttribute('aria-label','العلوم الشرعية');
  b.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h7M8 11h5"/></svg>';
- b.onclick=function(ev){ev.stopPropagation();shOpen()};bell.parentNode.insertBefore(b,bell);shBadgeGo()}
+ b.onclick=function(ev){ev.stopPropagation();shOpen()};bell.parentNode.insertBefore(b,bell);shBadgeGo();if(typeof shkHomeLoad==='function')shkHomeLoad()}
 function shRealCard(){return [].slice.call(document.querySelectorAll('#admin-body .glass.card')).find(c=>c.id!=='sh-tsec'&&c.id!=='sh-tarea'&&c.innerText.indexOf('الصفوف التي يدرّسها')>=0)}
 async function shTeacherCard(){if(ROLE!=='admin'||typeof T==='undefined'||T.view!=='tch')return;const ab=document.getElementById('admin-body');if(!ab||document.getElementById('sh-tsec'))return;
  if(ab.innerText.indexOf('الصفوف التي يدرّسها')<0||ab.innerText.indexOf('اسم المعلم')<0)return;const first=ab.querySelector('.glass.card');if(!first)return;
@@ -3939,12 +3939,17 @@ function shkPatch(cid){const o=document.getElementById('sh-ov');if(!o||!o.shadow
  if(el&&L.length&&L.every(x=>SHK.d[x.id])){const t={hi:0,mid:0,low:0,none:0};L.forEach(x=>{const q=shkAvgDist(x,SHK.d[x.id]);['hi','mid','low','none'].forEach(z=>t[z]+=q[z])});el.innerHTML=shkPills(t)}}
 
 /* ===== إحصائية «حالة الطلبة» في رئيسية غرفة العلوم الشرعية: من نفس حساب الصفوف (متفوق ١٨–٢٠ · متوسط ١١–١٧ · متدنٍّ ١٠ فأقل) ===== */
-function shkHomeAgg(){const L=CLASSES.filter(c=>shStu(c).length),t={hi:0,mid:0,low:0,none:0};let done=0;L.forEach(c=>{const D=SHK.d[c.id];if(!D)return;done++;const o=shkAvgDist(c,D);['hi','mid','low','none'].forEach(q=>t[q]+=o[q])});return {t,done,n:L.length,L}}
+const SHKH={d:null,at:0,busy:false,fail:false};
+async function shkHomeLoad(){if(SHKH.busy)return;SHKH.busy=true;try{const r=await rpc('sharia_admin_dist',{p_tok:TOK});if(r&&!r.error&&Array.isArray(r.rows)&&r.mx){SHKH.d=r;SHKH.at=Date.now();SHKH.fail=false}else SHKH.fail=true}catch(e){SHKH.fail=true}SHKH.busy=false;if(SHA.v==='home')shkHomeRefresh()}
+function shkHomeRefresh(){if(SHKH.fail&&SHKH.d==null){const a=shkHomeAgg();a.L.forEach(c=>{if(!SHK.d[c.id])shkQueue(c.id)})}shkHomePatch()}
+function shkHomeAgg(){const L=CLASSES.filter(c=>shStu(c).length),t={hi:0,mid:0,low:0,none:0};let done=0;
+ if(SHKH.d){const by={};SHKH.d.rows.forEach(x=>by[x.sid]=x.sc);L.forEach(c=>{const D={mx:SHKH.d.mx[c.id]||{},rows:shStu(c).map(s=>({s,r:{sc:by[s.id]||{}}}))},o=shkAvgDist(c,D);['hi','mid','low','none'].forEach(q=>t[q]+=o[q])});return {t,done:L.length,n:L.length,L}}
+ L.forEach(c=>{const D=SHK.d[c.id];if(!D)return;done++;const o=shkAvgDist(c,D);['hi','mid','low','none'].forEach(q=>t[q]+=o[q])});return {t,done,n:L.length,L}}
 function shkHomeHTML(){const a=shkHomeAgg(),t=a.t,rec=t.hi+t.mid+t.low,K=[['hi','متفوقون','h'],['mid','متوسطون','m'],['low','متدنون','l']];
  const pc=k=>rec?`<small>${shAR(Math.round(t[k]/rec*100))}٪</small>`:'';
  return `<div class="hs3">${K.map(([k,nm,c])=>`<div class="hs ${c}"><b>${shAR(t[k])}</b><span>${nm}</span>${pc(k)}</div>`).join('')}</div>`+(rec?`<div class="hbar">${K.map(([k,,c])=>t[k]?`<i class="${c}" style="flex:${t[k]} 1 0"></i>`:'').join('')}</div>`:'')
   +`<div class="mut hnote">${a.done<a.n?'جارٍ حساب الدرجات… ('+shAR(a.done)+' من '+shAR(a.n)+' صفاً)':(rec?'المرصودون: '+shAR(rec)+(t.none?' · لم يُرصدوا بعد: '+shAR(t.none):''):'لا توجد درجات مرصودة بعد')}</div>`}
-function shkHome(){const a=shkHomeAgg();a.L.forEach(c=>{const D=SHK.d[c.id];if(!D)shkQueue(c.id);else if(Date.now()-D.at>120000&&!SHK.busy[c.id]&&!SHK.q[c.id]){SHK.q[c.id]=1;SHK_Q=SHK_Q.then(()=>shkLoad(c.id,true)).catch(()=>{}).then(()=>{SHK.q[c.id]=0})}});return `<div id="shk-home">${shkHomeHTML()}</div>`}
+function shkHome(){const a=shkHomeAgg();if(!SHKH.fail){if(!SHKH.d||Date.now()-SHKH.at>60000)shkHomeLoad();return `<div id="shk-home">${shkHomeHTML()}</div>`}a.L.forEach(c=>{const D=SHK.d[c.id];if(!D)shkQueue(c.id);else if(Date.now()-D.at>120000&&!SHK.busy[c.id]&&!SHK.q[c.id]){SHK.q[c.id]=1;SHK_Q=SHK_Q.then(()=>shkLoad(c.id,true)).catch(()=>{}).then(()=>{SHK.q[c.id]=0})}});return `<div id="shk-home">${shkHomeHTML()}</div>`}
 function shkHomePatch(){const o=document.getElementById('sh-ov');if(!o||!o.shadowRoot)return;const el=o.shadowRoot.getElementById('shk-home');if(el)el.innerHTML=shkHomeHTML()}
 
 let SHK_Q=Promise.resolve();
@@ -6955,7 +6960,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='2958f27ac40f';
+const BUILD='12c1e584946d';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
