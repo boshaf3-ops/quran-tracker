@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="16f80ae0ffab">
+<meta name="build" content="2db48721301d">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3924,24 +3924,26 @@ function shkAvgDist(c,D){return shkDist(c,D,0)}
 function shkPills(o){return shkBar(o)}
 function shVClasses(){const H=[['h1','الحلقة الأولى','١ – ٣',c=>c.g<=3],['h2','الحلقة الثانية','٤ – ٦',c=>c.g>=4]];let load=[];
  const fold=H.map(([k,nm,rg,f])=>{const L=CLASSES.filter(f).slice().sort((a,b)=>a.g-b.g||String(a.sec).localeCompare(String(b.sec),'ar')),open=SHK.open[k],n=L.reduce((a,c)=>a+shStu(c).length,0);
-  let tot=null;if(L.length&&L.every(c=>SHK.d[c.id])){tot={hi:0,mid:0,low:0,none:0};L.forEach(c=>{const o=shkAvgDist(c,SHK.d[c.id]);['hi','mid','low','none'].forEach(q=>tot[q]+=o[q])})}
-  const body=open?L.map(c=>{const o=shOwner(c.id),D=SHK.d[c.id];if(!D)load.push(c.id);
+  let tot=null;if(L.length&&L.every(c=>shkDF(c))){tot={hi:0,mid:0,low:0,none:0};L.forEach(c=>{const o=shkAvgDist(c,shkDF(c));['hi','mid','low','none'].forEach(q=>tot[q]+=o[q])})}
+  const body=open?L.map(c=>{const o=shOwner(c.id),D=shkDF(c);if(!D)load.push(c.id);
    return `<div class="glass card cl" data-cls="${c.id}" style="padding:10px 14px"><div class="rowsp"><div><div class="t" style="font-size:14.5px">${shCn(c)}</div><div class="mut" style="font-size:11px">${shAR(shStu(c).length)} طالباً · ${o?'أ. '+esc(shNm(o)):'لم يُحدَّد معلم العلوم الشرعية'}</div></div><span style="opacity:.6">‹</span></div><div id="shk-st-${c.id}" style="margin-top:8px;min-height:30px">${D?shkPills(shkAvgDist(c,D)):'<span class="mut" style="font-size:11px">جارٍ تحميل الدرجات…</span>'}</div></div>`}).join('')||'<div class="mut" style="padding:8px">لا توجد صفوف في هذه الحلقة.</div>':'';
   return `<div class="glass card" style="padding:12px 14px"><div class="rowsp" data-fold="${k}" style="cursor:pointer"><div style="display:flex;gap:10px;align-items:center"><span style="display:inline-block;transition:transform .2s;transform:rotate(${open?'90':'0'}deg);font-size:18px;opacity:.85">◂</span><div><div class="t" style="font-size:16px">${nm}</div><div class="mut" style="font-size:11px">الصفوف ${rg} · ${shAR(L.length)} صفاً · ${shAR(n)} طالباً</div></div></div></div><div id="shk-tot-${k}" style="margin-top:9px;min-height:30px">${tot?shkPills(tot):'<span class="mut" style="font-size:11px">جارٍ حساب المجموع…</span>'}</div>${open?`<div class="g2" style="margin-top:10px">${body}</div>`:''}</div>`}).join('');
- load.forEach(id=>shkQueue(id));
+ if(!SHKH.fail){if(!SHKH.d||Date.now()-SHKH.at>60000)shkHomeLoad()}else load.forEach(id=>shkQueue(id));
  return shHdr()+`<div class="body wide">${shBack('sections','الأقسام')}<div class="sec" style="margin-top:0"><b>الصفوف</b><span style="color:#fff">${shAR(CLASSES.length)} صفاً</span></div>${fold}<div class="mut" style="margin:4px 4px 8px">الخط يتوزع بحسب عدد الطلبة وتحته عدد كل فئة. التصنيف من معدّل درجات الوقفات المرصودة حتى الآن (من ٢٠): متفوق ١٨–٢٠ · متوسط ١١–١٧ · متدنٍّ ١٠ فأقل، ويتغير مع كل وقفة جديدة. افتح الحلقة لتظهر صفوفها.</div></div>`+shNav()}
 
 /* تحديث موضعي بدون إعادة رسم الصفحة كلها (يمنع اهتزاز الشريط السفلي والقفز أثناء التحميل) */
 function shkFoldOf(c){return c.g<=3?'h1':'h2'}
-function shkPatch(cid){const o=document.getElementById('sh-ov');if(!o||!o.shadowRoot)return;const r=o.shadowRoot,c=shCls(cid),D=SHK.d[cid];if(!c||!D)return;
+function shkPatch(cid){const o=document.getElementById('sh-ov');if(!o||!o.shadowRoot)return;const r=o.shadowRoot,c=shCls(cid),D=c&&shkDF(c);if(!c||!D)return;
  const st=r.getElementById('shk-st-'+cid);if(st)st.innerHTML=shkPills(shkAvgDist(c,D));
  const k=shkFoldOf(c),L=CLASSES.filter(x=>shkFoldOf(x)===k),el=r.getElementById('shk-tot-'+k);
- if(el&&L.length&&L.every(x=>SHK.d[x.id])){const t={hi:0,mid:0,low:0,none:0};L.forEach(x=>{const q=shkAvgDist(x,SHK.d[x.id]);['hi','mid','low','none'].forEach(z=>t[z]+=q[z])});el.innerHTML=shkPills(t)}}
+ if(el&&L.length&&L.every(x=>shkDF(x))){const t={hi:0,mid:0,low:0,none:0};L.forEach(x=>{const q=shkAvgDist(x,shkDF(x));['hi','mid','low','none'].forEach(z=>t[z]+=q[z])});el.innerHTML=shkPills(t)}}
 
 /* ===== إحصائية «حالة الطلبة» في رئيسية غرفة العلوم الشرعية: من نفس حساب الصفوف (متفوق ١٨–٢٠ · متوسط ١١–١٧ · متدنٍّ ١٠ فأقل) ===== */
 const SHKH={d:null,at:0,busy:false,fail:false};
-async function shkHomeLoad(){if(SHKH.busy)return;SHKH.busy=true;try{const r=await rpc('sharia_admin_dist',{p_tok:TOK});if(r&&!r.error&&Array.isArray(r.rows)&&r.mx){SHKH.d=r;SHKH.at=Date.now();SHKH.fail=false}else SHKH.fail=true}catch(e){SHKH.fail=true}SHKH.busy=false;if(SHA.v==='home')shkHomeRefresh()}
-function shkHomeRefresh(){if(SHKH.fail&&SHKH.d==null){const a=shkHomeAgg();a.L.forEach(c=>{if(!SHK.d[c.id])shkQueue(c.id)})}shkHomePatch()}
+async function shkHomeLoad(){if(SHKH.busy)return;SHKH.busy=true;try{const r=await rpc('sharia_admin_dist',{p_tok:TOK});if(r&&!r.error&&Array.isArray(r.rows)&&r.mx){SHKH.d=r;SHKH._by=null;SHKH.at=Date.now();SHKH.fail=false}else SHKH.fail=true}catch(e){SHKH.fail=true}SHKH.busy=false;if(SHA.v==='home')shkHomeRefresh()}
+function shkHomeRefresh(){if(SHKH.fail&&SHKH.d==null){const a=shkHomeAgg();a.L.forEach(c=>{if(!SHK.d[c.id])shkQueue(c.id)})}shkHomePatch();if(SHA.v==='classes')CLASSES.forEach(c=>shkPatch(c.id))}
+function shkDF(c){if(SHKH.d){return {mx:SHKH.d.mx[c.id]||{},rows:shStu(c).map(s=>({s,r:{sc:(SHKH._by||(SHKH._by=shkBySid()))[s.id]||{}}}))}}return SHK.d[c.id]}
+function shkBySid(){const by={};SHKH.d.rows.forEach(x=>by[x.sid]=x.sc);return by}
 function shkHomeAgg(){const L=CLASSES.filter(c=>shStu(c).length),t={hi:0,mid:0,low:0,none:0};let done=0;
  if(SHKH.d){const by={};SHKH.d.rows.forEach(x=>by[x.sid]=x.sc);L.forEach(c=>{const D={mx:SHKH.d.mx[c.id]||{},rows:shStu(c).map(s=>({s,r:{sc:by[s.id]||{}}}))},o=shkAvgDist(c,D);['hi','mid','low','none'].forEach(q=>t[q]+=o[q])});return {t,done:L.length,n:L.length,L}}
  L.forEach(c=>{const D=SHK.d[c.id];if(!D)return;done++;const o=shkAvgDist(c,D);['hi','mid','low','none'].forEach(q=>t[q]+=o[q])});return {t,done,n:L.length,L}}
@@ -6971,7 +6973,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='16f80ae0ffab';
+const BUILD='2db48721301d';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
