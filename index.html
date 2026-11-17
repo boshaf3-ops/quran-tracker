@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="5a16cbac5cfb">
+<meta name="build" content="e2d13df9e4ec">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2891,6 +2891,7 @@ const shsSpill=`<svg viewBox="0 0 40 40" style="width:34px;height:34px;flex:none
 const shsD=k=>{const p=String(k).slice(0,10).split('-').map(Number);return new Date(p[0],p[1]-1,p[2])};
 const shsAdd=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
 const shsFmt=d=>shAR(d.getDate())+' '+SH_M[d.getMonth()];
+const shsRng=d=>{const e=shsAdd(d,4),a=SHS_DN[d.getDay()],b=SHS_DN[e.getDay()];return d.getMonth()===e.getMonth()?'من '+a+' '+shAR(d.getDate())+' إلى '+b+' '+shAR(e.getDate())+' '+SH_M[e.getMonth()]:'من '+a+' '+shsFmt(d)+' إلى '+b+' '+shsFmt(e)}
 const shsWeekNo=k=>{const d=shsD(k);return Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(2026,8,6))/604800000)+1};
 const shsKey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const shsTime=at=>{try{return new Date(at).toLocaleTimeString('ar',{hour:'numeric',minute:'2-digit'})}catch(e){return ''}};
@@ -2926,9 +2927,13 @@ function shsModel(){const s=SHS.st,m={};
  m.teacher=s.teacher?'أ. '+shNm({name:s.teacher.name}):'أستاذ العلوم الشرعية';m.tphoto=(s.teacher&&s.teacher.photo)||'';m.hasT=!!s.teacher;
  const ws=shsD(s.ws),today=shsD(s.today),dow=today.getDay(),bul=s.bul;
  m.pub=!!bul;
- m.week={no:shsWeekNo(s.ws),from:shsFmt(ws),to:shsFmt(shsAdd(ws,4)),lessons:bul?(bul.sel||[]).map(id=>{const l=shsLes(id);return l?{t:l.t,n:(bul.notes||{})[id]||''}:null}).filter(Boolean):[],note:(bul&&bul.gnote)||''};
- const st=bul&&bul.stop;
- m.stop=(st&&st.on)?{topics:(st.l||[]).map(shsLes).filter(Boolean).map(x=>x.t),date:(()=>{const d=shsAdd(ws,+st.day||0);return SHS_DN[d.getDay()]+' '+shAR(d.getDate())+' '+SH_M[d.getMonth()]})()}:null;
+ m.week={no:shsWeekNo(s.ws),rng:shsRng(ws),from:shsFmt(ws),to:shsFmt(shsAdd(ws,4)),lessons:bul?(bul.sel||[]).map(id=>{const l=shsLes(id);return l?{t:l.t,n:(bul.notes||{})[id]||''}:null}).filter(Boolean):[],note:(bul&&bul.gnote)||''};
+ const nws=s.nws?shsD(s.nws):shsAdd(ws,7),bul2=s.bul_next;
+ m.next={no:shsWeekNo(shsKey(nws)),rng:shsRng(nws),from:shsFmt(nws),to:shsFmt(shsAdd(nws,4)),pub:!!bul2,lessons:bul2?(bul2.sel||[]).map(id=>{const l=shsLes(id);return l?{t:l.t,n:(bul2.notes||{})[id]||''}:null}).filter(Boolean):[],note:(bul2&&bul2.gnote)||''};
+ /* الوقفات: تظهر من لحظة تثبيت النشرة (للأسبوع الحالي أو القادم) وتبقى حتى يوم الوقفة ثم تختفي */
+ const stl=[];[[bul,ws],[bul2,nws]].forEach(([b,w0])=>{const st=b&&b.stop;if(!(st&&st.on))return;const d=shsAdd(w0,+st.day||0);if(d.getTime()<today.getTime())return;
+  stl.push({t:d.getTime(),topics:(st.l||[]).map(shsLes).filter(Boolean).map(x=>x.t),date:SHS_DN[d.getDay()]+' '+shAR(d.getDate())+' '+SH_M[d.getMonth()]})});
+ stl.sort((a,b)=>a.t-b.t);m.stl=stl;m.stop=stl[0]||null;
  const pin=s.pinned||{},byW={};Object.keys(pin).forEach(id=>{const l=shsLes(id);if(!l)return;const wk=pin[id]||'';(byW[wk]||(byW[wk]=[])).push({t:l.t,p:l.p,u:l.u,n:''})});
  m.prev=Object.keys(byW).filter(k=>k).sort().reverse().map(k=>{const d=shsD(k);return {no:shsWeekNo(k),range:shAR(d.getDate())+' – '+shsFmt(shsAdd(d,4)),items:byW[k]}});
  const undated=byW['']||[];if(undated.length)m.prev.push({no:0,range:'',items:undated});
@@ -2974,12 +2979,14 @@ function shsBehTab(m){const B=m.beh,pct=Math.round(B.net*100/B.max);
  ${m.moved?`<div class="moved">${shsSpill}<div><b>انتقلت ${shAR(m.moved)} لتراً إلى المزرعة</b><div class="mut">انتهى الأسبوع، وفرغ إبريقك وبدأ أسبوع جديد.</div></div></div>`:''}
  </div><div class="c"><div class="glass card"><div class="rh" style="margin-top:0">أبرز سلوكياتي الإيجابية المتكررة</div>${shsRank(B.tp,'p')}</div>
  <div class="glass card"><div class="rh" style="margin-top:0">أبرز سلوكياتي السلبية المتكررة</div>${shsRank(B.tn,'n')}</div></div></div>`}
-function shsHomeTab(m){const w=m.week;let h='',hb='';
- if(!m.pub)h+=`<div class="glass card"><div class="ct"><b>دروس هذا الأسبوع</b><small>الأسبوع ${shAR(w.no)}</small></div><div class="mut">لم ينشر الأستاذ دروس هذا الأسبوع بعد. سيظهر هنا فور نشرها.</div></div>`;
- else h+=`<div class="glass card"><div class="ct"><b>دروس هذا الأسبوع</b><small>الأسبوع ${shAR(w.no)}</small></div><div class="mut" style="margin-bottom:4px">خلال الفترة من ${w.from} إلى ${w.to}، سنأخذ الدروس التالية:</div>`+
-  (w.lessons.length?w.lessons.map((l,i)=>`<div class="ls"><span class="n">${shAR(i+1)}</span><div class="tx">${esc(l.t)}${l.n?`<small>${shsIc('note').replace('<svg','<svg style="width:11px;height:11px;vertical-align:-1px;stroke:#FFE9A8;fill:none;stroke-width:2;margin-left:3px"')}${esc(l.n)}</small>`:''}</div></div>`).join(''):'<div class="mut">لا توجد دروس محددة.</div>')+
-  (w.note?`<div class="gnote"><b>ملاحظة المعلم:</b> ${esc(w.note)}</div>`:'')+`</div>`;
- h+=m.stop?`<div class="stop"><div class="ct"><b><i class="dot"></i>وقفة تقويمية قادمة</b><small style="color:#FFD1CB">انتبه</small></div><div class="sdate">${shsIc('doc').replace('<svg','<svg style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2"')}<span>موعد الوقفة: <b>${m.stop.date}</b></span></div>${m.stop.topics.length?`<div class="mut" style="color:#FFE3DF">مواضيع الوقفة:</div><ul>${m.stop.topics.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}</div>`:`<div class="glass nostop">لا توجد وقفات</div>`;
+function shsWeekRows(m){const w=m.week,n=m.next;
+ const lessons=(L,empty)=>L.length?`<div class="wch">${L.map(l=>`<span>${esc(l.t)}${l.n?`<small>${esc(l.n)}</small>`:''}</span>`).join('')}</div>`:`<div class="wnone">${empty}</div>`;
+ const note=t=>t?`<div class="gnote"><b>ملاحظة المعلم:</b> ${esc(t)}</div>`:'';
+ return `<div class="wrows"><div class="wrw wa"><div class="wsd"><b>${shAR(w.no)}</b><small>الأسبوع</small></div><div class="wbd"><div class="wtt"><span>دروس هذا الأسبوع</span><span class="wdt">${w.rng}</span></div>${lessons(w.lessons,m.pub?'لا توجد دروس محددة.':'لم يكتب الأستاذ دروس هذا الأسبوع بعد.')}${note(w.note)}</div></div>`+
+  `<div class="wrw wb"><div class="wsd"><b>${shAR(n.no)}</b><small>الأسبوع</small></div><div class="wbd"><div class="wtt"><span>الأسبوع القادم</span><span class="wdt">${n.rng}</span></div>${lessons(n.lessons,n.pub?'لا توجد دروس محددة.':'لم يكتب الأستاذ دروس الأسبوع القادم بعد.')}${note(n.note)}</div></div></div>`}
+function shsStopCards(m){return m.stl.length?m.stl.map(st=>`<div class="stop"><div class="ct"><b><i class="dot"></i>وقفة تقويمية قادمة</b><small style="color:#FFD1CB">انتبه</small></div><div class="sdate">${shsIc('doc').replace('<svg','<svg style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2"')}<span>موعد الوقفة: <b>${st.date}</b></span></div>${st.topics.length?`<div class="mut" style="color:#FFE3DF">مواضيع الوقفة:</div><ul>${st.topics.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}</div>`).join(''):`<div class="glass nostop">لا توجد وقفات</div>`}
+function shsHomeTab(m){let h='',hb='';
+ h+=shsWeekRows(m)+shsStopCards(m);
  hb+=shsBehHome(m);
  if(m.prev.length)hb+=`<div class="glass card"><div class="ct"><b>الدروس السابقة</b><small>${shAR(m.prev.reduce((a,x)=>a+x.items.length,0))} دروس</small></div>`+m.prev.map(p=>`<div class="pwk"><div class="h" data-pw="${p.no}"><span>${p.no?'الأسبوع '+shAR(p.no)+' <small>· '+p.range+'</small>':'دروس سابقة'}</span><small>${SHS.open[p.no]?'▲':'▼'}</small></div>${SHS.open[p.no]?p.items.map((it,i)=>`<button class="pit" data-pl="${p.no}:${i}">${esc(it.t)}<span>‹</span></button>`).join(''):''}</div>`).join('')+`</div>`;
  return `<div class="cols"><div class="c">${h}</div><div class="c">${hb}</div></div>`}
@@ -3100,8 +3107,8 @@ function shsBind(root){SHS_ROOT=root;
 function shsQuranInfo(){try{const s=allStudents()[0];if(!s||typeof segsOf!=='function')return null;const sg=segsOf(s.c.g),i=nxtIdx(s),st=statusOf(s);return {seg:i>=0?shAR(rng(sg[i])):'أتممت كل المقاطع',k:st.k,t:st.t}}catch(e){return null}}
 function shsQuranTeacher(){try{const s=allStudents()[0];if(!s||typeof tById!=='function')return '';let t=s.owner!=null?tById(s.owner):null;if(!t&&s.c&&s.c.tids&&s.c.tids.length)t=tById(s.c.tids[0]);return t&&t.name?'أ. '+(typeof shNm==='function'?shNm({name:t.name}):t.name):''}catch(e){return ''}}
 function shsHalves(m){
- const ls=m.week.lessons,ts=ls.slice(0,2).map(l=>esc(l.t)).join('<br>')+(ls.length>2?'<br>و'+shAR(ls.length-2)+' أخرى':'');
- const HS=`<div class="ci">${shsIc('star')}</div><h3>العلوم الشرعية</h3><div class="sum"><small>${m.pub?'درس هذا الأسبوع':'هذا الأسبوع'}</small>${ts||'لم تُنشر الدروس بعد'}${m.stop?`<div class="ln">وقفة: ${m.stop.date}</div>`:''}<div class="tch">${m.hasT?'الأستاذ: '+esc(m.teacher.replace(/^أ\.\s*/,'')):'لم يُسند معلم بعد'}</div></div><div class="go">‹ اضغط للدخول</div>`;
+ const useN=!m.week.lessons.length&&m.next&&m.next.lessons.length,ls=useN?m.next.lessons:m.week.lessons,ts=ls.slice(0,2).map(l=>esc(l.t)).join('<br>')+(ls.length>2?'<br>و'+shAR(ls.length-2)+' أخرى':'');
+ const HS=`<div class="ci">${shsIc('star')}</div><h3>العلوم الشرعية</h3><div class="sum"><small>${useN?'الأسبوع القادم':(m.pub?'درس هذا الأسبوع':'هذا الأسبوع')}</small>${ts||'لم يكتب الأستاذ شيئًا بعد'}${m.stop?`<div class="ln">وقفة: ${m.stop.date}</div>`:''}<div class="tch">${m.hasT?'الأستاذ: '+esc(m.teacher.replace(/^أ\.\s*/,'')):'لم يُسند معلم بعد'}</div></div><div class="go">‹ اضغط للدخول</div>`;
  const q=shsQuranInfo();
  const HQ=`<div class="ci">${shsIc('book')}</div><h3>القرآن الكريم</h3><div class="sum"><small>السورة المطلوبة</small>${q?esc(q.seg):'ادخل لترى مقطعك'}${q&&q.t?`<br><span class="stp ${q.k==='red'?'red':q.k==='green'?'green':q.k==='gold'?'gold':''}">${esc(q.t)}</span>`:''}${(()=>{const t=shsQuranTeacher();return t?`<div class="tch">الأستاذ: ${esc(t.replace(/^أ\.\s*/,''))}</div>`:''})()}</div><div class="go">اضغط للدخول ›</div>`;
  return [HS,HQ]}
@@ -3210,6 +3217,21 @@ const SHS_CSS=`*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-
 .stop .ct b{display:flex;align-items:center;gap:6px}
 .stop .dot{width:9px;height:9px;border-radius:50%;background:#ff7a6e;box-shadow:0 0 8px #ff7a6e}
 .stop ul{margin:4px 18px 0 0;font-size:12.5px;font-weight:800;line-height:1.8}
+.wrows{display:flex;flex-direction:column;gap:9px;margin-bottom:10px}
+.wrw{display:grid;grid-template-columns:58px 1fr;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.wsd{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 2px;font-weight:900}
+.wsd b{font-size:24px;line-height:1}.wsd small{font-size:10px;font-weight:800}
+.wa .wsd{background:linear-gradient(180deg,#1f8a73,#0f4a3f);color:#fff}
+.wa .wsd b,.wa .wsd small{animation:shwglow 2.6s ease-in-out infinite}
+@keyframes shwglow{0%,100%{text-shadow:0 0 0 rgba(255,255,255,0);opacity:.82}50%{text-shadow:0 0 10px rgba(255,255,255,.95),0 0 22px rgba(255,255,255,.55);opacity:1}}
+@media (prefers-reduced-motion:reduce){.wa .wsd b,.wa .wsd small{animation:none;opacity:1}}
+.wb .wsd{background:linear-gradient(180deg,#F6DC8A,#e0b64a);color:#000}
+.wbd{padding:10px 12px;min-width:0}.wtt{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;font-size:13px;font-weight:900}
+.wdt{font-size:10.5px;font-weight:700;opacity:.8;white-space:nowrap}
+.wch{display:flex;flex-wrap:wrap;gap:6px}.wch span{font-size:12px;font-weight:800;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3)}
+.wch span small{display:block;font-size:10px;font-weight:600;opacity:.8;color:#FFE9A8}
+.wb .wch span{background:rgba(255,211,90,.18);border-color:rgba(255,211,90,.6);color:#FFE9A8}
+.wnone{font-size:12px;font-weight:700;opacity:.85;line-height:1.8;padding:2px 0}
 .nostop{padding:11px 14px;border-radius:22px;margin-bottom:10px;font-size:12.5px;font-weight:800;opacity:.85;text-align:center}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
 .pill{display:inline-flex;gap:5px;align-items:center;font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px;background:rgba(88,190,130,.4);border:1px solid rgba(150,230,180,.8);color:#E9FFF1}
@@ -6973,7 +6995,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='5a16cbac5cfb';
+const BUILD='e2d13df9e4ec';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
