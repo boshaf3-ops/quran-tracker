@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="e2d13df9e4ec">
+<meta name="build" content="0ad0cb35ecb8">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3107,8 +3107,9 @@ function shsBind(root){SHS_ROOT=root;
 function shsQuranInfo(){try{const s=allStudents()[0];if(!s||typeof segsOf!=='function')return null;const sg=segsOf(s.c.g),i=nxtIdx(s),st=statusOf(s);return {seg:i>=0?shAR(rng(sg[i])):'أتممت كل المقاطع',k:st.k,t:st.t}}catch(e){return null}}
 function shsQuranTeacher(){try{const s=allStudents()[0];if(!s||typeof tById!=='function')return '';let t=s.owner!=null?tById(s.owner):null;if(!t&&s.c&&s.c.tids&&s.c.tids.length)t=tById(s.c.tids[0]);return t&&t.name?'أ. '+(typeof shNm==='function'?shNm({name:t.name}):t.name):''}catch(e){return ''}}
 function shsHalves(m){
- const useN=!m.week.lessons.length&&m.next&&m.next.lessons.length,ls=useN?m.next.lessons:m.week.lessons,ts=ls.slice(0,2).map(l=>esc(l.t)).join('<br>')+(ls.length>2?'<br>و'+shAR(ls.length-2)+' أخرى':'');
- const HS=`<div class="ci">${shsIc('star')}</div><h3>العلوم الشرعية</h3><div class="sum"><small>${useN?'الأسبوع القادم':(m.pub?'درس هذا الأسبوع':'هذا الأسبوع')}</small>${ts||'لم يكتب الأستاذ شيئًا بعد'}${m.stop?`<div class="ln">وقفة: ${m.stop.date}</div>`:''}<div class="tch">${m.hasT?'الأستاذ: '+esc(m.teacher.replace(/^أ\.\s*/,'')):'لم يُسند معلم بعد'}</div></div><div class="go">‹ اضغط للدخول</div>`;
+ /* سطران صغيران: هذا الأسبوع / الأسبوع القادم. أول درس فقط، و«…» لو في دروس أخرى، و«لا يوجد شيء» لو لم يكتب الأستاذ */
+ const wr=(lbl,L)=>`<div class="wkr"><small>${lbl}</small><div class="wkl"><span class="wkt">${L.length?esc(L[0].t):'لا يوجد شيء'}</span>${L.length>1?'<span class="wkd">…</span>':''}</div></div>`;
+ const HS=`<div class="ci">${shsIc('star')}</div><h3>العلوم الشرعية</h3><div class="sum">${wr('هذا الأسبوع',m.week.lessons)}${wr('الأسبوع القادم',m.next.lessons)}${m.stop?`<div class="ln">وقفة: ${m.stop.date}</div>`:''}<div class="tch">${m.hasT?'الأستاذ: '+esc(m.teacher.replace(/^أ\.\s*/,'')):'لم يُسند معلم بعد'}</div></div><div class="go">‹ اضغط للدخول</div>`;
  const q=shsQuranInfo();
  const HQ=`<div class="ci">${shsIc('book')}</div><h3>القرآن الكريم</h3><div class="sum"><small>السورة المطلوبة</small>${q?esc(q.seg):'ادخل لترى مقطعك'}${q&&q.t?`<br><span class="stp ${q.k==='red'?'red':q.k==='green'?'green':q.k==='gold'?'gold':''}">${esc(q.t)}</span>`:''}${(()=>{const t=shsQuranTeacher();return t?`<div class="tch">الأستاذ: ${esc(t.replace(/^أ\.\s*/,''))}</div>`:''})()}</div><div class="go">اضغط للدخول ›</div>`;
  return [HS,HQ]}
@@ -3217,6 +3218,9 @@ const SHS_CSS=`*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-
 .stop .ct b{display:flex;align-items:center;gap:6px}
 .stop .dot{width:9px;height:9px;border-radius:50%;background:#ff7a6e;box-shadow:0 0 8px #ff7a6e}
 .stop ul{margin:4px 18px 0 0;font-size:12.5px;font-weight:800;line-height:1.8}
+.half .wkr{margin-bottom:6px;text-align:center}.half .wkr small{margin-bottom:1px}
+.half .wkl{display:flex;justify-content:center;align-items:baseline;gap:3px;max-width:100%;font-size:11px;font-weight:800;line-height:1.5}
+.half .wkt{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.half .wkd{flex:none;font-weight:900;opacity:.9}
 .wrows{display:flex;flex-direction:column;gap:9px;margin-bottom:10px}
 .wrw{display:grid;grid-template-columns:58px 1fr;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
 .wsd{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 2px;font-weight:900}
@@ -6995,7 +6999,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='e2d13df9e4ec';
+const BUILD='0ad0cb35ecb8';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
