@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="12c1e584946d">
+<meta name="build" content="16f80ae0ffab">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -5590,8 +5590,19 @@ function reqBox(){
 function taToggle(cid){const b=$('ta-'+cid);if(TA.has(cid)){TA.delete(cid);b.className='pk-chip';}else{TA.add(cid);b.className='pk-chip '+(b.dataset.h==='1'?'g':'y');}$('ta-e').textContent='';}
 const norm=n=>String(n).replace(/[ً-ٰٟـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim();
 const toks=n=>norm(n).split(' ').filter(Boolean);
-function similar(name,exclude){const a=toks(name);if(!a.length)return[];
-  return allStudents().filter(x=>x!==exclude&&!x.pending).map(x=>{const b=toks(x.name),com=a.filter(w=>b.includes(w)).length;return{x,com,score:com/a.length+(norm(x.name)===norm(name)?1:0)};})
+const ntoks=n=>{const t=norm(n).replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/[^\u0621-\u063A\u0641-\u064A0-9 ]/g,' ').split(/\s+/).filter(Boolean),o=[];
+  for(let i=0;i<t.length;i++){let w=t[i];
+   if((w==='عبد'||w==='ابو'||w==='ام'||w==='ذو')&&i+1<t.length)w+=t[++i];   /* «عبد الله» = «عبدالله» */
+   else if(w==='ابن'||w==='بن'||w==='بنت')continue;
+   o.push(w.length>4?w.replace(/^ال/,''):w)}
+  return o};
+const lev1=(p,q)=>{if(p===q)return true;if(Math.abs(p.length-q.length)>1)return false;let i=0;while(i<p.length&&i<q.length&&p[i]===q[i])i++;
+  if(p.length===q.length)return p.slice(i+1)===q.slice(i+1);return p.length>q.length?p.slice(i+1)===q.slice(i):q.slice(i+1)===p.slice(i)};
+/* مطابقة الأسماء: تتجاهل الفرق بين «عبد الله/عبدالله» و«ال» التعريف والهمزات، وتتسامح مع حرف واحد خاطئ (للطلبات) */
+function similar(name,exclude,loose){const a=ntoks(name);if(!a.length)return[];
+  return allStudents().filter(x=>x!==exclude&&!x.pending).map(x=>{const b=ntoks(x.name),used=new Set();let com=0;
+    a.forEach(w=>{const j=b.findIndex((v,k)=>!used.has(k)&&(v===w||(loose&&w.length>=5&&v.length>=5&&lev1(w,v))));if(j>=0){used.add(j);com++}});
+    return{x,com,score:com/a.length+(a.join(' ')===b.join(' ')?1:0)};})
    .filter(o=>o.com>=Math.min(2,a.length)&&o.score>=0.75).sort((p,q)=>q.score-p.score).slice(0,5).map(o=>o.x);}
 const rptBar=c=>`<div class="fbar" style="margin:0 4px 10px"><span class="mut">كشف الصف وتقارير الطلاب</span><button class="btn-s" onclick="rptChoose(${c.id})">تحميل تقرير الصف</button></div>`;
 const bulkBar=c=>`<div class="fbar" style="margin:0 4px 10px"><span class="mut">سلوك إيجابي لجميع طلابك في هذا الصف</span><button class="btn-s vbulk2" onclick="openBulkBeh(${c.id})">＋ إيجابي للجميع</button></div>`;
@@ -6684,7 +6695,7 @@ function pendCard(){const n=pendTotal();if(!n)return '';
   return `<button class="glass item" onclick="ago('pend',{pk:''})" style="margin-bottom:12px;border-color:rgba(224,162,27,.8)"><div class="mini" style="background:rgba(224,162,27,.35)">${n}</div><div class="grow"><div class="t">طلبات من المعلمين</div><div class="mut">${creqPend().length?creqPend().length+' صف':''}${creqPend().length&&pendList().length?' · ':''}${pendList().length?pendList().length+' طالب':''}${resetTotal()?((creqPend().length||pendList().length)?' · ':'')+resetTotal()+' كلمة سر':''}${suggNew().length?((creqPend().length||pendList().length||resetTotal())?' · ':'')+suggNew().length+' مقترح':''} بانتظار قرارك</div></div>${CHEV}</button>`;}
 function pendTile(title,sub,n,key,cls){return `<button class="glass item ${cls}" onclick="ago('pend',{pk:'${key}'})"><div class="mini" style="${n?'background:rgba(255,255,255,.85);color:var(--teal-d);font-size:15px':'font-size:15px;opacity:.6'}">${n}</div><div class="grow"><div class="t">${title}</div><div class="mut">${sub}</div></div>${CHEV}</button>`;}
 const reqHead=(title,sub)=>`<div class="hdr"><button class="glass iconbtn" onclick="ago('pend',{pk:''})" aria-label="رجوع">${BACK}</button><div class="ht"><b>${title}</b><span>${sub}</span></div></div>`;
-const rqStud=r=>{const rc=CLASSES.find(c=>c.id===r.cid),m0=similar(r.name),m=m0.filter(x=>x.c&&x.c.id===r.cid).concat(m0.filter(x=>!(x.c&&x.c.id===r.cid)));
+const rqStud=r=>{const rc=CLASSES.find(c=>c.id===r.cid),m0=similar(r.name,undefined,true),m=m0.filter(x=>x.c&&x.c.id===r.cid).concat(m0.filter(x=>!(x.c&&x.c.id===r.cid)));
   return `<div class="glass card rq-s"><div class="row sp"><div class="t">${esc(r.name)}</div><span class="pill p-blue">طالب</span></div>
    <div class="mut" style="margin:2px 0 6px">نسي كلمة السر · ${fmt(r.at)}</div>
    <div class="cinfo" style="border:0;padding:3px 0"><span class="mut">الصف المكتوب:</span> <b>${rc?esc(clsName(rc)):'غير محدد'}</b></div>
@@ -6960,7 +6971,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='12c1e584946d';
+const BUILD='16f80ae0ffab';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
