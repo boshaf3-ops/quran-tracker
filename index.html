@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="cde116001ae0">
+<meta name="build" content="6b08c0a118a1">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3147,7 +3147,7 @@ function shsMount(){const o=shsHostEl(),sr=o.shadowRoot,stage=sr.getElementById(
  stage.insertAdjacentHTML('beforeend',shsHeroHTML(m,lg)+`<div class="top" style="opacity:0"><div class="lg" ${lg('b')}></div><div class="tt">منصة العلوم الشرعية والقرآن الكريم</div><div class="lg" ${lg('a')}></div></div>`);
  SHS.mounted=true;SHS.kbusy=false;shsKidsMount(stage);if(SHS.intro){SHS.intro=false;shsKidIntro(stage)}}
 function shsFit(){const st=shsStage();if(!st)return;const W=innerWidth,H=innerHeight,k=shsC(Math.min(W/400,H/740),.9,Math.min(screen.width||9999,screen.height||9999)<700?3:1.5),w=W/k,h=H/k;
- st.style.width=w+'px';st.style.height=h+'px';st.style.setProperty('--h',h+'px');st.style.transform='scale('+k+')';st.classList.toggle('wide',w>=700);st.classList.toggle('short',h<540);SHS.s=k;
+ st.style.width=w+'px';st.style.height=h+'px';st.style.setProperty('--h',h+'px');st.style.transform='scale('+k+')';st.classList.toggle('wide',w>=700);st.classList.toggle('short',h<540);SHS.s=k;shsKidsPos();setTimeout(shsKidsPos,120);
  if(SHS.d&&SHS.L){SHS.L.kick();if(window.__manual)SHS.L.tick(.016)}}
 function shsToHost(){const o=shsHostEl();if(!o)return;o.classList.remove('on');document.body.style.overflow=SHS.bodyOv||'';const f=document.getElementById('shs-fab');if(f)f.classList.add('on')}
 function shsGoSharia(){const o=shsHostEl();if(!o||!SHS.d||!SHS.goSide)return;const f=document.getElementById('shs-fab');if(f)f.classList.remove('on');SHS.bodyOv=document.body.style.overflow;document.body.style.overflow='hidden';o.classList.add('on');SHS.d.x=.8;SHS.d.v=0;SHS.goSide('s');if(window.__manual)SHS.L.tick(.016)}
@@ -3238,13 +3238,14 @@ const SHS_CSS=`*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-
 .wb .wch span{background:rgba(255,211,90,.18);border-color:rgba(255,211,90,.6);color:#FFE9A8}
 .wnone{font-size:12px;font-weight:700;opacity:.85;line-height:1.8;padding:2px 0}
 .half.s .ci svg{filter:drop-shadow(0 0 6px rgba(255,211,90,.75))}.half.s .ci svg *{fill:#FFD35A!important;stroke:#FFD35A!important}
-.kt{position:absolute;z-index:58;direction:rtl;pointer-events:auto}
-.kt .tb{display:flex;align-items:flex-start;gap:9px;background:rgba(14,70,58,.97);border:1px solid rgba(255,255,255,.35);border-top:0;border-radius:0 0 18px 18px;padding:5px 12px 6px;box-shadow:0 8px 14px rgba(0,0,0,.3)}
-.kt .klab{align-self:center;padding-inline-end:8px;border-inline-end:1px solid rgba(255,211,90,.4);line-height:30px;font-size:10px;font-weight:800;color:#FFD35A}
+.kt{position:absolute;z-index:58;direction:rtl;pointer-events:auto;max-width:calc(100% - 20px)}
+.kt .tb{overflow-x:auto;scrollbar-width:none;display:flex;align-items:flex-start;gap:8px;background:rgba(14,70,58,.97);border:1px solid rgba(255,255,255,.35);border-top:0;border-radius:0 0 18px 18px;padding:4px 11px 5px;box-shadow:0 8px 14px rgba(0,0,0,.3)}
+.kt .tb::-webkit-scrollbar{display:none}
+.kt .klab{align-self:center;padding-inline-end:8px;border-inline-end:1px solid rgba(255,211,90,.4);line-height:28px;font-size:10px;font-weight:800;color:#FFD35A}
 .kt .kd{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:30px;border:0;background:none;color:#fff;font-family:inherit;cursor:pointer;padding:0}
-.kt .kd em{font-style:normal;font-size:8.5px;font-weight:800;line-height:1.1;max-width:46px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kt .kd em{font-style:normal;font-size:8px;font-weight:800;line-height:1.1;max-width:46px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .kt .kd.on em{color:#FFD35A}
-.kt .cr{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:900;color:#fff;border:1.5px solid rgba(255,255,255,.85);text-shadow:0 1px 2px rgba(0,0,0,.4);transition:transform .25s}
+.kt .cr{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:900;color:#fff;border:1.5px solid rgba(255,255,255,.85);text-shadow:0 1px 2px rgba(0,0,0,.4);transition:transform .25s}
 .kt .cr.k1{background:linear-gradient(145deg,#2fb37a,#12644a)}.kt .cr.k2{background:linear-gradient(145deg,#e3a53a,#9a6b05)}.kt .cr.k3{background:linear-gradient(145deg,#4b8df0,#1d4fa0)}.kt .cr.k4{background:linear-gradient(145deg,#a56ae0,#5b2d9a)}.kt .cr.k5{background:linear-gradient(145deg,#ef6b6b,#a32626)}
 .kt .kd.on .cr{box-shadow:0 0 0 2px rgba(255,211,90,.95),0 0 9px rgba(255,211,90,.7);transform:scale(1.07)}
 .kt .cr.add{background:rgba(255,255,255,.12);border:1.5px dashed rgba(255,255,255,.85);color:#FFD35A;font-size:17px;font-weight:700;line-height:1;padding-bottom:2px}
@@ -3390,7 +3391,8 @@ function shsClose(){shsGameClose();{const n=document.getElementById('shs-ntc');i
 /* ===== أبنائي: لسان تحت الشريط + إضافة بالرمز السري + تبديل الابن بحركة السقوط النابض والأبواب ===== */
 function shsKidsHTML(){kidsLoad();const ks=KIDS;
  return `<div class="tb"><span class="klab">أبنائي</span>${ks.map((k,i)=>`<button class="kd${k.t===TOK?' on':''}" data-ki="${i}"><span class="cr k${i%5+1}">${esc(k.l||String(k.n||'؟').trim()[0]||'؟')}</span><em>${esc(k.n||'')}</em></button>`).join('')}${ks.length<6?`<button class="kd" data-kadd="1"><span class="cr add${ks.length<2?' pulse':''}">+</span><em>إضافة</em></button>`:''}</div>`}
-function shsKidsPos(){const st=shsStage();if(!st)return;const w=st.querySelector('.wlc'),k=st.querySelector('.kt');if(!w||!k)return;const r=w.getBoundingClientRect(),sr=st.getBoundingClientRect(),sc=SHS.s||1;k.style.top=((r.bottom-sr.top)/sc-1)+'px';k.style.left=((r.left-sr.left)/sc+22)+'px'}
+function shsKidsPos(){const st=shsStage();if(!st)return;const w=st.querySelector('.wlc'),k=st.querySelector('.kt');if(!w||!k||!w.offsetHeight)return;
+ k.style.top=(w.offsetTop+w.offsetHeight-1)+'px';k.style.left=(w.offsetLeft+22)+'px'}
 function shsKidsDraw(pop){const st=shsStage();if(!st)return;const k=st.querySelector('#kt');if(!k)return;k.innerHTML=shsKidsHTML();shsKidsPos();if(pop){const l=[...k.querySelectorAll('.kd[data-ki] .cr')].pop();if(l)l.classList.add('pop')}}
 function shsKidSheet(on){const st=shsStage();if(!st)return;const sh=st.querySelector('#ksh'),sc=st.querySelector('#kscr');if(!sh)return;
  if(on){kidsLoad();st.querySelector('#ksh-t').textContent='ضع كود الابن '+(KORD[KIDS.length]||'');st.querySelector('#ksh-pin').value='';st.querySelector('#ksh-e').textContent='';st.querySelector('#ksh-go').disabled=false}
@@ -3414,7 +3416,8 @@ function shsKidsMount(stage){
   if(t.closest('#ksh-cl')||t.closest('#kscr')){shsKidSheet(false);return}
   if(t.closest('#ksh-go')){shsKidAddGo();return}});
  stage.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='ksh-pin')shsKidAddGo()});
- setTimeout(shsKidsPos,60)}
+ [0,60,200,500,1000,1800].forEach(t=>setTimeout(shsKidsPos,t));requestAnimationFrame(()=>requestAnimationFrame(shsKidsPos));
+ try{const w=stage.querySelector('.wlc');if(w&&window.ResizeObserver)new ResizeObserver(()=>shsKidsPos()).observe(w)}catch(e){}}
 /* خروج: الشريط يرتفع والصفحتان تختفيان (خلفية خضراء) */
 function shsKidOut(stage){const A=[],hide=(el,dx)=>{if(el)A.push(el.animate([{transform:'none',opacity:1},{transform:`translateX(${dx}%)`,opacity:0}],{duration:320,easing:'ease-in',fill:'forwards'}))};
  const w=stage.querySelector('.wlc');if(w)A.push(w.animate([{transform:'none',opacity:1},{transform:'translateY(-150%) scale(.92)',opacity:0}],{duration:350,easing:'ease-in',fill:'forwards'}));
@@ -7064,7 +7067,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='cde116001ae0';
+const BUILD='6b08c0a118a1';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
