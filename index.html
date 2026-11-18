@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="a2d188530559">
+<meta name="build" content="c82abadc9e82">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1773,18 +1773,25 @@ async function gmtSave(){const g=GMTG,L=gmtEdit().map(p=>[String(p[0]).trim(),St
 /* ===== النسخ الاحتياطي: زر في غرفة التحكم ينزّل ملف JSON فيه كل بيانات النظام ===== */
 function bkLast(){try{return +localStorage.getItem('qt-bk-last')||0;}catch(e){return 0;}}
 function bkCard(){const t=bkLast(),d=t?Math.floor((Date.now()-t)/864e5):null,warn=!t||d>=7;
-  return `<div class="sec" style="margin:16px 6px 8px"><b>النسخ الاحتياطي</b></div><button class="glass item" id="bk-btn" onclick="bkRun()" style="margin-bottom:6px${warn?';background:rgba(224,162,27,.28)':''}"><div class="mini">💾</div><div class="grow"><div class="t">تحميل نسخة احتياطية كاملة</div><div class="mut">${t?'آخر نسخة من هذا الجهاز: '+(d===0?'اليوم':'قبل '+d+' يوم'):'ما نزّلت نسخة من هذا الجهاز بعد'} · يُنصح مرة بالأسبوع</div></div>${CHEV}</button><div class="mut" style="margin:0 8px 10px;font-size:12.5px;line-height:1.8">الملف فيه الأرقام السرية وكل البيانات، احفظه في مكان آمن ولا ترسله لأحد.</div>`;}
+  return `<div class="sec" style="margin:16px 6px 8px"><b>النسخ الاحتياطي</b></div><button class="glass item" id="bk-btn" onclick="bkRun()" style="margin-bottom:6px${warn?';background:rgba(224,162,27,.28)':''}"><div class="mini">💾</div><div class="grow"><div class="t">تحميل نسخة احتياطية كاملة</div><div class="mut">${t?'آخر نسخة من هذا الجهاز: '+(d===0?'اليوم':'قبل '+d+' يوم'):'ما نزّلت نسخة من هذا الجهاز بعد'} · يُنصح مرة بالأسبوع</div></div>${CHEV}</button><div class="mut" style="margin:0 8px 10px;font-size:12.5px;line-height:1.8">يشمل القرآن الكريم والعلوم الشرعية والمعلمين والطلاب واللعبة والمزرعة. الملف فيه الأرقام السرية وكل البيانات، احفظه في مكان آمن ولا ترسله لأحد.</div>`;}
 async function bkRun(){const b=$('bk-btn');if(b&&b.dataset.busy)return;if(b)b.dataset.busy='1';toast('جاري تجهيز النسخة...');
-  try{const a=await srv('export_backup',{p_part:'core'});
-    if(!a||!a.data){toast(a&&a.error==='auth'?'تحتاج تدخل بحساب المدير':'هذي الميزة تحتاج تشغيل ملف SQL جديد (export-backup)',true);return;}
-    const g=await srv('export_backup',{p_part:'game'});
-    if(!g||!g.data){toast('تعذّر تجهيز بيانات اللعبة، جرّب مرة ثانية',true);return;}
-    const out=Object.assign({exported_at:a.at,note:'نسخة احتياطية كاملة (بدون جلسات الدخول وسجل محاولات الدخول)'},a.data,g.data);
-    const n=Object.keys(out).filter(k=>Array.isArray(out[k])).reduce((s,k)=>s+out[k].length,0);
+  try{
+    /* أربعة أجزاء: القرآن والمعلمون (core) · اللعبة القديمة (game) · العلوم الشرعية كلها (sharia) · أي جداول أخرى (other) */
+    const PARTS=['core','game','sharia','other'],data={};let at=null;
+    for(const p of PARTS){
+      const r=await srv('export_backup',{p_part:p});
+      if(!r||!r.data){
+        if(r&&r.error==='auth'){toast('تحتاج تدخل بحساب المدير',true);return;}
+        toast(p==='core'?'هذي الميزة تحتاج تشغيل ملف SQL جديد (export-backup)':'تعذّر تجهيز جزء من النسخة ('+p+')، ما نزّلت شيئاً. جرّب مرة ثانية',true);return;}
+      if(p==='sharia'&&!Object.keys(r.data).some(k=>k.indexOf('sharia_')===0)){toast('النسخة ناقصة: قاعدة البيانات تحتاج تحديث (export-backup-full)، ما نزّلت شيئاً',true);return;}
+      at=at||r.at;Object.assign(data,r.data);}
+    const tables={};Object.keys(data).forEach(k=>{if(Array.isArray(data[k]))tables[k]=data[k].length;});
+    const out=Object.assign({exported_at:at,note:'نسخة احتياطية كاملة: القرآن والعلوم الشرعية والمعلمون واللعبة (بدون جلسات الدخول وسجل محاولات الدخول)',tables},data);
+    const n=Object.values(tables).reduce((s,x)=>s+x,0),nt=Object.keys(tables).length;
     const blob=new Blob([JSON.stringify(out)],{type:'application/json'}),u=URL.createObjectURL(blob),el=document.createElement('a');
     el.href=u;el.download='quran-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(el);el.click();el.remove();setTimeout(()=>URL.revokeObjectURL(u),30000);
     try{localStorage.setItem('qt-bk-last',String(Date.now()));}catch(e){}
-    toast('نزلت النسخة ('+n+' سجل، '+Math.round(blob.size/1024)+' كيلوبايت)');if(T.view==='home')aHome();
+    toast('نزلت النسخة ('+nt+' جدول، '+n+' سجل، '+(blob.size/1048576).toFixed(1)+' ميجا)');if(T.view==='home')aHome();
   }catch(e){toast('تعذّر تحميل النسخة',true);}
   finally{if(b)delete b.dataset.busy;}}
 
@@ -7348,7 +7355,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='a2d188530559';
+const BUILD='c82abadc9e82';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
