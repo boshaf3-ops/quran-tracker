@@ -143,6 +143,20 @@ body.vis #pr,body.vis #pl,body.vis #chest,body.vis #cgear,body.vis #fbx,body.vis
 .fr.t1{background:linear-gradient(#fff0a8,#ffd45a)}.fr.t2{background:linear-gradient(#f4f6fa,#cfd6e2)}.fr.t3{background:linear-gradient(#ffe0c0,#e8a96a)}
 .fr .rn{font-size:15px}.fr .rn.rk1,.fr .rn.rk2,.fr .rn.rk3{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:2.5px solid #2b1a0a;color:#fff;-webkit-text-stroke:2px #2b1a0a;paint-order:stroke fill;font-size:15px;flex:none}.fr .rn.rk1{background:linear-gradient(#ffe36a,#e8a80c)}.fr .rn.rk2{background:linear-gradient(#f4f6fa,#98a3b8)}.fr .rn.rk3{background:linear-gradient(#f0b27a,#b8692a)}
 #fpanel .mebar{margin-top:8px;padding:8px 12px;border-radius:14px;background:linear-gradient(#ffe9a0,#ffd45a);border:3px solid #2b1a0a;color:#2b1a0a;font-weight:900;font-size:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}#fpanel .mebar b{font-size:16px}#fpanel .mebar span{flex:1}#fpanel .mebar small{width:100%;opacity:.8;font-size:10.5px}
+
+#tabs .fb[data-mode=medals]{background:#ffeaa0;transform:rotate(-1.2deg)}#tabs .fb[data-mode=medals] .ic{color:#b8860b}
+#fpanel .sum{margin:6px 0 8px;padding:8px 10px;border-radius:14px;background:rgba(0,0,0,.28);font-weight:800;font-size:12.5px;line-height:1.7;color:#fff}#fpanel .sum b{color:#ffd45a;font-size:15px}
+#fpanel .dots{display:flex;gap:4px;margin-top:6px}#fpanel .dots i{flex:1;height:8px;border-radius:5px;background:rgba(255,255,255,.2)}#fpanel .dots i.d{background:linear-gradient(#ffe36a,#f0a81c)}#fpanel .dots i.c{background:linear-gradient(#9fe35a,#4fbf2a)}
+#fpanel .lst.mg{padding:5px 6px 8px;display:grid;grid-template-columns:1fr 1fr;gap:9px;align-content:start;flex-direction:initial}
+.mc2{border-radius:16px;padding:8px 6px 9px;text-align:center;background:linear-gradient(#fff2cf,#f0d598);border:3px solid #2b1a0a;color:#2b1a0a;position:relative}
+.mc2.lk{background:linear-gradient(#e9e4d8,#d2ccbd);border-color:#6d6354}
+.mc2.cur{border-color:#e0a80c;box-shadow:0 0 0 3px #ffe36a,0 0 18px rgba(255,200,40,.8)}
+.mc2 .mb svg{width:96px;height:auto}.mc2 .mb.lk svg{filter:grayscale(1) brightness(1.25) contrast(.75) opacity(.4)}
+.mc2 .no{position:absolute;top:6px;right:8px;font-weight:900;font-size:11px;opacity:.7}
+.mc2 .okk{position:absolute;top:5px;left:7px;width:22px;height:22px;border-radius:50%;background:linear-gradient(#9fe35a,#3fb21f);border:2.5px solid #2b1a0a;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:900}
+.mc2 .nm{font-weight:900;font-size:13px;margin-top:2px;line-height:1.3}.mc2.lk .nm{opacity:.55}
+.mc2 .mut{font-size:10.5px;font-weight:700;color:#5a3a15;margin-top:3px}.mc2 .mut.ok{color:#2f7a14}.mc2.lk .mut{color:#5a4a30}
+.mc2 .pb{height:9px;border-radius:6px;background:rgba(0,0,0,.2);overflow:hidden;margin:5px 0 3px}.mc2 .pb i{display:block;height:100%;background:linear-gradient(#9fe35a,#4fbf2a)}
 body:not(.test) #cgear{display:none!important}
 </style></head><body><div id="ld"><i></i>جارٍ تحضير المزرعة…</div>
 <div id="bg"></div><canvas id="c"></canvas><div id="ctl"></div>
@@ -755,11 +769,11 @@ function heartHTML(i){if(VIS){const a=VIS;return a.today?`<div class="hb adm don
 function fcard(){const lg=$('fleg'),fr=FM.friend||(FR.ro?FR.cur:null);
  if(fr){const h=heartHTML(fr.i);lg.className='gh';lg.innerHTML=h;lg.style.display=h?'flex':'none'}
  else{lg.className='nm';lg.innerHTML=`🏡 مزرعة ${FM.name}`;lg.style.display='block'}}
-const IC={drop:'<path d="M12 3S5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/>',sprout:'<path d="M12 21V11"/><path d="M12 11c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/>',house:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',friends:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14c2.8 0 4.5 2 4.5 5"/>',heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M13.5 13l-3 3 3 3"/><path d="M10.5 16H16"/>',back:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',tree:'<path d="M12 21v-6"/><circle cx="12" cy="9" r="5"/>',crown:'<path d="M4 18l-1-10 5 4 4-7 4 7 5-4-1 10z"/><path d="M5 21h14"/>'};
+const IC={medal:'<path d="M8 2h8l-2 6h-4z"/><circle cx="12" cy="15" r="6"/><path d="M12 12l1 2 2 .3-1.5 1.4.4 2-1.9-1-1.9 1 .4-2L9 14.3l2-.3z"/>',drop:'<path d="M12 3S5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/>',sprout:'<path d="M12 21V11"/><path d="M12 11c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/>',house:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',friends:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14c2.8 0 4.5 2 4.5 5"/>',heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M13.5 13l-3 3 3 3"/><path d="M10.5 16H16"/>',back:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',tree:'<path d="M12 21v-6"/><circle cx="12" cy="9" r="5"/>',crown:'<path d="M4 18l-1-10 5 4 4-7 4 7 5-4-1 10z"/><path d="M5 21h14"/>'};
 const I=n=>`<svg class="ic" viewBox="0 0 24 24">${IC[n]}</svg>`;
 const BD=()=>`<i class="bd">${I('heart')}${AR(FR.recv)}</i>`;
 let SWS=0;function swSet(v){SWS=v;const e=$('tabs').querySelector('.s1');if(e)requestAnimationFrame(()=>requestAnimationFrame(()=>{e.dataset.s=v}))}
-const FB=()=>VIS?'':`<div class="fb" data-mode="friends">${I('friends')}<span class="fl">أصدقائي</span>${BD()}</div>`;
+const FB=()=>VIS?'':`<div class="fb" data-mode="friends">${I('friends')}<span class="fl">أصدقائي</span>${BD()}</div><div class="fb" data-mode="medals">${I('medal')}<span class="fl">أوسمتي</span></div>`;
 let _lv=null,_lvt=-1;
 function lvWatch(){const n=LV.lvOf(ME.lt);if(_lv===null){_lv=n;return}if(n!==_lv){const up=n>_lv;_lv=n;lvUI();fsAuto();if(FM.on&&!FM.friend)farmCfgApply();if(up)lvUp(n)}if(ME.lt!==_lvt){_lvt=ME.lt;if($('lvc').classList.contains('on')&&!FR.cur)lvCard()}}
 let _evoTk=0;
@@ -816,6 +830,15 @@ async function openReal(mode){FR.mode=mode;FR.busy=true;FRL.length=0;fpanelReal(
 function fpanelUI(){if(RMODE)return fpanelReal();const p=$('fpanel');const rk=FRL.map(f=>({f,lt:f.lt,me:0})).concat([{f:{n:'أنت',i:-1},lt:ME.lt,me:1}]).sort((x,y)=>LV.lvOf(y.lt)-LV.lvOf(x.lt)||y.lt-x.lt);
  p.innerHTML=`<div class="ph o"><span>أصدقائي</span><div class="x" data-fx="1">✕</div></div><div class="nt">مرتّبون حسب الوسام ثم النجوم. اختر صديقاً وادخل مزرعته.</div><div class="lst">${rk.map((x,k)=>{const n=LV.lvOf(x.lt),r=LV.rk(n);return `<div class="fr ${x.me?'me':''}"><div class="rn">${AR(k+1)}</div><div class="bgs">${LV.badge(r,LV.sb(n),false,0,true)}</div><div class="tx"><b>${x.f.n}</b><small>${LV.RW[r]}<br>المستوى ${AR(n)}</small></div>${x.me?'':`<div class="bt"><span data-fv="${x.f.i},farm">👁 شاهد مزرعته</span></div>`}</div>`}).join('')}</div>`}
 function openFriends(){if(RMODE){openReal('friends');return}fpanelUI();$('fpanel').classList.add('on');$('tabs').querySelectorAll('.fb').forEach(d=>d.classList.add('on'))}
+
+/* ===== خطة الأوسمة: شبكة الأوسمة العشرة (المكتمل ملوّن، الحالي يلمع، القادم مطفأ) ===== */
+function openMedals(){const p=$('fpanel'),f=FR.cur,lt=f?f.lt:ME.lt,n=LV.lvOf(lt),CR=LV.rk(n),CS=LV.sb(n),all=n>=50,done=all?10:CR,left=10-done;
+ const nx=n<50?Math.max(0,Math.min(100,Math.round((lt-LV.T[n-1])/(LV.T[n]-LV.T[n-1])*100))):100;
+ const state=r=>all||r<CR?'ok':r===CR?'cur':'lk';
+ const cards=Array.from({length:10},(_,r)=>{const s=state(r);
+  return `<div class="mc2 ${s==='ok'?'dn':s}"><div class="no">${AR(r+1)}</div>${s==='ok'?'<div class="okk">✓</div>':''}<span class="mb ${s==='lk'?'lk':''}">${LV.badge(r,s==='cur'?CS:5,false,0,true)}</span><div class="nm">${LV.RN[r]}</div>${s==='cur'?`<div class="pb"><i style="width:${nx}%"></i></div><div class="mut">النجمة ${AR(CS)} من ٥${n<50?' · باقي '+AR(LV.T[n]-lt)+' لتر':''}</div>`:s==='lk'?`<div class="mut">من ${AR(LV.T[r*5])} لتر</div>`:`<div class="mut ok">مكتمل</div>`}</div>`}).join('');
+ p.innerHTML=`<div class="ph o"><span>🏅 ${f?'أوسمة '+f.n:'أوسمتي'}</span><div class="x" data-fx="1">✕</div></div><div class="sum">${f?'حصل':'حصلتَ'} على <b>${AR(done)}</b> أوسمة كاملة · باقي ${f?'له':'لك'} <b>${AR(left)}</b> من ١٠ أوسمة<div class="dots">${Array.from({length:10},(_,r)=>`<i class="${state(r)==='ok'?'d':state(r)==='cur'?'c':''}"></i>`).join('')}</div></div><div class="lst mg">${cards}</div>`;
+ p.classList.add('on');$('tabs').querySelectorAll('.fb').forEach(d=>d.classList.add('on'))}
 function closeFriends(){$('fpanel').classList.remove('on');if(FR.cur)friendTabs();else tabHL(FR.back)}
 function leaveRO(){const b=FR.backup;if(!b)return;while(tiles.length>Math.max(1,b.length))world.remove(tiles.pop().g);while(tiles.length<b.length)buildTile(tiles.length);tiles.forEach((q,i)=>{clearTile(q);const d=b[i];if(d&&d.type>=0){q.type=d.type;q.stage=d.stage;q.w=d.w;makePlant(q)}});FR.ro=false;FR.backup=null;camT.x=(tiles.length-1)*TW/2;resize()}
 function roMonth(fr){if(!FR.backup)FR.backup=tiles.map(q=>({type:q.type,w:q.w,stage:q.stage}));const pl=fr.yr[MK]||[],n=Math.max(1,pl.length);while(tiles.length>n)world.remove(tiles.pop().g);while(tiles.length<n)buildTile(tiles.length);tiles.forEach((q,i)=>{clearTile(q);const d=pl[i];if(d){q.type=d[0];q.stage=d[1];q.w=price(q)*SF[d[1]];makePlant(q)}});FR.ro=true;jugRoot.visible=false;$('chest').style.display='none';camT.x=(tiles.length-1)*TW/2;resize();hud()}
@@ -825,7 +848,7 @@ function showScene(m){const farm=m==='farm';
  if(!farm&&FM.edit)setEdit(false);hud();fbxUI()}
 function leaveFriend(){if(FR.ro)leaveRO();FM.friend=null;FR.cur=null}
 function refreshTabs(){if(FR.cur)friendTabs();else ownTabs(FR.back)}
-function setMode(m){if(m==='friends'){openFriends();return}if(m==='best'){openReal('best');return}leaveFriend();FR.back=m;ownTabs(m);showScene(m)}
+function setMode(m){if(m==='friends'){openFriends();return}if(m==='medals'){openMedals();return}if(m==='best'){openReal('best');return}leaveFriend();FR.back=m;ownTabs(m);showScene(m)}
 async function viewFriend(i,kind){const fr=FRL[i];if(!fr)return;
  if(RMODE&&!fr.loaded){const r=await brpc('visit',{sid:fr.id});if(!r||!r.ok){toast(r&&r.error==='denied'?'لا يمكنك مشاهدة هذه المزرعة':'تعذّر تحميل المزرعة، حاول مجدداً');return}fr.lt=Math.max(0,+r.lt||0);fr.cm=!!r.cm;fr.fs=r.st&&r.st.fs;fr.yr=stYr(r.st);fr.loaded=true}
  $('fpanel').classList.remove('on');FR.idx=i;FR.kind=kind;FR.cur=fr;FM.friend=fr;friendTabs();
