@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="52f27b423f3d">
+<meta name="build" content="a2d188530559">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3031,13 +3031,13 @@ function shsModel(){const s=SHS.st,m={};
  m.prev=Object.keys(byW).filter(k=>k).sort().reverse().map(k=>{const d=shsD(k);return {no:shsWeekNo(k),range:shAR(d.getDate())+' – '+shsFmt(shsAdd(d,4)),items:byW[k]}});
  const undated=byW['']||[];if(undated.length)m.prev.push({no:0,range:'',items:undated});
  /* السلوك والماء */
- const rfw=s.rfw||{},cur=rfw[s.ws]||{p:0,n:0,pr:{},nr:{}},CAP=300;
+ const rfw=s.rfw||{},jk=s.jws||s.ws,cur=rfw[jk]||{p:0,n:0,pr:{},nr:{}},CAP=300;
  const top=(map,L)=>Object.keys(map||{}).map(i=>[L[+i],map[i]]).filter(x=>x[0]&&x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,3);
  const net=w=>Math.max(0,(w.p||0)-(w.n||0));
  const tot=net(cur),fullJ=Math.floor(tot/CAP);
  m.beh={pos:cur.p||0,neg:cur.n||0,net:tot-fullJ*CAP,total:tot,full:fullJ,wasted:Math.min(cur.n||0,cur.p||0),max:CAP,tp:top(cur.pr,SHS_BPOS),tn:top(cur.nr,SHS_BNEG),note:''};
- let farm=0;Object.keys(rfw).forEach(k=>{if(k<s.ws)farm+=net(rfw[k])});m.farm=farm+(s.farm_adj||0);m.adj=s.adj||[];if(s.gearn!=null){m.earn=s.gearn;m.spent=s.gspent||0;m.farm=Math.max(0,m.earn-m.spent);m.starter=s.starter||0}
- m.moved=0;if(dow>=5){const pk=shsKey(shsAdd(ws,-7)),pw=rfw[pk];if(pw)m.moved=net(pw)}
+ let farm=0;Object.keys(rfw).forEach(k=>{if(k<jk)farm+=net(rfw[k])});m.farm=farm+(s.farm_adj||0);m.adj=s.adj||[];if(s.gearn!=null){m.earn=s.gearn;m.spent=s.gspent||0;m.farm=Math.max(0,m.earn-m.spent);m.starter=s.starter||0}
+ m.moved=0;if(dow>=5||jk>s.ws){const pk=shsKey(shsAdd(shsD(jk),-7)),pw=rfw[pk];if(pw)m.moved=net(pw)}
  /* الكشف */
  const g=s.grades||{},sc=g.sc||{},pub=g.pub||{},mx=g.mx||{};
  m.fc=!!(s.me.g&&+s.me.g<=3);
@@ -3056,7 +3056,7 @@ function shsFullJugs(n){if(!n)return '';const k=Math.min(n,3);let i='';for(let x
 function shsBehHome(m){const B=m.beh,pct=Math.round(B.net*100/B.max);
  return `<div class="glass card"><div class="ct"><b>سلوكي هذا الأسبوع</b><small>${esc(m.first)}</small></div>`+
  (B.tp.length?`<div class="chips">${B.tp.map(p=>`<span class="pill">${esc(p[0])}<i>×${shAR(p[1])}</i></span>`).join('')}</div>`:`<div class="mut">لا توجد سلوكيات بعد هذا الأسبوع.</div>`)+
- `<div class="can">${shsCan(pct)}<div class="tx"><b>إبريق الماء${B.full?' رقم '+shAR(B.full+1):''}: ${shAR(B.net)} لتراً</b><div class="bar"><i style="width:${pct}%"></i></div><div class="mut">من ${shAR(B.max)} لتراً. كل خميس ينتقل إلى المزرعة.</div></div>${shsFullJugs(B.full)}</div><button class="more" data-tab="beh">تفاصيل سلوكي والماء المهدور ‹</button></div>`}
+ `<div class="can">${shsCan(pct)}<div class="tx"><b>إبريق الماء${B.full?' رقم '+shAR(B.full+1):''}: ${shAR(B.net)} لتراً</b><div class="bar"><i style="width:${pct}%"></i></div><div class="mut">من ${shAR(B.max)} لتراً. كل خميس الساعة ١:٣٠ مساءً بتوقيت البحرين ينتقل إلى المزرعة.</div></div>${shsFullJugs(B.full)}</div><button class="more" data-tab="beh">تفاصيل سلوكي والماء المهدور ‹</button></div>`}
 const SHS_RD='M32 3c3 4 5 6 5 9a5 5 0 0 1-10 0c0-3 2-5 5-9z';
 const shsBBTube=(d,w)=>`<path d="${d}" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="${w+1.8}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="rgba(190,230,255,.32)" stroke-width="${w}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="${Math.max(.7,w*.18)}" stroke-linecap="round" transform="translate(-.5 -.7)"/>`;
 const shsBBCan=pct=>{const p=Math.min(100,Math.max(0,pct))/100,B='M14 30h46l4 38a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6z';
@@ -3073,8 +3073,8 @@ function shsBehTab(m){const B=m.beh,pct=Math.round(B.net*100/B.max);
  <div class="glass bbt g"><span class="ar">↑</span><b>${shAR(B.pos)}</b><small>نقاط إيجابية</small></div>
  <div class="glass bbt r"><span class="ar">↓</span><b>${shAR(B.neg)}</b><small>نقاط سلبية</small></div>
  <div class="glass bbw">${shsRoadIc}<b>${shAR(B.wasted)}</b><small>ماء مهدور هذا الأسبوع</small></div></div>
- <div class="glass card" style="margin-top:10px"><div class="mut">في إبريقك${B.full?' رقم '+shAR(B.full+1):''} الآن <b class="jl">${shAR(B.net)}</b> لتراً من ${shAR(B.max)}.${B.full?` وعندك ${B.full===1?'إبريق ممتلئ':shAR(B.full)+' أباريق ممتلئة'} (${shAR(B.full*B.max)} لتراً) محفوظة، فلا يضيع منها شيء.`:''} ماؤك هو الإيجابيات ناقص السلبيات، وكل خميس ينتقل إلى المزرعة ويفرغ الإبريق.${B.wasted?' وما ذهب هدراً بسبب السلوكيات السلبية لا يعود.':' ولم يذهب منك ماء هذا الأسبوع، أحسنت!'}</div></div>
- ${m.moved?`<div class="moved">${shsSpill}<div><b>انتقلت ${shAR(m.moved)} لتراً إلى المزرعة</b><div class="mut">انتهى الأسبوع، وفرغ إبريقك وبدأ أسبوع جديد.</div></div></div>`:''}
+ <div class="glass card" style="margin-top:10px"><div class="mut">في إبريقك${B.full?' رقم '+shAR(B.full+1):''} الآن <b class="jl">${shAR(B.net)}</b> لتراً من ${shAR(B.max)}.${B.full?` وعندك ${B.full===1?'إبريق ممتلئ':shAR(B.full)+' أباريق ممتلئة'} (${shAR(B.full*B.max)} لتراً) محفوظة، فلا يضيع منها شيء.`:''} ماؤك هو الإيجابيات ناقص السلبيات، وكل خميس الساعة ١:٣٠ مساءً بتوقيت البحرين ينتقل كله إلى المزرعة ويفرغ الإبريق.${B.wasted?' وما ذهب هدراً بسبب السلوكيات السلبية لا يعود.':' ولم يذهب منك ماء هذا الأسبوع، أحسنت!'}</div></div>
+ ${m.moved?`<div class="moved">${shsSpill}<div><b>انتقلت ${shAR(m.moved)} لتراً إلى المزرعة</b><div class="mut">انتقل إبريق الأسبوع كله إلى مزرعتك وبدأ إبريق جديد، فخذ راحتك 🌿</div></div></div>`:''}
  </div><div class="c"><div class="glass card"><div class="rh" style="margin-top:0">أبرز سلوكياتي الإيجابية المتكررة</div>${shsRank(B.tp,'p')}</div>
  <div class="glass card"><div class="rh" style="margin-top:0">أبرز سلوكياتي السلبية المتكررة</div>${shsRank(B.tn,'n')}</div></div></div>`}
 function shsWeekRows(m){const w=m.week,n=m.next;
@@ -3153,7 +3153,7 @@ function shsHeartCheck(){const n=SHS.st&&+SHS.st.adm_new||0;if(!n||document.getE
 addEventListener('message',e=>{if(e.origin!==location.origin||!e.data)return;if(e.data.type==='farm-rpc'){shsGameRpc(e.data,e.source);return}if(e.data.type==='farm-home'){shsGameClose();SHS_GQ.then(()=>{if(!document.getElementById('shs-game'))shsRender(true)}).catch(()=>{})}else if(e.data.type==='farm-save'&&document.getElementById('shs-game')){const d=e.data;SHS_GQ=SHS_GQ.then(()=>shsGameSave(d)).catch(()=>{})}});
 function shsFarmTab(m){const L=m.farm,cans=Math.floor(L/100),rem=L%100;
  return `<div class="glass farm"><svg class="pl" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">${SHS_IC.leaf}<path d="M12 20v-9"/></svg><b>مزرعة الشرعيات</b><div class="mut" style="margin-top:6px">هنا تسقي زرعك بلترات الماء التي جمعتها، وتكبر شجرتك أسبوعاً بعد أسبوع.</div>${SHS.st&&SHS.st.game?'<button class="btn" data-game="1" style="margin:12px auto 0;max-width:260px">ادخل مزرعتي 🌱</button>':'<span class="soon">السقي قريباً</span>'}</div>
- <div class="glass card"><div class="ct"><b>مخزن مائي</b><small>ينتقل إليه إبريقك كل خميس</small></div><div class="stock"><b>${shAR(L)}</b><span>لتر في مخزنك</span></div>
+ <div class="glass card"><div class="ct"><b>مخزن مائي</b><small>ينتقل إليه إبريقك كل خميس ١:٣٠ مساءً</small></div><div class="stock"><b>${shAR(L)}</b><span>لتر في مخزنك</span></div>
  <div class="cans">${Array.from({length:cans},()=>`<div class="mc">${shsCan(100)}</div>`).join('')}${rem?`<div class="mc part">${shsCan(rem)}</div>`:''}</div>
  <div class="mut" style="margin-top:6px">${L?`كل إبريق = ١٠٠ لتر. ${cans?('عندك '+(cans===1?'إبريق واحد':cans===2?'إبريقان':shAR(cans)+' أباريق')+(rem?' و':'')):'عندك '}${rem?shAR(rem)+' لتراً في الإبريق التالي':''}. تحتفظ بها لتسقي مزرعتك متى شئت، وحتى نهاية الفصل.`:(m.starter!=null?'نفد ماؤك. استمر في حصصك وأسئلتك وسلوكك الحسن لتحصل على لترات جديدة 💧':'سيمتلئ مخزنك بإبريقك الأسبوعي كل خميس.')}${m.spent?`<div style="margin-top:6px;font-weight:800">سقيتَ حتى الآن ${shAR(m.spent)} لتراً من مزرعتك 🌱</div>`:''}</div></div>${shsAdjCard(m)}`}
 function shsSheet(m){const s=SHS.sheet;if(!s)return '';
@@ -7348,7 +7348,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='52f27b423f3d';
+const BUILD='a2d188530559';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
