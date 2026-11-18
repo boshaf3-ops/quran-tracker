@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="8f092cf50db6">
+<meta name="build" content="a0c70459d76a">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -4445,38 +4445,130 @@ const RN=['المُخلِص','المُتفقِّه','المُصغي','الواع
 const RW=RN.map(n=>'وسام الطالب '+n);
 const MN=['يبدأ طلب العلم بنيّة صادقة','يطلب الفهم لا الحفظ فقط','حسن الإنصات وأدب المجلس','يفهم ويحفظ ما يتعلّمه','يعمل بما علم','صبر على الطلب والمراجعة','حسن الخلق مع معلّمه وزملائه','صدق في القول والعمل وطلب العلم','طموح لا يقف عند حدّ، يسابق في الخير والعلم','ثبات على الحق والعلم حتى النهاية'];
 const DL=['«إنما الأعمال بالنيات» (متفق عليه)','«من يرد الله به خيراً يفقهه في الدين» (متفق عليه)','«فاستمعوا له وأنصتوا» (الأعراف ٢٠٤)','«نضّر الله امرأً سمع مقالتي فوعاها فأدّاها كما سمعها» (الترمذي)','«يا أيها الذين آمنوا لم تقولون ما لا تفعلون» (الصف ٢)','«إنما يوفّى الصابرون أجرهم بغير حساب» (الزمر ١٠)','«إن من أحبكم إليّ وأقربكم مني مجلساً يوم القيامة أحاسنكم أخلاقاً» (الترمذي)','«يا أيها الذين آمنوا اتقوا الله وكونوا مع الصادقين» (التوبة ١١٩)','«فاستبقوا الخيرات» (البقرة ١٤٨)','«يثبّت الله الذين آمنوا بالقول الثابت» (إبراهيم ٢٧)'];
-const MET=['برونزي','فضي','ذهبي','زمردي','ياقوتي','لعلي','جمشتي','بلاتيني','شمسي','أسطوري'];
+const MET=['خشبي','حجري','حديدي','برونزي','فضي','ذهبي','ألماسي','ياقوتي','جمشتي','كوني أسطوري'];
 const COL=[['#f0b886','#c98a43','#7a4a1c'],['#f7f9fb','#bcc6d0','#76828f'],['#fff0a0','#f3b81f','#b57a0a'],['#9ff2c8','#2fbf7a','#127a4a'],['#a9d6ff','#3a86e0','#1b4f9a'],['#ffa6b4','#e0405a','#92182e'],['#e1bcff','#9a57e0','#5e2a9a'],['#eefcff','#8fd3e6','#3a8aa0'],['#ffd59a','#ff8a2a','#b84a08'],['#fff0a0','#ff6fb5','#6a2fb5']];
 const GL=['<ellipse cx="12" cy="13" rx="4" ry="6.5" transform="rotate(30 12 13)"/>','<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>','<path d="M8 10a4 4 0 0 1 8 0c0 3-2 3.5-2 6a2.5 2.5 0 0 1-5 0"/><path d="M11 10a1.2 1.2 0 0 1 2.4 0c0 1.2-1.2 1.4-1.2 2.4"/>','<path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4z"/><path d="M20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/>','<path d="M12 21V11"/><path d="M12 11c0-4 3-6 7-6 0 4-3 6-7 6z"/><path d="M12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/>','<path d="M12 3S5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/>','<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>','<circle cx="12" cy="12" r="8"/><path d="M8 12.5l2.7 2.7L16 9.5"/>','<path d="M3 20l6-10 4 6 3-4 5 8z"/><path d="M9 10V4"/><path d="M9 4h5l-1.5 2L14 8H9"/>','<path d="M12 21V10"/><path d="M12 10c-3-4-6-4-8-3 3 0 6 1 8 3z"/><path d="M12 10c3-4 6-4 8-3-3 0-6 1-8 3z"/><path d="M12 10V3"/><path d="M9 21h6"/>'];
 const star=(n,ro,ri)=>{let p=[];for(let i=0;i<n*2;i++){const a=Math.PI*i/n-Math.PI/2,r=i%2?ri:ro;p.push((50+r*Math.cos(a)).toFixed(1)+','+(50+r*Math.sin(a)).toFixed(1))}return p.join(' ')};
 const flower=()=>{let s='<circle cx="50" cy="50" r="31"/>';for(let i=0;i<8;i++){const a=Math.PI*2*i/8;s+=`<circle cx="${(50+29*Math.cos(a)).toFixed(1)}" cy="${(50+29*Math.sin(a)).toFixed(1)}" r="13"/>`}return s};
 const SH=[()=>'<circle cx="50" cy="50" r="40"/>',()=>'<path d="M50 8L88 20V52C88 76 70 90 50 98 30 90 12 76 12 52V20Z"/>',()=>'<polygon points="50,8 88,29 88,71 50,92 12,71 12,29"/>',()=>'<polygon points="50,5 95,50 50,95 5,50"/>',()=>'<polygon points="34,8 66,8 92,34 92,66 66,92 34,92 8,66 8,34"/>',()=>`<polygon points="${star(8,45,32)}"/>`,flower,()=>'<path d="M50 4L90 16V52C90 76 72 92 50 100 28 92 10 76 10 52V16Z"/>',()=>`<polygon points="${star(12,46,36)}"/>`,()=>`<polygon points="${star(10,47,34)}"/><circle cx="50" cy="50" r="33"/>`];
 let uid=0;
-function badge(r,sub,all){const id='g'+(uid++),[l,m,d]=COL[r],fill=r===9?`<linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset=".35" stop-color="#ff8fc8"/><stop offset=".7" stop-color="#7fd0ff"/><stop offset="1" stop-color="#a77bff"/></linearGradient>`:`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${l}"/><stop offset=".55" stop-color="${m}"/><stop offset="1" stop-color="${d}"/></linearGradient>`;
- const sh=SH[r](),gl=r===9?'#5a2a8a':d;let st='';for(let i=0;i<5;i++){const on=all||i<sub;st+=`<polygon transform="translate(${50+(i-2)*15-7} 100) scale(.28)" points="${star(5,24,10).replace(/(\d+\.?\d*),(\d+\.?\d*)/g,(a,x,y)=>(x-26)+','+(y-26))}" fill="${on?'#ffd23a':'#c9bfa8'}" stroke="#7a4a1c" stroke-width="3" stroke-linejoin="round" transform-origin="0 0"/>`}
- return `<svg viewBox="0 0 100 114"><defs>${fill}</defs><g>
-  <g fill="#2b1a0a" stroke="#2b1a0a" stroke-width="6" stroke-linejoin="round">${sh}</g>
-  <g fill="url(#${id})">${sh}</g>
-  <g transform="translate(50 50) scale(.78) translate(-50 -50)" fill="#fff" fill-opacity=".28" stroke="${d}" stroke-opacity=".55" stroke-width="2">${r===6?'<circle cx="50" cy="50" r="40"/>':sh}</g>
-  <g transform="translate(25.5 25.5) scale(2.04)" fill="none" stroke="${gl}" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">${GL[r]}</g></g>
-  <g>${st}</g></svg>`}
+const M3PAL=[
+ {f:['#caa06b','#8d5b32','#4d2c14'],e:['#4a3320','#22150b'],s:['#ecc48f','#a8733f'],w:['#b78552','#6e4524'],r:['#8f5a3a','#4b2a18']},
+ {f:['#d3ddd8','#8a9892','#4a5651'],e:['#3f5a52','#1b2723'],s:['#dfe9e4','#8a9a93'],w:['#b3beb9','#6a7771'],r:['#6d8a7e','#33423c']},
+ {f:['#e7eef6','#98a6b6','#4a5766'],e:['#33486a','#141c28'],s:['#f4f8fc','#9aaabb'],w:['#c8d3df','#788799'],r:['#53698a','#243247']},
+ {f:['#ffddab','#d9904a','#7a4318'],e:['#6a3a1a','#24130a'],s:['#ffe8c4','#d38c47'],w:['#eeb06f','#9a5b26'],r:['#b3492f','#4d1a10']},
+ {f:['#ffffff','#cdd7e2','#6e7d8f'],e:['#2f5a96','#0f1f3d'],s:['#ffffff','#bccbe0'],w:['#f1f5fa','#a3b3c6'],r:['#2f6dc0','#133766']},
+ {f:['#fff6b8','#f5c030','#9b6200'],e:['#2a5fb8','#0b1f4a'],s:['#fff9d4','#f0b92a'],w:['#ffe582','#c98c0f'],r:['#2c6ad0','#102f66']},
+ {f:['#ffffff','#c2edff','#4a96c4'],e:['#1f7ad6','#08234e'],s:['#ffffff','#9fdcff'],w:['#f6fcff','#9ccbe8'],r:['#1e7fe0','#0a2f66']},
+ {f:['#fff3bc','#f3bb2e','#8f5700'],e:['#2f66f0','#0a1b5e'],s:['#eaf5ff','#7fc0ff'],w:['#ffec92','#cf9412'],r:['#2f68ea','#0e2a7a']},
+ {f:['#f9f0ff','#cfaaf5','#6a3fb0'],e:['#7a3de6','#1e0a4f'],s:['#fff2ff','#d6a8ff'],w:['#f4e8ff','#b48be6'],r:['#8a3fee','#2c0f6e']},
+ {f:['#eef9ff','#a8d8f5','#4b8fc0'],e:['#ee2a33','#5a0711'],s:['#fff3a8','#ffb21f'],w:['#ffe88c','#e0a21b'],r:['#e02d33','#6a0b12']}];
+const M3GOLD=['#fff0a0','#f2b82a','#946000'];
+const m3hx=c=>{if(c.length===4)c='#'+c[1]+c[1]+c[2]+c[2]+c[3]+c[3];return [1,3,5].map(i=>parseInt(c.slice(i,i+2),16))};
+const m3rgb=a=>'#'+a.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+const m3mix=(a,b,t)=>{const x=m3hx(a),y=m3hx(b);return m3rgb(x.map((v,i)=>v+(y[i]-v)*t))};
+const M3CX=120,M3CY=116;
+const M3NP=[6,5,6,5,6,6,6,8,6,6];            /* عدد أضلاع الإطار لكل مستوى */
+const m3pol=(n,r,rot)=>{const a=[];for(let i=0;i<n;i++){const t=(rot+360*i/n)*Math.PI/180;a.push([M3CX+r*Math.cos(t),M3CY+r*Math.sin(t)])}return a};
+const m3ps=a=>a.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+const m3P2=(x,y)=>x.toFixed(1)+','+y.toFixed(1);
+let M3UID=0;
+/* نجمة مفصّصة (وجه مضيء ووجه مظلل) */
+function m3fstar(cx,cy,ro,ri,cl,cd,sh,rot){rot=rot==null?-90:rot;let s='';const out=[];for(let i=0;i<5;i++){const a=rot+i*72,t=a*Math.PI/180,tl=(a-36)*Math.PI/180,tr=(a+36)*Math.PI/180,tip=[cx+ro*Math.cos(t),cy+ro*Math.sin(t)],l=[cx+ri*Math.cos(tl),cy+ri*Math.sin(tl)],r=[cx+ri*Math.cos(tr),cy+ri*Math.sin(tr)];
+  s+=`<polygon points="${m3P2(cx,cy)} ${m3P2(l[0],l[1])} ${m3P2(tip[0],tip[1])}" fill="${cl}"/><polygon points="${m3P2(cx,cy)} ${m3P2(tip[0],tip[1])} ${m3P2(r[0],r[1])}" fill="${cd}"/>`;out.push(tip,r)}
+  return s+`<polygon points="${m3ps(out)}" fill="none" stroke="${sh}" stroke-width="1" stroke-linejoin="round"/>`}
+function medal3(L,k,o){o=o||{};const still=!!o.still,id='m'+(M3UID++),pl=M3PAL[L],R=L*6+k,sc=(o.fit?.8+.0046*R:.54+.0072*R+.012*L);
+ const n=M3NP[L],rot=n===8?-67.5:-90,Ro=52,th=R>=18?11:9,Ri=Ro-th;
+ const wg=R>=48?5:R>=36?4:R>=24?3:R>=15?2:0, rb=R>=42?2:R>=21?1:0, tw=R>=51?3:R>=39?2:R>=27?1:0, sp=R>=10, inl=R>=18, aura=R>=30;
+ const c=pl.f,[f1,f2,f3]=c,[e1,e2]=pl.e,[s1,s2]=pl.s,[w1,w2]=pl.w,[r1,r2]=pl.r,sh=m3mix(f3,'#000',.5),hi=m3mix(f1,'#fff',.6);
+ let D='',B='';
+ const lg=(nm,x1,y1,x2,y2,st)=>D+=`<linearGradient id="${id}${nm}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">${st.map(s=>`<stop offset="${s[0]}" stop-color="${s[1]}"${s[2]!=null?` stop-opacity="${s[2]}"`:''}/>`).join('')}</linearGradient>`;
+ const rg=(nm,cx,cy,r,st)=>D+=`<radialGradient id="${id}${nm}" cx="${cx}" cy="${cy}" r="${r}">${st.map(s=>`<stop offset="${s[0]}" stop-color="${s[1]}"${s[2]!=null?` stop-opacity="${s[2]}"`:''}/>`).join('')}</radialGradient>`;
+ lg('gd',0,0,0,1,[[0,M3GOLD[0]],[.5,M3GOLD[1]],[1,M3GOLD[2]]]);
+ lg('w',0,0,0,1,[[0,w1],[1,w2]]);
+ lg('rb',0,0,0,1,[[0,r1],[1,r2]]);
+ rg('en',.5,.35,.85,[[0,m3mix(e1,'#fff',.12)],[.55,e1],[1,e2]]);
+ rg('au',.5,.5,.5,[[0,s1,.55],[1,s1,0]]);
+ rg('gm',.35,.3,.8,[[0,'#fff'],[.45,m3mix(s1,'#fff',.3)],[1,s2]]);
+ lg('sw',0,0,1,0,[[0,'#fff',0],[.5,'#fff',.9],[1,'#fff',0]]);
+ const lf=a=>{const d=Math.cos((a+125)*Math.PI/180);return (d+1)/2};            /* إضاءة من أعلى اليسار */
+ const metal=(l)=>l<.5?m3mix(f3,f2,l*2):m3mix(f2,f1,(l-.5)*2);
+ /* ---- هالة ---- */
+ if(aura)B+=`<circle cx="${M3CX}" cy="${M3CY}" r="${Ro+40}" fill="url(#${id}au)" opacity="${(.35+Math.min(R,59)/100).toFixed(2)}"/>`;
+ /* ---- أجنحة: ألواح ريش مائلة ---- */
+ if(wg){let w='';for(let i=0;i<wg;i++){const ang=-40+i*(78/(wg-1||1)),ln=(26+L*2.6)*(1-i*.1);w+=`<g transform="rotate(${ang.toFixed(1)})"><polygon points="0,-4.2 ${(ln-7).toFixed(1)},-4.2 ${ln.toFixed(1)},0 ${(ln-7).toFixed(1)},4.2 0,4.2" fill="url(#${id}w)" stroke="${m3mix(w2,'#000',.45)}" stroke-width=".8" stroke-linejoin="round"/><polygon points="0,-4.2 ${(ln-7).toFixed(1)},-4.2 ${ln.toFixed(1)},0 ${(ln-3).toFixed(1)},-1.6 0,-1.6" fill="#fff" opacity=".3"/><line x1="1" y1="-3.4" x2="${(ln-8).toFixed(1)}" y2="-3.4" stroke="url(#${id}gd)" stroke-width="1.4"/></g>`}
+  const ax=Ro*.86+2;B+=`<g transform="translate(${M3CX-ax} ${M3CY-6}) scale(-1 1)">${w}</g><g transform="translate(${M3CX+ax} ${M3CY-6})">${w}</g>`}
+ /* ---- شريط معلّق ---- */
+ const rbot=M3CY+Ro*.95;
+ if(rb){const tl=(dx,s)=>`<g transform="translate(${M3CX+dx} ${rbot-8}) scale(${s})"><polygon points="-15,0 15,0 15,30 0,42 -15,30" fill="url(#${id}rb)" stroke="${m3mix(r2,'#000',.5)}" stroke-width="1" stroke-linejoin="round"/><polygon points="-15,0 -4,0 -4,38 -15,30" fill="#fff" opacity=".14"/><polygon points="-8,6 8,6 8,28 0,36 -8,28" fill="none" stroke="url(#${id}gd)" stroke-width="1.2"/></g>`;
+  B+=rb===2?tl(-14,.92)+tl(14,.92):tl(0,1);B+=`<rect x="${M3CX-17}" y="${rbot-10}" width="34" height="8" rx="2" fill="url(#${id}gd)" stroke="${m3mix(M3GOLD[2],'#000',.4)}" stroke-width=".8"/>`}
+ /* ---- أبراج علوية ---- */
+ if(tw){const top=M3CY-Ro-1;for(let j=0;j<tw;j++){const wd=34-j*8,h=9,y=top-j*h-(j?0:0);B+=`<polygon points="${m3P2(M3CX-wd/2,y+3)} ${m3P2(M3CX+wd/2,y+3)} ${m3P2(M3CX+wd/2-5,y-h+3)} ${m3P2(M3CX-wd/2+5,y-h+3)}" fill="url(#${id}gd)" stroke="${m3mix(M3GOLD[2],'#000',.4)}" stroke-width=".9" stroke-linejoin="round"/><polygon points="${m3P2(M3CX-wd/2,y+3)} ${m3P2(M3CX-wd/2+5,y-h+3)} ${m3P2(M3CX-wd/2+11,y-h+3)} ${m3P2(M3CX-wd/2+6,y+3)}" fill="#fff" opacity=".28"/>`}
+  if(tw>=2)B+=`<path d="M${M3CX} ${top-tw*9+2}l5 6l-5 7l-5 -7Z" fill="url(#${id}gm)" stroke="${sh}" stroke-width=".8"/>`}
+ /* ---- أشواك ---- */
+ const Po=m3pol(n,Ro,rot),Pi=m3pol(n,Ri,rot);
+ if(sp){let s='';for(let i=0;i<n;i++){const a=rot+360*i/n,t=a*Math.PI/180,bx=M3CX+(Ro-2)*Math.cos(t),by=M3CY+(Ro-2)*Math.sin(t),tx=M3CX+(Ro+11)*Math.cos(t),ty=M3CY+(Ro+11)*Math.sin(t),nx=-Math.sin(t)*6,ny=Math.cos(t)*6;
+  s+=`<polygon points="${m3P2(bx+nx,by+ny)} ${m3P2(tx,ty)} ${m3P2(bx,by)}" fill="${metal(.85)}" stroke="${sh}" stroke-width=".7"/><polygon points="${m3P2(bx-nx,by-ny)} ${m3P2(tx,ty)} ${m3P2(bx,by)}" fill="${metal(.3)}" stroke="${sh}" stroke-width=".7"/>`}B+=s}
+ /* ---- الإطار المفصّص ---- */
+ for(let i=0;i<n;i++){const j=(i+1)%n,am=rot+360*(i+.5)/n;B+=`<polygon points="${m3P2(...Po[i])} ${m3P2(...Po[j])} ${m3P2(...Pi[j])} ${m3P2(...Pi[i])}" fill="${metal(lf(am))}" stroke="${sh}" stroke-width=".7" stroke-linejoin="round"/>`}
+ B+=`<polygon points="${m3ps(Po)}" fill="none" stroke="${hi}" stroke-width=".8" opacity=".55" stroke-linejoin="round"/>`;
+ if(inl){const Pm=m3pol(n,(Ro+Ri)/2,rot);B+=`<polygon points="${m3ps(Pm)}" fill="none" stroke="url(#${id}gd)" stroke-width="1.6" stroke-linejoin="round"/>`}
+ /* حافة مقعّرة ثم المينا */
+ const Rb=Ri-3.2,Pb=m3pol(n,Rb,rot);
+ for(let i=0;i<n;i++){const j=(i+1)%n,am=rot+360*(i+.5)/n;B+=`<polygon points="${m3P2(...Pi[i])} ${m3P2(...Pi[j])} ${m3P2(...Pb[j])} ${m3P2(...Pb[i])}" fill="${metal(1-lf(am))}" opacity=".95"/>`}
+ B+=`<polygon points="${m3ps(Pb)}" fill="url(#${id}en)" stroke="${m3mix(e2,'#000',.4)}" stroke-width=".8" stroke-linejoin="round"/>`;
+ /* خطوط ذهبية داخل المينا */
+ B+=`<polygon points="${m3ps(m3pol(n,Rb*.84,rot))}" fill="none" stroke="url(#${id}gd)" stroke-width="1.1" stroke-linejoin="round" opacity="${k>=1||R>=6?1:.0}"/>`;
+ if(R>=18)B+=`<polygon points="${m3ps(m3pol(n,Rb*.74,rot))}" fill="none" stroke="url(#${id}gd)" stroke-width=".8" stroke-linejoin="round"/>`;
+ /* مجرّة للأسطوري */
+ if(L===9){B+=`<polygon points="${m3ps(Pb)}" fill="url(#${id}au)" opacity=".5"/>`;const pts=[[96,92,1.2],[146,90,1],[150,132,1.3],[92,134,1],[120,76,.9],[104,148,1],[138,148,.9],[84,112,.8],[156,110,.8]];B+=pts.map((p,i)=>`<circle class="${still?'':'mdtw'}" style="animation-delay:${(i*.3).toFixed(1)}s" cx="${p[0]}" cy="${p[1]}" r="${p[2]}" fill="#fff" opacity=".85"/>`).join('')}
+ /* ---- النجمة المركزية (تتغير مع المستوى) ---- */
+ const ro=Rb*.6,ri=ro*.44,fs=(x,y,r,rr)=>m3fstar(x,y,r,r*.44,s1,s2,m3mix(s2,'#000',.55),rr);
+ let C='';
+ if(L===0)C=`<circle cx="${M3CX}" cy="${M3CY}" r="${ro*1.08}" fill="${m3mix(e1,s2,.35)}" stroke="${m3mix(e2,'#000',.3)}" stroke-width="1.2"/><polygon points="${m3ps(Array.from({length:10},(_,i)=>{const a=(-90+36*i)*Math.PI/180,r=i%2?ro*.4:ro*.88;return[M3CX+r*Math.cos(a),M3CY+r*Math.sin(a)]}))}" fill="${m3mix(e2,s2,.15)}" stroke="${m3mix(s1,e1,.35)}" stroke-width="1.1" stroke-linejoin="round"/>`;
+ else if(L===1)C=fs(M3CX,M3CY+2,ro*1.02);
+ else if(L===2)C=`<circle cx="${M3CX}" cy="${M3CY}" r="${ro*1.18}" fill="none" stroke="${s1}" stroke-width="1" opacity=".7"/>`+fs(M3CX,M3CY+2,ro);
+ else if(L===3){let g='';for(let i=0;i<5;i++){const a=(-54+72*i)*Math.PI/180;g+=`<circle cx="${(M3CX+ro*1.22*Math.cos(a)).toFixed(1)}" cy="${(M3CY+2+ro*1.22*Math.sin(a)).toFixed(1)}" r="1.9" fill="${s1}"/>`}C=g+fs(M3CX,M3CY+2,ro)}
+ else if(L===4)C=`<g opacity=".7">${m3fstar(M3CX,M3CY+2,ro*1.12,ro*.58,m3mix(s2,'#000',.15),m3mix(s2,'#000',.45),sh,-54)}</g>`+fs(M3CX,M3CY+2,ro*.86);
+ else if(L===5)C=`<circle cx="${M3CX}" cy="${M3CY+2}" r="${ro*1.1}" fill="url(#${id}gd)" stroke="${m3mix(M3GOLD[2],'#000',.4)}" stroke-width="1.1"/><circle cx="${M3CX}" cy="${M3CY+2}" r="${ro*.96}" fill="${m3mix(e1,'#000',.25)}"/>`+fs(M3CX,M3CY+3,ro*.8);
+ else if(L===6)C=fs(M3CX,M3CY-3,ro*.78)+fs(M3CX-ro*.82,M3CY+ro*.5,ro*.38)+fs(M3CX+ro*.82,M3CY+ro*.5,ro*.38);
+ else if(L===7){let g='';[[0,-1],[1,0],[0,1],[-1,0]].forEach(d=>{g+=`<path d="M${(M3CX+d[0]*ro*1.3).toFixed(1)} ${(M3CY+2+d[1]*ro*1.3-4.5).toFixed(1)}l3.8 4.5l-3.8 4.5l-3.8 -4.5Z" fill="url(#${id}gm)" stroke="${sh}" stroke-width=".7"/>`});C=g+fs(M3CX,M3CY+2,ro*.84)}
+ else if(L===8)C=fs(M3CX,M3CY-ro*.48,ro*.56)+fs(M3CX-ro*.58,M3CY+ro*.5,ro*.5)+fs(M3CX+ro*.58,M3CY+ro*.5,ro*.5);
+ else C=`<circle cx="${M3CX}" cy="${M3CY+3}" r="${ro*1.3}" fill="url(#${id}au)"/>`+fs(M3CX,M3CY-ro*.5,ro*.58)+fs(M3CX-ro*.62,M3CY+ro*.5,ro*.52)+fs(M3CX+ro*.62,M3CY+ro*.5,ro*.52)+`<path d="M${M3CX} ${M3CY-Rb*.8}l4.5 6l-4.5 7l-4.5 -7Z" fill="url(#${id}gm)" stroke="${sh}" stroke-width=".8"/>`;
+ B+=`<g style="filter:drop-shadow(0 1.5px 1.5px rgba(0,0,0,.5))">${C}</g>`;
+ if(k>=4)B+=`<g opacity=".9"><circle cx="${M3CX}" cy="${M3CY}" r="${Rb*.62}" fill="url(#${id}au)"/></g>`;
+ /* ---- جواهر الإطار (عددها = النجوم) ---- */
+ const ord=[0,1,n-1,2,n-2,3,n-3].filter((v,i,a)=>a.indexOf(v)===i);
+ for(let g=0;g<k&&g<ord.length;g++){const v=ord[g],a=rot+360*v/n,t=a*Math.PI/180,rr=(Ro+Ri)/2+.5,x=M3CX+rr*Math.cos(t),y=M3CY+rr*Math.sin(t);B+=`<path d="M${x.toFixed(1)} ${(y-5).toFixed(1)}l4.2 5l-4.2 5l-4.2 -5Z" fill="url(#${id}gm)" stroke="${sh}" stroke-width=".8"/><circle cx="${(x-1).toFixed(1)}" cy="${(y-1.6).toFixed(1)}" r=".9" fill="#fff"/>`}
+ /* ---- لمعة تمرّ ---- */
+ if(k===5){D+=`<clipPath id="${id}c"><polygon points="${m3ps(Pb)}"/></clipPath>`;B+=`<g clip-path="url(#${id}c)"><rect class="${still?'':'mdsw'}" x="${still?96:40}" y="${M3CY-70}" width="${still?10:26}" height="150" fill="url(#${id}sw)" transform="rotate(22 ${M3CX} ${M3CY})"/></g>`}
+ if(R>=30&&k>=3){const sk=[[M3CX+Ro*.8,M3CY-Ro*.7,6],[M3CX-Ro*.9,M3CY+Ro*.2,5]];B+=sk.map((p,i)=>`<path class="${still?'':'mdsp'}" style="animation-delay:${(i*.8).toFixed(1)}s" d="M${p[0].toFixed(1)} ${(p[1]-p[2]).toFixed(1)}Q${p[0].toFixed(1)} ${p[1].toFixed(1)} ${(p[0]+p[2]).toFixed(1)} ${p[1].toFixed(1)}Q${p[0].toFixed(1)} ${p[1].toFixed(1)} ${p[0].toFixed(1)} ${(p[1]+p[2]).toFixed(1)}Q${p[0].toFixed(1)} ${p[1].toFixed(1)} ${(p[0]-p[2]).toFixed(1)} ${p[1].toFixed(1)}Z" fill="#fff"/>`).join('')}
+ /* ---- النجوم تحت الوسام على قوس ---- */
+ const ext=Ro+(rb?36:sp?11:3),sb=M3CY+ext*sc,yb=sb+14,topE=M3CY-(Ro+(tw?tw*9+14:sp?11:4))*sc,botE=k?yb+11:sb,dy0=Math.max(-30,Math.min(46,128-(topE+botE)/2)),hw=(Ro+(wg?(26+L*2.6)+3:sp?12:5))*sc+8,vy0=topE-8,vy1=(k?yb+12:sb+8),dy=o.fit?0:dy0,vb=o.fit?`${(M3CX-hw).toFixed(1)} ${vy0.toFixed(1)} ${(2*hw).toFixed(1)} ${(vy1-vy0).toFixed(1)}`:'0 0 240 290';
+ let S='';{const nn=k,acx=120,acy=yb-80,rad=80;for(let i=0;i<nn;i++){const a=(90+(i-(nn-1)/2)*15)*Math.PI/180,x=acx+rad*Math.cos(a),y=acy+rad*Math.sin(a),rot2=a*180/Math.PI-90;let p='';for(let j=0;j<10;j++){const aa=Math.PI*j/5-Math.PI/2,rr=j%2?4.3:9.6;p+=(j?' ':'')+(rr*Math.cos(aa)).toFixed(1)+','+(rr*Math.sin(aa)).toFixed(1)}
+  S+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot2.toFixed(0)})"><g class="${still?'':'mdtw'}" style="animation-delay:${(i*.25).toFixed(2)}s"><polygon points="${p}" fill="url(#${id}gd)" stroke="#8a5600" stroke-width=".8" stroke-linejoin="round" style="filter:drop-shadow(0 0 3px rgba(255,214,90,.9))"/><polygon points="${p}" fill="none" stroke="#fff6c0" stroke-width=".6" opacity=".7" transform="scale(.62)"/></g></g>`}}
+ return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="وسام ${RN[L]}"><defs>${D}</defs><g transform="translate(0 ${dy.toFixed(1)})"><g style="filter:drop-shadow(0 8px 9px rgba(0,0,0,.5))"><g transform="translate(${M3CX} ${M3CY}) scale(${sc.toFixed(3)}) translate(${-M3CX} ${-M3CY})">${B}</g></g>${S}</g></svg>`}
+
+
+function badge(r,sub,all,k,still){return medal3(r,Math.max(0,Math.min(5,(sub|0))),{still:!!still,fit:true})}
 const T=[0];for(let n=2;n<=50;n++){let v=Math.round(4300*Math.pow((n-1)/49,1.5)/5)*5;if(v<=T[n-2])v=T[n-2]+5;T.push(v)}
 const lvOf=L=>{let n=1;for(let i=0;i<50;i++)if(L>=T[i])n=i+1;return n};
 
 const rk=n=>Math.floor((n-1)/5),sb=n=>(n-1)%5+1;
 return {badge,lvOf,rk,sb,RN,RW,MN,DL,MET,T}})();
 const SHF_HOUSE=['الكوخ الأحمر','بيت الشرفة','بيت الطابقين','البيت الحجري','بيت الجراج','بيت البرج','القصر الصغير','قصر الأعمدة','القصر الكبير','الفيلا بالمسبح'];
-const SHF_CSS='.fft{padding:10px 12px;margin-bottom:12px}.fft input,.fft select{font:inherit;font-size:13.5px;font-weight:700;border:0;border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.95);color:#16443B;outline:0;width:100%}.fft .f3{display:flex;gap:6px;margin-top:6px}.fft .f3>div{flex:1;min-width:0}.fft .lb{font-size:11px;opacity:.8;font-weight:800;margin:6px 4px 2px}'
-+'.fbg{flex:none;width:46px}.fbg svg{width:46px;height:auto;display:block}.frk{flex:none;width:30px;text-align:center;font-weight:900;font-size:16px}.fcnt{font-size:12px;opacity:.8;margin:0 4px 8px;font-weight:700}'
-+'.fpod{display:flex;gap:8px;align-items:flex-end;margin-bottom:12px}.fpod .p{flex:1;text-align:center;padding:10px 4px;border-radius:22px;cursor:pointer;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4)}.fpod .p svg{width:64px;height:auto;display:block;margin:0 auto}.fpod .p b{display:block;font-size:13px;margin-top:2px}.fpod .p small{display:block;font-size:10.5px;opacity:.85;font-weight:700;line-height:1.5}.fpod .p1{padding-bottom:24px;background:linear-gradient(rgba(255,224,138,.45),rgba(255,255,255,.12))}.fpod .p2{background:linear-gradient(rgba(220,228,235,.4),rgba(255,255,255,.12))}.fpod .p3{background:linear-gradient(rgba(224,162,107,.4),rgba(255,255,255,.12))}'
-+'.fvw{padding:16px}.fvw .big{display:flex;gap:16px;align-items:center}.fvw .big svg{width:112px;height:auto;flex:none}.fvw h2{font-size:19px;font-weight:900}.fvw .big div{font-size:13px;font-weight:700;line-height:1.9}.fvw .st3{display:flex;gap:8px;margin:12px 0}.fvw .st3 div{flex:1;text-align:center;padding:9px 4px;border-radius:16px;background:rgba(255,255,255,.14);font-size:11px;font-weight:800}.fvw .st3 b{display:block;font-size:16px;line-height:1.5}'
+let SHF_CSS='.fft{padding:10px 12px;margin-bottom:12px}.fft input,.fft select{font:inherit;font-size:13.5px;font-weight:700;border:0;border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.95);color:#16443B;outline:0;width:100%}.fft .f3{display:flex;gap:6px;margin-top:6px}.fft .f3>div{flex:1;min-width:0}.fft .lb{font-size:11px;opacity:.8;font-weight:800;margin:6px 4px 2px}'
++'.fbg{flex:none;width:72px}.fbg svg{width:72px;height:auto;display:block}.frk{flex:none;width:30px;text-align:center;font-weight:900;font-size:16px}.fcnt{font-size:12px;opacity:.8;margin:0 4px 8px;font-weight:700}'
++'.fpod{display:flex;gap:8px;align-items:flex-end;margin-bottom:12px}.fpod .p{flex:1;text-align:center;padding:10px 4px;border-radius:22px;cursor:pointer;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4)}.fpod .p svg{width:96px;height:auto;display:block;margin:0 auto}.fpod .p b{display:block;font-size:13px;margin-top:2px}.fpod .p small{display:block;font-size:10.5px;opacity:.85;font-weight:700;line-height:1.5}.fpod .p1{padding-bottom:24px;background:linear-gradient(rgba(255,224,138,.45),rgba(255,255,255,.12))}.fpod .p2{background:linear-gradient(rgba(220,228,235,.4),rgba(255,255,255,.12))}.fpod .p3{background:linear-gradient(rgba(224,162,107,.4),rgba(255,255,255,.12))}'
++'.fvw{padding:16px}.fvw .big{display:flex;gap:16px;align-items:center}.fvw .big svg{width:150px;height:auto;flex:none}.fvw h2{font-size:19px;font-weight:900}.fvw .big div{font-size:13px;font-weight:700;line-height:1.9}.fvw .st3{display:flex;gap:8px;margin:12px 0}.fvw .st3 div{flex:1;text-align:center;padding:9px 4px;border-radius:16px;background:rgba(255,255,255,.14);font-size:11px;font-weight:800}.fvw .st3 b{display:block;font-size:16px;line-height:1.5}'
 +'.fvw .pbar{height:12px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden;margin:8px 0 3px}.fvw .pbar i{display:block;height:100%;background:linear-gradient(#ffe08a,#e0a21b);border-radius:99px}.fmore{display:block;text-align:center;padding:11px;margin:4px 0 10px;cursor:pointer;font-weight:900;font-size:13px}';
+SHF_CSS+='.mdtw{animation:mdtw 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes mdtw{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.28);opacity:.75}}.mdsp{animation:mdsp 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes mdsp{0%,100%{transform:scale(0) rotate(0);opacity:0}50%{transform:scale(1.15) rotate(45deg);opacity:1}}.mdsw{animation:mdsw 3.2s ease-in-out infinite}@keyframes mdsw{0%,45%{transform:translateX(-90px)}100%{transform:translateX(90px)}}.mdspin{animation:mdspin 36s linear infinite;transform-origin:120px 116px}.mdorb{animation:mdspin 9s linear infinite;transform-origin:120px 116px}@keyframes mdspin{to{transform:rotate(360deg)}}';
 const SHF={rows:[],loaded:false,busy:false,err:false,q:'',st:'',g:'',sec:'',sort:'ab',bg:'',bs:'',cur:0,from:'farms',lim:40,limb:50};
 const shfLv=l=>SHF_L.lvOf(l);
 const shfStage=g=>g<=3?'1':'2';
 const shfSecs=g=>[...new Set(SHF.rows.filter(r=>!g||r.g===+g).map(r=>r.s))].sort((a,b)=>String(a).localeCompare(String(b),'ar'));
 async function shfLoad(){SHF.busy=true;const r=await srv('sharia_admin_farms',{});SHF.busy=false;if(r&&r.rows){SHF.rows=r.rows.map(x=>({id:x.id,n:x.n,g:x.g,s:x.s,l:x.l||0,lv:shfLv(x.l||0)}));SHF.loaded=true;SHF.err=false}else SHF.err=true;if(['farms','best','farm'].includes(SHA.v)){SHA.tkeep=true;shRender()}}
-function shfRow(s,k,i){const r=SHF_L.rk(s.lv);return `<div class="glass crow" data-fv="${s.id}:${k}"><div class="fbg">${SHF_L.badge(r,SHF_L.sb(s.lv))}</div>${k==='b'?`<div class="frk">${i<3?['🥇','🥈','🥉'][i]:shAR(i+1)}</div>`:''}<div class="crt"><b>${esc(s.n)}<span>م${shAR(s.lv)}</span></b><p><span>${SHF_L.RW[r]} · ${shCn({g:s.g,sec:s.s})}</span><span>${shAR(s.l)} لتر</span></p></div></div>`}
+function shfRow(s,k,i){const r=SHF_L.rk(s.lv);return `<div class="glass crow" data-fv="${s.id}:${k}"><div class="fbg">${SHF_L.badge(r,SHF_L.sb(s.lv),false,0,true)}</div>${k==='b'?`<div class="frk">${i<3?['🥇','🥈','🥉'][i]:shAR(i+1)}</div>`:''}<div class="crt"><b>${esc(s.n)}<span>م${shAR(s.lv)}</span></b><p><span>${SHF_L.RW[r]} · ${shCn({g:s.g,sec:s.s})}</span><span>${shAR(s.l)} لتر</span></p></div></div>`}
 function shfFiltered(){let L=SHF.rows.filter(s=>(!SHF.q||s.n.includes(SHF.q))&&(!SHF.st||shfStage(s.g)===SHF.st)&&(!SHF.g||s.g===+SHF.g)&&(!SHF.sec||s.s===SHF.sec));
  L.sort(SHF.sort==='ab'?(a,b)=>a.n.localeCompare(b.n,'ar'):SHF.sort==='hi'?(a,b)=>b.lv-a.lv||b.l-a.l||a.n.localeCompare(b.n,'ar'):(a,b)=>a.lv-b.lv||a.l-b.l||a.n.localeCompare(b.n,'ar'));return L}
 const shfOpt=(v,t,c)=>`<option value="${v}" ${String(c)===String(v)?'selected':''}>${t}</option>`;
@@ -4488,7 +4580,7 @@ function shVFarms(){return shHdr()+`<div class="body wide">${shBack('tree','ال
  <div id="sh-flist">${shfState()||shfListHtml()}</div></div>`+shNav()}
 function shfBest(){let L=SHF.rows.filter(s=>(!SHF.bg||s.g===+SHF.bg)&&(!SHF.bs||s.s===SHF.bs));L.sort((a,b)=>b.lv-a.lv||b.l-a.l||a.n.localeCompare(b.n,'ar'));return L}
 function shVBest(){const L=shfBest(),sh=L.slice(0,SHF.limb);
- const p=(s,i)=>s?`<div class="p p${i+1}" data-fv="${s.id}:b"><div style="font-size:20px">${['🥇','🥈','🥉'][i]}</div>${SHF_L.badge(SHF_L.rk(s.lv),SHF_L.sb(s.lv))}<b>${esc(s.n)}</b><small>م${shAR(s.lv)} · ${shAR(s.l)} لتر<br>${shCn({g:s.g,sec:s.s})}</small></div>`:'';
+ const p=(s,i)=>s?`<div class="p p${i+1}" data-fv="${s.id}:b"><div style="font-size:20px">${['🥇','🥈','🥉'][i]}</div>${SHF_L.badge(SHF_L.rk(s.lv),SHF_L.sb(s.lv),false,0,true)}<b>${esc(s.n)}</b><small>م${shAR(s.lv)} · ${shAR(s.l)} لتر<br>${shCn({g:s.g,sec:s.s})}</small></div>`:'';
  return shHdr()+`<div class="body wide">${shBack('tree','الشجرة')}<div class="sec" style="margin-top:0"><b>المزارع المتميزة</b><span style="color:#fff">من الأفضل إلى الأقل</span></div>
  <div class="glass fft"><div class="f3"><div><div class="lb">النطاق: الصف</div><select data-ff="bg">${shfOpt('','كل المدرسة',SHF.bg)}${SH_G.map((g,i)=>shfOpt(i+1,'الصف '+g,SHF.bg)).join('')}</select></div><div><div class="lb">الفصل</div><select data-ff="bs">${shfOpt('','كل الفصول',SHF.bs)}${shfSecs(SHF.bg).map(x=>shfOpt(x,x,SHF.bs)).join('')}</select></div></div></div>
  ${shfState()||(L.length>=3?`<div class="fpod">${p(L[1],1)}${p(L[0],0)}${p(L[2],2)}</div>`:'')+sh.map((s,i)=>shfRow(s,'b',i)).join('')+(L.length>sh.length?`<div class="glass fmore" data-f="moreb">عرض المزيد (${shAR(L.length-sh.length)})</div>`:'')+(L.length?'':'<div class="glass card" style="text-align:center"><div class="mut">لا توجد مزارع</div></div>')}
@@ -7250,7 +7342,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='8f092cf50db6';
+const BUILD='a0c70459d76a';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
