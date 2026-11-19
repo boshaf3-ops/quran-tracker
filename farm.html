@@ -540,10 +540,10 @@ function farmData(){if(FM.friend)return MONTHS.map(([m])=>FM.friend.yr[m]||[]);r
 const FTIER=(st,i)=>{const o=[];if(st>=1)o.push(['bf',1]);if(st>=3)o.push([i%2?'cat':'rab',2]);if(st>=5)o.push([i%2?'sheep':'dog',3]);if(st>=6)o.push(['horse',4]);if(st>=7)o.push([['child','dad','mom','girl','gpa'][i%5],5]);return o};
 const FMK={bf:()=>mkBfly(['#ff8fd0','#ffd35a','#8fd0ff'][Math.floor(rnd(0,3))]),rab:mkRabbit,cat:mkCat,sheep:mkSheep,dog:mkDog,horse:mkHorse,child:mkChild,dad:mkDad,mom:mkMom,girl:mkGirl,gpa:mkGrandpa};
 function refreshFarm(){if(!FM.g)buildFarm();const data=farmData();FM.agents.forEach(a=>a.g.parent&&a.g.parent.remove(a.g));FM.agents=[];(FM.trees||[]).forEach(t=>FM.g.remove(t.g));FM.trees=[];farmCfgApply();let nt=0,nc=0;const own=!FM.friend;
- FM.plots.forEach((pl,k)=>{while(pl.pg.children.length)pl.pg.remove(pl.pg.children[0]);const tr=data[k],n=Math.min(3,tr.length);nt+=n;
-  const pos=n===1?[[0,0]]:n===2?[[-2.1,.4],[2.1,.4]]:[[-2.3,1.1],[2.3,1.1],[0,-1.9]];
-  tr.slice(0,3).forEach(([ty,st],i)=>{const T0=TYPES[ty],m=(SHAPES[T0.id]||MODELS[T0.kind])(st,T0.v,T0),w=new T.Group(),sc=(T0.giant?(st>=7?2.4:st>=6?2.1:2):(st>=7?1.6:st>=6?1.25:1))*(n===1?1.1:.85)*(T0.giant?.7:1);m.scale.setScalar(sc);w.add(m);const key=k+':'+i,o=own&&FS.pos[key],x=o?o[0]:pl.cx+pos[i][0],z=o?o[1]:pl.cz+pos[i][1];w.position.set(x,.65,z);FM.g.add(w);const ring=new T.Mesh(new T.RingGeometry(1.2,1.55,28),new T.MeshBasicMaterial({color:0xffe08a,transparent:true,opacity:.95,side:T.DoubleSide,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=.12;ring.visible=!!FM.edit;w.add(ring);FM.trees.push({g:w,key,x,z,pl:k,ring,st,m})});reanchor();
-  let want=[];tr.slice(0,3).forEach(([ty,st],i)=>FTIER(st,i+k).forEach(x=>want.push(x)));want.sort((a,b)=>b[1]-a[1]);want=want.slice(0,6);nc+=want.length;
+ FM.plots.forEach((pl,k)=>{while(pl.pg.children.length)pl.pg.remove(pl.pg.children[0]);const tr=data[k],n=Math.min(4,tr.length);nt+=n;
+  const pos=n===1?[[0,0]]:n===2?[[-2.1,.4],[2.1,.4]]:n===3?[[-2.3,1.1],[2.3,1.1],[0,-1.9]]:[[-2,1.8],[2,1.8],[-2,-1.6],[2,-1.6]];
+  tr.slice(0,4).forEach(([ty,st],i)=>{const T0=TYPES[ty],m=(SHAPES[T0.id]||MODELS[T0.kind])(st,T0.v,T0),w=new T.Group(),sc=(T0.giant?(st>=7?2.4:st>=6?2.1:2):(st>=7?1.6:st>=6?1.25:1))*(n===1?1.1:n>=4?.8:.85)*(T0.giant?.7:1);m.scale.setScalar(sc);w.add(m);const key=k+':'+i,o=own&&FS.pos[key],x=o?o[0]:pl.cx+pos[i][0],z=o?o[1]:pl.cz+pos[i][1];w.position.set(x,.65,z);FM.g.add(w);const ring=new T.Mesh(new T.RingGeometry(1.2,1.55,28),new T.MeshBasicMaterial({color:0xffe08a,transparent:true,opacity:.95,side:T.DoubleSide,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.y=.12;ring.visible=!!FM.edit;w.add(ring);FM.trees.push({g:w,key,x,z,pl:k,ring,st,m})});reanchor();
+  let want=[];tr.slice(0,4).forEach(([ty,st],i)=>FTIER(st,i+k).forEach(x=>want.push(x)));want.sort((a,b)=>b[1]-a[1]);want=want.slice(0,6);nc+=want.length;
   want.forEach(([kd,tier],j)=>{const g=FMK[kd](),a={g,p:new T.Vector3(rnd(-2.8,2.8),0,rnd(-2.8,2.8)),tgt:new T.Vector3(rnd(-2.8,2.8),0,rnd(-2.8,2.8)),wait:rnd(.2,1.5),ph:rnd(0,6),kd,sp:{rab:1.2,cat:1,dog:1.3,sheep:.6,horse:1.1,child:.9,dad:.8,mom:.8,girl:.9,gpa:.6,bf:1.5}[kd],hop:{rab:.25,cat:.05,dog:.05,sheep:.05,bf:0}[kd]||0,fly:kd==='bf',R:2.6,hb:1.8+rnd(0,1.4),a:rnd(0,6),pop:0,s:g.scale.x};
    if(a.fly){a.fl=30}g.scale.setScalar(.001);pl.pg.add(g);a.pl=pl;FM.agents.push(a)})});
  FM.nt=nt;FM.nc=nc;fcard();hud();fbxUI()}
@@ -775,8 +775,8 @@ if(RMODE||VIS){FRL.length=0;FR.recv=0}
 const RPCQ={};let _rid=0;
 function brpc(fn,arg){return new Promise(res=>{if(parent===window){res(null);return}const id=++_rid;RPCQ[id]=res;setTimeout(()=>{if(RPCQ[id]){delete RPCQ[id];res(null)}},15000);try{parent.postMessage({type:'farm-rpc',id,fn,arg},location.origin)}catch(e){delete RPCQ[id];res(null)}})}
 addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent)return;const d=e.data;if(d&&d.type==='farm-rpc-res'&&RPCQ[d.id]){RPCQ[d.id](d.res);delete RPCQ[d.id]}});
-const stYr=st=>{const yr={};if(!st||typeof st!=='object')return yr;const h=st.h&&typeof st.h==='object'?st.h:{};Object.keys(h).forEach(k=>{if(Array.isArray(h[k]))yr[k]=h[k].filter(a=>Array.isArray(a)&&TYPES[a[0]]).map(a=>[a[0],Math.max(0,Math.min(7,+a[1]||0))]).slice(0,3)});
- const tl=(Array.isArray(st.t)?st.t:[]).filter(a=>Array.isArray(a)&&a[0]>=0&&TYPES[a[0]]).map(a=>[a[0],Math.max(0,Math.min(7,+a[2]||0))]),mk=+st.m||MK;yr[mk]=(yr[mk]||[]).concat(tl).slice(0,3);return yr};
+const stYr=st=>{const yr={};if(!st||typeof st!=='object')return yr;const h=st.h&&typeof st.h==='object'?st.h:{};Object.keys(h).forEach(k=>{if(Array.isArray(h[k]))yr[k]=h[k].filter(a=>Array.isArray(a)&&TYPES[a[0]]).map(a=>[a[0],Math.max(0,Math.min(7,+a[1]||0))]).slice(0,4)});
+ const tl=(Array.isArray(st.t)?st.t:[]).filter(a=>Array.isArray(a)&&a[0]>=0&&TYPES[a[0]]).map(a=>[a[0],Math.max(0,Math.min(7,+a[2]||0))]),mk=+st.m||MK;yr[mk]=(yr[mk]||[]).concat(tl).slice(0,4);return yr};
 const realFr=r=>({i:r.id,id:r.id,n:String(r.n||'').slice(0,30),lt:Math.max(0,+r.lt||0),cm:r.cm!==false,cl:r.g?AR(r.g)+' '+(r.s||''):'',yr:{},fs:null,loaded:false});
 async function loadFriends(){if(!RMODE||VIS)return;const r=await brpc('friends');if(!r||!r.ok)return false;FR.liked=new Set((r.given||[]).map(Number));FR.n=FR.liked.size;FR.recv=+r.recv||0;FR.meLt=+r.me||0;FR.list=(r.rows||[]).map(realFr);refreshBd();return true}
 async function loadTop(){const r=await brpc('top');if(!r||!r.ok)return false;FR.meId=+r.me||0;FR.mr=+r.mr||0;FR.total=+r.total||0;FR.mylt=+r.mylt||0;FR.top=(r.rows||[]).map(realFr);return true}
@@ -891,8 +891,8 @@ document.addEventListener('pointerdown',e=>{const d=e.target.closest('#tabs [dat
 /* ---------- الواجهة ---------- */
 function toast(m){const e=$('toast');e.textContent=m;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2200)}
 /* ===== حفظ المزرعة على السيرفر (وضع الطالب) ===== */
-function gRestore(){if(!RMODE)return;const sv=GST,n=Math.max(1,Math.min(3,+sv.n||1)),same=(+sv.m||MK)===MK,t=Array.isArray(sv.t)?sv.t:[];
- if(!same){const old=t.filter(a=>Array.isArray(a)&&a[0]>=0&&TYPES[a[0]]).map(a=>[a[0],Math.max(0,Math.min(7,+a[2]||0))]).slice(0,3);if(old.length){const k=+sv.m;GH[k]=(GH[k]||[]).concat(old).slice(0,3)}return}
+function gRestore(){if(!RMODE)return;const sv=GST,n=Math.max(1,Math.min(4,+sv.n||1)),same=(+sv.m||MK)===MK,t=Array.isArray(sv.t)?sv.t:[];
+ if(!same){const old=t.filter(a=>Array.isArray(a)&&a[0]>=0&&TYPES[a[0]]).map(a=>[a[0],Math.max(0,Math.min(7,+a[2]||0))]).slice(0,4);if(old.length){const k=+sv.m;GH[k]=(GH[k]||[]).concat(old).slice(0,4)}return}
  for(let i=1;i<n;i++){buildTile(i)}if(n>1){camT.x=(n-1)*TW/2;resize()}
  t.slice(0,n).forEach((a,i)=>{const q=tiles[i];if(!q||!Array.isArray(a)||!(a[0]>=0)||!TYPES[a[0]])return;q.type=a[0];q.w=Math.max(0,Math.min(price(q),+a[1]||0));q.stage=stageOf(q.w,price(q));makePlant(q);S.active=i})}
 const gSnap=()=>({v:1,m:MK,n:tiles.length,t:tiles.map(q=>[q.type,Math.round(q.w),q.stage]),h:GH,fs:FS,tour:GST.tour?1:0});
@@ -920,7 +920,7 @@ function jugMsg(){if(S.store<1){hint('إبريقك فاضي 💧 ليس لديك
  if(!tiles.some(q=>q.type>=0)){hint('إبريقك ممتلئ 💧 ازرع بذرة أولاً ثم اسقِها',4200);return}
  if(!tiles.some(q=>q.type>=0&&q.w<price(q)-1e-9)){hint('إبريقك ممتلئ 💧 كل نباتاتك مكتملة، ابنِ أرضاً جديدة من الصندوق',4800);return}
  hint('إبريقك ممتلئ 💧 اسحبه فوق نبتتك لتسقيها',3800)}
-function hud(){$('pr').innerHTML=`${I('drop')}${AR(Math.round(S.store))}`;$('pr').classList.toggle('empty',S.store<1);$('pl').innerHTML=(FM.on?`${I('tree')} ${AR(FM.nt||0)}`:`${I('sprout')} ${AR(tiles.length)}/٣`);fitQ()}
+function hud(){$('pr').innerHTML=`${I('drop')}${AR(Math.round(S.store))}`;$('pr').classList.toggle('empty',S.store<1);$('pl').innerHTML=(FM.on?`${I('tree')} ${AR(FM.nt||0)}`:`${I('sprout')} ${AR(tiles.length)}/٤`);fitQ()}
 function bar(){}
 let fullT=0;function showFull(q){const p=price(q),st=q.stage,e=$('full');e.innerHTML=`${TYPES[q.type].n} · ${SN[st]} · ${AR(Math.round(q.w))}/${AR(p)}<div class="ln">${SF.map((f,k)=>`<i class="${k<st?'d':k===st?'c':''}"></i>`).join('')}</div>`;e.className='on';clearTimeout(fullT);fullT=setTimeout(()=>e.className='',2300);FULLQ=q}
 let FULLQ=null;const MI={q:null,t:9,html:''};
@@ -956,13 +956,13 @@ function camTipLater(farm,delay){camTipHide();const k=farm?'f':'m';tipT=setTimeo
   e.querySelector('button').onclick=()=>tipDone(k);e.classList.add('on');tipT=setTimeout(camTipHide,16000)},delay||900)}
 function hint(m,ms){const e=$('bub');e.textContent=m||hintMsg();e.classList.add('on');clearTimeout(hintT);hintT=setTimeout(()=>e.classList.remove('on'),ms||4500)}
 function hintHide(){clearTimeout(hintT);$('bub').classList.remove('on')}
-const needAct=()=>{if(tiles.some(q=>q.type>=0&&q.w<price(q)-1e-9))return null;if(tiles.some(q=>q.type<0))return 'seed';if(tiles.length<3&&tiles.some(q=>q.type>=0))return 'land';return null};
+const needAct=()=>{if(tiles.some(q=>q.type>=0&&q.w<price(q)-1e-9))return null;if(tiles.some(q=>q.type<0))return 'seed';if(tiles.length<4&&tiles.some(q=>q.type>=0))return 'land';return null};
 function chestUI(){const used=tiles.filter(q=>q.type>=0).map(q=>q.type),free=tiles.some(q=>q.type<0),need=needAct();
  const grow=tiles.some(q=>q.type>=0&&q.w<price(q)-1e-9);$('chest').innerHTML=PANEL.open?'':`<div class="cb o ${need?'glow':''}" data-chest="1" style="${grow?'height:44px;padding:0 8px;opacity:.55;border-radius:14px':''}">${CHEST}${grow?'':'<span>الصندوق</span>'}</div>`;
  $('panel').className=PANEL.open?'on':'';
  $('panel').innerHTML=`<div class="ph o"><span>صندوق البذور</span><div class="x" data-x="1">✕</div></div><div class="nt ${need?'gln':''}">${need==='land'?'🎉 أحسنت! اكتملت نبتتك. اضغط «ابنِ أرضاً جديدة» لتزرع بذرة جديدة.':need==='seed'?'🌱 اختر بذرتك <b>واسحبها</b> إلى حفرة الأرض.':'🌱 لك بذرة واحدة لكل أرض، والبذور مجانية. اسحب البذرة وضعها في حفرة الأرض.'}</div>
  <div class="row">${TYPES.map((t,i)=>`<div class="sd ${used.includes(i)||!free?'used':''} ${need==='seed'&&!used.includes(i)?'glow':''}" data-seed="${i}">${ICON[t.id]}${t.n}<small>${used.includes(i)?'مزروعة':t.tn+(t.giant?' ★':'')}</small></div>`).join('')}</div>
- ${!free&&tiles.length<3?`<div class="addl ${need==='land'?'glow':''}" data-add="1">${need==='land'?'+ ابنِ أرضاً جديدة':'+ أرض جديدة'}</div>`:''}${!free&&tiles.length>=3?'<div class="nt" style="margin-top:8px">كل أراضيك الثلاث مزروعة.</div>':''}`}
+ ${!free&&tiles.length<4?`<div class="addl ${need==='land'?'glow':''}" data-add="1">${need==='land'?'+ ابنِ أرضاً جديدة':'+ أرض جديدة'}</div>`:''}${!free&&tiles.length>=4?'<div class="nt" style="margin-top:8px">كل أراضيك الأربع مزروعة.</div>':''}`}
 function ctl(){$('ctl').innerHTML=`<span>الحلقة:</span><button data-h="1" class="${S.h===1?'on':''}">الأولى</button><button data-h="2" class="${S.h===2?'on':''}">الثانية</button><span>|</span><button data-st="100">+١٠٠ مخزن</button><button data-fill="1">املأ الأرض النشطة</button><button data-rs="1">إعادة</button><button data-lt="1">+١٥٠ لتر (المستوى)</button><span>اذهب لمستوى:</span>${[1,6,11,21,33,41,46,50].map(v=>`<button data-gl="${v}">${AR(v)}</button>`).join('')}<span>معاينة احتفالية الوسام:</span>${[1,2,3,4,5,6,7,8,9].map(r=>`<button data-ev="${r}">${LV.RN[r]}</button>`).join('')}<button data-tr="1">إعادة الجولة الإرشادية</button><button data-rv="1">صديق أعطاني لايك</button><button data-ld="1">يوم جديد (الإعجابات)</button><button data-demo="1">سنة تجريبية: ${FM.demo?'تعمل':'متوقفة'}</button>`}
 $('ctl').addEventListener('click',e=>{if(e.target.closest('[data-tr]')){try{localStorage.removeItem('qt_tour_done')}catch(x){}location.href=location.pathname+'?tour=1';return}const gl=e.target.closest('[data-gl]');if(gl){ME.lt=LV.T[+gl.dataset.gl-1];$('ctl').classList.remove('on');return}const ev=e.target.closest('[data-ev]');if(ev){$('ctl').classList.remove('on');lvUp(+ev.dataset.ev*5+1);return}if(e.target.closest('[data-lt]')){const a=LV.lvOf(ME.lt);ME.lt+=150;const b=LV.lvOf(ME.lt);lvUI();return}const t=e.target;let d;if(t.closest('[data-rv]')){FR.recv++;refreshTabs()}else if(t.closest('[data-ld]')){FR.n=0;FR.liked.clear();if(FR.cur)fcard()}else if(t.closest('[data-demo]')){FM.demo=!FM.demo;if(FM.on)refreshFarm()}else if(d=t.closest('[data-v]')){S.v=+d.dataset.v}else if(d=t.closest('[data-h]')){S.h=+d.dataset.h;tiles.forEach(q=>{if(q.type>=0){q.stage=stageOf(q.w,price(q));makePlant(q)}})}else if(t.closest('[data-st]'))S.store+=100;
  else if(t.closest('[data-fill]')){const q=tiles[S.active];if(q&&q.type>=0){q.w=price(q);q.stage=7;makePlant(q);burst(q.center,20)}}
@@ -976,7 +976,7 @@ function mkSeed(i){const g=new T.Group(),id=TYPES[i].id,dark=(c,n)=>{for(let k=0
  else dark('#2a1f1a',4);
  g.scale.setScalar(1.7);return g}
 document.addEventListener('pointerdown',e=>{if(e.target.closest('[data-chest]')){PANEL.open=true;hintHide();chestUI();if(TOUR.on&&TOUR.s===0)tourGo(1);return}if(e.target.closest('[data-x]')){PANEL.open=false;chestUI();return}
- if(e.target.closest('[data-add]')){if(tiles.length<3){buildTile(tiles.length);camT.x=(tiles.length-1)*TW/2;resize();toast('أضفتَ أرضاً جديدة. الآن اختر بذرتك');tray();camTipLater(false,3000)}return}
+ if(e.target.closest('[data-add]')){if(tiles.length<4){buildTile(tiles.length);camT.x=(tiles.length-1)*TW/2;resize();toast('أضفتَ أرضاً جديدة. الآن اختر بذرتك');tray();camTipLater(false,3000)}return}
  const sd=e.target.closest('[data-seed]');if(!sd||!e.target.closest('#panel'))return;const i=+sd.dataset.seed,k=TYPES[i].id,mesh=mkSeed(i);world.add(mesh);dragSeed={i,mesh};PANEL.open=false;chestUI();mvSeed(e);if(TOUR.on&&TOUR.s<=1)tourGo(2)});
 function mvSeed(e){if(!dragSeed)return;dragSeed.mesh.position.copy(planeAt(e.clientX,e.clientY-50,3.4));dragSeed.mesh.rotation.y+=.1}
 function pickTile(x,y){const p=planeAt(x,y,.65);let b=null,bd=1e9;for(const q of tiles){const dx=Math.abs(p.x-q.center.x),dz=Math.abs(p.z-q.center.z);if(dx<TW/2&&dz<TW/2){const d=dx+dz;if(d<bd){bd=d;b=q}}}return b}
