@@ -164,8 +164,9 @@ body.vis #pr,body.vis #pl,body.vis #chest,body.vis #cgear,body.vis #fbx,body.vis
 .mc2 .pb{height:9px;border-radius:6px;background:rgba(0,0,0,.2);overflow:hidden;margin:5px 0 3px}.mc2 .pb i{display:block;height:100%;background:linear-gradient(#9fe35a,#4fbf2a)}
 body:not(.test) #cgear{display:none!important}
 #cel{position:fixed;inset:0;pointer-events:none;overflow:hidden}
-#sunD{position:absolute;width:70px;height:70px;border-radius:50%;margin:-35px 0 0 -35px;background:radial-gradient(circle,#fffbe0 0 30%,#ffe27a 34% 58%,rgba(255,214,90,.0) 72%);filter:drop-shadow(0 0 22px rgba(255,226,120,.9))}
-#moonD{position:absolute;width:54px;height:54px;border-radius:50%;margin:-27px 0 0 -27px;box-shadow:inset -15px 5px 0 0 #fff7d6;filter:drop-shadow(0 0 14px rgba(255,247,200,.85))}
+#sunD{position:absolute;left:0;top:0;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,#fffbe0 0 30%,#ffe27a 34% 58%,rgba(255,214,90,0) 72%);filter:drop-shadow(0 0 22px rgba(255,226,120,.9));will-change:transform,opacity}
+#sunD i{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,#ffd7b0 0 30%,#ff9a5a 34% 58%,rgba(255,130,70,0) 72%);opacity:0}
+#moonD{position:absolute;left:0;top:0;width:54px;height:54px;border-radius:50%;box-shadow:inset 15px 5px 0 0 #fff7d6;filter:drop-shadow(0 0 14px rgba(255,247,200,.85));will-change:transform,opacity}
 #stars{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
 #sndb{position:fixed;left:10px;top:118px;width:40px;height:40px;border-radius:50%;background:#fff9ea;border:3px solid #dcb98a;display:grid;place-items:center;font-size:19px;line-height:1;z-index:24;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.22);user-select:none;-webkit-user-select:none}
 #sndb.on{background:#eaf8dc;border-color:#8fcf6a}
@@ -1039,7 +1040,7 @@ function sample(p){let i=0;while(i<KC.length-2&&p>KC[i+1][0])i++;const a=KC[i],b
 const hx=c=>'#'+c.getHexString();
 /* عناصر السماء */
 const bg=document.getElementById('bg');
-const cel=document.createElement('div');cel.id='cel';cel.innerHTML='<div id="sunD"></div><div id="moonD"></div>';bg.after(cel);
+const cel=document.createElement('div');cel.id='cel';cel.innerHTML='<div id="sunD"><i></i></div><div id="moonD"></div>';bg.after(cel);
 const stc=document.createElement('canvas');stc.id='stars';cel.after(stc);
 function drawStars(){const w=stc.width=innerWidth,h=stc.height=innerHeight,g=stc.getContext('2d');g.clearRect(0,0,w,h);let r=7;const rnd=()=>(r=(r*9301+49297)%233280)/233280;
   for(let i=0;i<110;i++){const x=rnd()*w,y=rnd()*h*.7,s=rnd()*1.6+.4;g.globalAlpha=.4+rnd()*.6;g.fillStyle='#fff';g.beginPath();g.arc(x,y,s,0,7);g.fill()}}
@@ -1203,14 +1204,14 @@ L.wxClear=()=>{rain.visible=false;rip.forEach(r=>r.m.visible=false);fl3.forEach(
 
 L.place=(x,z)=>{sun.position.set(x+L.vec.x,L.vec.y,z+L.vec.z)};
 L.cel=on=>{cel.style.display=on?'':'none';stc.style.display=on?'':'none'};
-L.skyBg=S=>{bg.style.background=`radial-gradient(60% 40% at 18% 22%,rgba(255,255,255,${.75*(1-S.n)}),transparent 70%),radial-gradient(50% 30% at 85% 58%,rgba(255,255,255,${.6*(1-S.n)}),transparent 70%),linear-gradient(180deg,${hx(S.top)} 0%,${hx(S.mid)} 48%,${hx(S.bot)} 100%)`};
+L.skyBg=S=>{const v=`radial-gradient(60% 40% at 18% 22%,rgba(255,255,255,${(.75*(1-S.n)).toFixed(2)}),transparent 70%),radial-gradient(50% 30% at 85% 58%,rgba(255,255,255,${(.6*(1-S.n)).toFixed(2)}),transparent 70%),linear-gradient(180deg,${hx(S.top)} 0%,${hx(S.mid)} 48%,${hx(S.bot)} 100%)`;if(v!==L._bg){L._bg=v;bg.style.background=v}};
 L.cloudTint=()=>{if(!L.cl){L.cl=[];scene.traverse(o=>{const e=o.isMesh&&o.material&&o.material.emissive&&o.material.emissive.getHex();if(e===0xdcefff||e===0xe6f4ff)L.cl.push(o.material)});L.cl=[...new Set(L.cl)];L.cl.forEach(mm=>{mm.userData.b={c:mm.color.clone(),e:mm.emissive.clone(),i:mm.emissiveIntensity}})}
   L.cl.forEach(mm=>{const b=mm.userData.b;mm.color.copy(b.c).lerp(C('#7d8cba'),L.night*.85).lerp(C('#8e9aa8'),L.ow*.7);mm.emissive.copy(b.e).lerp(C('#2b3868'),L.night);mm.emissiveIntensity=mix(b.i,.35,L.night)})};
 /* تنظيف ما يخص «مزرعتي» فقط */
 L.resetFM=()=>{L.audioStop();(FM.agents||[]).forEach(a=>{if(a.ns==='in'||a.ns==='go'){a.ns='out';a.wait=.5;a.pop=0}a.g.visible=true});L.zz.forEach(z=>z.s.visible=false);L.bt.forEach(b=>b.g.visible=false);L.fl.forEach(f=>f.g.visible=false);doorL.intensity=0;
   L.sm.forEach(s=>{s.life=0;s.m.visible=false});L.lv.forEach(l=>{l.on=false;l.m.visible=false});L.ff.forEach(f=>f.s.material.opacity=0);(FM.trees||[]).forEach(t=>{t.g.rotation.x=t.g.rotation.z=0});
   if(L.glass.length)L.glass.forEach(m=>{m.emissive.set(0x4fb0e8);m.emissiveIntensity=.25;m.color.set(0x8fd8ff)});L.cel(false)};
-L.reset=()=>{if(!L.active)return;L.active=false;L.mode=null;L.resetFM();L.wxClear();bg.style.background='';sun.color.set(0xfff0cf);sun.intensity=1.7;if(hemi){hemi.intensity=1.05;hemi.color.set(0xffffff);hemi.groundColor.set(0x9fd6ff)}
+L.reset=()=>{if(!L.active)return;L.active=false;L.mode=null;L._bg=null;L.resetFM();L.wxClear();bg.style.background='';sun.color.set(0xfff0cf);sun.intensity=1.7;if(hemi){hemi.intensity=1.05;hemi.color.set(0xffffff);hemi.groundColor.set(0x9fd6ff)}
   if(L.cl)L.cl.forEach(mm=>{const b=mm.userData.b;if(b){mm.color.copy(b.c);mm.emissive.copy(b.e);mm.emissiveIntensity=b.i}})};
 /* مزرعة الشهر: النهار ثابت، والطقس فقط (مطر/ثلج) يغيّر السماء والإضاءة */
 L.stepMonth=dt=>{L.t+=dt;L.night=0;L.lamp=0;L.gust=0;const S=sample(.30);L.wApply(S);L.skyBg(S);sun.color.copy(S.sC);sun.intensity=S.sI;if(hemi){hemi.intensity=S.hI;hemi.color.copy(S.hS);hemi.groundColor.copy(S.hG)}L.cloudTint();L.audioStop();L.wxStep(dt)};
@@ -1231,8 +1232,8 @@ L.step=function(dt){
   const ts=(p-.03)/.57,sU=ts>0&&ts<1,m=p<.03?p+1:p,tm=(m-.57)/.46,mU=tm>0&&tm<1,W=innerWidth,H=innerHeight;
   const sd=document.getElementById('sunD'),md=document.getElementById('moonD');
   sd.style.display=sU?'':'none';md.style.display=mU?'':'none';
-  if(sU){const a=ts*Math.PI;sd.style.left=(50-Math.cos(a)*44)+'%';sd.style.top=(66-Math.sin(a)*54)+'%';const hot=1-Math.sin(a);sd.style.filter=`drop-shadow(0 0 22px rgba(255,${Math.round(226-hot*80)},${Math.round(120-hot*60)},.9))`;sd.style.opacity=Math.min(1,Math.sin(a)*3+.3)*(1-L.ow*.9)}
-  if(mU){const a=tm*Math.PI;md.style.left=(50-Math.cos(a)*42)+'%';md.style.top=(66-Math.sin(a)*52)+'%';md.style.opacity=Math.min(1,Math.sin(a)*3+.2)*(1-L.ow*.85)}
+  if(sU){const a=ts*Math.PI,hot=1-Math.sin(a);sd.style.transform=`translate3d(${(W*(50-Math.cos(a)*44)/100-35).toFixed(1)}px,${(H*(66-Math.sin(a)*54)/100-35).toFixed(1)}px,0)`;sd.firstChild.style.opacity=Math.min(1,hot*1.6).toFixed(2);sd.style.opacity=(Math.min(1,Math.sin(a)*3+.3)*(1-L.ow*.9)).toFixed(3)}
+  if(mU){const a=tm*Math.PI;md.style.transform=`translate3d(${(W*(50-Math.cos(a)*42)/100-27).toFixed(1)}px,${(H*(66-Math.sin(a)*52)/100-27).toFixed(1)}px,0)`;md.style.opacity=(Math.min(1,Math.sin(a)*3+.2)*(1-L.ow*.85)).toFixed(3)}
   /* ضوء الشمس/القمر */
   const sv=sU?new T.Vector3(-Math.cos(ts*Math.PI)*26,8+Math.sin(ts*Math.PI)*24,14):null,mv=mU?new T.Vector3(-Math.cos(tm*Math.PI)*22,9+Math.sin(tm*Math.PI)*20,16):null;
   const ws=sU?sstep(0,.3,Math.sin(ts*Math.PI)):0,wm=mU?sstep(0,.3,Math.sin(tm*Math.PI)):0;
