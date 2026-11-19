@@ -176,7 +176,7 @@ const MK=(()=>{let m=9;try{m=+new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Ba
 const col=h=>new T.Color(h).convertSRGBToLinear(),cl=(v,a,b)=>Math.min(b,Math.max(a,v)),clamp=cl,lerp=(a,b,t)=>a+(b-a)*t;
 const mulb=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296},RN=mulb(7),rnd=(a=0,b=1)=>a+(b-a)*RN();
 const cv=$('c'),R=new T.WebGLRenderer({canvas:cv,antialias:true,alpha:true,preserveDrawingBuffer:/gallery/.test(location.search)});R.setPixelRatio(Math.min(devicePixelRatio||1,innerWidth<700?1.5:2));R.outputEncoding=T.sRGBEncoding;R.shadowMap.enabled=true;R.shadowMap.type=T.PCFSoftShadowMap;
-const scene=new T.Scene(),camera=new T.PerspectiveCamera(24,1,1,400),world=new T.Group();scene.add(world);
+const scene=new T.Scene(),camera=new T.PerspectiveCamera(24,1,1,2500),world=new T.Group();scene.add(world);
 scene.add(new T.HemisphereLight(0xffffff,0x9fd6ff,1.05));
 const sun=new T.DirectionalLight(0xfff0cf,1.7);sun.castShadow=true;sun.shadow.mapSize.set(innerWidth<700?1024:2048,innerWidth<700?1024:2048);{const s=sun.shadow.camera;s.left=-30;s.right=30;s.top=30;s.bottom=-30;s.near=1;s.far=140}sun.shadow.bias=-.0005;sun.shadow.normalBias=.04;scene.add(sun,sun.target);
 /* ---------- مواد وحدود وأشكال ملساء ---------- */
@@ -439,7 +439,19 @@ const price=t=>PRICE[S.h][TYPES[t.type].tier],stageOf=(w,p)=>{let s=0;for(let i=
 /* ---------- كاميرا ---------- */
 let GZ=1,GZT=1,AZ=Math.PI/4,AZT=AZ,EL=.6,ELT=EL,fitD=40;let camT={x:0,d:40},camC={x:0,d:40},firstR=true;
 function placeCam(){if(window.GALV){const d=GALV.d,y=GALV.y;camera.position.set(Math.sin(.6)*Math.cos(.5)*d,Math.sin(.5)*d+y,Math.cos(.6)*Math.cos(.5)*d);camera.lookAt(0,y,0);sun.target.position.set(0,0,0);sun.position.set(-12,30,18);return}const x=camC.x,d=camC.d*GZ,cx=Math.sin(AZ)*Math.cos(EL),cz=Math.cos(AZ)*Math.cos(EL);camera.position.set(x+cx*d,Math.sin(EL)*d-.6+(GZ-1)*8,cz*d);camera.lookAt(x,-.6+(GZ-1)*9,0);sun.target.position.set(x,0,0);sun.position.set(x-12,30,18)}
-function resize(){const w=innerWidth,h=innerHeight;R.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();const nf=Math.max(36,(16+(tiles.length-1)*TW*.75)/(.425*camera.aspect)*(1+.42*(tiles.length-1))*1.08);if(firstR){camT.d=camC.d=nf;camC.x=camT.x;firstR=false}else camT.d=clamp(camT.d*nf/fitD,17,nf*1.7);fitD=nf;placeCam();camera.updateMatrixWorld();jugRest()}
+/* مسافة الكاميرا التي تُظهر الأراضي من x0 إلى x1 كاملة داخل الشاشة (بهامش للأزرار): إسقاط حقيقي لزوايا الأراضي، لا معادلة تقريبية */
+const FITC=new T.PerspectiveCamera(24,1,1,5000);
+function fitDist(x0,x1){FITC.aspect=camera.aspect;FITC.updateProjectionMatrix();
+  const cx=(x0+x1)/2,pts=[];for(const x of [x0-5.2,x1+5.2])for(const z of [-5.2,5.2])for(const y of [-6.4,1.4])pts.push(new T.Vector3(x,y,z));
+  const ok=d=>{FITC.position.set(cx+Math.sin(AZ0)*Math.cos(.6)*d,Math.sin(.6)*d-.6,Math.cos(AZ0)*Math.cos(.6)*d);FITC.lookAt(cx,-.6,0);FITC.updateMatrixWorld(true);
+    let mx=0,y0=9,y1=-9;for(const q of pts){const v=q.clone().project(FITC);mx=Math.max(mx,Math.abs(v.x));y0=Math.min(y0,v.y);y1=Math.max(y1,v.y)}
+    return mx<=.88&&y1<=.66&&y0>=-.52};
+  let lo=8,hi=1800;for(let i=0;i<30;i++){const m=(lo+hi)/2;if(ok(m))hi=m;else lo=m}return hi}
+let ZMIN=17,ZMAX=60,PANL=-3,PANR=3;
+function resize(){const w=innerWidth,h=innerHeight;R.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
+  const xr=(tiles.length-1)*TW,nf=Math.max(30,fitDist(0,xr)),n1=fitDist(0,0);
+  ZMIN=Math.max(17,n1*.5);ZMAX=nf*1.35;PANL=-3;PANR=xr+3;
+  if(firstR){camT.d=camC.d=nf;camC.x=camT.x;firstR=false}else camT.d=clamp(camT.d*nf/fitD,ZMIN,ZMAX);fitD=nf;placeCam();camera.updateMatrixWorld();jugRest()}
 /* ---------- الإبريق ---------- */
 const jugRoot=new T.Group(),jug=new T.Group();jugRoot.add(jug);world.add(jugRoot);jugRoot.rotation.y=AZ;jug.scale.setScalar(1.15);
 (function(){const pts=[[0,0],[.6,0],[.85,.25],[.95,.8],[.8,1.25],[.55,1.45],[.6,1.62],[.5,1.66]].map(p=>new T.Vector2(p[0],p[1])),g=new T.LatheGeometry(pts,22);
@@ -479,7 +491,7 @@ function tick(dt){if(FM.on){farmTick(dt);GZ=lerp(GZ,GZT,Math.min(1,dt*2));LT+=dt
  for(const q of tiles){if(q.pop>0){q.pop=Math.max(0,q.pop-dt*1.6);const e=1-q.pop,s=e<1?.5+.5*(1-Math.pow(1-e,3))+Math.sin(e*Math.PI)*.14:1;if(q.plant)q.plant.scale.setScalar(s)}}
 lifeTick(dt);const q0=J_.pourTile,pouring=!!(q0&&J_.tilt>.9&&J_.load>0&&q0.w<price(q0)-1e-9);miniTick(dt,pouring,q0);
  GZ=lerp(GZ,GZT,Math.min(1,dt*2));TM+=dt;tiles.forEach(q=>{q.g.position.y=Math.sin(TM*.9+q.ix)*.14});sky.rotation.y+=dt*.01;
- AZ=lerp(AZ,AZT,Math.min(1,dt*9));EL=lerp(EL,ELT,Math.min(1,dt*9));camC.x=lerp(camC.x,camT.x,Math.min(1,dt*3));camC.d=lerp(camC.d,camT.d,Math.min(1,dt*7));placeCam()}
+ AZ=lerp(AZ,AZT,Math.min(1,dt*9));EL=lerp(EL,ELT,Math.min(1,dt*9));camC.x=lerp(camC.x,camT.x,Math.min(1,dt*3));camC.d=lerp(camC.d,camT.d,Math.min(1,dt*7));placeCam();jugRoot.scale.setScalar(clamp(camC.d/fitD,.4,1.25));if(!J_.drag&&!J_.pourTile){camera.updateMatrixWorld();jugRest()}}
 let last=performance.now();function loop(ts){const dt=Math.min(.05,(ts-last)/1000);last=ts;tick(dt);lvWatch();tourTick();gTick(dt);R.render(scene,camera);requestAnimationFrame(loop)}
 async function gallery(){window.GALV={d:30,y:3};const sl=ms=>new Promise(r=>setTimeout(r,ms)),ST=[3,4,5,6,7],CW=300,CH=300,LW=110,TH=40,sheet=document.createElement('canvas');sheet.width=LW+CW*5;sheet.height=TH+CH*TYPES.length;const c=sheet.getContext('2d');
  const g=c.createLinearGradient(0,0,0,sheet.height);g.addColorStop(0,'#8fd2ff');g.addColorStop(1,'#eaf7ff');c.fillStyle=g;c.fillRect(0,0,sheet.width,sheet.height);R.setSize(520,520,false);camera.aspect=1;camera.updateProjectionMatrix();cv.style.cssText='position:fixed;left:-9999px;top:0;width:520px;height:520px';
@@ -949,13 +961,16 @@ addEventListener('pointerup',e=>{if(dragSeed){const d=dragSeed;dragSeed=null;wor
   q.type=d.i;q.w=0;q.stage=0;makePlant(q);S.active=tiles.indexOf(q);burst(q.center,12);toast('زرعتَ '+TYPES[d.i].n+'!');PANEL.open=false;tray();if(TOUR.on&&TOUR.s===2)tourGo(3)}
  if(J_.drag){J_.drag=false;J_.hit=null}});
 const AZ0=Math.PI/4,AZR=.7,ptrs=new Map();let pinch=0;
-cv.addEventListener('wheel',e=>{e.preventDefault();camT.d=clamp(camT.d*Math.exp(e.deltaY*(e.ctrlKey?.01:.0014)),FM.on?30:17,FM.on?200:fitD*1.7)},{passive:false});
+const panX=dpx=>{const wpp=2*camC.d*Math.tan(camera.fov*Math.PI/360)/innerHeight;let c=Math.cos(AZ);if(Math.abs(c)<.35)c=(c<0?-1:1)*.35;camT.x=clamp(camT.x-dpx*wpp/c,PANL,PANR)};
+cv.addEventListener('wheel',e=>{e.preventDefault();if(!FM.on&&!e.ctrlKey&&Math.abs(e.deltaX)>Math.abs(e.deltaY)){panX(-e.deltaX);return}camT.d=clamp(camT.d*Math.exp(e.deltaY*(e.ctrlKey?.01:.0014)),FM.on?30:ZMIN,FM.on?200:ZMAX)},{passive:false});
+cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('pointerdown',e=>{if(FM.on&&FM.edit&&!FM.friend){const t=pickTree(e.clientX,e.clientY);if(t){FM.drag={t};t.g.position.y=.65+.5;return}}if(FM.on||FR.ro){ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});return}const pr=J_.pos.clone().project(camera),sx=(pr.x+1)/2*innerWidth,sy=(1-pr.y)/2*innerHeight;
  if(Math.hypot(e.clientX-sx,e.clientY-sy)<90){if(J_.load<=0&&S.store>=1)jugRefill();J_.drag=true;J_.hit=planeAt(e.clientX,e.clientY-30,3.6);jugMsg();return}
  hintHide();const q=pickTile(e.clientX,e.clientY);if(q&&q.type>=0){S.active=tiles.indexOf(q);showFull(q)}else wrongC={id:e.pointerId,x:e.clientX,y:e.clientY};
  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});if(ptrs.size===2){const a=[...ptrs.values()];pinch=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)}});
 addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p||J_.drag||dragSeed)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;
- if(ptrs.size===1){AZT=clamp(AZT-dx*.009,AZ0-AZR,AZ0+AZR);ELT=clamp(ELT+dy*.005,.4,1.05)}else if(ptrs.size===2){const o=[...ptrs.entries()].find(([k])=>k!==e.pointerId)[1];const nd=Math.hypot(e.clientX-o.x,e.clientY-o.y);if(pinch>0)camT.d=clamp(camT.d*pinch/nd,17,fitD*1.7);pinch=nd;AZT=clamp(AZT-dx*.004,AZ0-AZR,AZ0+AZR)}
+ if(ptrs.size===1){if(FM.on){AZT=clamp(AZT-dx*.009,AZ0-AZR,AZ0+AZR);ELT=clamp(ELT+dy*.005,.4,1.05)}else if(e.shiftKey||(e.buttons&2)){panX(dx)}else{AZT-=dx*.009;ELT=clamp(ELT+dy*.005,.4,1.05)}}
+ else if(ptrs.size===2){const o=[...ptrs.entries()].find(([k])=>k!==e.pointerId)[1];const nd=Math.hypot(e.clientX-o.x,e.clientY-o.y);if(FM.on){if(pinch>0)camT.d=clamp(camT.d*pinch/nd,17,fitD*1.7);AZT=clamp(AZT-dx*.004,AZ0-AZR,AZ0+AZR)}else{if(pinch>0)camT.d=clamp(camT.d*pinch/nd,ZMIN,ZMAX);panX(dx/2)}pinch=nd}
  p.x=e.clientX;p.y=e.clientY});
 let wrongC=null;const endP=e=>{ptrs.delete(e.pointerId);pinch=0;if(wrongC&&wrongC.id===e.pointerId){if(Math.hypot(e.clientX-wrongC.x,e.clientY-wrongC.y)<8){const n=performance.now();wrongT=wrongT.filter(t=>n-t<6000);wrongT.push(n);if(wrongT.length>=3){wrongT=[];hint()}}wrongC=null}};addEventListener('pointerup',endP);addEventListener('pointercancel',endP);
 addEventListener('resize',resize);
