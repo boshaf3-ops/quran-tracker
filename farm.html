@@ -10,6 +10,11 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:
 .pill i{width:28px;height:28px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(circle at 35% 30%,#d9f6ff,#43b9f0 55%,#1d7fc4);border:3px solid #2b1a0a;display:block}
 .pill.l{left:12px}.pill.r{right:12px}
 #bub{position:fixed;left:12px;bottom:84px;max-width:58vw;background:#fff;border:3.5px solid #2b1a0a;border-radius:16px;padding:5px 12px;font-size:12px;font-weight:900;color:#2b1a0a;box-shadow:0 4px 0 rgba(0,0,0,.3);z-index:22;line-height:1.5;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none}#bub.on{opacity:1;transform:none}
+#camtip{position:fixed;left:50%;top:128px;transform:translateX(-50%) translateY(-8px);width:min(88vw,360px);background:#fff;border:3.5px solid #2b1a0a;border-radius:20px;padding:10px 14px 12px;box-shadow:0 5px 0 rgba(0,0,0,.3);z-index:40;opacity:0;pointer-events:none;transition:opacity .35s,transform .35s;direction:rtl;color:#2b1a0a;font-weight:900}
+#camtip.on{opacity:1;transform:translateX(-50%);pointer-events:auto}
+#camtip h4{margin:0 0 6px;font-size:14px}
+#camtip p{margin:4px 0;font-size:12.5px;line-height:1.55}
+#camtip button{margin-top:8px;width:100%;font-family:inherit;font-weight:900;font-size:14px;padding:7px 0;border-radius:14px;border:3px solid #2b1a0a;background:linear-gradient(#ffd35a,#f0a31c);color:#2b1a0a;cursor:pointer}
 #bub:after{content:"";position:absolute;bottom:-13px;left:22px;border:7px solid transparent;border-top:11px solid #2b1a0a}
 #mini{position:fixed;left:0;top:0;z-index:30;pointer-events:none;opacity:0;transition:opacity .25s;font-weight:900;color:#2b1a0a;text-align:center}#mini.on{opacity:1}
 #mini .pg{height:16px;border-radius:99px;background:#7a5530;border:3px solid #2b1a0a;overflow:hidden;position:relative;box-shadow:0 3px 0 rgba(0,0,0,.3)}#mini .pg i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#a8ecff,#2fa6ec);transition:width .2s}
@@ -437,8 +442,8 @@ const PRICE={1:[100,220,360],2:[150,360,600]},SF=[0,.05,.15,.30,.50,.70,.85,1];
 const S={h:2,store:120,active:0,v:2};
 const price=t=>PRICE[S.h][TYPES[t.type].tier],stageOf=(w,p)=>{let s=0;for(let i=1;i<8;i++)if(w>=SF[i]*p-1e-9)s=i;return s};
 /* ---------- كاميرا ---------- */
-let GZ=1,GZT=1,AZ=Math.PI/4,AZT=AZ,EL=.6,ELT=EL,fitD=40;let camT={x:0,d:40},camC={x:0,d:40},firstR=true;
-function placeCam(){if(window.GALV){const d=GALV.d,y=GALV.y;camera.position.set(Math.sin(.6)*Math.cos(.5)*d,Math.sin(.5)*d+y,Math.cos(.6)*Math.cos(.5)*d);camera.lookAt(0,y,0);sun.target.position.set(0,0,0);sun.position.set(-12,30,18);return}const x=camC.x,d=camC.d*GZ,cx=Math.sin(AZ)*Math.cos(EL),cz=Math.cos(AZ)*Math.cos(EL);camera.position.set(x+cx*d,Math.sin(EL)*d-.6+(GZ-1)*8,cz*d);camera.lookAt(x,-.6+(GZ-1)*9,0);sun.target.position.set(x,0,0);sun.position.set(x-12,30,18)}
+let GZ=1,GZT=1,AZ=Math.PI/4,AZT=AZ,EL=.6,ELT=EL,fitD=40;let camT={x:0,d:40,z:0},camC={x:0,d:40,z:0},firstR=true;
+function placeCam(){if(window.GALV){const d=GALV.d,y=GALV.y;camera.position.set(Math.sin(.6)*Math.cos(.5)*d,Math.sin(.5)*d+y,Math.cos(.6)*Math.cos(.5)*d);camera.lookAt(0,y,0);sun.target.position.set(0,0,0);sun.position.set(-12,30,18);return}const x=camC.x,z=camC.z||0,d=camC.d*GZ,cx=Math.sin(AZ)*Math.cos(EL),cz=Math.cos(AZ)*Math.cos(EL);camera.position.set(x+cx*d,Math.sin(EL)*d-.6+(GZ-1)*8,z+cz*d);camera.lookAt(x,-.6+(GZ-1)*9,z);sun.target.position.set(x,0,z);sun.position.set(x-12,30,z+18)}
 /* مسافة الكاميرا التي تُظهر الأراضي من x0 إلى x1 كاملة داخل الشاشة (بهامش للأزرار): إسقاط حقيقي لزوايا الأراضي، لا معادلة تقريبية */
 const FITC=new T.PerspectiveCamera(24,1,1,5000);
 function fitDist(x0,x1){FITC.aspect=camera.aspect;FITC.updateProjectionMatrix();
@@ -463,6 +468,8 @@ const jw=new T.Mesh(new T.CircleGeometry(.5,18),new T.MeshStandardMaterial({colo
 const J_={pos:new T.Vector3(),rest:new T.Vector3(),tilt:0,drag:false,load:0,sl:0,sv:0,hit:null,acc:0,pourTile:null};
 const ray=new T.Raycaster(),ndc=new T.Vector2();
 function planeAt(x,y,yy){ndc.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCamera(ndc,camera);const t=new T.Vector3();ray.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),-yy),t);return t}
+/* التقاط الإبريق: لازم الإصبع يلمس الإبريق نفسه (تسامح ٩ بكسل فقط للإصبع) */
+function jugHit(x,y){if(!jugRoot.visible)return false;for(const [ox,oy] of [[0,0],[9,0],[-9,0],[0,9],[0,-9]]){ndc.set((x+ox)/innerWidth*2-1,-((y+oy)/innerHeight)*2+1);ray.setFromCamera(ndc,camera);if(ray.intersectObject(jugRoot,true).length)return true}return false}
 function jugRest(){const p=planeAt(innerWidth*.8,innerHeight*.66,3.2);J_.rest.copy(p);if(!J_.drag&&J_.pos.lengthSq()===0)J_.pos.copy(p)}
 const jugRefill=()=>{J_.load=Math.min(50,Math.max(0,Math.floor(S.store)))};
 const DN=80,dIM=new T.InstancedMesh(new T.SphereGeometry(1,8,6),new T.MeshStandardMaterial({color:col('#8fe4ff'),emissive:col('#2aa0d8'),emissiveIntensity:.7,roughness:.1}),DN),drops=[...Array(DN)].map(()=>({on:false,p:new T.Vector3(),v:new T.Vector3(),life:0}));dIM.frustumCulled=false;world.add(dIM);
@@ -470,7 +477,7 @@ const SK=48,sIM=new T.InstancedMesh(new T.SphereGeometry(1,6,5),new T.MeshBasicM
 function burst(c,n){let k=0;for(const s of sp){if(s.on)continue;s.on=true;s.p.copy(c).add(new T.Vector3(rnd(-.8,.8),rnd(0,2.5),rnd(-.8,.8)));s.v.set(rnd(-2,2),rnd(3,7),rnd(-2,2));s.life=1.1;if(++k>=n)break}}
 const dd=new T.Object3D();let TM=0;
 const sky=new T.Group();world.add(sky);for(let i=0;i<9;i++){const g=new T.Group(),a=i/9*6.283+.4,r=20+(i%3)*6;[[0,0,0,1.6],[1.7,-.2,.3,1.2],[-1.6,-.1,.2,1.3],[.4,.4,-1,1.0]].forEach(([x,y,z,k])=>{const m=new T.Mesh(SPH(k*(1+.2*(i%2))),new T.MeshStandardMaterial({color:0xffffff,emissive:0xdcefff,emissiveIntensity:.5,roughness:1}));m.position.set(x,y,z);g.add(m)});g.position.set(Math.cos(a)*r,-3+(i%4)*2.2,Math.sin(a)*r);sky.add(g)}
-function tick(dt){if(FM.on){farmTick(dt);GZ=lerp(GZ,GZT,Math.min(1,dt*2));LT+=dt;AZ=lerp(AZ,AZT,Math.min(1,dt*9));EL=lerp(EL,ELT,Math.min(1,dt*9));camC.x=lerp(camC.x,camT.x,Math.min(1,dt*3));camC.d=lerp(camC.d,camT.d,Math.min(1,dt*7));placeCam();return}
+function tick(dt){if(FM.on){farmTick(dt);GZ=lerp(GZ,GZT,Math.min(1,dt*2));LT+=dt;AZ=lerp(AZ,AZT,Math.min(1,dt*9));EL=lerp(EL,ELT,Math.min(1,dt*9));camC.x=lerp(camC.x,camT.x,Math.min(1,dt*3));camC.z=lerp(camC.z,camT.z,Math.min(1,dt*3));camC.d=lerp(camC.d,camT.d,Math.min(1,dt*7));placeCam();return}
 
  jugRoot.rotation.y=AZ;const right=new T.Vector3(Math.cos(AZ),0,-Math.sin(AZ));let tgt=J_.rest.clone(),tiltT=0;
  if(J_.drag&&J_.hit){tgt.copy(J_.hit);const sp_=tgt.clone().addScaledVector(right,-1.4);let best=null,bd=1e9;for(const q of tiles){if(q.type<0||q.w>=price(q)-1e-9)continue;const d=Math.hypot(sp_.x-q.center.x,sp_.z-q.center.z);if(d<bd){bd=d;best=q}}
@@ -491,8 +498,8 @@ function tick(dt){if(FM.on){farmTick(dt);GZ=lerp(GZ,GZT,Math.min(1,dt*2));LT+=dt
  for(const q of tiles){if(q.pop>0){q.pop=Math.max(0,q.pop-dt*1.6);const e=1-q.pop,s=e<1?.5+.5*(1-Math.pow(1-e,3))+Math.sin(e*Math.PI)*.14:1;if(q.plant)q.plant.scale.setScalar(s)}}
 lifeTick(dt);const q0=J_.pourTile,pouring=!!(q0&&J_.tilt>.9&&J_.load>0&&q0.w<price(q0)-1e-9);miniTick(dt,pouring,q0);
  GZ=lerp(GZ,GZT,Math.min(1,dt*2));TM+=dt;tiles.forEach(q=>{q.g.position.y=Math.sin(TM*.9+q.ix)*.14});sky.rotation.y+=dt*.01;
- AZ=lerp(AZ,AZT,Math.min(1,dt*9));EL=lerp(EL,ELT,Math.min(1,dt*9));camC.x=lerp(camC.x,camT.x,Math.min(1,dt*3));camC.d=lerp(camC.d,camT.d,Math.min(1,dt*7));placeCam();jugRoot.scale.setScalar(clamp(camC.d/fitD,.4,1.25));if(!J_.drag&&!J_.pourTile){camera.updateMatrixWorld();jugRest()}}
-let last=performance.now();function loop(ts){const dt=Math.min(.05,(ts-last)/1000);last=ts;tick(dt);lvWatch();tourTick();gTick(dt);R.render(scene,camera);requestAnimationFrame(loop)}
+ AZ=lerp(AZ,AZT,Math.min(1,dt*9));EL=lerp(EL,ELT,Math.min(1,dt*9));camC.x=lerp(camC.x,camT.x,Math.min(1,dt*3));camC.z=lerp(camC.z,camT.z,Math.min(1,dt*3));camC.d=lerp(camC.d,camT.d,Math.min(1,dt*7));placeCam();jugRoot.scale.setScalar(clamp(camC.d/fitD,.6,1.25));if(!J_.drag&&!J_.pourTile){camera.updateMatrixWorld();jugRest()}}
+let last=performance.now();function loop(ts){const dt=Math.min(.05,(ts-last)/1000);last=ts;g2Step();tick(dt);lvWatch();tourTick();gTick(dt);R.render(scene,camera);requestAnimationFrame(loop)}
 async function gallery(){window.GALV={d:30,y:3};const sl=ms=>new Promise(r=>setTimeout(r,ms)),ST=[3,4,5,6,7],CW=300,CH=300,LW=110,TH=40,sheet=document.createElement('canvas');sheet.width=LW+CW*5;sheet.height=TH+CH*TYPES.length;const c=sheet.getContext('2d');
  const g=c.createLinearGradient(0,0,0,sheet.height);g.addColorStop(0,'#8fd2ff');g.addColorStop(1,'#eaf7ff');c.fillStyle=g;c.fillRect(0,0,sheet.width,sheet.height);R.setSize(520,520,false);camera.aspect=1;camera.updateProjectionMatrix();cv.style.cssText='position:fixed;left:-9999px;top:0;width:520px;height:520px';
  c.font='bold 22px Cairo,sans-serif';c.textAlign='center';c.fillStyle='#2b1a0a';ST.forEach((st,i)=>c.fillText(SN[st],LW+CW*i+CW/2,26));
@@ -855,9 +862,9 @@ function closeFriends(){$('fpanel').classList.remove('on');if(FR.cur)friendTabs(
 function leaveRO(){const b=FR.backup;if(!b)return;while(tiles.length>Math.max(1,b.length))world.remove(tiles.pop().g);while(tiles.length<b.length)buildTile(tiles.length);tiles.forEach((q,i)=>{clearTile(q);const d=b[i];if(d&&d.type>=0){q.type=d.type;q.stage=d.stage;q.w=d.w;makePlant(q)}});FR.ro=false;FR.backup=null;camT.x=(tiles.length-1)*TW/2;resize()}
 function roMonth(fr){if(!FR.backup)FR.backup=tiles.map(q=>({type:q.type,w:q.w,stage:q.stage}));const pl=fr.yr[MK]||[],n=Math.max(1,pl.length);while(tiles.length>n)world.remove(tiles.pop().g);while(tiles.length<n)buildTile(tiles.length);tiles.forEach((q,i)=>{clearTile(q);const d=pl[i];if(d){q.type=d[0];q.stage=d[1];q.w=price(q)*SF[d[1]];makePlant(q)}});FR.ro=true;jugRoot.visible=false;$('chest').style.display='none';camT.x=(tiles.length-1)*TW/2;resize();hud()}
 function showScene(m){const farm=m==='farm';
- if(farm){if(!FM.on){FM.saved={x:camT.x,d:camT.d,gz:GZT};FM.on=true;FM.g||buildFarm();FM.g.visible=true;tiles.forEach(q=>q.g.visible=false);jugRoot.visible=false;$('chest').style.display='none';$('panel').className='';hintHide();$('mini').classList.remove('on');$('flab').style.display='none';camT.x=0;GZT=1;camT.d=Math.max(44,(PW*3*1.12+3)/(.425*camera.aspect));ELT=.72;AZT=AZ0}refreshFarm()}
- else{if(FM.on){FM.on=false;FM.g.visible=false;tiles.forEach(q=>q.g.visible=true);if(FM.saved){camT.x=FM.saved.x;camT.d=FM.saved.d;GZT=FM.saved.gz}}jugRoot.visible=true;$('chest').style.display='';$('fleg').style.display='none';chestUI()}
- if(!farm&&FM.edit)setEdit(false);hud();fbxUI()}
+ if(farm){if(!FM.on){FM.saved={x:camT.x,d:camT.d,gz:GZT};FM.on=true;FM.g||buildFarm();FM.g.visible=true;tiles.forEach(q=>q.g.visible=false);jugRoot.visible=false;$('chest').style.display='none';$('panel').className='';hintHide();$('mini').classList.remove('on');$('flab').style.display='none';camT.x=0;camT.z=0;GZT=1;camT.d=Math.max(44,(PW*3*1.12+3)/(.425*camera.aspect));ELT=.72;AZT=AZ0}refreshFarm()}
+ else{if(FM.on){FM.on=false;camT.z=0;FM.g.visible=false;tiles.forEach(q=>q.g.visible=true);if(FM.saved){camT.x=FM.saved.x;camT.d=FM.saved.d;GZT=FM.saved.gz}}jugRoot.visible=true;$('chest').style.display='';$('fleg').style.display='none';chestUI()}
+ if(!farm&&FM.edit)setEdit(false);hud();fbxUI();camTipLater(farm)}
 function leaveFriend(){if(FR.ro)leaveRO();FM.friend=null;FR.cur=null}
 function refreshTabs(){if(FR.cur)friendTabs();else ownTabs(FR.back)}
 function setMode(m){if(m==='friends'){openFriends();return}if(m==='medals'){openMedals();return}if(m==='best'){openReal('best');return}leaveFriend();FR.back=m;ownTabs(m);showScene(m)}
@@ -930,6 +937,16 @@ const PANEL={open:false};
 function tray(){hud();ctl();chestUI();}
 let hintT=0,wrongT=[];
 const hintMsg=()=>tiles.some(q=>q.type>=0&&q.w<price(q)-1e-9)?(S.store<1?'ليس لديك ماء 💧 استمر في حصصك لتحصل على الماء وتكمل سقي نبتتك':'امسك الإبريق بإصبعك وحرّكه فوق نبتتك لتسقيها'):tiles.some(q=>q.type>=0)?'اكتملت نبتتك! افتح الصندوق وازرع غيرها':'افتح الصندوق وخذ بذرتك وضعها في الحفرة';
+/* ===== توجيه طريقة التحريك: يظهر ٣ مرات كحد أقصى، ويختفي نهائياً بعد «فهمت» أو بعد أول مرة يحرّك الطالب بإصبعين ===== */
+const tipGet=k=>{try{return localStorage.getItem('qt_camtip_'+k)}catch(e){return 'x'}},tipSet=(k,v)=>{try{localStorage.setItem('qt_camtip_'+k,v)}catch(e){}};
+let tipT=0;
+function camTipHide(){clearTimeout(tipT);const e=$('camtip');if(e)e.classList.remove('on')}
+function tipDone(k){if(tipGet(k)!=='x'){tipSet(k,'x');camTipHide()}}
+function camTipLater(farm,delay){camTipHide();const k=farm?'f':'m';tipT=setTimeout(()=>{if(VIS||TOUR.on)return;const v=tipGet(k);if(v==='x'||(+v||0)>=3)return;if(!!FM.on!==!!farm)return;tipSet(k,String((+v||0)+1));
+  let e=$('camtip');if(!e){e=document.createElement('div');e.id='camtip';document.body.appendChild(e)}
+  const L=farm?['☝️ إصبع واحد: لُفّ مزرعتك 360° حولها','✌️ إصبعان: حرّك المزرعة لتصل إلى أي شجرة','🤏 ثم قرّب بإصبعين على المكان الذي تريده']:['☝️ إصبع واحد: لُفّ الأرض 360° حولها'].concat(tiles.length>1?['✌️ إصبعان يمين أو يسار: انتقل بين أراضيك واختر الأرض التي تريدها']:[]).concat(['🤏 قرّب وبعّد بإصبعين','💧 للصبّ: امسك الإبريق نفسه واسحبه فوق الأرض']);
+  e.innerHTML='<h4>'+(farm?'طريقة التحرك في مزرعتي':'طريقة التحرك في مزرعة الشهر')+'</h4>'+L.map(t=>'<p>'+t+'</p>').join('')+'<button type="button">فهمت ✓</button>';
+  e.querySelector('button').onclick=()=>tipDone(k);e.classList.add('on');tipT=setTimeout(camTipHide,16000)},delay||900)}
 function hint(m,ms){const e=$('bub');e.textContent=m||hintMsg();e.classList.add('on');clearTimeout(hintT);hintT=setTimeout(()=>e.classList.remove('on'),ms||4500)}
 function hintHide(){clearTimeout(hintT);$('bub').classList.remove('on')}
 const needAct=()=>{if(tiles.some(q=>q.type>=0&&q.w<price(q)-1e-9))return null;if(tiles.some(q=>q.type<0))return 'seed';if(tiles.length<3&&tiles.some(q=>q.type>=0))return 'land';return null};
@@ -952,7 +969,7 @@ function mkSeed(i){const g=new T.Group(),id=TYPES[i].id,dark=(c,n)=>{for(let k=0
  else dark('#2a1f1a',4);
  g.scale.setScalar(1.7);return g}
 document.addEventListener('pointerdown',e=>{if(e.target.closest('[data-chest]')){PANEL.open=true;hintHide();chestUI();if(TOUR.on&&TOUR.s===0)tourGo(1);return}if(e.target.closest('[data-x]')){PANEL.open=false;chestUI();return}
- if(e.target.closest('[data-add]')){if(tiles.length<3){buildTile(tiles.length);camT.x=(tiles.length-1)*TW/2;resize();toast('أضفتَ أرضاً جديدة. الآن اختر بذرتك');tray()}return}
+ if(e.target.closest('[data-add]')){if(tiles.length<3){buildTile(tiles.length);camT.x=(tiles.length-1)*TW/2;resize();toast('أضفتَ أرضاً جديدة. الآن اختر بذرتك');tray();camTipLater(false,3000)}return}
  const sd=e.target.closest('[data-seed]');if(!sd||!e.target.closest('#panel'))return;const i=+sd.dataset.seed,k=TYPES[i].id,mesh=mkSeed(i);world.add(mesh);dragSeed={i,mesh};PANEL.open=false;chestUI();mvSeed(e);if(TOUR.on&&TOUR.s<=1)tourGo(2)});
 function mvSeed(e){if(!dragSeed)return;dragSeed.mesh.position.copy(planeAt(e.clientX,e.clientY-50,3.4));dragSeed.mesh.rotation.y+=.1}
 function pickTile(x,y){const p=planeAt(x,y,.65);let b=null,bd=1e9;for(const q of tiles){const dx=Math.abs(p.x-q.center.x),dz=Math.abs(p.z-q.center.z);if(dx<TW/2&&dz<TW/2){const d=dx+dz;if(d<bd){bd=d;b=q}}}return b}
@@ -961,16 +978,25 @@ addEventListener('pointerup',e=>{if(dragSeed){const d=dragSeed;dragSeed=null;wor
   q.type=d.i;q.w=0;q.stage=0;makePlant(q);S.active=tiles.indexOf(q);burst(q.center,12);toast('زرعتَ '+TYPES[d.i].n+'!');PANEL.open=false;tray();if(TOUR.on&&TOUR.s===2)tourGo(3)}
  if(J_.drag){J_.drag=false;J_.hit=null}});
 const AZ0=Math.PI/4,AZR=.7,ptrs=new Map();let pinch=0;
+const FMB=(PW*3+1.8)/2-1.8,FMZMIN=20,FMZMAX=260;
+const panG=(dpx,dpy)=>{const wpp=2*camC.d*Math.tan(camera.fov*Math.PI/360)/innerHeight,sa=Math.sin(AZ),ca=Math.cos(AZ),se=Math.max(.35,Math.sin(EL));camT.x=clamp(camT.x+(-dpx*ca+dpy/se*-sa)*wpp,-FMB,FMB);camT.z=clamp(camT.z+(dpx*sa+dpy/se*-ca)*wpp,-FMB,FMB)};
+/* إصبعان: تحريك + زوم، تُحسب مرة كل إطار من موضع الإصبعين معاً (حتى لا يتداخل الزوم مع التحريك) */
+let G2=null;
+function g2Step(){if(ptrs.size!==2){G2=null;return}const a=[...ptrs.values()],ids=[...ptrs.keys()].join(),cx=(a[0].x+a[1].x)/2,cy=(a[0].y+a[1].y)/2,dd=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+  if(G2&&G2.ids===ids&&dd>8&&G2.d>8){const dx=cx-G2.cx,dy=cy-G2.cy;
+    if(FM.on){camT.d=clamp(camT.d*G2.d/dd,FMZMIN,FMZMAX);panG(dx,dy)}else{camT.d=clamp(camT.d*G2.d/dd,ZMIN,ZMAX);panX(dx)}
+    if(Math.abs(dx)+Math.abs(dy)>2)tipDone(FM.on?'f':'m')}
+  G2={ids,cx,cy,d:dd}}
 const panX=dpx=>{const wpp=2*camC.d*Math.tan(camera.fov*Math.PI/360)/innerHeight;let c=Math.cos(AZ);if(Math.abs(c)<.35)c=(c<0?-1:1)*.35;camT.x=clamp(camT.x-dpx*wpp/c,PANL,PANR)};
-cv.addEventListener('wheel',e=>{e.preventDefault();if(!FM.on&&!e.ctrlKey&&Math.abs(e.deltaX)>Math.abs(e.deltaY)){panX(-e.deltaX);return}camT.d=clamp(camT.d*Math.exp(e.deltaY*(e.ctrlKey?.01:.0014)),FM.on?30:ZMIN,FM.on?200:ZMAX)},{passive:false});
+cv.addEventListener('wheel',e=>{e.preventDefault();if(!e.ctrlKey&&Math.abs(e.deltaX)>Math.abs(e.deltaY)){if(FM.on)panG(-e.deltaX,0);else panX(-e.deltaX);return}camT.d=clamp(camT.d*Math.exp(e.deltaY*(e.ctrlKey?.01:.0014)),FM.on?FMZMIN:ZMIN,FM.on?FMZMAX:ZMAX)},{passive:false});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('pointerdown',e=>{if(FM.on&&FM.edit&&!FM.friend){const t=pickTree(e.clientX,e.clientY);if(t){FM.drag={t};t.g.position.y=.65+.5;return}}if(FM.on||FR.ro){ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});return}const pr=J_.pos.clone().project(camera),sx=(pr.x+1)/2*innerWidth,sy=(1-pr.y)/2*innerHeight;
- if(Math.hypot(e.clientX-sx,e.clientY-sy)<90){if(J_.load<=0&&S.store>=1)jugRefill();J_.drag=true;J_.hit=planeAt(e.clientX,e.clientY-30,3.6);jugMsg();return}
+ if(jugHit(e.clientX,e.clientY)){if(J_.load<=0&&S.store>=1)jugRefill();J_.drag=true;J_.hit=planeAt(e.clientX,e.clientY-30,3.6);jugMsg();return}
  hintHide();const q=pickTile(e.clientX,e.clientY);if(q&&q.type>=0){S.active=tiles.indexOf(q);showFull(q)}else wrongC={id:e.pointerId,x:e.clientX,y:e.clientY};
  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});if(ptrs.size===2){const a=[...ptrs.values()];pinch=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)}});
 addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p||J_.drag||dragSeed)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;
- if(ptrs.size===1){if(FM.on){AZT=clamp(AZT-dx*.009,AZ0-AZR,AZ0+AZR);ELT=clamp(ELT+dy*.005,.4,1.05)}else if(e.shiftKey||(e.buttons&2)){panX(dx)}else{AZT-=dx*.009;ELT=clamp(ELT+dy*.005,.4,1.05)}}
- else if(ptrs.size===2){const o=[...ptrs.entries()].find(([k])=>k!==e.pointerId)[1];const nd=Math.hypot(e.clientX-o.x,e.clientY-o.y);if(FM.on){if(pinch>0)camT.d=clamp(camT.d*pinch/nd,17,fitD*1.7);AZT=clamp(AZT-dx*.004,AZ0-AZR,AZ0+AZR)}else{if(pinch>0)camT.d=clamp(camT.d*pinch/nd,ZMIN,ZMAX);panX(dx/2)}pinch=nd}
+ if(ptrs.size===1){if(e.shiftKey||(e.buttons&2)){if(FM.on)panG(dx,dy);else panX(dx)}else{AZT-=dx*.009;ELT=clamp(ELT+dy*.005,.4,1.05)}}
+
  p.x=e.clientX;p.y=e.clientY});
 let wrongC=null;const endP=e=>{ptrs.delete(e.pointerId);pinch=0;if(wrongC&&wrongC.id===e.pointerId){if(Math.hypot(e.clientX-wrongC.x,e.clientY-wrongC.y)<8){const n=performance.now();wrongT=wrongT.filter(t=>n-t<6000);wrongT.push(n);if(wrongT.length>=3){wrongT=[];hint()}}wrongC=null}};addEventListener('pointerup',endP);addEventListener('pointercancel',endP);
 addEventListener('resize',resize);
@@ -980,4 +1006,5 @@ buildTile(0);gRestore();jugRefill();tray();ownTabs('month');hud();resize();place
 else if(RMODE)setTimeout(loadFriends,1200);
 if(!VIS&&(!tourDone()||QPT.get('tour')==='1')&&!tiles.some(q=>q.type>=0)){TOUR.on=true;setTimeout(()=>tourGo(0),600)}else{if(!tourDone()&&tiles.some(q=>q.type>=0)){if(RMODE)GST.tour=1;else try{localStorage.setItem('qt_tour_done','1')}catch(e){}}setTimeout(()=>hint(),700)}if(/gallery/.test(location.search))gallery();requestAnimationFrame(loop);requestAnimationFrame(()=>requestAnimationFrame(()=>{const l=$('ld');if(l){l.style.opacity=0;setTimeout(()=>l.remove(),400)}}));
 window.__F={S,tiles,J_,TYPES,makePlant,stageOf,price,ME,LV,lvUp,FS,FM,farmCfgApply,refreshFarm,setEdit,fitTree,toScr};
+camTipLater(false,3200);
 </script></body></html>
