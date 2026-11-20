@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="c82abadc9e82">
+<meta name="build" content="be6838f5255d">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3087,7 +3087,7 @@ function shsBehTab(m){const B=m.beh,pct=Math.round(B.net*100/B.max);
 function shsWeekRows(m){const w=m.week,n=m.next;
  const lessons=(L,empty)=>L.length?`<div class="wch">${L.map(l=>`<span>${esc(l.t)}${l.n?`<small>${esc(l.n)}</small>`:''}</span>`).join('')}</div>`:`<div class="wnone">${empty}</div>`;
  const note=t=>t?`<div class="gnote"><b>ملاحظة المعلم:</b> ${esc(t)}</div>`:'';
- return `<div class="wrows"><div class="wrw wa"><div class="wsd"><b>${shAR(w.no)}</b><small>الأسبوع</small></div><div class="wbd">${m.star?`<div class="shbdg" data-star="1"><span class="sst">★</span><span class="snm"><small>نجم الأسبوع</small><b>${esc(m.star.name)}</b></span></div><div class="wtt"><span>دروس هذا الأسبوع</span></div><div class="wdt" style="margin:-4px 0 7px">${w.rng}</div>`:`<div class="wtt"><span>دروس هذا الأسبوع</span><span class="wdt">${w.rng}</span></div>`}${lessons(w.lessons,m.pub?'لا توجد دروس محددة.':'لم يكتب الأستاذ دروس هذا الأسبوع بعد.')}${note(w.note)}</div></div>`+
+ return `<div class="wrows"><div class="wrw wa"><div class="wsd"><b>${shAR(w.no)}</b><small>الأسبوع</small></div><div class="wbd${m.star?' hsx':''}">${m.star?`<div class="shbdg" data-star="1"><span class="sst">★</span><span class="snm"><small>نجم الأسبوع</small><b>${esc(m.star.name)}</b></span></div><div class="wtt"><span>دروس هذا الأسبوع</span></div><div class="wdt" style="margin:-4px 0 7px">${w.rng}</div>`:`<div class="wtt"><span>دروس هذا الأسبوع</span><span class="wdt">${w.rng}</span></div>`}${lessons(w.lessons,m.pub?'لا توجد دروس محددة.':'لم يكتب الأستاذ دروس هذا الأسبوع بعد.')}${note(w.note)}</div></div>`+
   `<div class="wrw wb"><div class="wsd"><b>${shAR(n.no)}</b><small>الأسبوع</small></div><div class="wbd"><div class="wtt"><span>الأسبوع القادم</span><span class="wdt">${n.rng}</span></div>${lessons(n.lessons,n.pub?'لا توجد دروس محددة.':'لم يكتب الأستاذ دروس الأسبوع القادم بعد.')}${note(n.note)}</div></div></div>`}
 function shsStopCards(m){return m.stl.length?m.stl.map(st=>`<div class="stop"><div class="ct"><b><i class="dot"></i>وقفة تقويمية قادمة</b><small style="color:#FFD1CB">انتبه</small></div><div class="sdate">${shsIc('doc').replace('<svg','<svg style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2"')}<span>موعد الوقفة: <b>${st.date}</b></span></div>${st.topics.length?`<div class="mut" style="color:#FFE3DF">مواضيع الوقفة:</div><ul>${st.topics.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}</div>`).join(''):`<div class="glass nostop">لا توجد وقفات</div>`}
 function shsHomeTab(m){let h='',hb='';
@@ -3408,7 +3408,7 @@ const SHS_CSS=`*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-
 @keyframes shwglow{0%,100%{text-shadow:0 0 0 rgba(255,255,255,0);opacity:.82}50%{text-shadow:0 0 10px rgba(255,255,255,.95),0 0 22px rgba(255,255,255,.55);opacity:1}}
 @media (prefers-reduced-motion:reduce){.wa .wsd b,.wa .wsd small{animation:none;opacity:1}}
 .wb .wsd{background:linear-gradient(180deg,#F6DC8A,#e0b64a);color:#000}
-.wbd{padding:10px 12px;min-width:0}.wtt{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;font-size:13px;font-weight:900}
+.wbd{padding:10px 12px;min-width:0}.wbd.hsx{padding-top:40px}.wtt{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;font-size:13px;font-weight:900}
 .wdt{font-size:10.5px;font-weight:700;opacity:.8;white-space:nowrap}
 .wch{display:flex;flex-wrap:wrap;gap:6px}.wch span{font-size:12px;font-weight:800;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3)}
 .wch span small{display:block;font-size:10px;font-weight:600;opacity:.8;color:#FFE9A8}
@@ -7355,7 +7355,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='c82abadc9e82';
+const BUILD='be6838f5255d';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
