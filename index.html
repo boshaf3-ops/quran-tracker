@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="be6838f5255d">
+<meta name="build" content="b66aa2f40127">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3087,7 +3087,7 @@ function shsBehTab(m){const B=m.beh,pct=Math.round(B.net*100/B.max);
 function shsWeekRows(m){const w=m.week,n=m.next;
  const lessons=(L,empty)=>L.length?`<div class="wch">${L.map(l=>`<span>${esc(l.t)}${l.n?`<small>${esc(l.n)}</small>`:''}</span>`).join('')}</div>`:`<div class="wnone">${empty}</div>`;
  const note=t=>t?`<div class="gnote"><b>ملاحظة المعلم:</b> ${esc(t)}</div>`:'';
- return `<div class="wrows"><div class="wrw wa"><div class="wsd"><b>${shAR(w.no)}</b><small>الأسبوع</small></div><div class="wbd${m.star?' hsx':''}">${m.star?`<div class="shbdg" data-star="1"><span class="sst">★</span><span class="snm"><small>نجم الأسبوع</small><b>${esc(m.star.name)}</b></span></div><div class="wtt"><span>دروس هذا الأسبوع</span></div><div class="wdt" style="margin:-4px 0 7px">${w.rng}</div>`:`<div class="wtt"><span>دروس هذا الأسبوع</span><span class="wdt">${w.rng}</span></div>`}${lessons(w.lessons,m.pub?'لا توجد دروس محددة.':'لم يكتب الأستاذ دروس هذا الأسبوع بعد.')}${note(w.note)}</div></div>`+
+ return `<div class="wrows"><div class="wrw wa"><div class="wsd"><b>${shAR(w.no)}</b><small>الأسبوع</small></div><div class="wbd">${m.star?`<div class="shbdg" data-star="1"><span class="sst">★</span><span class="snm"><small>نجم الأسبوع</small><b>${esc(m.star.name)}</b></span></div><div class="wtt"><span>دروس هذا الأسبوع</span></div><div class="wdt" style="margin:-4px 0 7px">${w.rng}</div>`:`<div class="wtt"><span>دروس هذا الأسبوع</span><span class="wdt">${w.rng}</span></div>`}${lessons(w.lessons,m.pub?'لا توجد دروس محددة.':'لم يكتب الأستاذ دروس هذا الأسبوع بعد.')}${note(w.note)}</div></div>`+
   `<div class="wrw wb"><div class="wsd"><b>${shAR(n.no)}</b><small>الأسبوع</small></div><div class="wbd"><div class="wtt"><span>الأسبوع القادم</span><span class="wdt">${n.rng}</span></div>${lessons(n.lessons,n.pub?'لا توجد دروس محددة.':'لم يكتب الأستاذ دروس الأسبوع القادم بعد.')}${note(n.note)}</div></div></div>`}
 function shsStopCards(m){return m.stl.length?m.stl.map(st=>`<div class="stop"><div class="ct"><b><i class="dot"></i>وقفة تقويمية قادمة</b><small style="color:#FFD1CB">انتبه</small></div><div class="sdate">${shsIc('doc').replace('<svg','<svg style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2"')}<span>موعد الوقفة: <b>${st.date}</b></span></div>${st.topics.length?`<div class="mut" style="color:#FFE3DF">مواضيع الوقفة:</div><ul>${st.topics.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}</div>`).join(''):`<div class="glass nostop">لا توجد وقفات</div>`}
 function shsHomeTab(m){let h='',hb='';
@@ -3190,7 +3190,8 @@ function shsJugRun(){if(!SHS_ROOT)return;if(SHS.tab!=='beh'){SHS.jugOk=false;ret
  if(!set(0))return;
  const step=now=>{if(TOK!==tok||!SHS.mounted)return;const t=Math.min(1,(now-t0)/dur),f=1-Math.pow(1-t,3);if(!set(f))return;if(t<1)requestAnimationFrame(step)};
  requestAnimationFrame(step)}
-function shsRender(keep){if(!SHS_ROOT)return;const b=SHS_ROOT.querySelector('#sbody'),sc=b?b.scrollTop:0;SHS_ROOT.innerHTML=shsShell();shsPulseApply();const b2=SHS_ROOT.querySelector('#sbody');if(keep&&b2)b2.scrollTop=sc;try{shsJugRun()}catch(e){}}
+function shsBarFit(){const r=SHS_ROOT;if(!r)return;const bar=r.querySelector('.sbar');if(!bar)return;r.querySelectorAll('.sbody,.chat').forEach(e=>{e.style.top='';const d=parseFloat(getComputedStyle(e).top)||0,need=bar.offsetTop+bar.offsetHeight+5;if(need>d)e.style.top=need+'px'})}
+function shsRender(keep){if(!SHS_ROOT)return;const b=SHS_ROOT.querySelector('#sbody'),sc=b?b.scrollTop:0;SHS_ROOT.innerHTML=shsShell();shsPulseApply();const b2=SHS_ROOT.querySelector('#sbody');if(keep&&b2)b2.scrollTop=sc;try{shsJugRun()}catch(e){}shsBarFit();requestAnimationFrame(shsBarFit)}
 function shsToast(t){const st=shsStage();if(!st)return;const e=document.createElement('div');e.className='toast';e.textContent=t;st.appendChild(e);setTimeout(()=>e.remove(),2000)}
 function shsToEnd(){const m=SHS_ROOT&&SHS_ROOT.querySelector('#chm');if(m)setTimeout(()=>{m.scrollTop=m.scrollHeight},30)}
 const shsHostEl=()=>document.getElementById('shs-ov');
@@ -3268,7 +3269,7 @@ function shsMount(){const o=shsHostEl(),sr=o.shadowRoot,stage=sr.getElementById(
  const R=()=>stage.getBoundingClientRect();
  stage.innerHTML=`<div class="pnl s" style="position:absolute;top:0;bottom:0;left:0;overflow:hidden"><div class="half s" style="position:absolute;inset:0;display:flex;justify-content:center"><div class="hc" style="position:relative">${HS}</div></div><div class="pgw" style="left:0"><div id="spw" style="position:absolute;inset:0"></div></div></div><div class="pnl q" style="position:absolute;top:0;bottom:0;right:0;overflow:hidden"><div class="half q" style="position:absolute;inset:0;display:flex;justify-content:center"><div class="hc" style="position:relative">${HQ}</div></div><div class="pgw" style="right:0"><div class="qpg"></div></div></div><div class="hd" id="hd"></div>`;
  const pS=stage.querySelector('.pnl.s'),pQ=stage.querySelector('.pnl.q'),hd=stage.querySelector('#hd'),wS=pS.querySelector('.pgw'),wQ=pQ.querySelector('.pgw'),cS=pS.querySelector('.hc'),cQ=pQ.querySelector('.hc'),spw=stage.querySelector('#spw');
- spw.innerHTML=shsShell();shsBind(spw);
+ spw.innerHTML=shsShell();shsBind(spw);shsBarFit();requestAnimationFrame(shsBarFit);setTimeout(shsBarFit,400);try{document.fonts.ready.then(shsBarFit)}catch(e){}
  const d=new ShsSp(.5,190,22);SHS.d=d;SHS.state='home';let W=R().width,down=null,lastX=0,lastT=0,vel=0;
  const draw=()=>{const WL=stage.offsetWidth;W=R().width;const x=d.x;pS.style.width=Math.max(0,x*WL)+'px';pQ.style.width=Math.max(0,(1-x)*WL)+'px';hd.style.left=x*WL+'px';wS.style.width=WL+'px';wQ.style.width=WL+'px';
   const eS=shsC((x-.5)/.5,0,1),eQ=shsC((.5-x)/.5,0,1);wS.style.opacity=shsSm(.74,.95,eS);wQ.style.opacity=shsSm(.74,.95,eQ);wS.style.pointerEvents=eS>.9?'auto':'none';wQ.style.pointerEvents='none';
@@ -3408,7 +3409,7 @@ const SHS_CSS=`*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-
 @keyframes shwglow{0%,100%{text-shadow:0 0 0 rgba(255,255,255,0);opacity:.82}50%{text-shadow:0 0 10px rgba(255,255,255,.95),0 0 22px rgba(255,255,255,.55);opacity:1}}
 @media (prefers-reduced-motion:reduce){.wa .wsd b,.wa .wsd small{animation:none;opacity:1}}
 .wb .wsd{background:linear-gradient(180deg,#F6DC8A,#e0b64a);color:#000}
-.wbd{padding:10px 12px;min-width:0}.wbd.hsx{padding-top:40px}.wtt{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;font-size:13px;font-weight:900}
+.wbd{padding:10px 12px;min-width:0}.wtt{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;font-size:13px;font-weight:900}
 .wdt{font-size:10.5px;font-weight:700;opacity:.8;white-space:nowrap}
 .wch{display:flex;flex-wrap:wrap;gap:6px}.wch span{font-size:12px;font-weight:800;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3)}
 .wch span small{display:block;font-size:10px;font-weight:600;opacity:.8;color:#FFE9A8}
@@ -3615,7 +3616,7 @@ async function shStudentGate(){if(ROLE!=='student'||!TOK)return;const my=TOK,r=a
  if(!r||r.error||!r.open){SHS.intro=false;shsClose();return}
  if(SHS.mounted&&SHS.tokKey===my&&shsHostEl()){SHS.st=r;try{shsHeartCheck()}catch(e){}const ae=shsHostEl().shadowRoot.activeElement,typing=ae&&(ae.tagName==='TEXTAREA'||ae.tagName==='INPUT');if(SHS.state==='s'&&SHS_ROOT&&!typing&&!SHS.pend&&!SHS.other&&!SHS.sheet&&!SHS.ch.stage)shsRender(true);shsChalLoad(true);return}
  shsClose();SHS.tokKey=my;SHS.st=r;try{shsHeartCheck()}catch(e){}try{SHS.seen=+localStorage.getItem(shsSeenKey())||0}catch(e){SHS.seen=0}
- const o=shsMakeHost();SHS.bodyOv=document.body.style.overflow;document.body.style.overflow='hidden';o.classList.add('on');shsFit();shsMount();shsFit();{const kb=document.getElementById('kbar');if(kb)kb.remove()}if(!SHS.rz){SHS.rz=()=>{shsFit();setTimeout(shsFit,250)};addEventListener('resize',SHS.rz);addEventListener('orientationchange',SHS.rz)}
+ const o=shsMakeHost();SHS.bodyOv=document.body.style.overflow;document.body.style.overflow='hidden';o.classList.add('on');shsFit();shsMount();shsFit();{const kb=document.getElementById('kbar');if(kb)kb.remove()}if(!SHS.rz){SHS.rz=()=>{shsFit();shsBarFit();setTimeout(()=>{shsFit();shsBarFit()},250)};addEventListener('resize',SHS.rz);addEventListener('orientationchange',SHS.rz)}
  shsLoadMsgs();shsChalLoad(true);SHS.timer=setInterval(()=>{if(document.visibilityState==='visible'){shsLoadMsgs();shsChalLoad(true)}},45000)}
 
 /* فحص دوري لمفتاح التفعيل: التفعيل/الإخفاء من غرفة التحكم يظهر عند الطالب خلال ثوانٍ بلا إغلاق البرنامج */
@@ -7355,7 +7356,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='be6838f5255d';
+const BUILD='b66aa2f40127';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
