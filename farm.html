@@ -235,6 +235,19 @@ const PT={rey:[{a:'#a46bff',b:'#c79bff',e:0,fl:'#ffffff'},{a:'#7d6bff',b:'#b08cf
  lem:[{a:'#ffc93a',b:'#ffb020',e:0,fl:'#fff4b8'},{a:'#ffa24a',b:'#ff7e2a',e:.5,fl:'#fff0c8'},{c:'#ffc27a',c2:'#ffe08a',e:.7,shape:'leaf'},'child'],
  nak:[{a:'#ff9a3c',b:'#e0701c',e:0},{a:'#58ffb0',b:'#2ee08a',e:.5},{c:'#9fffd0',c2:'#e8fff4',e:.8,shape:'leaf'}],
  zay:[{a:'#bfd86a',b:'#8fc04a',e:0,fl:'#fff4b8'},{a:'#ffd54a',b:'#ffb020',e:.5,fl:'#fff4b8'},{c:'#ffc93a',c2:'#ffe08a',e:.4,shape:'leaf'},'child']};
+
+/* ===== أنواع جديدة (فهارس ٨-١٥) ===== */
+TYPES.push({id:'tom',n:'الطماطم',tier:0,tn:'سهلة',kind:0},{id:'str',n:'الفراولة',tier:0,tn:'سهلة',kind:0},{id:'cuc',n:'الخيار',tier:0,tn:'سهلة',kind:0},
+ {id:'app',n:'التفاح',tier:1,tn:'متوسطة',kind:1,v:{c:['#4fd05a','#35b04a'],fruit:'#e0302c'}},{id:'ora',n:'البرتقال',tier:1,tn:'متوسطة',kind:1,v:{c:['#2fa54a','#238a3c'],fruit:'#ff8a1c'}},{id:'grp',n:'العنب',tier:1,tn:'متوسطة',kind:0},
+ {id:'man',n:'المانجو',tier:2,tn:'ضخمة',kind:1,giant:true,v:{c:['#2a8f45','#1f7a38'],fruit:'#ffb020'}},{id:'ban',n:'الموز',tier:2,tn:'ضخمة',kind:0,giant:true});
+Object.assign(PT,{tom:[{a:'#ff9a3c',b:'#ff7a1c',e:0,fl:'#fff4b8'},{a:'#ffd54a',b:'#ffb020',e:.18,fl:'#fff4b8'},{c:'#ffd04a',c2:'#ff6a3a',e:.6,shape:'spark'}],
+ str:[{a:'#ff8fb0',b:'#ff6f9a',e:0,fl:'#ffffff'},{a:'#ffb7d5',b:'#ff8fbf',e:.15,fl:'#ffffff'},{c:'#ffc4de',c2:'#ff7aa8',e:.5,shape:'petal'}],
+ cuc:[{a:'#7dffb0',b:'#2ee08a',e:0,fl:'#fff4b8'},{a:'#9fffd0',b:'#58ffb0',e:.18,fl:'#ffffff'},{c:'#9fffd0',c2:'#e8fff4',e:.7,shape:'leaf'}],
+ app:[{a:'#ff9ab0',b:'#ff7a9a',e:0,fl:'#ffffff'},{a:'#ffc0da',b:'#ff9fc2',e:.12,fl:'#ffffff'},{c:'#ffc4de',c2:'#ffffff',e:.4,shape:'petal'},'girl'],
+ ora:[{a:'#ffb347',b:'#ff9020',e:0,fl:'#ffffff'},{a:'#ffc062',b:'#ffa233',e:.15,fl:'#ffffff'},{c:'#ffd08a',c2:'#fff0c8',e:.5,shape:'leaf'},'child'],
+ grp:[{a:'#b46ae0',b:'#8f4dff',e:0,fl:'#e9d4ff'},{a:'#c79bff',b:'#a66dff',e:.15,fl:'#e9d4ff'},{c:'#d9b8ff',c2:'#ffffff',e:.8,shape:'spark'},'gpa'],
+ man:[{a:'#ffcf4a',b:'#ffa81e',e:0},{a:'#ffd24a',b:'#ffb81e',e:.15},{c:'#ffe08a',c2:'#ffffff',e:.6,shape:'leaf'},'child'],
+ ban:[{a:'#ffe45a',b:'#ffc93a',e:0},{a:'#ffe86a',b:'#ffd23a',e:.15},{c:'#fff4a0',c2:'#ffffff',e:.7,shape:'leaf'}]});
 TYPES.forEach(t=>{const x=PT[t.id];t.pal6=x[0];t.pal7=x[1];t.drop=x[2];t.sw=x[3]||null});
 const palT=(st,ty)=>st>=7?ty.pal7:ty.pal6;
 const SN=['بذرة في التراب','نبتة','برعمان','شتلة','شتلة بثلاثة تيجان','شجرة كاملة','أسطورية','خارقة'];
@@ -333,6 +346,90 @@ function mkJasmine(st,v,ty){if(st<=2)return mkBasil(st,v,ty);const g=new T.Group
   if(st>=4&&i%3===0)for(let k=0;k<5;k++)put(g,SPH(.07),MT(fl,{emissive:col(fl),emissiveIntensity:st>=7?.6:.05}),q[0]+Math.cos(k*1.26)*.12,q[1]+.05,q[2]+Math.sin(k*1.26)*.12+.08,{ow:.02,nosh:true})}
  return g}
 const SHAPES={rum:mkPom,zay:mkOlive,lem:mkLemon,tin:mkFig,rey:mkBasil2,nan:mkMint,yas:mkJasmine};
+/* ===== إعادة تركيب الأشجار + ٨ نباتات جديدة صالحة للأكل (٢٠ نوفمبر) ===== */
+const FOL=(g,x,y,z,r,A,B,k,fl)=>{const f=fl||1;put(g,SPH(r),A,x,y,z,{s:[1,f,1],ow:.07});for(let i=0;i<5;i++){const a=i*1.257+(k||0),q=i%2?.16:-.05;put(g,SPH(r*.58),i%2?B:A,x+Math.cos(a)*r*.8,y+q*r*f,z+Math.sin(a)*r*.8,{s:[1,f,1],ow:.06})}put(g,SPH(r*.55),B,x,y+r*.6*f,z,{s:[1,f,1],ow:.06})};
+const onS=(cx,cy,cz,r,a,e)=>[cx+Math.cos(a)*Math.cos(e)*r,cy+Math.sin(e)*r,cz+Math.sin(a)*Math.cos(e)*r];
+const FM_=(c,o)=>MT(c,Object.assign({emissive:col(c),emissiveIntensity:0},o||{}));
+function fruitTree(c){return (st,v,ty)=>{if(st<=2)return mkTree(st,v,ty);
+ const g=new T.Group(),P=st>=6?palT(st,ty):{a:c.c[0],b:c.c[1],e:0},A=MM(P.a,P),B=MM(P.b,P),wd=WD(c.wood),H=c.H[st],tr=c.tr;
+ if(c.twist){for(const sd of [0,1]){let pv=[0,0,0];for(let i=1;i<=6;i++){const t=i/6,an=t*3.6+sd*Math.PI,r=.34*(1-t*.35),pt=[Math.cos(an)*r,t*H,Math.sin(an)*r];tw(g,pv,pt,tr*(1-t*.35),wd);pv=pt}}}
+ else put(g,CYL(tr*.78,tr,H,10),wd,0,H/2,0,{ow:.05});
+ [[-.7,.2],[.7,.2],[0,.75],[-.4,-.5]].forEach(([x,z])=>put(g,SPH(.3),wd,x*tr*3.2,.12,z*tr*3.2,{s:[1.3,.5,1.3],ow:.04}));
+ const sc=st>=7?.8:st>=6?.88:1,cl=c.cl(st);cl.forEach(([dx0,dy0,dz0,r0],i)=>{const dx=dx0*sc,dy=dy0*sc,dz=dz0*sc,r=r0*sc,cx=dx,cy=H+dy,cz=dz;
+  if(Math.hypot(dx,dz)>.25)tw(g,[0,H*(.62+.1*(i%3)),0],[cx*.8,cy-r*.45,cz*.8],tr*.45,wd);
+  FOL(g,cx,cy,cz,r,i%2?A:B,i%2?B:A,i,c.flat);
+  if(c.leaf)for(let k=0;k<3;k++)c.leaf(g,cx,cy,cz,r,k+i,A,B);
+  const f=c.fr(st,ty);if(f)for(let k=0;k<f.n;k++){const a=Math.atan2(dz,dx)+(k-(f.n-1)/2)*.95+i*.3,e=-.28-.14*((k+i)%3),[fx,fy,fz]=onS(cx,cy,cz,r*(f.rr||1.4),a,e);
+   if(f.hang)tw(g,[fx*.9+cx*.1,fy+f.hang,fz*.9+cz*.1],[fx,fy,fz],.03,wd);f.mk(g,fx,fy,fz,k,a)}});
+ if(st>=6){const fl=(st>=7?ty.pal7:ty.pal6).fl;if(fl)blos(g,fl,st>=7?24:10,c.bx||1.8,H+.8,H+(c.by||2.4),st>=7?.5:.1,.5)}
+ return g}}
+const lemF=(g,x,y,z,k,a,c,gl)=>{const f=new T.Group();f.position.set(x,y,z);f.lookAt(x*2-x*0+Math.cos(a)*3,y,z+Math.sin(a)*3);put(f,SPH(.3),FM_(c,{emissiveIntensity:gl}),0,0,0,{s:[1,1,1.35],ow:.04});put(f,SPH(.09),MT(c),0,0,.4,{ow:.03});g.add(f)};
+const ballF=(r,c0,gl)=>(g,x,y,z,k)=>{const c=typeof c0==='function'?c0():c0;put(g,SPH(r),FM_(c,{emissiveIntensity:gl||0}),x,y,z,{ow:.04});put(g,SPH(r*.35),MT('#3f8a2a'),x,y+r*.9,z,{s:[1.2,.45,1.2],ow:0,nosh:true})};
+const figLeaf=(g,cx,cy,cz,r,k,A,B)=>{const a=k*2.2+.5,[x,y,z]=onS(cx,cy,cz,r*.98,a,.35),lg=new T.Group();lg.position.set(x,y,z);lg.rotation.y=-a+Math.PI/2;lg.rotation.x=-.7;lg.scale.setScalar(.95);const M=k%2?A:B;
+ put(lg,SPH(.4),M,0,0,.28,{s:[.9,.2,1.1],ow:.04});put(lg,SPH(.24),M,-.4,0,.24,{s:[1,.2,.85],r:[0,.6,0],ow:.04});put(lg,SPH(.24),M,.4,0,.24,{s:[1,.2,.85],r:[0,-.6,0],ow:.04});g.add(lg)};
+const FIGD=(st)=>st>=7?'#e9d4ff':st>=6?'#b46ae0':'#7a3b8f';
+const mkFig2=fruitTree({c:['#3fae5e','#2e9450'],wood:'#a08a6a',tr:.5,H:[0,0,0,1.3,1.6,1.9,2.1,2.3],flat:.85,bx:2.6,by:2.2,leaf:figLeaf,
+ cl:st=>{const r=[0,0,0,1.0,1.15,1.5,1.6,1.8][st],n=[0,0,0,0,3,4,5,6][st],R=[0,0,0,0,1.3,1.9,2.1,2.3][st],o=[[0,.9,0,r]];for(let i=0;i<n;i++){const a=i*6.283/n+.4;o.push([Math.cos(a)*R,.35,Math.sin(a)*R,r*.62])}return o},
+ fr:(st)=>st<4?null:{n:st>=5?3:2,hang:.3,mk:(g,x,y,z)=>{const fc=FIGD(st);put(g,SPH(.28),FM_(fc,{emissiveIntensity:st>=7?.4:0}),x,y-.12,z,{s:[.9,1.15,.9],ow:.04});put(g,new T.ConeGeometry(.09,.15,6),MT(fc),x,y+.14,z,{ow:.03})}}});
+const mkLemon2=fruitTree({c:['#6bd650','#4fc03a'],wood:'#9a6a3a',tr:.26,H:[0,0,0,1.8,2.1,2.4,2.6,2.8],bx:1.6,by:2.2,
+ cl:st=>{const r=[0,0,0,.9,1.0,1.25,1.35,1.5][st],n=[0,0,0,0,3,5,6,7][st],R=[0,0,0,0,1.0,1.35,1.45,1.6][st],o=[[0,1.0,0,r]];for(let i=0;i<n;i++){const a=i*6.283/n+.2;o.push([Math.cos(a)*R,.15+(i%2)*.35,Math.sin(a)*R,r*.66])}return o},
+ fr:(st)=>st<4?null:{n:st>=5?5:3,hang:0,mk:(g,x,y,z,k,a)=>lemF(g,x,y,z,k,a,st>=7?'#ffe9a0':st>=6?'#ffd23a':'#ffe23a',st>=7?.35:0)}});
+const mkOlive2=fruitTree({c:['#9cc59a','#7fae7f'],wood:'#7d6b52',tr:.3,twist:true,H:[0,0,0,1.6,2.1,2.6,3,3.3],flat:.72,bx:2.6,by:1.6,
+ cl:st=>{const r=[0,0,0,.95,1.1,1.45,1.6,1.8][st],n=[0,0,0,0,2,4,5,6][st],R=[0,0,0,0,1.2,1.9,2.2,2.5][st],o=[[0,.35,0,r]];for(let i=0;i<n;i++){const a=i*6.283/n+.7;o.push([Math.cos(a)*R,.05+(i%2)*.25,Math.sin(a)*R,r*.68])}return o},
+ fr:(st,ty)=>st<4?null:{n:5,hang:.2,mk:(g,x,y,z)=>{const fc=typeof ty.v.fruit==='function'?ty.v.fruit(st):'#7aa83a';put(g,SPH(.15),FM_(fc,{emissiveIntensity:st>=7?.3:0}),x,y-.12,z,{s:[.9,1.2,.9],ow:.03,nosh:true})}}});
+const mkOrange=fruitTree({c:['#2fa54a','#238a3c'],wood:'#8a5a35',tr:.34,H:[0,0,0,1.8,2.2,2.6,2.8,3.0],bx:1.8,by:2.2,
+ cl:st=>{const r=[0,0,0,1.0,1.15,1.5,1.6,1.7][st],n=[0,0,0,0,3,5,6,6][st],R=[0,0,0,0,1.0,1.5,1.65,1.8][st],o=[[0,.95,0,r]];for(let i=0;i<n;i++){const a=i*6.283/n+.5;o.push([Math.cos(a)*R,.25,Math.sin(a)*R,r*.7])}return o},
+ fr:(st)=>st<4?null:{n:st>=5?6:3,hang:0,mk:ballF(.32,st>=7?'#ffe08a':st>=6?'#ffb347':'#ff8a1c',st>=7?.35:0)}});
+const mkApple=fruitTree({c:['#4fd05a','#35b04a'],wood:'#7a5a3a',tr:.32,H:[0,0,0,1.7,2.1,2.5,2.7,2.9],bx:1.7,by:2.3,
+ cl:st=>{const r=[0,0,0,.95,1.1,1.45,1.55,1.7][st],n=[0,0,0,0,2,4,5,6][st],R=[0,0,0,0,1.0,1.5,1.6,1.8][st],o=[[0,1.05,0,r]];for(let i=0;i<n;i++){const a=i*6.283/n+.3;o.push([Math.cos(a)*R,.45,Math.sin(a)*R,r*.66])}return o},
+ fr:(st)=>st<4?null:{n:st>=5?6:3,hang:.22,mk:ballF(.3,st>=7?'#ffd1e6':st>=6?'#ffb347':'#e0302c',st>=7?.35:0)}});
+const mangoF=(st)=>(g,x,y,z)=>{const fc=st>=7?'#ffe08a':st>=6?'#ff7a2a':st>=5?'#ffb020':'#7ac040';put(g,SPH(.32),FM_(fc,{emissiveIntensity:st>=7?.35:0}),x,y-.14,z,{s:[.8,1.25,.8],r:[0,0,.25],ow:.04});put(g,SPH(.07),MT('#3f8a2a'),x,y+.2,z,{ow:0,nosh:true})};
+const mkMango=fruitTree({c:['#2a8f45','#1f7a38'],wood:'#6a4a2a',tr:.46,H:[0,0,0,2.0,2.5,3.1,3.3,3.5],flat:.9,bx:2.6,by:2.4,
+ cl:st=>{const r=[0,0,0,1.0,1.2,1.6,1.7,1.8][st],n=[0,0,0,0,3,5,6,7][st],R=[0,0,0,0,1.1,1.7,1.9,2.1][st],o=[[0,.9,0,r]];for(let i=0;i<n;i++){const a=i*6.283/n+.2;o.push([Math.cos(a)*R,.2+(i%2)*.3,Math.sin(a)*R,r*.7])}return o},
+ fr:(st)=>st<4?null:{n:st>=5?4:2,hang:.5,mk:mangoF(st)}});
+/* الطماطم: عصا وساق وأوراق وثمار حمراء متدلية */
+function mkTomato(st,v,ty){if(st<=2)return mkBasil(st,v,ty);const g=new T.Group(),P=st>=6?palT(st,ty):{a:'#3fb84a',b:'#2e9a3a',e:0},A=MM(P.a,P),B=MM(P.b,P),h=[0,0,0,1.6,2.1,2.5,2.8,3.0][st],n=[0,0,0,3,4,5,6,7][st],nf=[0,0,0,0,3,5,7,9][st],fc=st>=7?'#ffe08a':st>=6?'#ffb020':'#e8382a';
+ put(g,CYL(.04,.05,h+.4,8),WD('#b9733a'),.55,(h+.4)/2,0,{ow:.03});tw(g,[0,0,0],[.12,h,0],.07,MT('#5aa83a'));
+ for(let i=0;i<n;i++){const y=.5+i*(h-.5)/n,sd=i%2?-1:1,x=sd*.5;tw(g,[.06,y,0],[x,y+.1,.1*(i%3-1)],.035,MT('#5aa83a'));FOL(g,x,y+.18,.1*(i%3-1),.34+.04*(i%2),i%2?A:B,i%2?B:A,i)}
+ FOL(g,.14,h+.12,0,.36,A,B,9);
+ for(let k=0;k<nf;k++){const sd=k%2?-1:1,y=.6+k*(h-.9)/nf,x=sd*(.62+.08*(k%3));tw(g,[sd*.46,y+.3,.05],[x,y+.04,.12],.02,MT('#4a8a3a'));put(g,SPH(.19),FM_(fc,{emissiveIntensity:st>=7?.4:0}),x,y,.12,{ow:.04});put(g,SPH(.07),MT('#3f8a2a'),x,y+.17,.12,{s:[1.5,.4,1.5],ow:0,nosh:true})}
+ if(st>=6){const fl=(st>=7?ty.pal7:ty.pal6).fl;blos(g,fl,st>=7?10:5,.7,h*.5,h+.3,st>=7?.5:.1,.2)}return g}
+/* الفراولة: شجيرة قصيرة وأوراق ثلاثية وثمار حمراء */
+function mkStraw(st,v,ty){if(st<=2)return mkBasil(st,v,ty);const g=new T.Group(),P=st>=6?palT(st,ty):{a:'#4fc84a',b:'#38a83a',e:0},A=MM(P.a,P),B=MM(P.b,P),n=[0,0,0,4,6,8,9,10][st],nf=[0,0,0,0,4,7,9,11][st],fc=st>=7?'#ffd1e6':st>=6?'#ff6fa0':'#e8283a';
+ put(g,SPH(.5),B,0,.35,0,{s:[1.5,.7,1.5],ow:.06});
+ for(let i=0;i<n;i++){const a=i*6.283/n,rr=.55+.25*(i%2),x=Math.cos(a)*rr,z=Math.sin(a)*rr;FOL(g,x,.4+.1*(i%3),z,.36,i%2?A:B,i%2?B:A,i,.8)}
+ for(let k=0;k<nf;k++){const a=k*2.4+.3,rr=1.05+.2*(k%3),x=Math.cos(a)*rr,z=Math.sin(a)*rr;put(g,SPH(.22),FM_(fc,{emissiveIntensity:st>=7?.4:0}),x,.5,z,{s:[.9,1.15,.9],ow:.04});put(g,SPH(.09),MT('#3f8a2a'),x,.72,z,{s:[1.5,.4,1.5],ow:0,nosh:true})}
+ if(st<=4||st>=6){const fl=st>=6?(st>=7?ty.pal7:ty.pal6).fl:'#ffffff';for(let i=0;i<(st>=7?9:5);i++){const a=i*1.9,rr=.4+.25*(i%3);put(g,SPH(.09),MT(fl,{emissive:col(fl),emissiveIntensity:st>=7?.6:.05}),Math.cos(a)*rr,.78+.12*(i%2),Math.sin(a)*rr,{ow:.03,nosh:true})}}return g}
+/* الخيار: سياج معرّش وأوراق عريضة وخيارات خضراء متدلية */
+function mkCuc(st,v,ty){if(st<=2)return mkBasil(st,v,ty);const g=new T.Group(),P=st>=6?palT(st,ty):{a:'#43c04a',b:'#2f9a3a',e:0},A=MM(P.a,P),B=MM(P.b,P),h=[0,0,0,1.8,2.3,2.8,3.0,3.2][st],n=[0,0,0,4,6,8,9,10][st],nf=[0,0,0,0,2,4,6,8][st],fc=st>=7?'#d8ffd0':st>=6?'#8fffb0':'#3f9a3a',wd=WD('#b9733a');
+ [-1.2,1.2].forEach(x=>tw(g,[x,0,0],[x,h,0],.09,wd));tw(g,[-1.25,h,0],[1.25,h,0],.07,wd);[.5,1.1,1.7].filter(y=>y<h).forEach(y=>tw(g,[-1.2,y,0],[1.2,y,0],.03,wd));
+ for(let i=0;i<n;i++){const sd=i%2?1:-1,y=.35+i*(h-.5)/n,x=sd*(.9+.3*(i%3)*.3)+(i%3-1)*.2;tw(g,[sd*1.2,y,0],[x,y+.05,.05],.035,MT('#4aa83a'));FOL(g,x,y+.12,.06,.4,i%2?A:B,i%2?B:A,i,.7)}
+ for(let k=0;k<nf;k++){const x=-.9+k*1.8/Math.max(1,nf-1)+(k%2)*.08,y=h-.15;tw(g,[x,y+.1,0],[x,y-.1,0],.02,MT('#4a8a3a'));put(g,CYL(.12,.1,.62,10),FM_(fc,{emissiveIntensity:st>=7?.35:0}),x,y-.45,.05,{ow:.04});put(g,SPH(.1),FM_(fc),x,y-.77,.05,{ow:.03});put(g,SPH(.1),FM_(fc),x,y-.14,.05,{ow:.03})}
+ if(st<=4||st>=6)for(let i=0;i<5;i++)put(g,SPH(.09),MT(st>=6?((st>=7?ty.pal7:ty.pal6).fl):'#ffd23a',{emissive:col('#ffd23a'),emissiveIntensity:.3}),-.9+i*.45,h*.55+.25*(i%2),.15,{ow:.03,nosh:true});return g}
+/* العنب: عريشة ودالية تتسلقها وعناقيد متدلية */
+function grapeC(g,x,y,z,c,gl,s){const S=s||1;[[0,0,0],[-.1,.1,.03],[.1,.1,-.03],[0,.2,.02],[-.07,.3,0],[.07,.3,.02],[0,.4,0]].forEach(([dx,dy,dz],i)=>put(g,SPH(.115*S),FM_(c,{emissiveIntensity:gl||0}),x+dx*S,y+dy*S,z+dz*S,{ow:.03}))}
+function mkGrape(st,v,ty){if(st<=2)return mkBasil(st,v,ty);const g=new T.Group(),P=st>=6?palT(st,ty):{a:'#4fb04a',b:'#389a3a',e:0},A=MM(P.a,P),B=MM(P.b,P),wd=WD('#a0693a'),h=[0,0,0,1.9,2.3,2.6,2.8,3.0][st],w=[0,0,0,1.1,1.3,1.5,1.6,1.7][st],n=[0,0,0,2,4,6,7,8][st],nf=[0,0,0,0,3,5,7,9][st],gc=st>=7?'#e9d4ff':st>=6?'#b46ae0':'#6a2f8a';
+ [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz])=>tw(g,[sx*w,0,sz*w],[sx*w,h,sz*w],.1,wd));
+ [[-1,-1,1,-1],[-1,1,1,1],[-1,-1,-1,1],[1,-1,1,1]].forEach(([a,b,c,d])=>tw(g,[a*w,h,b*w],[c*w,h,d*w],.08,wd));for(let i=-.5;i<=.5;i+=.5)tw(g,[-w,h+.04,i*w*2],[w,h+.04,i*w*2],.05,wd);
+ let pv=[-w*.55,0,-w*.2];for(let i=1;i<=7;i++){const t=i/7,an=t*5,pt=[-w*.55+t*w*.55+Math.cos(an)*.14,t*h,-w*.2+t*w*.2+Math.sin(an)*.14];tw(g,pv,pt,.13*(1-t*.5),wd);pv=pt}
+ for(let i=0;i<n;i++){const a=i*6.283/n+.4,rr=i===0?0:w*.9,x=Math.cos(a)*rr*.9,z=Math.sin(a)*rr*.9;tw(g,[0,h,0],[x,h+.28,z],.05,wd);FOL(g,x,h+.5,z,.62+(i===0?.1:0),i%2?A:B,i%2?B:A,i,.55)}
+ for(let k=0;k<nf;k++){const a=k*2.4,rr=k%3===0?.1:w*.7,x=Math.cos(a)*rr,z=Math.sin(a)*rr;tw(g,[x,h+.05,z],[x,h-.25,z],.03,MT('#4a8a3a'));grapeC(g,x,h-.9,z,gc,st>=7?.4:0,1.1)}
+ if(st>=6){const fl=(st>=7?ty.pal7:ty.pal6).fl;blos(g,fl,st>=7?14:6,w,h+.3,h+1.1,st>=7?.5:.1,.2)}return g}
+/* الموز: ساق كاذبة وأوراق عريضة طويلة وعنقود موز متدلٍّ */
+function mkBanana(st,v,ty){if(st<=2)return mkBasil(st,v,ty);const g=new T.Group(),P=st>=6?palT(st,ty):{a:'#5fcf4a',b:'#43b83a',e:0},A=MM(P.a,P),B=MM(P.b,P),h=[0,0,0,1.5,2.0,2.5,2.8,3.0][st],F=[0,0,0,5,6,8,9,10][st],L=[0,0,0,1.2,1.5,1.8,1.9,2.0][st],bc=st>=7?'#fff4a0':st>=6?'#ffd23a':'#ffe45a';
+ for(let i=0;i<5;i++){const t=i/5;put(g,CYL(.36-t*.1,.42-t*.1,h/5*1.1,12),MT(i%2?'#9fc860':'#8ab850'),0,t*h+h/10+.05,0,{ow:.05})}
+ for(let f=0;f<F;f++){const a=f/F*6.283+.2,fr=new T.Group();fr.position.set(0,h,0);fr.rotation.y=a;g.add(fr);for(let s=1;s<=5;s++){const t=s/5;put(fr,SPH(.4),s%2?A:B,s*L*.26,(.35-1.35*t*t*.55+.3*Math.sin(t*2.5)),0,{s:[1.2*L*.82,.14,.95-.4*t],r:[0,0,-.1-.5*t*t],ow:.04})}}
+ put(g,SPH(.3),A,0,h+.1,0,{ow:.05});
+ if(st>=4){const bx=.55,by=h-.2;tw(g,[0,h,0],[bx,by,0],.08,MT('#6a8a3a'));tw(g,[bx,by,0],[bx+.2,by-.6,0],.07,MT('#6a8a3a'));const rows=st>=6?4:st>=5?3:2;for(let r=0;r<rows;r++){const y=by-.62-r*.24;for(let k=0;k<5;k++){const a=k*1.2566+r*.6;put(g,SPH(.11),FM_(st>=5?bc:'#9ad04a',{emissiveIntensity:st>=7?.35:0}),bx+.2+Math.cos(a)*.17,y-.12,Math.sin(a)*.17,{s:[.55,1.7,.55],r:[0,0,Math.cos(a)*.35],ow:.03})}}put(g,SPH(.16),MT('#7a2f6a'),bx+.2,by-.62-rows*.24-.15,0,{s:[.9,1.3,.9],ow:.04})}
+ if(st>=6){const fl=(st>=7?ty.pal7:ty.pal6).fl||'#fff4a0';blos(g,fl,st>=7?12:6,1.4,h+.1,h+1.2,st>=7?.5:.1,.4)}return g}
+function mkMint2(st,v,ty){if(st<=2)return mkBasil(st,v,ty);const g=new T.Group(),P=pal(st,ty,{a:'#8be39a',b:'#5fcb7a',e:0}),A=MM(P.a,P),B=MM(P.b,P),n=[0,0,0,4,6,8,9,10][st];
+ put(g,SPH(.7),B,0,.4,0,{s:[1.6,.6,1.6],ow:.06});
+ for(let i=0;i<n;i++){const a=i*6.283/n+.3,rr=.5+.22*(i%3)+(st>=5?.3:0),x=Math.cos(a)*rr,z=Math.sin(a)*rr,y=.5+.28*(i%3);tw(g,[0,.3,0],[x*.8,y-.1,z*.8],.05,MT('#4a9a5a'));FOL(g,x,y+.1,z,.4+.05*(st>=5),i%2?A:B,i%2?B:A,i,.85)}
+ FOL(g,0,.95+.1*(st>=5),0,.5,A,B,3,.9);
+ if(st>=5){const fl=st>=6?(st>=7?ty.pal7:ty.pal6).fl||'#d9c4ff':'#cdb8ff';for(let k=0;k<(st>=7?9:5);k++){const a=k*2.2,rr=.3+.2*(k%3);tw(g,[Math.cos(a)*rr*.5,1,Math.sin(a)*rr*.5],[Math.cos(a)*rr,1.55+.1*(k%2),Math.sin(a)*rr],.025,MT('#4a9a5a'));put(g,SPH(.12),MT(fl,{emissive:col(fl),emissiveIntensity:st>=7?.6:.05}),Math.cos(a)*rr,1.6+.1*(k%2),Math.sin(a)*rr,{ow:.03,nosh:true})}}
+ return g}
+Object.assign(SHAPES,{nan:mkMint2,tin:mkFig2,lem:mkLemon2,zay:mkOlive2,tom:mkTomato,str:mkStraw,cuc:mkCuc,app:mkApple,ora:mkOrange,grp:mkGrape,man:mkMango,ban:mkBanana});
+
 
 function makePlant(t){if(t.plant)t.pg.remove(t.plant);const ty=TYPES[t.type],m=(SHAPES[ty.id]||MODELS[ty.kind])(t.stage,ty.v,ty),g=new T.Group();const SC=ty.giant?(t.stage>=7?2.4:t.stage>=6?2.1:2):(t.stage>=7?1.6:t.stage>=6?1.25:1);m.scale.setScalar(SC);g.add(m);g.userData.h=[.6,1.4,2.2,3.4,4.4,5.8,5.8,5.8][t.stage]*(ty.kind===2?1.1:1)*SC;t.pg.add(g);t.plant=g;t.pop=1;syncLife(t);GZT=Math.max(1,...tiles.filter(q=>q.type>=0).map(q=>{const g=TYPES[q.type].giant;return q.stage>=7?(g?1.65:1.5):q.stage>=6?(g?1.55:1.2):g&&q.stage>=3?1.35:1}))}
 /* ---------- حياة الجزيرة (مخلوقات ومشاهد لكل بذرة) ---------- */
@@ -389,16 +486,16 @@ function specsFor(ty,st){const S=[],lv=n=>st>=NL[n-1],P=(k,mk,beh,o)=>S.push(Obj
  B3=(base,cols,o)=>cols.forEach((c,i)=>F(base+i,()=>mkBfly(c),Object.assign({R:2.8,hb:1.6,hv:.5,sp:2.2,a:i*2.1,fl:30},o||{}))),
  LAN=()=>[[0,-4.3],[4.3,0],[0,4.3],[-4.3,0]].forEach((p,i)=>P('lan'+i,mkLantern,'prop',{at:p,s:1}));
  switch(ty.id){
- case 'rey':if(lv(1))W('l0',mkLady,{sp:.45,hop:0,s:1.7});if(lv(2))W('l1',mkLady,{sp:.45,hop:0,s:1.7});if(lv(3))B3('b',['#ff8fd0','#ffd35a','#8fd0ff']);if(lv(4))W('cat',mkCat,{sp:1.1,hop:.06});if(lv(5)){P('girl',mkGirl,'person');P('gran',mkGran,'follow',{off:[-1.1,-.7],prop:'basket'})}break;
- case 'nan':if(lv(1))W('t0',mkTurtle,{sp:.3,hop:0,s:1.1});if(lv(2))W('t1',mkTurtle,{sp:.3,hop:0,s:1.1});if(lv(3))for(let i=0;i<3;i++)F('d'+i,mkDrag,{R:2.4,hb:1.9,hv:.6,sp:3.2,a:i*2.1,fl:45});if(lv(4))W('duck',mkDuck,{sp:.7,hop:.05});if(lv(5)){P('boy',mkChild,'person');P('gpa',mkGrandpa,'follow',{off:[-1.1,-.7],prop:'teapot'})}break;
- case 'yas':if(lv(1))W('s0',()=>mkBird('#8a6a4a','#6b4f35'),{sp:1.4,hop:.14});if(lv(2))W('s1',()=>mkBird('#8a6a4a','#6b4f35'),{sp:1.4,hop:.14});if(lv(3))B3('w',['#ffffff','#f4f0ff','#fff6e0']);if(lv(4))P('girl',mkGirl,'person');if(lv(5))P('mom',mkMom,'follow',{off:[-1.1,-.7]});break;
- case 'rum':if(lv(1))W('r0',mkRabbit,{sp:1.4,hop:.28});if(lv(2))W('r1',mkRabbit,{sp:1.4,hop:.28});if(lv(3))P('hive',mkHive,'hive',{at:[-2.6,1.7]});if(lv(4))P('child',mkChild,'person');if(lv(5)){P('mom',mkMom,'follow',{off:[-1.3,-.7]});P('dad',mkDad,'follow',{off:[1.3,-.7]})}break;
- case 'tin':if(lv(1))W('q0',mkSquirrel,{sp:1.6,hop:.2});if(lv(2))W('q1',mkSquirrel,{sp:1.6,hop:.2});if(lv(3))for(let i=0;i<3;i++)F('b'+i,()=>mkBird('#9a7a5a','#6b4f35'),{R:2.3,hb:3.1,hv:.5,sp:1.9,a:i*2.1,fl:34});if(lv(4))P('boy',mkChild,'person',{prop:'basket'});if(lv(5)){P('mat',()=>mkMat('#3a6ea5'),'prop',{at:[2.9,-2.4],ry:.4});P('gpa',mkGrandpa,'seat',{at:[2.9,-2.4],face:[0,0]})}break;
- case 'lem':if(lv(1))F('y0',()=>mkBfly('#ffe23a'),{R:2.8,hb:1.8,hv:.5,sp:2.2,a:0,fl:30});if(lv(2))F('y1',()=>mkBfly('#ffd35a'),{R:2.8,hb:1.8,hv:.5,sp:2.4,a:2.4,fl:30});if(lv(3))P('hive',mkHive,'hive',{at:[-2.6,1.7]});if(lv(4))P('girl',mkGirl,'person',{prop:'glass'});if(lv(5))P('mom',mkMom,'follow',{off:[-1.1,-.7],prop:'pitcher'});break;
- case 'nak':if(st>=1)W('c0',mkCat,{sp:1.1,hop:.06});if(st>=2)W('c1',mkCat,{sp:1.1,hop:.06});if(st>=3)for(let i=0;i<2;i++)F('dv'+i,()=>mkBird('#ffffff','#e9edf5'),{R:2.8,hb:4.6,hv:.8,sp:1.5,a:i*3,fl:30});
+ case 'rey':case 'tom':if(lv(1))W('l0',mkLady,{sp:.45,hop:0,s:1.7});if(lv(2))W('l1',mkLady,{sp:.45,hop:0,s:1.7});if(lv(3))B3('b',['#ff8fd0','#ffd35a','#8fd0ff']);if(lv(4))W('cat',mkCat,{sp:1.1,hop:.06});if(lv(5)){P('girl',mkGirl,'person');P('gran',mkGran,'follow',{off:[-1.1,-.7],prop:'basket'})}break;
+ case 'nan':case 'str':if(lv(1))W('t0',mkTurtle,{sp:.3,hop:0,s:1.1});if(lv(2))W('t1',mkTurtle,{sp:.3,hop:0,s:1.1});if(lv(3))for(let i=0;i<3;i++)F('d'+i,mkDrag,{R:2.4,hb:1.9,hv:.6,sp:3.2,a:i*2.1,fl:45});if(lv(4))W('duck',mkDuck,{sp:.7,hop:.05});if(lv(5)){P('boy',mkChild,'person');P('gpa',mkGrandpa,'follow',{off:[-1.1,-.7],prop:'teapot'})}break;
+ case 'yas':case 'cuc':if(lv(1))W('s0',()=>mkBird('#8a6a4a','#6b4f35'),{sp:1.4,hop:.14});if(lv(2))W('s1',()=>mkBird('#8a6a4a','#6b4f35'),{sp:1.4,hop:.14});if(lv(3))B3('w',['#ffffff','#f4f0ff','#fff6e0']);if(lv(4))P('girl',mkGirl,'person');if(lv(5))P('mom',mkMom,'follow',{off:[-1.1,-.7]});break;
+ case 'rum':case 'app':if(lv(1))W('r0',mkRabbit,{sp:1.4,hop:.28});if(lv(2))W('r1',mkRabbit,{sp:1.4,hop:.28});if(lv(3))P('hive',mkHive,'hive',{at:[-2.6,1.7]});if(lv(4))P('child',mkChild,'person');if(lv(5)){P('mom',mkMom,'follow',{off:[-1.3,-.7]});P('dad',mkDad,'follow',{off:[1.3,-.7]})}break;
+ case 'tin':case 'grp':if(lv(1))W('q0',mkSquirrel,{sp:1.6,hop:.2});if(lv(2))W('q1',mkSquirrel,{sp:1.6,hop:.2});if(lv(3))for(let i=0;i<3;i++)F('b'+i,()=>mkBird('#9a7a5a','#6b4f35'),{R:2.3,hb:3.1,hv:.5,sp:1.9,a:i*2.1,fl:34});if(lv(4))P('boy',mkChild,'person',{prop:'basket'});if(lv(5)){P('mat',()=>mkMat('#3a6ea5'),'prop',{at:[2.9,-2.4],ry:.4});P('gpa',mkGrandpa,'seat',{at:[2.9,-2.4],face:[0,0]})}break;
+ case 'lem':case 'ora':if(lv(1))F('y0',()=>mkBfly('#ffe23a'),{R:2.8,hb:1.8,hv:.5,sp:2.2,a:0,fl:30});if(lv(2))F('y1',()=>mkBfly('#ffd35a'),{R:2.8,hb:1.8,hv:.5,sp:2.4,a:2.4,fl:30});if(lv(3))P('hive',mkHive,'hive',{at:[-2.6,1.7]});if(lv(4))P('girl',mkGirl,'person',{prop:'glass'});if(lv(5))P('mom',mkMom,'follow',{off:[-1.1,-.7],prop:'pitcher'});break;
+ case 'nak':case 'ban':if(st>=1)W('c0',mkCat,{sp:1.1,hop:.06});if(st>=2)W('c1',mkCat,{sp:1.1,hop:.06});if(st>=3)for(let i=0;i<2;i++)F('dv'+i,()=>mkBird('#ffffff','#e9edf5'),{R:2.8,hb:4.6,hv:.8,sp:1.5,a:i*3,fl:30});
   if(st>=5)P('girl',mkGirl,'person',{prop:'basket'});if(st>=6){P('mat',()=>mkMat('#c0392b'),'prop',{at:[-2.9,-2.4],ry:-.4});P('dal',mkDallah,'prop',{at:[-2.9,-2.4]});P('gpa',mkGrandpa,'seat',{at:[-3.7,-2.0],face:[-2.9,-2.4]});P('gma',mkGran,'seat',{at:[-2.2,-2.9],face:[-2.9,-2.4]})}
   if(st>=7){LAN();P('mom',mkMom,'follow',{off:[-1.2,-.7]});P('dad',mkDad,'follow',{off:[1.2,-.7]})}break;
- case 'zay':if(st>=1)F('y0',()=>mkBfly('#ffffff'),{R:2.8,hb:2.2,hv:.6,sp:2.2,a:0,fl:30});if(st>=2)for(let i=0;i<2;i++)F('sp'+i,()=>mkBird('#8a6a4a','#6b4f35'),{R:2.6,hb:3.8,hv:.6,sp:1.9,a:i*3,fl:34});if(st>=3)F('dv',()=>mkBird('#ffffff','#e9edf5'),{R:3,hb:5,hv:.8,sp:1.4,a:1.2,fl:30});
+ case 'zay':case 'man':if(st>=1)F('y0',()=>mkBfly('#ffffff'),{R:2.8,hb:2.2,hv:.6,sp:2.2,a:0,fl:30});if(st>=2)for(let i=0;i<2;i++)F('sp'+i,()=>mkBird('#8a6a4a','#6b4f35'),{R:2.6,hb:3.8,hv:.6,sp:1.9,a:i*3,fl:34});if(st>=3)F('dv',()=>mkBird('#ffffff','#e9edf5'),{R:3,hb:5,hv:.8,sp:1.4,a:1.2,fl:30});
   if(st>=5){P('shep',mkShep,'person');W('sheep',mkSheep,{sp:.6,hop:.05})}if(st>=6){P('mat',()=>mkMat('#2f7a6a'),'prop',{at:[2.9,-2.4],ry:.5});P('try',mkTray,'prop',{at:[2.9,-2.4]});P('f0',mkDad,'seat',{at:[3.7,-2.0],face:[2.9,-2.4]});P('f1',mkMom,'seat',{at:[2.2,-3.0],face:[2.9,-2.4]});P('f2',mkChild,'seat',{at:[3.5,-3.1],face:[2.9,-2.4]})}
   if(st>=7)LAN();break}
  if(st>=7&&ty.sw)P('swing',t=>mkSwing(t,ty.sw),'swing');
@@ -942,6 +1039,7 @@ const icTree=(a,b,f)=>`<svg viewBox="0 0 64 64"><rect x="28" y="34" width="9" he
 const icHerb=(a,b,fl)=>`<svg viewBox="0 0 64 64"><path d="M32 60V28" stroke="${O}" stroke-width="9" stroke-linecap="round"/><path d="M32 60V28" stroke="#6bbf3a" stroke-width="4.5" stroke-linecap="round"/>${[[16,44,-30,a],[48,40,30,b],[18,30,-40,b],[46,28,40,a],[32,14,0,a]].map(([x,y,r,c])=>`<ellipse cx="${x}" cy="${y}" rx="11" ry="6" transform="rotate(${r} ${x} ${y})" fill="${c}" stroke="${O}" stroke-width="2.6"/>`).join('')}${fl?[[22,18],[42,18],[32,8]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="4.5" fill="#fff" stroke="${O}" stroke-width="2"/>`).join(''):''}</svg>`;
 const icPalm=`<svg viewBox="0 0 64 64"><path d="M32 60C31 46 33 34 38 22" fill="none" stroke="${O}" stroke-width="11" stroke-linecap="round"/><path d="M32 60C31 46 33 34 38 22" fill="none" stroke="#c98643" stroke-width="6" stroke-linecap="round"/>${[[-50,1],[-20,.9],[15,.9],[48,1],[80,.85]].map(([a,k])=>`<ellipse cx="38" cy="20" rx="${15*k}" ry="4.6" transform="rotate(${a-90} 38 20) translate(${12*k} 0)" fill="#3fcf5a" stroke="${O}" stroke-width="2.6"/>`).join('')}<circle cx="35" cy="26" r="3" fill="#d0661e" stroke="${O}" stroke-width="2"/></svg>`;
 const ICON={rey:icHerb('#52d65a','#3fb84a'),nan:icHerb('#8be39a','#5fcb7a'),yas:icHerb('#2f9a52','#23803f',1),rum:icTree('#42d65c','#2fb84c','#d6303a'),tin:icTree('#2e9e5a','#237f49','#7a3b8f'),lem:icTree('#6bd650','#4fc03a','#ffe23a'),nak:icPalm,zay:icTree('#9cc59a','#7fae7f','#2a2a33')};
+Object.assign(ICON,{tom:icTree('#4fc04a','#2f9a3a','#e63a2a'),str:icHerb('#4fc84a','#38a83a'),cuc:icHerb('#43c04a','#2f9a3a'),app:icTree('#4fd05a','#35b04a','#e0302c'),ora:icTree('#2fa54a','#238a3c','#ff8a1c'),grp:icTree('#4fb04a','#389a3a','#6a2f8a'),man:icTree('#2a8f45','#1f7a38','#ffb020'),ban:icPalm});
 const CHEST=`<svg viewBox="0 0 40 40"><rect x="4" y="16" width="32" height="20" rx="4" fill="#b9733a" stroke="#2b1a0a" stroke-width="3"/><path d="M4 20c0-9 6-13 16-13s16 4 16 13z" fill="#d98a43" stroke="#2b1a0a" stroke-width="3"/><rect x="16" y="19" width="8" height="9" rx="2" fill="#ffd45a" stroke="#2b1a0a" stroke-width="2.5"/></svg>`;
 const PANEL={open:false};
 function tray(){hud();ctl();chestUI();}
@@ -976,6 +1074,8 @@ function mkSeed(i){const g=new T.Group(),id=TYPES[i].id,dark=(c,n)=>{for(let k=0
  else if(id==='zay'){put(g,SPH(.3),MT('#cdb78a'),0,0,0,{s:[.75,1.5,.75],ow:.05});put(g,new T.BoxGeometry(.04,1,.06),MT('#8a7447'),.2,0,.1,{ow:0})}
  else if(id==='rum'){dark('#d6303a',5)}else if(id==='tin'){dark('#d9b774',6)}else if(id==='lem'){dark('#f4efd0',4)}
  else if(id==='nan'){dark('#6b5a2e',5)}else if(id==='yas'){[0,1,2,3].forEach(k=>put(g,SPH(.2),MT('#1d1a1a'),Math.cos(k*1.6)*.28,0,Math.sin(k*1.6)*.28,{ow:.04}))}
+ else if(id==='tom')dark('#f4efd0',5);else if(id==='str')dark('#c0392b',5);else if(id==='cuc')dark('#e8e0b0',4);else if(id==='app')dark('#5a2a14',4);else if(id==='ora')dark('#d9c070',4);else if(id==='grp')dark('#4a2a5a',5);
+ else if(id==='man'){put(g,SPH(.3),MT('#b08a3b'),0,0,0,{s:[.8,1.6,.5],ow:.05})}else if(id==='ban')dark('#2a1f1a',6);
  else dark('#2a1f1a',4);
  g.scale.setScalar(1.7);return g}
 document.addEventListener('pointerdown',e=>{if(e.target.closest('[data-chest]')){PANEL.open=true;hintHide();chestUI();if(TOUR.on&&TOUR.s===0)tourGo(1);return}if(e.target.closest('[data-x]')){PANEL.open=false;chestUI();return}
