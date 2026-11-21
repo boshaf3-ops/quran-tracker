@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="b66aa2f40127">
+<meta name="build" content="c40dd15bc8a6">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3141,7 +3141,7 @@ function shsNtcShow(){if(SHS_NTB||!SHS_NTQ.length)return;const n=SHS_NTQ[0],k=SH
 async function shsOnEnter(){const my=TOK;try{shsRpc('sharia_student_ping',{p_kind:'s'})}catch(e){}if(Date.now()-SHS_NTCHK<4000)return;SHS_NTCHK=Date.now();const r=await shsRpc('sharia_notice_pending',{});if(TOK!==my||!r||!r.ok||!Array.isArray(r.notices))return;const have=new Set(SHS_NTQ.map(x=>x.id));r.notices.forEach(x=>{if(!have.has(x.id))SHS_NTQ.push(x)});shsNtcShow()}
 let SHS_GQ=Promise.resolve();
 async function shsGameSave(d){const sp=Math.max(0,Math.round(+d.spent||0)),st=d.st;if(!st||typeof st!=='object')return;const r=await shsRpc('sharia_game_save',{p:{spent:sp,st}});if(r&&r.ok&&SHS.st){SHS.st.gspent=r.spent;SHS.st.gst=st}}
-const SHS_RPCMAP={friends:['sharia_game_friends',a=>({})],top:['sharia_game_top',a=>({})],visit:['sharia_game_visit',a=>({p_sid:+a.sid||0})],like:['sharia_game_like',a=>({p_to:+a.to||0})]};
+const SHS_RPCMAP={friends:['sharia_game_friends',a=>({})],top:['sharia_game_top',a=>({})],visit:['sharia_game_visit',a=>({p_sid:+a.sid||0})],like:['sharia_game_like',a=>({p_to:+a.to||0,p_c:+a.c||0})],wq:['sharia_week_q',a=>({})],'wq-ans':['sharia_week_q_ans',a=>({p_c:+a.c})],'likes-new':['sharia_game_likes_new',a=>({})]};
 async function shsGameRpc(d,src){const m=SHS_RPCMAP[d.fn];let res=null;if(m){try{res=await shsRpc(m[0],m[1](d.arg||{}))}catch(e){res=null}}
  const f=document.querySelector('#shs-game iframe');if(f&&f.contentWindow===src){try{src.postMessage({type:'farm-rpc-res',id:d.id,res},location.origin)}catch(e){}}}
 /* القلب الأبيض: إشعار إعجاب الإدارة، ينفجر انفجاراً لطيفاً عند الضغط */
@@ -7356,7 +7356,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='b66aa2f40127';
+const BUILD='c40dd15bc8a6';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
