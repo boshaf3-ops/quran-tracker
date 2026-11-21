@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>كشف الحفظ</title>
 <meta name="theme-color" content="#1d7562">
-<meta name="build" content="ee3e2a2e2ba5">
+<meta name="build" content="02b19162905c">
 <meta name="application-name" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-title" content="كشف الحفظ">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -4270,21 +4270,20 @@ function shVFcat(){const c=shCls(SHA.a);if(!c)return shVFcats();fcEnsure();fcWai
 /* ===== تقرير PDF لفئات الصف (تصميم الشريط الجانبي) ===== */
 const FC_DOC_CSS='.fsum{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm}.fsum>div{border:.45mm solid var(--c);border-radius:3mm;padding:1.4mm 2.2mm;display:flex;align-items:center;gap:2mm;background:#fff}.fsum b{font-size:15pt;font-weight:900;color:var(--c);line-height:1}.fsum span{font-size:8.6pt;font-weight:800;color:#16443B;line-height:1.25}.fsum small{display:block;font-size:7pt;font-weight:700;opacity:.8}'
  +'.fcols{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm;flex:1;min-height:0}.fcp{border:.45mm solid var(--c);border-radius:3mm;overflow:hidden;background:#fff;display:flex;flex-direction:column}.fcp .fh{background:var(--c);color:#fff;padding:1.6mm 2mm;display:flex;align-items:center;gap:2mm}.fcp .fm{width:9.5mm;height:9.5mm;border-radius:50%;background:rgba(0,0,0,.28);display:grid;place-items:center;flex:none}.fcp .fh b{font-size:10.5pt;font-weight:900;line-height:1.2}.fcp .fh small{display:block;font-size:7.5pt;font-weight:700;opacity:.95}.fcp .fh .n{margin-right:auto;font-size:15pt;font-weight:900}'
- +'.fcp ol{list-style:none;padding:1mm 2mm;flex:1;margin:0}.fcp li{display:flex;gap:1.5mm;font-size:8.2pt;font-weight:700;padding:.75mm 0;border-bottom:.2mm dotted #d9ceaa;line-height:1.3;color:#16443B}.fcp li i{font-style:normal;color:#9A6B05;width:5mm;flex:none}.fcp li.e{opacity:.55;justify-content:center;border:0}.fnote{font-size:7.6pt;color:#6a5a2a;font-weight:700;line-height:1.6}';
+ +'.fcp ol{list-style:none;padding:1mm 2mm;flex:1;margin:0;overflow:hidden;min-height:0}.fcp li{display:flex;gap:1.5mm;font-size:var(--fs,8.2pt);font-weight:700;padding:calc(var(--fs,8.2pt)*.09) 0;border-bottom:.2mm dotted #d9ceaa;line-height:1.25;color:#16443B}.fcp li i{font-style:normal;color:#9A6B05;width:5mm;flex:none}.fcp li.e{opacity:.55;justify-content:center;border:0}.fnote{font-size:7.6pt;color:#6a5a2a;font-weight:700;line-height:1.6}';
 /* صفحات تقرير صف واحد (واحدة أو أكثر) */
 function fcPages(c,O){const g=shSig(),o=shOwner(c.id),teacher=o?'أ. '+shNm(o):'—',d0=new Date(),ds=shAR(d0.getDate())+' '+SH_M[d0.getMonth()]+' '+shAR(d0.getFullYear());
  const lg=k=>`<i style="background-image:url(${shLogo(k)})"></i>`;
  const head=`<div class="dots"></div><div class="band"></div><div class="logo r">${lg('b')}</div><div class="logo l">${lg('a')}</div><div class="vt">قسم العلوم الشرعية</div><div class="hd"><h1>فئات الطلبة في العلوم الشرعية</h1><h2>المعهد الديني الابتدائي · ${shCn(c)}</h2><p>الفصل الدراسي الأول 2026 – 2027 · بتاريخ ${ds} · معلم المادة ${esc(teacher)}</p></div><div class="ribbon">تصنيف الطلبة حسب معدّل الوقفات (من ٢٠)</div>`;
  const sig=`<div class="sig"><div>معلم المادة<b>${esc(teacher)}</b></div><div>منسق القسم<b>${esc(g.coord)}</b></div><div>المدير المساعد<b>${esc(g.asst)}</b></div><div>مدير المعهد<b>${esc(g.dir)}</b></div></div>`;
- const K=['hi','mid','low'],PER=30,rec=O.hi.length+O.mid.length+O.low.length;let pages='';
+ const K=['hi','mid','low'],rec=O.hi.length+O.mid.length+O.low.length;let pages='';
  if(!rec)return `<section class="page d3">${head}<div class="body"><div class="fnote" style="margin-top:20mm;text-align:center;font-size:12pt">لم يرصد المعلم درجات هذا الصف بعد، فلا توجد فئات حتى الآن.<br>عدد طلبة الصف: ${shAR(O.none.length)}</div>${sig}</div></section>`;
- const N=Math.max(1,Math.ceil(Math.max(O.hi.length,O.mid.length,O.low.length)/PER));
- for(let p=0;p<N;p++){
-  const sm=K.map(k=>{const m=FCK[k];return `<div style="--c:${m.dc}"><b>${shAR(O[k].length)}</b><span>${m.nm}<small>${m.ic} (${m.rg})</small></span></div>`}).join('');
-  const cols=K.map(k=>{const m=FCK[k],L=O[k].slice(p*PER,(p+1)*PER);return `<div class="fcp" style="--c:${m.dc}"><div class="fh"><div class="fm">${fcMoon(m.m,22)}</div><b>${m.nm}<small>${m.ic} (${m.rg})${p?' - تابع':''}</small></b><span class="n">${shAR(O[k].length)}</span></div><ol>${L.length?L.map((n,i)=>`<li><i>${shAR(p*PER+i+1)}</i>${esc(n)}</li>`).join(''):`<li class="e">${p?'—':'لا يوجد'}</li>`}</ol></div>`}).join('');
-  pages+=`<section class="page d3">${head}<div class="body"><div class="fsum">${sm}</div><div class="fcols">${cols}</div><div class="fnote">التصنيف من معدّل درجات الوقفات المرصودة حتى الآن (من ٢٠): متفوق ١٩–٢٠، متوسط ١١–١٨، متدنٍّ ١٠ فأقل.${O.none.length?' لم تُرصد درجاتهم بعد: '+shAR(O.none.length)+' (لا يظهرون في الفئات).':''} &nbsp; صفحة ${shAR(p+1)} من ${shAR(N)}</div>${p===N-1?sig:''}</div></section>`}
+ const M=Math.max(O.hi.length,O.mid.length,O.low.length),fs=Math.max(5.2,Math.min(8.2,8.2-Math.max(0,M-24)*.11));
+ const sm=K.map(k=>{const m=FCK[k];return `<div style="--c:${m.dc}"><b>${shAR(O[k].length)}</b><span>${m.nm}<small>${m.ic} (${m.rg})</small></span></div>`}).join('');
+ const cols=K.map(k=>{const m=FCK[k],L=O[k];return `<div class="fcp" style="--c:${m.dc}"><div class="fh"><div class="fm">${fcMoon(m.m,22)}</div><b>${m.nm}<small>${m.ic} (${m.rg})</small></b><span class="n">${shAR(L.length)}</span></div><ol style="--fs:${fs.toFixed(2)}pt">${L.length?L.map((n,i)=>`<li><i>${shAR(i+1)}</i>${esc(n)}</li>`).join(''):'<li class="e">لا يوجد</li>'}</ol></div>`}).join('');
+ pages=`<section class="page d3">${head}<div class="body"><div class="fsum">${sm}</div><div class="fcols">${cols}</div><div class="fnote">التصنيف من معدّل درجات الوقفات المرصودة حتى الآن (من ٢٠): متفوق ١٩–٢٠، متوسط ١١–١٨، متدنٍّ ١٠ فأقل.${O.none.length?' لم تُرصد درجاتهم بعد: '+shAR(O.none.length)+' (لا يظهرون في الفئات).':''}</div>${sig}</div></section>`
  return pages}
-function fcShell(title,pages){return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${title}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet"><style>${SH_RB}${SH_R3}${SHX_RDOC_EXTRA}${FC_DOC_CSS}@page{size:A4;margin:0}@media print{html{background:none}body{padding:0}.page{margin:0;box-shadow:none;break-after:page}.page:last-child{break-after:auto}}html{background:#cfdcd8}body{font-family:Cairo,system-ui,sans-serif;padding:14px 0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{margin:0 auto 14px}<\/style></head><body>${pages}<script>(document.fonts?document.fonts.ready:Promise.resolve()).then(function(){var W=Math.max.apply(null,[].map.call(document.querySelectorAll('.page'),function(p){return p.offsetWidth}));var z=Math.min(1,(innerWidth-16)/W);document.body.style.zoom=z;addEventListener('beforeprint',function(){document.body.style.zoom=1});addEventListener('afterprint',function(){document.body.style.zoom=z})})<\/script></body></html>`}
+function fcShell(title,pages){return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${title}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet"><style>${SH_RB}${SH_R3}${SHX_RDOC_EXTRA}${FC_DOC_CSS}@page{size:A4;margin:0}@media print{html{background:none}body{padding:0}.page{margin:0;box-shadow:none;break-after:page}.page:last-child{break-after:auto}}html{background:#cfdcd8}body{font-family:Cairo,system-ui,sans-serif;padding:14px 0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{margin:0 auto 14px}<\/style></head><body>${pages}<script>(document.fonts?document.fonts.ready:Promise.resolve()).then(function(){[].forEach.call(document.querySelectorAll('.fcols'),function(g){var ols=[].slice.call(g.querySelectorAll('ol')),f=parseFloat(ols[0].style.getPropertyValue('--fs'))||8.2,n=0;function over(){return ols.some(function(o){return o.scrollHeight>o.clientHeight+1})}var set=function(v){ols.forEach(function(o){o.style.setProperty('--fs',v.toFixed(2)+'pt')})};while(!over()&&f<8.4&&n++<40){f+=.2;set(f)}while(over()&&f>3.6&&n++<120){f-=.2;ols.forEach(function(o){o.style.setProperty('--fs',f.toFixed(2)+'pt')})}});var W=Math.max.apply(null,[].map.call(document.querySelectorAll('.page'),function(p){return p.offsetWidth}));var z=Math.min(1,(innerWidth-16)/W);document.body.style.zoom=z;addEventListener('beforeprint',function(){document.body.style.zoom=1});addEventListener('afterprint',function(){document.body.style.zoom=z})})<\/script></body></html>`}
 const fcDoc=(c,O)=>fcShell('فئات الطلبة '+esc(shCn(c)),fcPages(c,O));
 /* كل الصفوف: صفحة لكل صف في ملف واحد */
 const fcOrd=(a,b)=>a.g-b.g||String(a.sec).localeCompare(String(b.sec),'ar');
@@ -4298,7 +4297,7 @@ async function fcXlsxAll(L){const EX=await xlLoad(window,document),wb=new EX.Wor
  const CA={hi:['FF2EAA5E','FFFFFFFF','FFD9F2E3'],mid:['FFE0A21B','FF3B2A00','FFFFF2CC'],low:['FFD63A2B','FFFFFFFF','FFF8D7DA'],none:['FF8A9A96','FFFFFFFF','FFEEF1F0']};
  const tot={hi:0,mid:0,low:0,none:0},rowsData=L.map(c=>{const O=fcData(c),o=shOwner(c.id),D=shkDF(c),dist=shkDist(c,D,0);['hi','mid','low','none'].forEach(k=>tot[k]+=O[k].length);return {c,O,t:o?'أ. '+shNm(o):'—',avg:dist.avg}});
  /* الصفحة الأولى */
- const ws=wb.addWorksheet('كل الصفوف',{views:[{rightToLeft:true,state:'frozen',ySplit:4}],pageSetup:{orientation:'landscape',paperSize:9,fitToPage:true,fitToWidth:1,fitToHeight:0}});
+ const ws=wb.addWorksheet('كل الصفوف',{views:[{rightToLeft:true,state:'frozen',ySplit:4}],pageSetup:{orientation:'landscape',paperSize:9,fitToPage:true,fitToWidth:1,fitToHeight:1}});
  ws.mergeCells(1,1,1,8);const t1=ws.getCell(1,1);t1.value='فئات الطلبة في العلوم الشرعية — كل الصفوف';t1.font=F(1,16);t1.alignment={horizontal:'center'};ws.getRow(1).height=28;
  ws.mergeCells(2,1,2,8);const t2=ws.getCell(2,1);t2.value='المعهد الديني الابتدائي · الفصل الدراسي الأول 2026 – 2027 · بتاريخ '+ds;t2.font=F(0,10,'FF4F7A70');t2.alignment={horizontal:'center'};
  ws.mergeCells(3,1,3,8);const t3=ws.getCell(3,1);t3.value='التصنيف من معدّل درجات الوقفات المرصودة (من ٢٠): متفوق ١٩–٢٠ · متوسط ١١–١٨ · متدنٍّ ١٠ فأقل. وفي الصفحات بالأسفل فئات كل صف بأسماء الطلبة.';t3.font=F(0,10,'FF4F7A70');t3.alignment={horizontal:'center'};
@@ -4310,7 +4309,7 @@ async function fcXlsxAll(L){const EX=await xlLoad(window,document),wb=new EX.Wor
  /* صفحة لكل صف */
  const used=new Set(['كل الصفوف']);
  rowsData.forEach(x=>{let nm=shCn(x.c).replace(/[\[\]:*?\/\\]/g,' ').slice(0,28),k=2;const base=nm;while(used.has(nm))nm=base+' '+(k++);used.add(nm);
-  const w2=wb.addWorksheet(nm,{views:[{rightToLeft:true,state:'frozen',ySplit:4}],pageSetup:{orientation:'portrait',paperSize:9,fitToPage:true,fitToWidth:1,fitToHeight:0}});
+  const w2=wb.addWorksheet(nm,{views:[{rightToLeft:true,state:'frozen',ySplit:4}],pageSetup:{orientation:'portrait',paperSize:9,fitToPage:true,fitToWidth:1,fitToHeight:1}});
   w2.mergeCells(1,1,1,4);const a1=w2.getCell(1,1);a1.value='فئات الطلبة — '+shCn(x.c);a1.font=F(1,15);a1.alignment={horizontal:'center'};w2.getRow(1).height=26;
   w2.mergeCells(2,1,2,4);const a2=w2.getCell(2,1);a2.value='المعلم: '+x.t+' · '+shAR(shStu(x.c).length)+' طالباً · بتاريخ '+ds;a2.font=F(0,10,'FF4F7A70');a2.alignment={horizontal:'center'};
   w2.mergeCells(3,1,3,4);const a3=w2.getCell(3,1);a3.value='معدّل درجات الوقفات المرصودة (من ٢٠): متفوق ١٩–٢٠ · متوسط ١١–١٨ · متدنٍّ ١٠ فأقل';a3.font=F(0,10,'FF4F7A70');a3.alignment={horizontal:'center'};
@@ -7466,7 +7465,7 @@ document.querySelectorAll('[data-logout]').forEach(b=>b.onclick=()=>{if(ROLE==='
 document.querySelectorAll('#t-tabs [data-tab]').forEach(b=>b.onclick=()=>go({tas:'tas',roster:'home',curr:'curr',msgs:'msgs',nom:'nom'}[b.dataset.tab]));
 document.querySelectorAll('#s-student [data-jump]').forEach(b=>b.onclick=()=>setSubS(b.dataset.jump==='beh'?'beh':b.dataset.jump==='msg'?'msg':b.dataset.jump==='mosque'?'mosque':'hifz'));
 /* تحديث تلقائي: لو في نسخة أحدث من الموقع ينزلها بدل النسخة المحفوظة في الجهاز */
-const BUILD='ee3e2a2e2ba5';
+const BUILD='02b19162905c';
 async function checkUpdate(){
   try{
     if(location.protocol!=='https:')return;
